@@ -1,0 +1,77 @@
+name: mirror.yml
+on:
+  pull_request:
+    branches-ignore:
+      - 'ga-ignore-*'
+    types:
+      - opened
+  push:
+    branches-ignore:
+      - 'ga-ignore-*'
+
+env:
+  MIRROR_URL: "git@github.com:EpitechPGE2-2025/G-YEP-400-PAR-4-1-zappy-6.git"
+  BINARY: "zappy_server,zappy_gui,zappy_ai"
+
+
+jobs:
+  check_valid_repo:
+    runs-on: ubuntu-latest
+    outputs:
+      run_action: ${{ steps.valid.outputs.run_action }}
+    steps:
+      - name: Verify if in correct repositor
+        id: valid
+        if: ${{ !contains(env.MIRROR_URL, github.repository) }}
+        run: echo "run_action=true" >> "$GITHUB_OUTPUT"
+  check_program_compilation:
+    needs: check_valid_repo
+    runs-on: ubuntu-latest
+    container:
+      image: epitechcontent/epitest-docker:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - name: Make
+        timeout-minutes: 5
+        run: make
+      - name: Check Binary
+        run: |
+          files=${{ env.BINARY }}
+          for file in $(echo $files | sed "s/,/ /g"); do
+            if ! [ -x "$file" ]; then
+              echo "::error:: File '$file' does not exist or is not executable."
+              exit 1
+            fi
+          done
+  run_tests:
+    needs: check_program_compilation
+    runs-on: ubuntu-latest
+    container:
+      image: epitechcontent/epitest-docker:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - name: Make Test
+        timeout-minutes: 5
+        run: make tests_run
+  
+  push_to_mirror:
+    needs: run_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - name: Mirror
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            ${{ env.MIRROR_URL }}
+          ssh_private_key:
+            ${{ secrets.GIT_SSH_PRIVATE_KEY }}
