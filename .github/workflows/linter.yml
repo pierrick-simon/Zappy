@@ -1,0 +1,39 @@
+name: "Linter"
+on:
+  workflow_call:
+  push:
+    paths: ['**.c', '**.cpp', '**.h', '**.hpp', '**CMakeLists.txt']
+  pull_request:
+    paths: ['**.c', '**.cpp', '**.h', '**.hpp', '**CMakeLists.txt']
+
+
+jobs:
+  linter:
+    runs-on: self-hosted
+    container:
+      image: epitechcontent/epitest-docker:latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: "Generate compilation_command.json"
+        run: |
+          cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . -G 'Unix Makefiles'
+      - uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: 'file'
+          tidy-checks: ''
+          database: 'build'
+          thread-comments: ${{ github.event_name == 'pull_request' && 'update' }}
+          extra-args: '-std=c++20 -Wall'
+          step-summary: 'true'
+          tidy-review: 'true'
+          format-review: 'true'
+          ignore: '.github|*/tests|*/bonus|'
+      - name: Fail fast?!
+        if: steps.linter.outputs.checks-failed > 0
+        run: exit 1
