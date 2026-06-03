@@ -5,7 +5,22 @@
 ** Main
 */
 
+#include <iostream>
+#include "Utils.hpp"
+#include "Server.hpp"
+#include "ServerException.hpp"
+
 int main()
 {
-    return 0;
+    try {
+        Zappy::Server server(4242);
+        server.run();
+    } catch (Shared::SharedException &e) {
+        std::cerr << e.what() << std::endl;
+        return Shared::EPIERROR;
+    } catch (Zappy::ServerException &e) {
+        std::cerr << e.what() << std::endl;
+        return Shared::EPIERROR;
+    }
+    return Shared::EPISUCCESS;
 }

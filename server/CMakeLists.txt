@@ -17,6 +17,7 @@ set(MAIN
 )
 
 set(SRCS
+    src/Server.cpp
 )
 
 set(HEADERS
