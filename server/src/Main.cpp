@@ -13,7 +13,7 @@
 int main()
 {
     try {
-        Zappy::Server server(4242);
+        Zappy::Server server(4242, {"first"}, 2);
         server.run();
     } catch (Shared::SharedException &e) {
         std::cerr << e.what() << std::endl;
