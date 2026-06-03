@@ -44,7 +44,7 @@ set(SRCS_TESTS
     tests/tests_init.cpp
 )
 
-add_executable(gui_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS})
+add_executable(gui_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS} ${SHARED_SRCS})
 
 target_compile_options(gui_tests_run_bin PRIVATE --coverage)
 target_link_options(gui_tests_run_bin PRIVATE --coverage)
