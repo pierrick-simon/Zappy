@@ -36,7 +36,7 @@ namespace Shared {
 
     void Connect::initSocket()
     {
-        _fd = socket(AF_INET, SOCK_STREAM, 0);
+        _fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (_fd == -1)
             throw SocketException();
     }
