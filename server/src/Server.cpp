@@ -7,8 +7,6 @@
 
 #include <csignal>
 #include <iostream>
-#include <chrono>
-#include <iomanip>
 #include "Server.hpp"
 #include "Utils.hpp"
 
@@ -21,7 +19,7 @@ namespace Zappy {
         _connect(port),
         _logFile(std::string(LOG_FILE))
     {
-        logMsg("Server Open.");
+        Shared::Utils::logMsg(_logFile, "Server Open.");
         signal(SIGINT, [](int) {
             RECEIVED_SIG_INT = true;
         });
@@ -31,7 +29,7 @@ namespace Zappy {
 
     Server::~Server()
     {
-        logMsg("Server Close.");
+        Shared::Utils::logMsg(_logFile, "Server Close.");
     }
 
     void Server::run()
@@ -52,7 +50,7 @@ namespace Zappy {
         _connect.addClient(new_fd);
         _connect.send(new_fd, "WELCOME\n");
         _newClients.emplace(new_fd, std::string());
-        logMsg("New client.");
+        Shared::Utils::logMsg(_logFile, "New client.");
     }
 
     void Server::handleClient(const std::vector<int> &infos)
@@ -94,16 +92,9 @@ namespace Zappy {
                 _connect.send(iter->first, "ko\n");
                 _connect.removeClient(iter->first);
                 _newClients.erase(iter);
+                Shared::Utils::logMsg(_logFile,
+                    "Client Close (Wrong Teams Selection).");
             }
         }
-    }
-
-    void Server::logMsg(std::string msg)
-    {
-        auto now = std::chrono::system_clock::now();
-        std::time_t t = std::chrono::system_clock::to_time_t(now);
-
-        _logFile << "[" << std::put_time(std::localtime(&t), "%H:%M:%S") << "] ";
-        _logFile << msg << std::endl;
     }
 };

@@ -10,6 +10,7 @@
 
     #include <string>
     #include <optional>
+    #include <fstream>
 
 namespace Shared {
     constexpr int EPISUCCESS = 0;
@@ -20,6 +21,7 @@ namespace Shared {
     class Utils {
         public:
             static std::optional<std::string> parseLine(std::string &str);
+            static void logMsg(std::ofstream &file, std::string msg);
     };
 } 
 

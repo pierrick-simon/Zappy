@@ -8,7 +8,6 @@
 #ifndef SERVER_HPP
     #define SERVER_HPP
 
-    #include <fstream>
     #include <unordered_map>
     #include "Connect.hpp"
     #include "AIClient.hpp"
@@ -23,7 +22,6 @@ namespace Zappy {
             void run();
 
         private:
-            void logMsg(std::string);
             void addClient();
             void handleClient(const std::vector<int> &);
             void handleNewClient(std::unordered_map<int, std::string>::iterator &);

@@ -5,6 +5,8 @@
 ** Utils
 */
 
+#include <chrono>
+#include <iomanip>
 #include "Utils.hpp"
 
 namespace Shared {
@@ -19,5 +21,14 @@ namespace Shared {
             str.erase(0, pos + 1);
         }
         return line;
+    }
+
+    void Utils::logMsg(std::ofstream &file, std::string msg)
+    {
+        auto now = std::chrono::system_clock::now();
+        std::time_t t = std::chrono::system_clock::to_time_t(now);
+
+        file << "[" << std::put_time(std::localtime(&t), "%H:%M:%S") << "] ";
+        file << msg << std::endl;
     }
 }
