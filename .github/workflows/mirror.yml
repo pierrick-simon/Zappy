@@ -64,6 +64,9 @@ jobs:
     name: "CPP Linter"
     needs: check_valid_repo
     uses: ./.github/workflows/linter.yml
+    permissions:
+      contents: write
+      pull-requests: write
   
   push_to_mirror:
     needs: [run_tests, linter]

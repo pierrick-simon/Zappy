@@ -1,6 +1,8 @@
 name: "Linter"
 on:
   workflow_call:
+  pull_request:
+    paths: ['**.c', '**.cpp', '**.h', '**.hpp', '**CMakeLists.txt']
 
 jobs:
   linter:
