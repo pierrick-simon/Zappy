@@ -6,6 +6,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(SHARED_SRCS
+    Connect.cpp
+)
+
+list(TRANSFORM SHARED_SRCS PREPEND ${CMAKE_SOURCE_DIR}/shared/src/)
+
 set(MAIN
     src/Main.cpp
 )
@@ -27,7 +33,7 @@ if (ENABLE_ASAN)
     add_link_options(${ASAN_FLAGS})
 endif()
 
-add_executable(zappy_gui ${MAIN} ${SRCS})
+add_executable(zappy_gui ${MAIN} ${SRCS} ${SHARED_SRCS})
 
 target_compile_options(zappy_gui PRIVATE)
 

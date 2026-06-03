@@ -8,6 +8,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(HEADERS
+    shared/include/
+)
+
+include_directories(${HEADERS})
+
 option(ENABLE_ASAN "Enable Address Sanitizer" OFF)
 
 if (ENABLE_ASAN)
