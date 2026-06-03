@@ -8,7 +8,9 @@
 #ifndef SERVER_HPP
     #define SERVER_HPP
 
+    #include <fstream>
     #include <unordered_map>
+    #include <optional>
     #include "Connect.hpp"
     #include "AIClient.hpp"
     #include "GUIClient.hpp"
@@ -16,19 +18,24 @@
 namespace Zappy {
     class Server {
         public:
-            Server(int port, std::vector<std::string> teams, std::size_t nbPerTeams);
+            Server(int port, std::vector<std::string> teams,
+                std::size_t nbPerTeams);
             ~Server();
 
             void run();
 
         private:
+            using NewClient = std::pair<std::size_t, std::string>;
+
             void addClient();
             void handleClient(const std::vector<int> &);
-            void handleNewClient(std::unordered_map<int, std::string>::iterator &);
+            void handleNewClient(std::unordered_map<int, NewClient>::iterator &);
+            std::optional<std::string> getNewClientLine(
+                std::unordered_map<int, NewClient>::iterator &);
 
             Shared::Connect _connect;
             std::unordered_map<std::string, std::size_t> _teams;
-            std::unordered_map<int, std::string> _newClients;
+            std::unordered_map<int, NewClient> _newClients;
             std::unordered_map<int, AIClient> _AIClients;
             std::unordered_map<int, GUIClient> _GUIClients;
 
