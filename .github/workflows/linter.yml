@@ -1,15 +1,10 @@
 name: "Linter"
 on:
   workflow_call:
-  push:
-    paths: ['**.c', '**.cpp', '**.h', '**.hpp', '**CMakeLists.txt']
-  pull_request:
-    paths: ['**.c', '**.cpp', '**.h', '**.hpp', '**CMakeLists.txt']
-
 
 jobs:
   linter:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: epitechcontent/epitest-docker:latest
     permissions:
@@ -33,7 +28,7 @@ jobs:
           step-summary: 'true'
           tidy-review: 'true'
           format-review: 'true'
-          ignore: '.github|*/tests|*/bonus|'
+          version: '22'
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0
         run: exit 1
