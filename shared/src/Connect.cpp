@@ -30,8 +30,8 @@ namespace Shared {
 
     Connect::~Connect()
     {
-        if (_fd != -1)
-            close(_fd);
+        while (_fds.size() > 0)
+            removeClient(_fds[0].fd);
     }
 
     void Connect::initSocket()
@@ -97,12 +97,15 @@ namespace Shared {
     {
         std::vector<int> info;
 
-        if (poll(_fds.data(), _fds.size(), 0) < 0) {
-            if (errno != EINTR)
-                throw PollException();
+        if (poll(_fds.data(), _fds.size(), -1) < 0) {
+            if (errno == EINTR)
+                return info;
+            throw PollException();
         }
         for (std::size_t i = 0; i < _fds.size(); ++i) {
             if (_fds[i].revents & POLLIN)
+                info.push_back(_fds[i].fd);
+            if (_fds[i].revents & (POLLHUP | POLLERR))
                 info.push_back(_fds[i].fd);
         }
         return info;
@@ -118,6 +121,13 @@ namespace Shared {
             }
         }
     }
+
+    void Connect::send(int fd, std::string msg)
+    {
+        if (write(fd, msg.c_str(), msg.size()) < 0)
+            throw SendException();
+    }
+
 
     void Connect::receiveChunk(int fd, std::string &str, std::size_t size)
     {

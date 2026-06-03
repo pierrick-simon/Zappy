@@ -27,22 +27,7 @@ namespace Shared {
 
             std::vector<int> infoToRead();
 
-            template<typename T>
-            static void send(int fd, const T msg)
-            {
-                if (write(fd, &msg, sizeof(T)) < 0)
-                    throw SendException();
-            }
-
-            template<typename T>
-            static T receive(int fd)
-            {
-                T buf = {};
-                if (read(fd, &buf, sizeof(T)) <= 0)
-                    throw CloseException();
-                return buf;
-            }
-
+            static void send(int fd, std::string msg);
             static void receiveChunk(int fd, std::string &str, std::size_t = 4096);
 
             class ConnectException : public SharedException {
