@@ -97,8 +97,10 @@ namespace Shared {
     {
         std::vector<int> info;
 
-        if (poll(_fds.data(), _fds.size(), 0) < 0)
-            throw PollException();
+        if (poll(_fds.data(), _fds.size(), 0) < 0) {
+            if (errno != EINTR)
+                throw PollException();
+        }
         for (std::size_t i = 0; i < _fds.size(); ++i) {
             if (_fds[i].revents & POLLIN)
                 info.push_back(_fds[i].fd);
@@ -115,5 +117,14 @@ namespace Shared {
                 break;
             }
         }
+    }
+
+    void Connect::receiveChunk(int fd, std::string &str, std::size_t size)
+    {
+        char buf[size];
+        ssize_t n = read(fd, buf, sizeof(buf));
+        if (n <= 0)
+            throw Shared::Connect::CloseException();
+        str.append(buf, n);
     }
 }

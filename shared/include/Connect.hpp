@@ -43,6 +43,8 @@ namespace Shared {
                 return buf;
             }
 
+            static void receiveChunk(int fd, std::string &str, std::size_t = 4096);
+
             class ConnectException : public SharedException {
                 public:
                     ConnectException(std::string str)
