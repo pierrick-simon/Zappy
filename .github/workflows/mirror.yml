@@ -31,7 +31,7 @@ jobs:
       image: epitechcontent/epitest-docker:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: '0'
       - name: Make
@@ -53,19 +53,27 @@ jobs:
       image: epitechcontent/epitest-docker:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: '0'
       - name: Make Test
         timeout-minutes: 5
         run: make tests_run
+
+  linter:
+    name: "CPP Linter"
+    needs: check_valid_repo
+    uses: ./.github/workflows/linter.yml
+    permissions:
+      contents: write
+      pull-requests: write
   
   push_to_mirror:
-    needs: run_tests
+    needs: [run_tests, linter]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: '0'
       - name: Mirror
