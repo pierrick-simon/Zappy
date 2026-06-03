@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28.3)
-project(RayTracer CXX)
+project(Zappy CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/server)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/gui)
