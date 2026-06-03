@@ -31,7 +31,7 @@ jobs:
       image: epitechcontent/epitest-docker:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: '0'
       - name: Make
@@ -53,7 +53,7 @@ jobs:
       image: epitechcontent/epitest-docker:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: '0'
       - name: Make Test
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: '0'
       - name: Mirror
