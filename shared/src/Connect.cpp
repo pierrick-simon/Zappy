@@ -110,6 +110,7 @@ namespace Shared {
     {
         for (auto iter = _fds.begin(); iter < _fds.end(); iter++) {
             if (iter->fd == fd) {
+                close(iter->fd);
                 _fds.erase(iter);
                 break;
             }

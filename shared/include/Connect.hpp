@@ -27,6 +27,22 @@ namespace Shared {
 
             std::vector<int> infoToRead();
 
+            template<typename T>
+            static void send(int fd, const T msg)
+            {
+                if (write(fd, &msg, sizeof(T)) < 0)
+                    throw SendException();
+            }
+
+            template<typename T>
+            static T receive(int fd)
+            {
+                T buf = {};
+                if (read(fd, &buf, sizeof(T)) <= 0)
+                    throw CloseException();
+                return buf;
+            }
+
             class ConnectException : public SharedException {
                 public:
                     ConnectException(std::string str)
@@ -61,6 +77,16 @@ namespace Shared {
             class PollException : public ConnectException {
                 public:
                     PollException() : ConnectException("Poll Failed!") {};
+            };
+
+            class SendException : public ConnectException {
+                public:
+                    SendException() : ConnectException("Send Failed!") {};
+            };
+
+            class CloseException : public ConnectException {
+                public:
+                    CloseException() : ConnectException("Close Connection!") {};
             };
 
         private:
