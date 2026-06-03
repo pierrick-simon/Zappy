@@ -17,6 +17,7 @@ set(MAIN
 )
 
 set(SRCS
+    src/GUI.cpp
 )
 
 set(HEADERS
