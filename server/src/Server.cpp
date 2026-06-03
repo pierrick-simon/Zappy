@@ -61,17 +61,43 @@ namespace Zappy {
         for (const auto fd: infos) {
             auto ai = _AIClients.find(fd);
             if (ai != _AIClients.end()) {
-                ai->second.infoToRead();
+                handleAIClient(ai);
                 continue;
             }
             auto gui = _GUIClients.find(fd);
             if (gui != _GUIClients.end()) {
-                gui->second.infoToRead();
+                handleGUIClient(gui);
                 continue;
             }
             auto newClient = _newClients.find(fd);
             if (newClient != _newClients.end())
                 handleNewClient(newClient);
+        }
+    }
+
+    void Server::handleAIClient(AIIter iter)
+    {
+        try {
+            iter->second.infoToRead();
+        } catch (Shared::Connect::CloseException &_) {
+            _connect.removeClient(iter->first);
+            _AIClients.erase(iter);
+            Shared::Utils::logMsg(_logFile, "Client["
+                + std::to_string(iter->second.getId())
+                + "] Close (Disconected from the server).");
+        }
+    }
+
+    void Server::handleGUIClient(GUIIter iter)
+    {
+        try {
+            iter->second.infoToRead();
+        } catch (Shared::Connect::CloseException &_) {
+            _connect.removeClient(iter->first);
+            _GUIClients.erase(iter);
+            Shared::Utils::logMsg(_logFile, "Client["
+                + std::to_string(iter->second.getId())
+                + "] Close (Disconected from the server).");
         }
     }
 
@@ -102,14 +128,16 @@ namespace Zappy {
         auto line = getNewClientLine(iter);
         if (line.has_value()) {
             if (line.value() == GRAPHIC) {
-                _GUIClients.emplace(iter->first, GUIClient(iter->first));
+                _GUIClients.emplace(iter->first,
+                    GUIClient(iter->first, iter->second.first, _logFile));
                 _newClients.erase(iter);
                 return;
             }
             auto find = _teams.find(line.value());
             if (find != _teams.end() && find->second > 0) {
                 find->second--;
-                _AIClients.emplace(iter->first, AIClient(iter->first));
+                _AIClients.emplace(iter->first, AIClient(iter->first,
+                    iter->second.first, find->first, _logFile));
                 _newClients.erase(iter);
             } else {
                 _connect.send(iter->first, "ko\n");

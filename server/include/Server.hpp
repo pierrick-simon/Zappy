@@ -26,9 +26,13 @@ namespace Zappy {
 
         private:
             using NewClient = std::pair<std::size_t, std::string>;
+            using AIIter = std::unordered_map<int, AIClient>::iterator;
+            using GUIIter = std::unordered_map<int, GUIClient>::iterator;
 
             void addClient();
             void handleClient(const std::vector<int> &);
+            void handleAIClient(AIIter);
+            void handleGUIClient(GUIIter);
             void handleNewClient(std::unordered_map<int, NewClient>::iterator &);
             std::optional<std::string> getNewClientLine(
                 std::unordered_map<int, NewClient>::iterator &);

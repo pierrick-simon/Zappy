@@ -19,6 +19,8 @@ set(MAIN
 
 set(SRCS
     src/Server.cpp
+    src/AIClient.cpp
+    src/GUIClient.cpp
 )
 
 set(HEADERS
