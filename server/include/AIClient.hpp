@@ -8,8 +8,12 @@
 #ifndef AICLIENT_HPP
     #define AICLIENT_HPP
 
+    #include <chrono>
     #include <fstream>
+    #include <functional>
+    #include <iomanip>
     #include <queue>
+    #include <unordered_map>
 
 namespace Zappy {
     class AIClient {
@@ -24,7 +28,14 @@ namespace Zappy {
             return _id;
         }
 
+        void update(std::chrono::nanoseconds elapsed);
+
     private:
+        struct Command {
+            std::function<void(AIClient &)> _func;
+            std::chrono::nanoseconds _timeLimit;
+        };
+
         void addCommand();
 
         int _fd;
@@ -33,8 +44,11 @@ namespace Zappy {
         std::ofstream &_logFile;
         std::string _buffer;
         std::queue<std::string> _command;
+        std::chrono::nanoseconds _sleep;
 
         static constexpr std::size_t MAX_QUEUE = 10;
+
+        static const std::unordered_map<std::string, Command> COMMANDS;
     };
 } // namespace Zappy
 

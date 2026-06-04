@@ -8,6 +8,7 @@
 #ifndef UTILS_HPP
     #define UTILS_HPP
 
+    #include <chrono>
     #include <fstream>
     #include <optional>
     #include <string>
@@ -17,6 +18,8 @@ namespace Shared {
     constexpr int EPIERROR = 84;
     constexpr int SKIP = -1;
     constexpr int EXIT = 1;
+
+    using Clock = std::chrono::_V2::steady_clock::time_point;
 
     class Utils {
     public:

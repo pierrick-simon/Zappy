@@ -22,7 +22,6 @@ namespace Shared {
             static const Command PIN("pin");
             static const Command SGT("sgt");
             static const Command SST("sst");
-            static const Command EXIT("exit");
         }; // namespace Client
 
         namespace Server {

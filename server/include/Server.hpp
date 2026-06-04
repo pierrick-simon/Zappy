@@ -14,6 +14,7 @@
     #include "AIClient.hpp"
     #include "Connect.hpp"
     #include "GUIClient.hpp"
+    #include "Utils.hpp"
 
 namespace Zappy {
     class Server {
@@ -29,6 +30,8 @@ namespace Zappy {
         using AIIter = std::unordered_map<int, AIClient>::iterator;
         using GUIIter = std::unordered_map<int, GUIClient>::iterator;
 
+        void infoToRead();
+        void update();
         void addClient();
         void handleClient(const std::vector<int> &);
         void handleAIClient(AIIter);
@@ -42,6 +45,8 @@ namespace Zappy {
         std::unordered_map<int, NewClient> _newClients;
         std::unordered_map<int, AIClient> _aiClients;
         std::unordered_map<int, GUIClient> _guiClients;
+
+        Shared::Clock _clock;
 
         std::size_t x = 100;
         std::size_t y = 100;

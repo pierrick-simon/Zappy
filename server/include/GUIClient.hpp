@@ -9,7 +9,10 @@
     #define GUICLIENT_HPP
 
     #include <fstream>
+    #include <functional>
+    #include <iomanip>
     #include <queue>
+    #include <unordered_map>
 
 namespace Zappy {
     class GUIClient {
@@ -23,7 +26,11 @@ namespace Zappy {
             return _id;
         }
 
+        void update();
+
     private:
+        using Command = std::function<void(GUIClient &, std::istringstream &)>;
+
         void addCommand();
 
         int _fd;
@@ -31,6 +38,8 @@ namespace Zappy {
         std::ofstream &_logFile;
         std::string _buffer;
         std::queue<std::string> _command;
+
+        static const std::unordered_map<std::string, Command> COMMANDS;
     };
 } // namespace Zappy
 

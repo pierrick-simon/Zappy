@@ -22,6 +22,7 @@ namespace Zappy {
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
         for (const auto &team : teams)
             _teams.emplace(team, nbPerTeam);
+        _clock = std::chrono::steady_clock::now();
     }
 
     Server::~Server()
@@ -32,13 +33,30 @@ namespace Zappy {
     void Server::run()
     {
         while (!RECEIVED_SIG_INT) {
-            auto infos = _connect.infoToRead();
-            if (infos.empty())
-                continue;
+            infoToRead();
+            update();
+        }
+    }
+
+    void Server::infoToRead()
+    {
+        auto infos = _connect.infoToRead();
+        if (!infos.empty()) {
             if (infos[0] == _connect.getFd())
                 addClient();
             handleClient(infos);
         }
+    }
+
+    void Server::update()
+    {
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = _clock - now;
+        _clock = now;
+        for (auto &[_, ai] : _aiClients)
+            ai.update(elapsed);
+        for (auto &[_, gui] : _guiClients)
+            gui.update();
     }
 
     void Server::addClient()
