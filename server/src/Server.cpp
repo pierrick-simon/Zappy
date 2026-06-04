@@ -14,7 +14,7 @@ namespace Zappy {
 
     bool Server::RECEIVED_SIG_INT = false;
 
-    Server::Server(int port, std::vector<std::string> teams,
+    Server::Server(int port, const std::vector<std::string> &teams,
         std::size_t nbPerTeam) :
         _connect(port),
         _logFile(std::string(LOG_FILE))
@@ -36,7 +36,7 @@ namespace Zappy {
     {
         while (!RECEIVED_SIG_INT) {
             auto infos = _connect.infoToRead();
-            if (infos.size() == 0)
+            if (infos.empty())
                 continue;
             if (infos[0] == _connect.getFd())
                 addClient();
@@ -84,7 +84,7 @@ namespace Zappy {
             _AIClients.erase(iter);
             Shared::Utils::logMsg(_logFile, "Client["
                 + std::to_string(iter->second.getId())
-                + "] Close (Disconected from the server).");
+                + "] Close (Disconnected from the server).");
         }
     }
 
@@ -97,7 +97,7 @@ namespace Zappy {
             _GUIClients.erase(iter);
             Shared::Utils::logMsg(_logFile, "Client["
                 + std::to_string(iter->second.getId())
-                + "] Close (Disconected from the server).");
+                + "] Close (Disconnected from the server).");
         }
     }
 
@@ -113,7 +113,7 @@ namespace Zappy {
             _newClients.erase(iter);
             Shared::Utils::logMsg(_logFile, "Client["
                 + std::to_string(iter->second.first)
-                + "] Close (Disconected from the server).");
+                + "] Close (Disconnected from the server).");
             close = true;
         }
         std::optional<std::string> line;

@@ -7,6 +7,7 @@
 
 #include <chrono>
 #include <iomanip>
+#include <iostream>
 #include "Utils.hpp"
 
 namespace Shared {
@@ -30,5 +31,7 @@ namespace Shared {
 
         file << "[" << std::put_time(std::localtime(&t), "%H:%M:%S") << "] ";
         file << msg << std::endl;
+        std::cout << "[" << std::put_time(std::localtime(&t), "%H:%M:%S");
+        std::cout << "] " << msg << std::endl;
     }
 }

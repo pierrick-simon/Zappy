@@ -14,7 +14,7 @@ namespace Zappy {
         std::ofstream &logFile) :
         _fd(fd), _id(id), _logFile(logFile)
     {
-        Shared::Utils::logMsg(_logFile, "Cleint[" + std::to_string(id)
+        Shared::Utils::logMsg(_logFile, "Client[" + std::to_string(id)
             + "] joined the GRAPHIC team.");
     }
 

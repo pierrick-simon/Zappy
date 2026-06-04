@@ -18,7 +18,7 @@
 namespace Zappy {
     class Server {
         public:
-            Server(int port, std::vector<std::string> teams,
+            Server(int port, const std::vector<std::string> &teams,
                 std::size_t nbPerTeams);
             ~Server();
 

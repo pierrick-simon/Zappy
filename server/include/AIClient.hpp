@@ -19,7 +19,7 @@ namespace Zappy {
 
             void infoToRead();
 
-            std::size_t getId() const {return _id;}
+            [[nodiscard]] std::size_t getId() const {return _id;}
 
         private:
             void addCommand();
