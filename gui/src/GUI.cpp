@@ -26,6 +26,8 @@ namespace Zappy {
                 break;
             if (!_isConnect)
                 loop = connect();
+            else
+                update();
         }
     }
 
@@ -66,4 +68,29 @@ namespace Zappy {
         }
         return value;
     }
+
+    void GUI::update()
+    {
+        if (!_command.empty()) {
+            std::istringstream stream(_command.front());
+            std::string command;
+            stream >> command;
+            _command.pop();
+            if (stream.fail())
+                return;
+            auto iter = COMMANDS.find(command);
+            if (iter != COMMANDS.end()) {
+                iter->second(*this, stream);
+                Shared::Utils::logMsg(_logFile,
+                    "Recieved command " + iter->first + " from server.");
+            } else {
+                Shared::Utils::logMsg(
+                    _logFile, "Command " + command + " not handle yet.");
+            }
+        }
+    }
+
+    const std::unordered_map<std::string, GUI::Command> GUI::COMMANDS = {
+
+    };
 } // namespace Zappy
