@@ -14,9 +14,9 @@ namespace Shared {
     class Command {
     public:
         Command(std::string str) :
-            _str(str) {};
+            _str(std::move(str)) {};
 
-        std::string getStr() const
+        [[nodiscard]] std::string getStr() const
         {
             return _str;
         }
