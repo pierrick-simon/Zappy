@@ -21,7 +21,7 @@ namespace Shared {
         addClient(_fd);
     }
 
-    Connect::Connect(int port, std::string ip)
+    Connect::Connect(int port, const std::string &ip)
     {
         initSocket();
         connectToServer(port, ip);
@@ -30,7 +30,7 @@ namespace Shared {
 
     Connect::~Connect()
     {
-        while (_fds.size() > 0)
+        while (!_fds.empty())
             removeClient(_fds[0].fd);
     }
 
@@ -41,7 +41,7 @@ namespace Shared {
             throw SocketException();
     }
 
-    void Connect::initBind(int port)
+    void Connect::initBind(int port) const
     {
         struct sockaddr_in server_addr = {};
         int opt = 1;
@@ -55,15 +55,15 @@ namespace Shared {
             throw BindException();
     }
 
-    void Connect::initListen()
+    void Connect::initListen() const
     {
         if (listen(_fd, QUEUE_LENGTH) == -1)
             throw ListenException();
     }
 
-    void Connect::connectToServer(int port, std::string ip)
+    void Connect::connectToServer(int port, const std::string &ip) const
     {
-        struct sockaddr_in server_addr;
+        struct sockaddr_in server_addr = {};
 
         server_addr.sin_family = AF_INET;
         server_addr.sin_port = htons(port);
@@ -73,9 +73,9 @@ namespace Shared {
             throw ConnectionException();
     }
 
-    int Connect::acceptClient()
+    int Connect::acceptClient() const
     {
-        struct sockaddr_in client_addr;
+        struct sockaddr_in client_addr = {};
         socklen_t client_len = sizeof(client_addr);
         int client_fd = accept(_fd,
             (struct sockaddr *)&client_addr, &client_len);
@@ -86,7 +86,7 @@ namespace Shared {
 
     void Connect::addClient(int fd)
     {
-        struct pollfd structFd;
+        struct pollfd structFd = {};
 
         structFd.fd = fd;
         structFd.events = POLLIN;
@@ -102,11 +102,11 @@ namespace Shared {
                 return info;
             throw PollException();
         }
-        for (std::size_t i = 0; i < _fds.size(); ++i) {
-            if (_fds[i].revents & POLLIN)
-                info.push_back(_fds[i].fd);
-            if (_fds[i].revents & (POLLHUP | POLLERR))
-                info.push_back(_fds[i].fd);
+        for (auto & _fd : _fds) {
+            if (_fd.revents & POLLIN)
+                info.push_back(_fd.fd);
+            if (_fd.revents & (POLLHUP | POLLERR))
+                info.push_back(_fd.fd);
         }
         return info;
     }
@@ -122,7 +122,7 @@ namespace Shared {
         }
     }
 
-    void Connect::send(int fd, std::string msg)
+    void Connect::send(int fd, const std::string &msg)
     {
         if (write(fd, msg.c_str(), msg.size()) < 0)
             throw SendException();

@@ -23,7 +23,7 @@ namespace Zappy {
         signal(SIGINT, [](int) {
             RECEIVED_SIG_INT = true;
         });
-        for (auto team: teams)
+        for (const auto &team: teams)
             _teams.emplace(team, nbPerTeam);
     }
 
@@ -49,7 +49,7 @@ namespace Zappy {
         static std::size_t id = 0;
         auto new_fd = _connect.acceptClient();
         _connect.addClient(new_fd);
-        _connect.send(new_fd, "WELCOME\n");
+        Shared::Connect::send(new_fd, "WELCOME\n");
         _newClients.emplace(new_fd, std::make_pair(id, std::string()));
         Shared::Utils::logMsg(_logFile, "New client["
             + std::to_string(id) + "].");
@@ -59,13 +59,13 @@ namespace Zappy {
     void Server::handleClient(const std::vector<int> &infos)
     {
         for (const auto fd: infos) {
-            auto ai = _AIClients.find(fd);
-            if (ai != _AIClients.end()) {
+            auto ai = _aiClients.find(fd);
+            if (ai != _aiClients.end()) {
                 handleAIClient(ai);
                 continue;
             }
-            auto gui = _GUIClients.find(fd);
-            if (gui != _GUIClients.end()) {
+            auto gui = _guiClients.find(fd);
+            if (gui != _guiClients.end()) {
                 handleGUIClient(gui);
                 continue;
             }
@@ -81,7 +81,7 @@ namespace Zappy {
             iter->second.infoToRead();
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
-            _AIClients.erase(iter);
+            _aiClients.erase(iter);
             Shared::Utils::logMsg(_logFile, "Client["
                 + std::to_string(iter->second.getId())
                 + "] Close (Disconnected from the server).");
@@ -94,7 +94,7 @@ namespace Zappy {
             iter->second.infoToRead();
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
-            _GUIClients.erase(iter);
+            _guiClients.erase(iter);
             Shared::Utils::logMsg(_logFile, "Client["
                 + std::to_string(iter->second.getId())
                 + "] Close (Disconnected from the server).");
@@ -107,7 +107,7 @@ namespace Zappy {
         bool close = false;
 
         try {
-            _connect.receiveChunk(iter->first, iter->second.second);
+            Shared::Connect::receiveChunk(iter->first, iter->second.second);
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
             _newClients.erase(iter);
@@ -128,7 +128,7 @@ namespace Zappy {
         auto line = getNewClientLine(iter);
         if (line.has_value()) {
             if (line.value() == GRAPHIC) {
-                _GUIClients.emplace(iter->first,
+                _guiClients.emplace(iter->first,
                     GUIClient(iter->first, iter->second.first, _logFile));
                 _newClients.erase(iter);
                 return;
@@ -136,11 +136,11 @@ namespace Zappy {
             auto find = _teams.find(line.value());
             if (find != _teams.end() && find->second > 0) {
                 find->second--;
-                _AIClients.emplace(iter->first, AIClient(iter->first,
+                _aiClients.emplace(iter->first, AIClient(iter->first,
                     iter->second.first, find->first, _logFile));
                 _newClients.erase(iter);
             } else {
-                _connect.send(iter->first, "ko\n");
+                Shared::Connect::send(iter->first, "ko\n");
                 _connect.removeClient(iter->first);
                 _newClients.erase(iter);
                 Shared::Utils::logMsg(_logFile, "Client["

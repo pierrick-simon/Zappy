@@ -14,9 +14,9 @@
 namespace Zappy {
     class GUIException : public std::exception {
         public:
-            GUIException(std::string str) : _str("GUI Error: " + str) {};
+            GUIException(const std::string &str) : _str("GUI Error: " + str) {};
 
-            virtual const char *what() const noexcept override
+            [[nodiscard]] const char *what() const noexcept override
                     { return _str.c_str(); };
         private:
             std::string _str;

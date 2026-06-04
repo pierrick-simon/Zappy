@@ -24,7 +24,7 @@ namespace Shared {
         return line;
     }
 
-    void Utils::logMsg(std::ofstream &file, std::string msg)
+    void Utils::logMsg(std::ofstream &file, const std::string &msg)
     {
         auto now = std::chrono::system_clock::now();
         std::time_t t = std::chrono::system_clock::to_time_t(now);

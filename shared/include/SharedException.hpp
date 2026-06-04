@@ -14,9 +14,9 @@
 namespace Shared {
     class SharedException : public std::exception {
         public:
-            SharedException(std::string str) : _str("Shared Error: " + str) {};
+            SharedException(const std::string &str) : _str("Shared Error: " + str) {};
 
-            virtual const char *what() const noexcept override
+            [[nodiscard]] const char *what() const noexcept override
                     { return _str.c_str(); };
         private:
             std::string _str;

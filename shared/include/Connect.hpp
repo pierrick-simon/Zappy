@@ -15,24 +15,24 @@ namespace Shared {
     class Connect {
         public:
             Connect(int port);
-            Connect(int port, std::string ip);
+            Connect(int port, const std::string &ip);
 
             ~Connect();
 
-            int getFd() const {return _fd;}
+            [[nodiscard]] int getFd() const {return _fd;}
 
-            int acceptClient();
+            [[nodiscard]] int acceptClient() const;
             void addClient(int fd);
             void removeClient(int fd);
 
             std::vector<int> infoToRead();
 
-            static void send(int fd, std::string msg);
+            static void send(int fd, const std::string &msg);
             static void receiveChunk(int fd, std::string &str, std::size_t = 4096);
 
             class ConnectException : public SharedException {
                 public:
-                    ConnectException(std::string str)
+                    ConnectException(const std::string &str)
                         : SharedException("Connect Error: " + str) {};
             };
 
@@ -78,9 +78,9 @@ namespace Shared {
 
         private:
             void initSocket();
-            void initBind(int port);
-            void initListen();
-            void connectToServer(int port, std::string ip);
+            void initBind(int port) const;
+            void initListen() const;
+            void connectToServer(int port, const std::string &ip) const;
 
             int _fd = -1;
             std::vector<struct pollfd> _fds;

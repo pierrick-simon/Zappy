@@ -14,9 +14,9 @@
 namespace Zappy {
     class ServerException : public std::exception {
         public:
-            ServerException(std::string str) : _str("Server Error: " + str) {};
+            ServerException(const std::string &str) : _str("Server Error: " + str) {};
 
-            virtual const char *what() const noexcept override
+            [[nodiscard]] const char *what() const noexcept override
                     { return _str.c_str(); };
         private:
             std::string _str;

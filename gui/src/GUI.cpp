@@ -10,7 +10,7 @@
 #include "Connect.hpp"
 
 namespace Zappy {
-    GUI::GUI(int port, std::string ip) :
+    GUI::GUI(int port, const std::string &ip) :
         _connect(port, ip), _logFile(std::string(LOG_FILE))
     {
         Shared::Utils::logMsg(_logFile, "Client GUI Open.");
@@ -24,9 +24,7 @@ namespace Zappy {
             auto info = _connect.infoToRead();
             if (!info.empty() && !infoToRead())
                 break;
-            if (_isConnect)
-                loop = handleCommand();
-            else
+            if (!_isConnect)
                 loop = connect();
         }
     }
@@ -56,7 +54,7 @@ namespace Zappy {
         if (!_command.empty()) {
             if (_command.front() == "WELCOME") {
                 _command.pop();
-                _connect.send(_connect.getFd(), "GRAPHIC\n");
+                Shared::Connect::send(_connect.getFd(), "GRAPHIC\n");
                 _isConnect = true;
                 Shared::Utils::logMsg(_logFile,
                     "Client GUI connect to the server.");
@@ -68,10 +66,5 @@ namespace Zappy {
         }
         return value;
 
-    }
-
-    bool GUI::handleCommand()
-    {
-        return true;
     }
 }

@@ -40,8 +40,8 @@ namespace Zappy {
             Shared::Connect _connect;
             std::unordered_map<std::string, std::size_t> _teams;
             std::unordered_map<int, NewClient> _newClients;
-            std::unordered_map<int, AIClient> _AIClients;
-            std::unordered_map<int, GUIClient> _GUIClients;
+            std::unordered_map<int, AIClient> _aiClients;
+            std::unordered_map<int, GUIClient> _guiClients;
 
             std::size_t x = 100;
             std::size_t y = 100;

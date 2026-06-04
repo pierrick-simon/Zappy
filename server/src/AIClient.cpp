@@ -12,7 +12,7 @@
 namespace Zappy {
     AIClient::AIClient(int fd, std::size_t id, std::string team,
         std::ofstream &logFile) :
-        _fd(fd), _id(id), _team(team), _logFile(logFile)
+        _fd(fd), _id(id), _team(std::move(team)), _logFile(logFile)
     {
         Shared::Utils::logMsg(_logFile, "Client[" + std::to_string(id)
             + "] joined the " + _team + " team.");

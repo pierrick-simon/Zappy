@@ -21,7 +21,7 @@ namespace Shared {
     class Utils {
         public:
             static std::optional<std::string> parseLine(std::string &str);
-            static void logMsg(std::ofstream &file, std::string msg);
+            static void logMsg(std::ofstream &file, const std::string &msg);
     };
 } 
 

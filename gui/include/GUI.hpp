@@ -16,14 +16,13 @@
 namespace Zappy {
     class GUI {
         public:
-            GUI(int port, std::string ip);
+            GUI(int port, const std::string &ip);
 
             void run();
 
         private:
             bool infoToRead();
             bool connect();
-            bool handleCommand();
 
             Shared::Connect _connect;
             std::string _buffer;
