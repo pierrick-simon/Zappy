@@ -6,16 +6,15 @@
 */
 
 #include "GUIClient.hpp"
-#include "Utils.hpp"
 #include "Connect.hpp"
+#include "Utils.hpp"
 
 namespace Zappy {
-    GUIClient::GUIClient(int fd, std::size_t id,
-        std::ofstream &logFile) :
+    GUIClient::GUIClient(int fd, std::size_t id, std::ofstream &logFile) :
         _fd(fd), _id(id), _logFile(logFile)
     {
-        Shared::Utils::logMsg(_logFile, "Client[" + std::to_string(id)
-            + "] joined the GRAPHIC team.");
+        Shared::Utils::logMsg(_logFile,
+            "Client[" + std::to_string(id) + "] joined the GRAPHIC team.");
     }
 
     void GUIClient::infoToRead()
@@ -33,4 +32,4 @@ namespace Zappy {
             line = Shared::Utils::parseLine(_buffer);
         }
     }
-}
+} // namespace Zappy

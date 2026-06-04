@@ -13,14 +13,18 @@
 
 namespace Zappy {
     class GUIException : public std::exception {
-        public:
-            GUIException(const std::string &str) : _str("GUI Error: " + str) {};
+    public:
+        GUIException(const std::string &str) :
+            _str("GUI Error: " + str) {};
 
-            [[nodiscard]] const char *what() const noexcept override
-                    { return _str.c_str(); };
-        private:
-            std::string _str;
+        [[nodiscard]] const char *what() const noexcept override
+        {
+            return _str.c_str();
+        };
+
+    private:
+        std::string _str;
     };
-}
+} // namespace Zappy
 
 #endif

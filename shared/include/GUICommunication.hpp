@@ -23,7 +23,7 @@ namespace Shared {
             static const Command SGT("sgt");
             static const Command SST("sst");
             static const Command EXIT("exit");
-        };
+        }; // namespace Client
 
         namespace Server {
             static const Command MSZ("msz");
@@ -51,8 +51,8 @@ namespace Shared {
             static const Command SMG("smg");
             static const Command SUC("suc");
             static const Command SBP("spb");
-        };
-   };
-}
+        }; // namespace Server
+    }; // namespace GUICommunication
+} // namespace Shared
 
 #endif

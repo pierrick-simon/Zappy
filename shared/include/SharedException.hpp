@@ -13,14 +13,18 @@
 
 namespace Shared {
     class SharedException : public std::exception {
-        public:
-            SharedException(const std::string &str) : _str("Shared Error: " + str) {};
+    public:
+        SharedException(const std::string &str) :
+            _str("Shared Error: " + str) {};
 
-            [[nodiscard]] const char *what() const noexcept override
-                    { return _str.c_str(); };
-        private:
-            std::string _str;
+        [[nodiscard]] const char *what() const noexcept override
+        {
+            return _str.c_str();
+        };
+
+    private:
+        std::string _str;
     };
-}
+} // namespace Shared
 
 #endif

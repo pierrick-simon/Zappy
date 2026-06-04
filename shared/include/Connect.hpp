@@ -8,85 +8,97 @@
 #ifndef CONNECT_HPP
     #define CONNECT_HPP
 
+#include <poll.h>
 #include <vector>
 #include "SharedException.hpp"
 
 namespace Shared {
     class Connect {
+    public:
+        Connect(int port);
+        Connect(int port, const std::string &ip);
+
+        ~Connect();
+
+        [[nodiscard]] int getFd() const
+        {
+            return _fd;
+        }
+
+        [[nodiscard]] int acceptClient() const;
+        void addClient(int fd);
+        void removeClient(int fd);
+
+        std::vector<int> infoToRead();
+
+        static void send(int fd, const std::string &msg);
+        static void receiveChunk(int fd, std::string &str, std::size_t = 4096);
+
+        class ConnectException : public SharedException {
         public:
-            Connect(int port);
-            Connect(int port, const std::string &ip);
+            ConnectException(const std::string &str) :
+                SharedException("Connect Error: " + str) {};
+        };
 
-            ~Connect();
+        class SocketException : public ConnectException {
+        public:
+            SocketException() :
+                ConnectException("Socket Failed!") {};
+        };
 
-            [[nodiscard]] int getFd() const {return _fd;}
+        class BindException : public ConnectException {
+        public:
+            BindException() :
+                ConnectException("Bind Failed!") {};
+        };
 
-            [[nodiscard]] int acceptClient() const;
-            void addClient(int fd);
-            void removeClient(int fd);
+        class ListenException : public ConnectException {
+        public:
+            ListenException() :
+                ConnectException("Listen Failed!") {};
+        };
 
-            std::vector<int> infoToRead();
+        class ConnectionException : public ConnectException {
+        public:
+            ConnectionException() :
+                ConnectException("Connection Failed!") {};
+        };
 
-            static void send(int fd, const std::string &msg);
-            static void receiveChunk(int fd, std::string &str, std::size_t = 4096);
+        class AcceptException : public ConnectException {
+        public:
+            AcceptException() :
+                ConnectException("Accept Failed!") {};
+        };
 
-            class ConnectException : public SharedException {
-                public:
-                    ConnectException(const std::string &str)
-                        : SharedException("Connect Error: " + str) {};
-            };
+        class PollException : public ConnectException {
+        public:
+            PollException() :
+                ConnectException("Poll Failed!") {};
+        };
 
-            class SocketException : public ConnectException {
-                public:
-                    SocketException() : ConnectException("Socket Failed!") {};
-            };
+        class SendException : public ConnectException {
+        public:
+            SendException() :
+                ConnectException("Send Failed!") {};
+        };
 
-            class BindException : public ConnectException {
-                public:
-                    BindException() : ConnectException("Bind Failed!") {};
-            };
+        class CloseException : public ConnectException {
+        public:
+            CloseException() :
+                ConnectException("Close Connection!") {};
+        };
 
-            class ListenException : public ConnectException {
-                public:
-                    ListenException() : ConnectException("Listen Failed!") {};
-            };
+    private:
+        void initSocket();
+        void initBind(int port) const;
+        void initListen() const;
+        void connectToServer(int port, const std::string &ip) const;
 
-            class ConnectionException : public ConnectException {
-                public:
-                    ConnectionException() : ConnectException("Connection Failed!") {};
-            };
+        int _fd = -1;
+        std::vector<struct pollfd> _fds;
 
-            class AcceptException : public ConnectException {
-                public:
-                    AcceptException() : ConnectException("Accept Failed!") {};
-            };
-
-            class PollException : public ConnectException {
-                public:
-                    PollException() : ConnectException("Poll Failed!") {};
-            };
-
-            class SendException : public ConnectException {
-                public:
-                    SendException() : ConnectException("Send Failed!") {};
-            };
-
-            class CloseException : public ConnectException {
-                public:
-                    CloseException() : ConnectException("Close Connection!") {};
-            };
-
-        private:
-            void initSocket();
-            void initBind(int port) const;
-            void initListen() const;
-            void connectToServer(int port, const std::string &ip) const;
-
-            int _fd = -1;
-            std::vector<struct pollfd> _fds;
-
-            static constexpr int QUEUE_LENGTH = 10;
+        static constexpr int QUEUE_LENGTH = 10;
     };
-};
+}; // namespace Shared
 
 #endif

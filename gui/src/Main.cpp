@@ -6,9 +6,9 @@
 */
 
 #include <iostream>
-#include "Utils.hpp"
 #include "GUI.hpp"
 #include "GUIException.hpp"
+#include "Utils.hpp"
 
 int main()
 {
@@ -24,4 +24,3 @@ int main()
     }
     return Shared::EPISUCCESS;
 }
-

@@ -6,8 +6,8 @@
 */
 
 #include "GUI.hpp"
-#include "Utils.hpp"
 #include "Connect.hpp"
+#include "Utils.hpp"
 
 namespace Zappy {
     GUI::GUI(int port, const std::string &ip) :
@@ -34,8 +34,8 @@ namespace Zappy {
         try {
             Shared::Connect::receiveChunk(_connect.getFd(), _buffer);
         } catch (Shared::Connect::CloseException &_) {
-            Shared::Utils::logMsg(_logFile,
-                    "Client GUI Close (Server Disconnected).");
+            Shared::Utils::logMsg(
+                _logFile, "Client GUI Close (Server Disconnected).");
             return false;
         }
         auto line = Shared::Utils::parseLine(_buffer);
@@ -56,15 +56,14 @@ namespace Zappy {
                 _command.pop();
                 Shared::Connect::send(_connect.getFd(), "GRAPHIC\n");
                 _isConnect = true;
-                Shared::Utils::logMsg(_logFile,
-                    "Client GUI connect to the server.");
+                Shared::Utils::logMsg(
+                    _logFile, "Client GUI connect to the server.");
             } else {
                 value = false;
-                Shared::Utils::logMsg(_logFile,
-                    "Client GUI Close (Wrong Connection Message).");
+                Shared::Utils::logMsg(
+                    _logFile, "Client GUI Close (Wrong Connection Message).");
             }
         }
         return value;
-
     }
-}
+} // namespace Zappy

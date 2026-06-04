@@ -25,14 +25,14 @@ namespace Shared {
             static const Command TKO("take object");
             static const Command STO("set object");
             static const Command ICT("incantation");
-        };
+        }; // namespace Client
 
         namespace Server {
             static const Command OK("ok");
             static const Command KO("ko");
             static const Command DEAD("dead");
-        };
-   };
-}
+        }; // namespace Server
+    }; // namespace AICommunication
+} // namespace Shared
 
 #endif

@@ -5,9 +5,9 @@
 ** Server
 */
 
+#include "Server.hpp"
 #include <csignal>
 #include <iostream>
-#include "Server.hpp"
 #include "Utils.hpp"
 
 namespace Zappy {
@@ -16,14 +16,11 @@ namespace Zappy {
 
     Server::Server(int port, const std::vector<std::string> &teams,
         std::size_t nbPerTeam) :
-        _connect(port),
-        _logFile(std::string(LOG_FILE))
+        _connect(port), _logFile(std::string(LOG_FILE))
     {
         Shared::Utils::logMsg(_logFile, "Server Open.");
-        signal(SIGINT, [](int) {
-            RECEIVED_SIG_INT = true;
-        });
-        for (const auto &team: teams)
+        signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
+        for (const auto &team : teams)
             _teams.emplace(team, nbPerTeam);
     }
 
@@ -51,14 +48,14 @@ namespace Zappy {
         _connect.addClient(new_fd);
         Shared::Connect::send(new_fd, "WELCOME\n");
         _newClients.emplace(new_fd, std::make_pair(id, std::string()));
-        Shared::Utils::logMsg(_logFile, "New client["
-            + std::to_string(id) + "].");
+        Shared::Utils::logMsg(
+            _logFile, "New client[" + std::to_string(id) + "].");
         id++;
     }
 
     void Server::handleClient(const std::vector<int> &infos)
     {
-        for (const auto fd: infos) {
+        for (const auto fd : infos) {
             auto ai = _aiClients.find(fd);
             if (ai != _aiClients.end()) {
                 handleAIClient(ai);
@@ -82,9 +79,9 @@ namespace Zappy {
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
             _aiClients.erase(iter);
-            Shared::Utils::logMsg(_logFile, "Client["
-                + std::to_string(iter->second.getId())
-                + "] Close (Disconnected from the server).");
+            Shared::Utils::logMsg(_logFile,
+                "Client[" + std::to_string(iter->second.getId()) +
+                    "] Close (Disconnected from the server).");
         }
     }
 
@@ -95,9 +92,9 @@ namespace Zappy {
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
             _guiClients.erase(iter);
-            Shared::Utils::logMsg(_logFile, "Client["
-                + std::to_string(iter->second.getId())
-                + "] Close (Disconnected from the server).");
+            Shared::Utils::logMsg(_logFile,
+                "Client[" + std::to_string(iter->second.getId()) +
+                    "] Close (Disconnected from the server).");
         }
     }
 
@@ -111,9 +108,9 @@ namespace Zappy {
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
             _newClients.erase(iter);
-            Shared::Utils::logMsg(_logFile, "Client["
-                + std::to_string(iter->second.first)
-                + "] Close (Disconnected from the server).");
+            Shared::Utils::logMsg(_logFile,
+                "Client[" + std::to_string(iter->second.first) +
+                    "] Close (Disconnected from the server).");
             close = true;
         }
         std::optional<std::string> line;
@@ -136,17 +133,20 @@ namespace Zappy {
             auto find = _teams.find(line.value());
             if (find != _teams.end() && find->second > 0) {
                 find->second--;
-                _aiClients.emplace(iter->first, AIClient(iter->first,
-                    iter->second.first, find->first, _logFile));
+                _aiClients.emplace(iter->first,
+                    AIClient(iter->first,
+                        iter->second.first,
+                        find->first,
+                        _logFile));
                 _newClients.erase(iter);
             } else {
                 Shared::Connect::send(iter->first, "ko\n");
                 _connect.removeClient(iter->first);
                 _newClients.erase(iter);
-                Shared::Utils::logMsg(_logFile, "Client["
-                    + std::to_string(iter->second.first)
-                    + "] Close (Wrong Teams Selection).");
+                Shared::Utils::logMsg(_logFile,
+                    "Client[" + std::to_string(iter->second.first) +
+                        "] Close (Wrong Teams Selection).");
             }
         }
     }
-};
+}; // namespace Zappy

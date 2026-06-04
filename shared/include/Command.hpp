@@ -12,14 +12,18 @@
 
 namespace Shared {
     class Command {
-        public:
-            Command(std::string str) : _str(str) {};
+    public:
+        Command(std::string str) :
+            _str(str) {};
 
-            std::string getStr() const {return _str;}
+        std::string getStr() const
+        {
+            return _str;
+        }
 
-        private:
-            std::string _str;
+    private:
+        std::string _str;
     };
-}
+} // namespace Shared
 
 #endif

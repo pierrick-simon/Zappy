@@ -13,14 +13,18 @@
 
 namespace Zappy {
     class ServerException : public std::exception {
-        public:
-            ServerException(const std::string &str) : _str("Server Error: " + str) {};
+    public:
+        ServerException(const std::string &str) :
+            _str("Server Error: " + str) {};
 
-            [[nodiscard]] const char *what() const noexcept override
-                    { return _str.c_str(); };
-        private:
-            std::string _str;
+        [[nodiscard]] const char *what() const noexcept override
+        {
+            return _str.c_str();
+        };
+
+    private:
+        std::string _str;
     };
-}
+} // namespace Zappy
 
 #endif

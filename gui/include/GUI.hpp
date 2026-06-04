@@ -8,31 +8,31 @@
 #ifndef GUI_HPP
     #define GUI_HPP
 
-    #include <string>
     #include <fstream>
     #include <queue>
+    #include <string>
     #include "Connect.hpp"
 
 namespace Zappy {
     class GUI {
-        public:
-            GUI(int port, const std::string &ip);
+    public:
+        GUI(int port, const std::string &ip);
 
-            void run();
+        void run();
 
-        private:
-            bool infoToRead();
-            bool connect();
+    private:
+        bool infoToRead();
+        bool connect();
 
-            Shared::Connect _connect;
-            std::string _buffer;
-            std::queue<std::string> _command;
-            bool _isConnect = false;
+        Shared::Connect _connect;
+        std::string _buffer;
+        std::queue<std::string> _command;
+        bool _isConnect = false;
 
-            std::ofstream _logFile;
+        std::ofstream _logFile;
 
-            static constexpr std::string_view LOG_FILE = "gui.log";
+        static constexpr std::string_view LOG_FILE = "gui.log";
     };
-}
+} // namespace Zappy
 
 #endif

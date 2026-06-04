@@ -5,10 +5,10 @@
 ** Utils
 */
 
+#include "Utils.hpp"
 #include <chrono>
 #include <iomanip>
 #include <iostream>
-#include "Utils.hpp"
 
 namespace Shared {
     std::optional<std::string> Utils::parseLine(std::string &str)
@@ -34,4 +34,4 @@ namespace Shared {
         std::cout << "[" << std::put_time(std::localtime(&t), "%H:%M:%S");
         std::cout << "] " << msg << std::endl;
     }
-}
+} // namespace Shared

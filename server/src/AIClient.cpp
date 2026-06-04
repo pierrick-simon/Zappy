@@ -6,16 +6,17 @@
 */
 
 #include "AIClient.hpp"
-#include "Utils.hpp"
 #include "Connect.hpp"
+#include "Utils.hpp"
 
 namespace Zappy {
-    AIClient::AIClient(int fd, std::size_t id, std::string team,
-        std::ofstream &logFile) :
+    AIClient::AIClient(
+        int fd, std::size_t id, std::string team, std::ofstream &logFile) :
         _fd(fd), _id(id), _team(std::move(team)), _logFile(logFile)
     {
-        Shared::Utils::logMsg(_logFile, "Client[" + std::to_string(id)
-            + "] joined the " + _team + " team.");
+        Shared::Utils::logMsg(_logFile,
+            "Client[" + std::to_string(id) + "] joined the " + _team +
+                " team.");
     }
 
     void AIClient::infoToRead()
@@ -33,4 +34,4 @@ namespace Zappy {
             line = Shared::Utils::parseLine(_buffer);
         }
     }
-};
+}; // namespace Zappy

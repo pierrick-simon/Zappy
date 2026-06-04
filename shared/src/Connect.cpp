@@ -5,12 +5,12 @@
 ** Connect
 */
 
-#include <unistd.h>
+#include "Connect.hpp"
 #include <arpa/inet.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <poll.h>
-#include "Connect.hpp"
+#include <sys/socket.h>
+#include <unistd.h>
 
 namespace Shared {
     Connect::Connect(int port)
@@ -50,8 +50,8 @@ namespace Shared {
         server_addr.sin_family = AF_INET;
         server_addr.sin_port = htons(port);
         server_addr.sin_addr.s_addr = INADDR_ANY;
-        if (bind(_fd, (struct sockaddr *)&server_addr,
-                sizeof(server_addr)) == -1)
+        if (bind(_fd, (struct sockaddr *) &server_addr, sizeof(server_addr)) ==
+            -1)
             throw BindException();
     }
 
@@ -68,7 +68,8 @@ namespace Shared {
         server_addr.sin_family = AF_INET;
         server_addr.sin_port = htons(port);
         server_addr.sin_addr.s_addr = inet_addr(ip.c_str());
-        if (connect(_fd, (struct sockaddr *)&server_addr,
+        if (connect(_fd,
+                (struct sockaddr *) &server_addr,
                 sizeof(server_addr)) == -1)
             throw ConnectionException();
     }
@@ -77,8 +78,8 @@ namespace Shared {
     {
         struct sockaddr_in client_addr = {};
         socklen_t client_len = sizeof(client_addr);
-        int client_fd = accept(_fd,
-            (struct sockaddr *)&client_addr, &client_len);
+        int client_fd =
+            accept(_fd, (struct sockaddr *) &client_addr, &client_len);
         if (client_fd == -1)
             throw AcceptException();
         return client_fd;
@@ -102,7 +103,7 @@ namespace Shared {
                 return info;
             throw PollException();
         }
-        for (auto & _fd : _fds) {
+        for (auto &_fd : _fds) {
             if (_fd.revents & POLLIN)
                 info.push_back(_fd.fd);
             if (_fd.revents & (POLLHUP | POLLERR))
@@ -128,7 +129,6 @@ namespace Shared {
             throw SendException();
     }
 
-
     void Connect::receiveChunk(int fd, std::string &str, std::size_t size)
     {
         char buf[size];
@@ -137,4 +137,4 @@ namespace Shared {
             throw Shared::Connect::CloseException();
         str.append(buf, n);
     }
-}
+} // namespace Shared

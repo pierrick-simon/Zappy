@@ -6,9 +6,9 @@
 */
 
 #include <iostream>
-#include "Utils.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
+#include "Utils.hpp"
 
 int main()
 {
