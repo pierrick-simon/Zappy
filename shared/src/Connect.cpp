@@ -98,7 +98,7 @@ namespace Shared {
     {
         std::vector<int> info;
 
-        if (poll(_fds.data(), _fds.size(), -1) < 0) {
+        if (poll(_fds.data(), _fds.size(), 0) < 0) {
             if (errno == EINTR)
                 return info;
             throw PollException();

@@ -41,7 +41,8 @@ namespace Zappy {
 
     void AIClient::update(std::chrono::nanoseconds elapsed)
     {
-        _sleep -= elapsed;
+        if (_sleep.count() > 0)
+            _sleep -= elapsed;
         if (_sleep.count() <= 0 && !_command.empty()) {
             std::istringstream stream(_command.front());
             std::string command;
@@ -59,7 +60,7 @@ namespace Zappy {
             } else {
                 Shared::Connect::send(_fd, ServerCmd::KO.getStr());
                 Shared::Utils::logMsg(_logFile,
-                    "Try executing command " + iter->first + " for client[" +
+                    "Try executing command " + command + " for client[" +
                         std::to_string(_id) + "](Commmand Not found).");
             }
         }

@@ -55,7 +55,7 @@ namespace Zappy {
             } else {
                 Shared::Connect::send(_fd, ServerCmd::SUC.getStr());
                 Shared::Utils::logMsg(_logFile,
-                    "Try executing command " + iter->first + " for client[" +
+                    "Try executing command " + command + " for client[" +
                         std::to_string(_id) + "](Commmand Not found).");
             }
         }
