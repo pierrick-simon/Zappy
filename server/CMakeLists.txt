@@ -6,11 +6,21 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(SHARED_SRCS
+    Connect.cpp
+    Utils.cpp
+)
+
+list(TRANSFORM SHARED_SRCS PREPEND ${CMAKE_SOURCE_DIR}/shared/src/)
+
 set(MAIN
     src/Main.cpp
 )
 
 set(SRCS
+    src/Server.cpp
+    src/AIClient.cpp
+    src/GUIClient.cpp
 )
 
 set(HEADERS
@@ -27,7 +37,7 @@ if (ENABLE_ASAN)
     add_link_options(${ASAN_FLAGS})
 endif()
 
-add_executable(zappy_server ${MAIN} ${SRCS})
+add_executable(zappy_server ${MAIN} ${SRCS} ${SHARED_SRCS})
 
 target_compile_options(zappy_server PRIVATE)
 
@@ -37,7 +47,7 @@ set(SRCS_TESTS
     tests/tests_init.cpp
 )
 
-add_executable(server_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS})
+add_executable(server_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS} ${SHARED_SRCS})
 
 target_compile_options(server_tests_run_bin PRIVATE --coverage)
 target_link_options(server_tests_run_bin PRIVATE --coverage)
