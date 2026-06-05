@@ -16,7 +16,7 @@ namespace Zappy {
 
     Server::Server(int port, const std::vector<std::string> &teams,
         std::size_t nbPerTeam) :
-        _connect(port), _logFile(std::string(LOG_FILE))
+        _connect(port), _logFile(std::string(LOG_FILE)), _env(100, 100, 100)
     {
         Shared::Utils::logMsg(_logFile, "Server Open.");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });

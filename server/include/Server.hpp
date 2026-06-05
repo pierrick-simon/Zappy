@@ -15,6 +15,7 @@
     #include "Connect.hpp"
     #include "GUIClient.hpp"
     #include "Utils.hpp"
+    #include "Environement.hpp"
 
 namespace Zappy {
     class Server {
@@ -48,8 +49,7 @@ namespace Zappy {
 
         Shared::Clock _clock;
 
-        std::size_t x = 100;
-        std::size_t y = 100;
+        Environement _env;
 
         static bool RECEIVED_SIG_INT;
 
