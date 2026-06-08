@@ -28,25 +28,20 @@ namespace Maths {
         Vector(vector)
     {
     }
-    Color Color::from8Bit(unsigned char r, unsigned char g, unsigned char b,
-        unsigned char a)
+    Color Color::from8Bit(
+        unsigned char r, unsigned char g, unsigned char b, unsigned char a)
     {
-        return {
-            r / 255.0,
-            g / 255.0,
-            b / 255.0,
-            a / 255.0
-        };
+        return {r / 255.0, g / 255.0, b / 255.0, a / 255.0};
     }
-    const Color Color::WHITE{1.0, 1.0, 1.0, 1.0};
+    const Color Color::WHITE {1.0, 1.0, 1.0, 1.0};
 
-    const Color Color::BLACK{0.0, 0.0, 0.0, 1.0};
+    const Color Color::BLACK {0.0, 0.0, 0.0, 1.0};
 
-    const Color Color::RED{1.0, 0.0, 0.0, 1.0};
+    const Color Color::RED {1.0, 0.0, 0.0, 1.0};
 
-    const Color Color::GREEN{0.0, 1.0, 0.0, 1.0};
+    const Color Color::GREEN {0.0, 1.0, 0.0, 1.0};
 
-    const Color Color::BLUE{0.0, 0.0, 1.0, 1.0};
+    const Color Color::BLUE {0.0, 0.0, 1.0, 1.0};
 
     static unsigned char doubleToByte(double val)
     {
@@ -58,7 +53,8 @@ namespace Maths {
     {
         return Vector<4, unsigned char>(doubleToByte(getR()),
             doubleToByte(getG()),
-            doubleToByte(getB()), doubleToByte(getA()));
+            doubleToByte(getB()),
+            doubleToByte(getA()));
     }
 
     double &Color::getR()
@@ -101,7 +97,7 @@ namespace Maths {
         return getW();
     }
 
-    Color & Color::operator*=(const Vector3D &other)
+    Color &Color::operator*=(const Vector3D &other)
     {
         this->getR() *= other.getX();
         this->getG() *= other.getY();
@@ -110,7 +106,7 @@ namespace Maths {
         return *this;
     }
 
-    Color & Color::operator*=(const Color &other)
+    Color &Color::operator*=(const Color &other)
     {
         this->getR() *= other.getR();
         this->getG() *= other.getG();
@@ -119,7 +115,7 @@ namespace Maths {
         return *this;
     }
 
-    Color & Color::operator*=(const double &other)
+    Color &Color::operator*=(const double &other)
     {
         this->getR() *= other;
         this->getG() *= other;
@@ -128,7 +124,7 @@ namespace Maths {
         return *this;
     }
 
-    Color & Color::operator+=(const Vector3D &other)
+    Color &Color::operator+=(const Vector3D &other)
     {
         this->getR() += other.getX();
         this->getG() += other.getY();
@@ -137,7 +133,7 @@ namespace Maths {
         return *this;
     }
 
-    Color & Color::operator+=(const double &other)
+    Color &Color::operator+=(const double &other)
     {
         this->getR() += other;
         this->getG() += other;
@@ -146,7 +142,7 @@ namespace Maths {
         return *this;
     }
 
-    Color & Color::operator+=(const Vector &other)
+    Color &Color::operator+=(const Vector &other)
     {
         this->getR() += other.getX();
         this->getG() += other.getY();
@@ -156,12 +152,12 @@ namespace Maths {
         return *this;
     }
 
-    Color::Color(const Color &other):
+    Color::Color(const Color &other) :
         Vector(other)
     {
     }
 
-    Color & Color::operator=(const Color &other)
+    Color &Color::operator=(const Color &other)
     {
         if (this == &other)
             return *this;
@@ -178,7 +174,7 @@ namespace Maths {
         return *this;
     }
 
-    Color & Color::clamp()
+    Color &Color::clamp()
     {
         this->getR() = std::clamp(this->getR(), 0.0, 1.0);
         this->getG() = std::clamp(this->getG(), 0.0, 1.0);
@@ -189,17 +185,16 @@ namespace Maths {
 
     Color Color::operator/(const double &other) const
     {
-        return Color(
-            this->getR() / other,
+        return Color(this->getR() / other,
             this->getG() / other,
             this->getB() / other,
-            this->getA() / other
-        );
+            this->getA() / other);
     }
 
-    Color Color::mean(std::vector<Color> colors) {
+    Color Color::mean(std::vector<Color> colors)
+    {
         Maths::Color finalColor = Maths::Color::BLACK;
-        for (auto color: colors) {
+        for (auto color : colors) {
             finalColor.getX() += color.getX();
             finalColor.getY() += color.getY();
             finalColor.getZ() += color.getZ();
@@ -207,4 +202,4 @@ namespace Maths {
         }
         return finalColor / static_cast<double>(colors.size());
     }
-} // Maths
+} // namespace Maths

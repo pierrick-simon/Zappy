@@ -7,7 +7,7 @@
 
 #ifndef COLOR_HPP
     #define COLOR_HPP
-    
+
     #include <limits>
     #include <vector>
 
@@ -32,8 +32,7 @@ namespace Maths {
         Color &operator=(const Color &other);
         Color &operator=(const Vector3D &vector);
 
-        static Color from8Bit(unsigned char r, unsigned char g,
-            unsigned char b,
+        static Color from8Bit(unsigned char r, unsigned char g, unsigned char b,
             unsigned char a = std::numeric_limits<unsigned char>::max());
 
         [[nodiscard]] Color8bit to8Bit() const;
@@ -82,6 +81,6 @@ namespace Maths {
 
         static const Color BLUE;
     };
-} // Maths
+} // namespace Maths
 
 #endif

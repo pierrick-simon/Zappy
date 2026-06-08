@@ -5,7 +5,6 @@
 ** DESCRIPTION
 */
 
-
 #include "Window.hpp"
 
 #include <GL/gl.h>
@@ -16,15 +15,10 @@
 #include "OpenGLUtils.hpp"
 #include "maths/Vector.hpp"
 
-
 namespace Graphics {
-    Window::Window() : RenderWindow(
-                           sf::VideoMode(WINDOW_SIZE_X,
-                                         WINDOW_SIZE_Y,
-                                         WINDOW_BITS),
-                           WINDOW_TITLE,
-                           sf::Style::Default,
-                           CONTEXT_SETTINGS)
+    Window::Window() :
+        RenderWindow(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_BITS),
+            WINDOW_TITLE, sf::Style::Default, CONTEXT_SETTINGS)
     {
         this->RenderWindow::setActive();
     }
@@ -37,24 +31,21 @@ namespace Graphics {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(FOV,
-                       this->getAspectRatio(),
-                       NEAR_PLANE,
-                       FAR_PLANE);
+        gluPerspective(FOV, this->getAspectRatio(), NEAR_PLANE, FAR_PLANE);
         glMatrixMode(GL_MODELVIEW);
         const Camera &camera = this->_scene.getCamera();
         auto &camPos = camera.getPosition();
         Maths::Vector3D cameraForward = camera.getForward() + camPos;
         gluLookAt(VEC_TO_LIST(camPos),
-                  VEC_TO_LIST(cameraForward),
-                  VEC_TO_LIST(Maths::UP));
+            VEC_TO_LIST(cameraForward),
+            VEC_TO_LIST(Maths::UP));
         this->pushGLStates();
     }
 
     double Window::getAspectRatio() const
     {
-        Maths::Vector2D size = Maths::Vector2D(this->getSize().x,
-                                               this->getSize().y);
+        Maths::Vector2D size =
+            Maths::Vector2D(this->getSize().x, this->getSize().y);
         return size.getX() / size.getY();
     }
 
@@ -86,17 +77,12 @@ namespace Graphics {
                 EVENTS_METHODS.at(event.type)(*this, event);
     }
 
-    const std::unordered_map<
-        sf::Event::EventType, std::function<void
-            (Window &, sf::Event &event)>> Window::EVENTS_METHODS = {
-        {
-            sf::Event::EventType::Closed,
-            [](Window &win, sf::Event &) {
-                win.close();
-            }
-        }
-    };
+    const std::unordered_map<sf::Event::EventType,
+        std::function<void(Window &, sf::Event &event)>>
+        Window::EVENTS_METHODS = {{sf::Event::EventType::Closed,
+            [](Window &win, sf::Event &) { win.close(); }}};
 
-    const sf::ContextSettings Window::CONTEXT_SETTINGS = sf::ContextSettings(24);
+    const sf::ContextSettings Window::CONTEXT_SETTINGS =
+        sf::ContextSettings(24);
 
-} // Graphics
+} // namespace Graphics

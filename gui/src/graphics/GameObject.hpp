@@ -12,8 +12,7 @@
     #include "Transformable3D.hpp"
 
 namespace Graphics {
-    class GameObject : public Transformable3D, public sf::Drawable {
-    };
-} // Graphics
+    class GameObject : public Transformable3D, public sf::Drawable {};
+} // namespace Graphics
 
 #endif

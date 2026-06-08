@@ -24,9 +24,9 @@ namespace Maths {
     class Vector : public Matrix<Dim, 1, Type> {
     public:
         template<typename... Args>
-            requires (sizeof...(Args) == Dim)
-        explicit constexpr Vector(Args &&... args) :
-            Matrix<Dim, 1, Type>{static_cast<Type>(args)...}
+            requires(sizeof...(Args) == Dim)
+        explicit constexpr Vector(Args &&...args) :
+            Matrix<Dim, 1, Type> {static_cast<Type>(args)...}
         {
         }
 
@@ -94,7 +94,7 @@ namespace Maths {
             double length = this->norm();
 
             if (length == 0.0)
-                return Vector{};
+                return Vector {};
 
             normalized /= length;
             return normalized;
@@ -131,20 +131,18 @@ namespace Maths {
             return min * (1.0 - t) + max * t;
         }
 
-        static Vector clampedLerp(const Vector &min,
-            const Vector &max, double t)
+        static Vector clampedLerp(
+            const Vector &min, const Vector &max, double t)
         {
             return lerp(min, max, std::clamp(t, 0.0, 1.0));
         }
 
         Vector crossProduct(const Vector &rhs) const
-            requires (Dim == 3)
+            requires(Dim == 3)
         {
-            return Vector(
-                (*this)[1] * rhs[2] - (*this)[2] * rhs[1],
+            return Vector((*this)[1] * rhs[2] - (*this)[2] * rhs[1],
                 (*this)[2] * rhs[0] - (*this)[0] * rhs[2],
-                (*this)[0] * rhs[1] - (*this)[1] * rhs[0]
-            );
+                (*this)[0] * rhs[1] - (*this)[1] * rhs[0]);
         }
 
         Vector operator-() const
@@ -162,54 +160,53 @@ namespace Maths {
         }
 
         const Type &getX() const
-            requires (Dim >= 1 && Dim <= 4)
+            requires(Dim >= 1 && Dim <= 4)
         {
             return (*this)[0];
         }
 
         Type &getX()
-            requires (Dim >= 1 && Dim <= 4)
+            requires(Dim >= 1 && Dim <= 4)
         {
             return (*this)[0];
         }
 
         const Type &getY() const
-            requires (Dim >= 2 && Dim <= 4)
+            requires(Dim >= 2 && Dim <= 4)
         {
             return (*this)[1];
         }
 
         Type &getY()
-            requires (Dim >= 2 && Dim <= 4)
+            requires(Dim >= 2 && Dim <= 4)
         {
             return (*this)[1];
         }
 
         const Type &getZ() const
-            requires (Dim == 3 || Dim == 4)
+            requires(Dim == 3 || Dim == 4)
         {
             return (*this)[2];
         }
 
         Type &getZ()
-            requires (Dim == 3 || Dim == 4)
+            requires(Dim == 3 || Dim == 4)
         {
             return (*this)[2];
         }
 
         const Type &getW() const
-            requires (Dim == 4)
+            requires(Dim == 4)
         {
             return (*this)[3];
         }
 
         Type &getW()
-            requires (Dim == 4)
+            requires(Dim == 4)
         {
             return (*this)[3];
         }
     };
-
 
     template<typename Type>
     using Vector3 = Vector<3, Type>;
@@ -231,6 +228,6 @@ namespace Maths {
     using Vector2D = Vector2<double>;
     using Vector2U = Vector2<unsigned int>;
     using Vector2I = Vector2<int>;
-}
+} // namespace Maths
 
 #endif

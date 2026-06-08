@@ -8,4 +8,4 @@
 #include "GameObject.hpp"
 
 namespace Graphics {
-} // Graphics
+} // namespace Graphics

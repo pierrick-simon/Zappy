@@ -12,10 +12,11 @@
 namespace Maths {
     template<typename T>
         requires std::is_arithmetic_v<T>
-    constexpr T invertedLerp(const T &min, const T &max, const T &value) noexcept
+    constexpr T invertedLerp(
+        const T &min, const T &max, const T &value) noexcept
     {
         return (value - min) / (max - min);
     }
-}
+} // namespace Maths
 
 #endif

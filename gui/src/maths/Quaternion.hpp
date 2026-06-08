@@ -39,7 +39,6 @@ namespace Maths {
          */
         Quaternion operator*(const Quaternion &rhs) const;
 
-
         /**
          * Rotate the Vector3 point using the current Quaternion.
          * @param point The point to rotate
@@ -55,7 +54,6 @@ namespace Maths {
          * @return this but rotated.
          */
         Quaternion &operator*=(const Quaternion &rhs);
-
 
         /**
          * When normalized, a quaternion keeps the same rotation, but its
@@ -120,8 +118,8 @@ namespace Maths {
          * @param yaw The Yaw in degrees
          * @return A Quaternion converted from an Euler angle rotation.
          */
-        static Quaternion fromEulerDegrees(double roll, double pitch, double yaw);
-
+        static Quaternion fromEulerDegrees(
+            double roll, double pitch, double yaw);
 
         /**
          * The identity Quaternion means zero rotation.
@@ -148,11 +146,12 @@ namespace Maths {
         double _z;
     };
 
-    std::ostream &operator<<(std::ostream &stream, const Quaternion &quaternion);
+    std::ostream &operator<<(
+        std::ostream &stream, const Quaternion &quaternion);
 
     Vector3D &operator*=(Vector3D &vector, const Quaternion &rotation);
 
     Vector3D operator*(const Vector3D &point, const Quaternion &rotation);
-} // Maths
+} // namespace Maths
 
 #endif

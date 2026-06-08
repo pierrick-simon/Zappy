@@ -15,11 +15,12 @@ namespace Graphics {
         explicit GLGameObject();
 
     protected:
-        void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-        virtual void preDraw(sf::RenderTarget& target) const;
+        void draw(
+            sf::RenderTarget &target, sf::RenderStates states) const override;
+        virtual void preDraw(sf::RenderTarget &target) const;
         virtual void glDraw() const = 0;
-        virtual void postDraw(sf::RenderTarget& target) const;
+        virtual void postDraw(sf::RenderTarget &target) const;
     };
-} // Graphics
+} // namespace Graphics
 
 #endif

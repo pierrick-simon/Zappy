@@ -30,4 +30,4 @@ namespace Graphics {
     {
         return this->_camera;
     }
-} // Graphics
+} // namespace Graphics

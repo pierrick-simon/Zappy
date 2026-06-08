@@ -5,7 +5,6 @@
 ** DESCRIPTION
 */
 
-
 #ifndef OPENGLUTILS_HPP
     #define OPENGLUTILS_HPP
     #define VEC_TO_LIST(vec) vec.getX(), vec.getY(), vec.getZ()
