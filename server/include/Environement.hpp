@@ -43,10 +43,12 @@ namespace Zappy {
     public:
         Environement(std::size_t width, std::size_t height, std::size_t freq);
 
-        TileInfo getTileInfo(std::size_t width, std::size_t height);
+        TileInfo getTileInfo(std::size_t width, std::size_t height) const;
 
         void movePlayer(std::size_t id, Direction dir);
         static Direction getOpositeDir(Direction);
+        bool takeRessource(std::size_t id, ResourceName);
+        void setRessource(std::size_t id, ResourceName);
 
         [[nodiscard]] std::size_t getHeight() const
         {

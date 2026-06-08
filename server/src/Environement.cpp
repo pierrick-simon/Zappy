@@ -7,6 +7,7 @@
 
 #include "Environement.hpp"
 #include <optional>
+#include "ServerException.hpp"
 
 namespace Zappy {
     Environement::Environement(
@@ -15,7 +16,8 @@ namespace Zappy {
     {
     }
 
-    TileInfo Environement::getTileInfo(std::size_t width, std::size_t height)
+    TileInfo Environement::getTileInfo(
+        std::size_t width, std::size_t height) const
     {
         width %= _width;
         height %= _height;
@@ -46,7 +48,7 @@ namespace Zappy {
     {
         auto find = _players.find(id);
         if (find == _players.end())
-            return;
+            throw PlayerNotFoundException(id);
         auto &player = find->second;
         auto [dx, dy] = _directions.at(dir);
         player._x = circularMove(player._x, dx, _width);
@@ -64,6 +66,33 @@ namespace Zappy {
         if (dir == Direction::West)
             value = Direction::East;
         return value;
+    }
+
+    bool Environement::takeRessource(std::size_t id, ResourceName name)
+    {
+        bool value = false;
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        auto tile = _width * find->second._y + find->second._x;
+        for (auto iter = _tiles[tile].begin(); iter != _tiles[tile].end();
+            iter++) {
+            if (*iter != name)
+                continue;
+            _tiles[tile].erase(iter);
+            value = true;
+            break;
+        }
+        return value;
+    }
+
+    void Environement::setRessource(std::size_t id, ResourceName name)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        auto tile = _width * find->second._y + find->second._x;
+        _tiles[tile].emplace_back(name);
     }
 
     const std::unordered_map<ResourceName, Environement::Resource>
