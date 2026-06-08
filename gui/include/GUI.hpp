@@ -14,8 +14,8 @@
     #include <queue>
     #include <string>
     #include <unordered_map>
-    #include "Connect.hpp"
 #include "../src/Window.hpp"
+    #include "Connect.hpp"
 
 namespace Zappy {
     class GUI {

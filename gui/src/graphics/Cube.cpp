@@ -11,19 +11,24 @@
 
 #include "OpenGLUtils.hpp"
 
-namespace Graphics
-{
+namespace Graphics {
     void Cube::glDraw() const
     {
         glBegin(GL_TRIANGLES);
         glColor3b(1, 0, 0);
         glTranslated(VEC_TO_LIST(this->getPosition()));
-        double left = this->getPosition().getX() - DEFAULT_SIZE * this->getScale().getX();
-        double right = this->getPosition().getX() + DEFAULT_SIZE * this->getScale().getX();
-        double bottom = this->getPosition().getY() - DEFAULT_SIZE * this->getScale().getY();
-        double top = this->getPosition().getY() + DEFAULT_SIZE * this->getScale().getY();
-        double front = this->getPosition().getZ() - DEFAULT_SIZE * this->getScale().getZ();
-        double back = this->getPosition().getZ() + DEFAULT_SIZE * this->getScale().getZ();
+        double left =
+            this->getPosition().getX() - DEFAULT_SIZE * this->getScale().getX();
+        double right =
+            this->getPosition().getX() + DEFAULT_SIZE * this->getScale().getX();
+        double bottom =
+            this->getPosition().getY() - DEFAULT_SIZE * this->getScale().getY();
+        double top =
+            this->getPosition().getY() + DEFAULT_SIZE * this->getScale().getY();
+        double front =
+            this->getPosition().getZ() - DEFAULT_SIZE * this->getScale().getZ();
+        double back =
+            this->getPosition().getZ() + DEFAULT_SIZE * this->getScale().getZ();
 
         glVertex3d(left, bottom, back);
         glVertex3d(left, bottom, front);
@@ -35,4 +40,4 @@ namespace Graphics
         glVertex3d(right, top, back);
         glEnd();
     }
-} // Graphics
+} // namespace Graphics

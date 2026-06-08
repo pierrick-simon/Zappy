@@ -30,7 +30,6 @@ namespace Zappy {
                 connected = connect();
             else
                 update();
-
         }
     }
 

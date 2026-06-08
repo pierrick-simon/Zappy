@@ -5,11 +5,9 @@
 ** DESCRIPTION
 */
 
-
 #include "Transformable3D.hpp"
 
-namespace Graphics
-{
+namespace Graphics {
     Maths::Vector3D &Transformable3D::getPosition()
     {
         return this->_position;
@@ -44,4 +42,4 @@ namespace Graphics
     {
         return Maths::FORWARD * this->getRotation();
     }
-} // Graphics
+} // namespace Graphics
