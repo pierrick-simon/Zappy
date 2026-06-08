@@ -103,23 +103,23 @@ namespace Maths {
         /**
          * Converts an input Euler angle rotation specified as three doubles to
          * a Quaternion.
-         * @param roll The Roll in radians
          * @param pitch The Pitch in radians
+         * @param roll The Roll in radians
          * @param yaw The Yaw in radians
          * @return A Quaternion converted from an Euler angle rotation.
          */
-        static Quaternion fromEuler(double roll, double pitch, double yaw);
+        static Quaternion fromEuler(double pitch, double roll, double yaw);
 
         /**
          * Converts an input Euler angle rotation specified as three doubles to
          * a Quaternion.
-         * @param roll The Roll in degrees
          * @param pitch The Pitch in degrees
+         * @param roll The Roll in degrees
          * @param yaw The Yaw in degrees
          * @return A Quaternion converted from an Euler angle rotation.
          */
         static Quaternion fromEulerDegrees(
-            double roll, double pitch, double yaw);
+            double pitch, double roll, double yaw);
 
         /**
          * The identity Quaternion means zero rotation.

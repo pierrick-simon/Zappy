@@ -25,7 +25,7 @@ set(SRCS
         src/graphics/Transformable3D.cpp
         src/graphics/Scene.cpp
         src/graphics/Cube.cpp
-        src/graphics/GlGameObject.cpp
+        src/graphics/SFMLGameObject.cpp
         src/Window.cpp
         src/GUI.cpp
         src/maths/Color.cpp

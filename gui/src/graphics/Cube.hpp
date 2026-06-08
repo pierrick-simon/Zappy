@@ -7,15 +7,15 @@
 
 #ifndef CUBE_HPP
     #define CUBE_HPP
-    #include "GlGameObject.hpp"
+    #include "GameObject.hpp"
 
 namespace Graphics {
-    class Cube : public GLGameObject {
+    class Cube : public GameObject {
     public:
         explicit Cube() = default;
 
     protected:
-        void glDraw() const override;
+        void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
     private:
         static constexpr auto DEFAULT_SIZE = 1;

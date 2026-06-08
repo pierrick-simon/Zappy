@@ -9,6 +9,8 @@
 
 #include <cmath>
 
+#include "Utils.hpp"
+
 namespace Maths {
     bool Quaternion::operator==(const Quaternion &rhs) const
     {
@@ -99,10 +101,10 @@ namespace Maths {
         return *this;
     }
 
-    Quaternion Quaternion::fromEuler(double roll, double pitch, double yaw)
+    Quaternion Quaternion::fromEuler(double pitch, double roll, double yaw)
     {
-        double halfU = roll / 2.0;
-        double halfV = pitch / 2.0;
+        double halfU = pitch / 2.0;
+        double halfV = roll / 2.0;
         double halfW = yaw / 2.0;
 
         double cosU = std::cos(halfU);
@@ -121,9 +123,9 @@ namespace Maths {
     }
 
     Quaternion Quaternion::fromEulerDegrees(
-        double roll, double pitch, double yaw)
+        double pitch, double roll, double yaw)
     {
-        return fromEuler(TORAD(roll), TORAD(pitch), TORAD(yaw));
+        return fromEuler(toRadians(pitch), toRadians(roll), toRadians(yaw));
     }
 
     Quaternion Quaternion::identity()

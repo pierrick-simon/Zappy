@@ -152,10 +152,7 @@ namespace Maths {
         return *this;
     }
 
-    Color::Color(const Color &other) :
-        Vector(other)
-    {
-    }
+    Color::Color(const Color &other) = default;
 
     Color &Color::operator=(const Color &other)
     {
@@ -185,15 +182,15 @@ namespace Maths {
 
     Color Color::operator/(const double &other) const
     {
-        return Color(this->getR() / other,
+        return {this->getR() / other,
             this->getG() / other,
             this->getB() / other,
-            this->getA() / other);
+            this->getA() / other};
     }
 
-    Color Color::mean(std::vector<Color> colors)
+    Color Color::mean(const std::vector<Color> &colors)
     {
-        Maths::Color finalColor = Maths::Color::BLACK;
+        Color finalColor = BLACK;
         for (auto color : colors) {
             finalColor.getX() += color.getX();
             finalColor.getY() += color.getY();

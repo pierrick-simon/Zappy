@@ -7,30 +7,30 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "GlGameObject.hpp"
+#include "SFMLGameObject.hpp"
 
 namespace Graphics {
-    GLGameObject::GLGameObject() :
+    SFMLGameObject::SFMLGameObject() :
         GameObject()
     {
     }
 
-    void GLGameObject::draw(
+    void SFMLGameObject::draw(
         sf::RenderTarget &target, sf::RenderStates states) const
     {
         this->preDraw(target);
-        this->glDraw();
+        //this->glDraw();
         this->postDraw(target);
     }
 
-    void GLGameObject::preDraw(sf::RenderTarget &target) const
+    void SFMLGameObject::preDraw(sf::RenderTarget &target) const
     {
         target.setActive();
-        target.popGLStates();
+        target.pushGLStates();
     }
 
-    void GLGameObject::postDraw(sf::RenderTarget &target) const
+    void SFMLGameObject::postDraw(sf::RenderTarget &target) const
     {
-        target.pushGLStates();
+        target.popGLStates();
     }
 } // namespace Graphics

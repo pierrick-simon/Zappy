@@ -69,7 +69,7 @@ namespace Maths {
 
         Color &clamp();
 
-        static Color mean(std::vector<Color> colors);
+        static Color mean(const std::vector<Color> &colors);
 
         static const Color WHITE;
 
