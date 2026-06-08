@@ -5,23 +5,31 @@
 ** Server
 */
 
-#include "Server.hpp"
 #include <csignal>
 #include <iostream>
+#include "Server.hpp"
+#include "ArgsParser.hpp"
 #include "Utils.hpp"
 
 namespace Zappy {
 
     bool Server::RECEIVED_SIG_INT = false;
 
-    Server::Server(int port, const std::vector<std::string> &teams,
-        std::size_t nbPerTeam) :
-        _connect(port), _logFile(std::string(LOG_FILE))
+    Server::Server(std::vector<std::string> args) :
+        _logFile(std::string(LOG_FILE)),
+        _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n")),
+        _connect(Parser::ArgsParser::getArg<int>(args, "-p")),
+        _x(Parser::ArgsParser::getArg<int>(args, "-x", 100)),
+        _y(Parser::ArgsParser::getArg<int>(args, "-y", 100)),
+        _f(Parser::ArgsParser::getArg<int>(args, "-f"))
     {
+        auto nbPerTeam = Parser::ArgsParser::getArg<int>(args, "-c");
+        for (const auto &team : _teamsNames)
+            _teams.emplace(team, nbPerTeam);
+        _teamsNames.clear();
+
         Shared::Utils::logMsg(_logFile, "Server Open.");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
-        for (const auto &team : teams)
-            _teams.emplace(team, nbPerTeam);
         _clock = std::chrono::steady_clock::now();
     }
 

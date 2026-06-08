@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SHARED_SRCS
     Connect.cpp
     Utils.cpp
+    ArgsParser.cpp
 )
 
 list(TRANSFORM SHARED_SRCS PREPEND ${CMAKE_SOURCE_DIR}/shared/src/)
@@ -39,7 +40,7 @@ endif()
 
 add_executable(zappy_server ${MAIN} ${SRCS} ${SHARED_SRCS})
 
-target_compile_options(zappy_server PRIVATE)
+target_compile_options(zappy_server PRIVATE -g)
 
 find_library(CRITERION criterion REQUIRED)
 

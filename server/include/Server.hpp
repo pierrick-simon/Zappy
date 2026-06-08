@@ -19,8 +19,7 @@
 namespace Zappy {
     class Server {
     public:
-        Server(int port, const std::vector<std::string> &teams,
-            std::size_t nbPerTeams);
+        Server(std::vector<std::string> args);
         ~Server();
 
         void run();
@@ -42,14 +41,16 @@ namespace Zappy {
 
         Shared::Connect _connect;
         std::unordered_map<std::string, std::size_t> _teams;
+        std::vector<std::string> _teamsNames;
         std::unordered_map<int, NewClient> _newClients;
         std::unordered_map<int, AIClient> _aiClients;
         std::unordered_map<int, GUIClient> _guiClients;
 
         Shared::Clock _clock;
 
-        std::size_t x = 100;
-        std::size_t y = 100;
+        std::size_t _f;
+        std::size_t _x;
+        std::size_t _y;
 
         static bool RECEIVED_SIG_INT;
 

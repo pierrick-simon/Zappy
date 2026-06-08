@@ -10,15 +10,15 @@
 #include "ServerException.hpp"
 #include "Utils.hpp"
 
-int main()
+int main(const int ac, const char *const *av)
 {
+    std::vector<std::string> args;
+    for (++av;*av != NULL; ++av)
+        args.emplace_back(*av);
     try {
-        Zappy::Server server(4242, {"first"}, 2);
+        Zappy::Server server(args);
         server.run();
-    } catch (Shared::SharedException &e) {
-        std::cerr << e.what() << std::endl;
-        return Shared::EPIERROR;
-    } catch (Zappy::ServerException &e) {
+    } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
         return Shared::EPIERROR;
     }
