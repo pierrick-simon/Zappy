@@ -6,6 +6,7 @@
 */
 
 #include "Environement.hpp"
+#include <optional>
 
 namespace Zappy {
     Environement::Environement(
@@ -32,6 +33,39 @@ namespace Zappy {
         return info;
     }
 
+    std::size_t Environement::circularMove(
+        std::size_t pos, int delta, std::size_t size)
+    {
+        return static_cast<std::size_t>(
+            (static_cast<int>(pos) + delta % static_cast<int>(size) +
+                static_cast<int>(size)) %
+            static_cast<int>(size));
+    }
+
+    void Environement::movePlayer(std::size_t id, Direction dir)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            return;
+        auto &player = find->second;
+        auto [dx, dy] = _directions.at(dir);
+        player._x = circularMove(player._x, dx, _width);
+        player._y = circularMove(player._y, dy, _height);
+        player._dir = dir;
+    }
+
+    Direction Environement::getOpositeDir(Direction dir)
+    {
+        Direction value = Direction::North;
+        if (dir == Direction::North)
+            value = Direction::South;
+        if (dir == Direction::East)
+            value = Direction::West;
+        if (dir == Direction::West)
+            value = Direction::East;
+        return value;
+    }
+
     const std::unordered_map<ResourceName, Environement::Resource>
         Environement::_resources = {
             {ResourceName::Food, {0.5, "food"}},
@@ -42,4 +76,10 @@ namespace Zappy {
             {ResourceName::Phiras, {0.08, "phiras"}},
             {ResourceName::Thystame, {0.05, "thystame"}},
     };
+
+    const std::map<Direction, std::pair<int, int>> Environement::_directions = {
+        {Direction::North, {0, -1}},
+        {Direction::East, {1, 0}},
+        {Direction::South, {0, 1}},
+        {Direction::West, {-1, 0}}};
 }; // namespace Zappy

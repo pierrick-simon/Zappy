@@ -8,11 +8,16 @@
 #ifndef ENVIRONEMENT_HPP
     #define ENVIRONEMENT_HPP
 
+    #include <map>
     #include <string>
     #include <unordered_map>
     #include <vector>
 
 namespace Zappy {
+    enum class Direction { North, East, South, West };
+
+    enum class Movement { Forward, Backward };
+
     enum class ResourceName {
         Food,
         Linemate,
@@ -40,6 +45,9 @@ namespace Zappy {
 
         TileInfo getTileInfo(std::size_t width, std::size_t height);
 
+        void movePlayer(std::size_t id, Direction dir);
+        static Direction getOpositeDir(Direction);
+
         [[nodiscard]] std::size_t getHeight() const
         {
             return _height;
@@ -65,9 +73,13 @@ namespace Zappy {
 
         struct Player {
             std::string _team;
+            Direction _dir;
             std::size_t _x;
             std::size_t _y;
         };
+
+        static std::size_t circularMove(
+            std::size_t pos, int delta, std::size_t size);
 
         std::size_t _width;
         std::size_t _height;
@@ -77,6 +89,7 @@ namespace Zappy {
         std::unordered_map<std::size_t, Egg> _eggs;
         std::unordered_map<std::size_t, Player> _players;
         static const std::unordered_map<ResourceName, Resource> _resources;
+        static const std::map<Direction, std::pair<int, int>> _directions;
     };
 } // namespace Zappy
 
