@@ -16,7 +16,9 @@ namespace Zappy {
 
     Server::Server(int port, const std::vector<std::string> &teams,
         std::size_t nbPerTeam) :
-        _connect(port), _logFile(std::string(LOG_FILE)), _env(100, 100, 100)
+        _connect(port),
+        _logFile(std::string(LOG_FILE)),
+        _env(100, 100, 100, _logFile)
     {
         Shared::Utils::logMsg(_logFile, "Server Open.");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
@@ -170,13 +172,14 @@ namespace Zappy {
             }
             auto find = _teams.find(line.value());
             if (find != _teams.end() && find->second > 0) {
-                find->second--;
                 _aiClients.emplace(iter->first,
                     AIClient(iter->first,
                         iter->second.first,
                         find->first,
                         _logFile,
                         _env));
+                _env.addPlayer(iter->first, line.value(), find->second);
+                find->second--;
                 _newClients.erase(iter);
             } else {
                 Shared::Connect::send(iter->first, "ko\n");

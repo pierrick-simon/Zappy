@@ -7,13 +7,47 @@
 
 #include "Environement.hpp"
 #include <optional>
+#include <random>
+#include <ctime>
 #include "ServerException.hpp"
+#include "Utils.hpp"
 
 namespace Zappy {
-    Environement::Environement(
-        std::size_t width, std::size_t height, std::size_t freq) :
-        _width(width), _height(height), _freq(freq), _tiles(width * height)
+    Environement::Environement(std::size_t width, std::size_t height,
+        std::size_t freq, std::ofstream &logFile) :
+        _width(width),
+        _height(height),
+        _freq(freq),
+        _tiles(width * height),
+        _logFile(logFile)
     {
+        std::srand(std::time(nullptr));
+    }
+
+    void Environement::addPlayer(
+        std::size_t id, const std::string &team, std::size_t _remainingPlace)
+    {
+        std::size_t nb = std::rand() % _remainingPlace;
+
+        for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
+            const auto &egg = iter->second;
+            if (egg._team != team)
+                continue;
+            if (nb != 0) {
+                nb--;
+                continue;
+            }
+            auto item = _directions.begin();
+            std::advance(item, std::rand() % _directions.size());
+            _players.emplace(id, Player {team, item->first, egg._x, egg._y});
+            _eggs.erase(iter);
+            Shared::Utils::logMsg(_logFile,
+                "Client[" + std::to_string(id) + "] spawned in (" +
+                    std::to_string(egg._x) + "," + std::to_string(egg._y) +
+                    "), looking " + _directions.at(item->first)._str + ".");
+            return;
+        }
+        throw PlayerNotFoundException(id);
     }
 
     TileInfo Environement::getTileInfo(
@@ -50,7 +84,7 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto &player = find->second;
-        auto [dx, dy] = _directions.at(dir);
+        auto [dx, dy, _] = _directions.at(dir);
         player._x = circularMove(player._x, dx, _width);
         player._y = circularMove(player._y, dy, _height);
         player._dir = dir;
@@ -106,9 +140,9 @@ namespace Zappy {
             {ResourceName::Thystame, {0.05, "thystame"}},
     };
 
-    const std::map<Direction, std::pair<int, int>> Environement::_directions = {
-        {Direction::North, {0, -1}},
-        {Direction::East, {1, 0}},
-        {Direction::South, {0, 1}},
-        {Direction::West, {-1, 0}}};
+    const std::map<Direction, Environement::Dir> Environement::_directions = {
+        {Direction::North, {0, -1, "North"}},
+        {Direction::East, {1, 0, "East"}},
+        {Direction::South, {0, 1, "South"}},
+        {Direction::West, {-1, 0, "West"}}};
 }; // namespace Zappy

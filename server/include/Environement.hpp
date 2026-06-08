@@ -41,10 +41,13 @@ namespace Zappy {
 
     class Environement {
     public:
-        Environement(std::size_t width, std::size_t height, std::size_t freq);
+        Environement(std::size_t width, std::size_t height, std::size_t freq,
+            std::ofstream &logFile);
 
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
 
+        void addPlayer(std::size_t id, const std::string &team,
+            std::size_t _remainingPlace);
         void movePlayer(std::size_t id, Direction dir);
         static Direction getOpositeDir(Direction);
         bool takeRessource(std::size_t id, ResourceName);
@@ -84,6 +87,12 @@ namespace Zappy {
             std::size_t _y;
         };
 
+        struct Dir {
+            int _x;
+            int _y;
+            std::string _str;
+        };
+
         static std::size_t circularMove(
             std::size_t pos, int delta, std::size_t size);
 
@@ -94,8 +103,11 @@ namespace Zappy {
         std::vector<Tile> _tiles;
         std::unordered_map<std::size_t, Egg> _eggs;
         std::unordered_map<std::size_t, Player> _players;
+
+        std::ofstream &_logFile;
+
         static const std::unordered_map<ResourceName, Resource> _resources;
-        static const std::map<Direction, std::pair<int, int>> _directions;
+        static const std::map<Direction, Dir> _directions;
     };
 } // namespace Zappy
 
