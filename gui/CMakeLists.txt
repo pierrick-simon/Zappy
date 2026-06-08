@@ -20,7 +20,16 @@ set(MAIN
 )
 
 set(SRCS
-    src/GUI.cpp
+        src/graphics/Camera.cpp
+        src/graphics/GameObject.cpp
+        src/graphics/IGameObject.cpp
+        src/graphics/Scene.cpp
+        src/graphics/Cube.cpp
+        src/graphics/GlGameObject.cpp
+        src/Window.cpp
+        src/GUI.cpp
+        src/maths/Color.cpp
+        src/maths/Quaternion.cpp
 )
 
 set(HEADERS
@@ -38,6 +47,7 @@ if (ENABLE_ASAN)
 endif()
 
 add_executable(zappy_gui ${MAIN} ${SRCS} ${SHARED_SRCS})
+target_link_libraries(zappy_gui sfml-graphics sfml-window sfml-system GL GLU)
 
 target_compile_options(zappy_gui PRIVATE)
 

@@ -15,6 +15,7 @@
     #include <string>
     #include <unordered_map>
     #include "Connect.hpp"
+#include "../src/Window.hpp"
 
 namespace Zappy {
     class GUI {
@@ -36,6 +37,8 @@ namespace Zappy {
         std::string _buffer;
         std::queue<std::string> _command;
         bool _isConnect = false;
+
+        Graphics::Window _window;
 
         std::ofstream _logFile;
 
