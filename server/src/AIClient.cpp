@@ -39,30 +39,35 @@ namespace Zappy {
         }
     }
 
-    void AIClient::update(std::chrono::nanoseconds elapsed)
+    std::chrono::nanoseconds AIClient::update(std::chrono::nanoseconds elapsed)
     {
         if (_sleep.count() > 0)
             _sleep -= elapsed;
-        if (_sleep.count() <= 0 && !_command.empty()) {
-            std::istringstream stream(_command.front());
-            std::string command;
-            stream >> command;
-            _command.pop();
-            if (stream.fail())
-                return Shared::Connect::send(_fd, ServerCmd::KO.getStr());
-            auto iter = COMMANDS.find(command);
-            if (iter != COMMANDS.end()) {
-                _sleep = iter->second._timeLimit;
-                iter->second._func(*this);
-                Shared::Utils::logMsg(_logFile,
-                    "Executed command " + iter->first + " for client[" +
-                        std::to_string(_id) + "].");
-            } else {
-                Shared::Connect::send(_fd, ServerCmd::KO.getStr());
-                Shared::Utils::logMsg(_logFile,
-                    "Try executing command " + command + " for client[" +
-                        std::to_string(_id) + "](Commmand Not found).");
-            }
+        if (_sleep.count() <= 0 && !_command.empty())
+            executeCommand();
+        return _sleep;
+    }
+
+    void AIClient::executeCommand()
+    {
+        std::istringstream stream(_command.front());
+        std::string command;
+        stream >> command;
+        _command.pop();
+        if (stream.fail())
+            return Shared::Connect::send(_fd, ServerCmd::KO.getStr());
+        auto iter = COMMANDS.find(command);
+        if (iter != COMMANDS.end()) {
+            _sleep = iter->second._timeLimit;
+            iter->second._func(*this);
+            Shared::Utils::logMsg(_logFile,
+                "Executed command " + iter->first + " for client[" +
+                    std::to_string(_id) + "].");
+        } else {
+            Shared::Connect::send(_fd, ServerCmd::KO.getStr());
+            Shared::Utils::logMsg(_logFile,
+                "Try executing command " + command + " for client[" +
+                    std::to_string(_id) + "](Commmand Not found).");
         }
     }
 

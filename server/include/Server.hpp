@@ -48,6 +48,7 @@ namespace Zappy {
         std::unordered_map<int, GUIClient> _guiClients;
 
         Shared::Clock _clock;
+        int _timeout = -1;
 
         Environement _env;
 

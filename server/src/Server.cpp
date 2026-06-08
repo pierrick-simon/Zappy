@@ -40,7 +40,7 @@ namespace Zappy {
 
     void Server::infoToRead()
     {
-        auto infos = _connect.infoToRead();
+        auto infos = _connect.infoToRead(_timeout);
         if (!infos.empty()) {
             if (infos[0] == _connect.getFd())
                 addClient();
@@ -53,10 +53,13 @@ namespace Zappy {
         auto now = std::chrono::steady_clock::now();
         auto elapsed = _clock - now;
         _clock = now;
-        for (auto &[_, ai] : _aiClients)
-            ai.update(elapsed);
-        for (auto &[_, gui] : _guiClients)
-            gui.update();
+        _timeout = -1;
+        for (auto &[_, ai] : _aiClients) {
+            auto tmp = ai.update(elapsed);
+            int timeout = std::chrono::duration_cast<std::chrono::microseconds>(tmp).count();
+            if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
+                _timeout = timeout;
+        }
     }
 
     void Server::addClient()

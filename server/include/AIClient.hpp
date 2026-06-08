@@ -28,7 +28,8 @@ namespace Zappy {
             return _id;
         }
 
-        void update(std::chrono::nanoseconds elapsed);
+        std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
+        void executeCommand();
 
     private:
         struct Command {
