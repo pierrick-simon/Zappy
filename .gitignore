@@ -4,4 +4,5 @@ zappy_server
 zappy_ai
 *tests_run_bin
 *.log
+.cache
 clang.sh
