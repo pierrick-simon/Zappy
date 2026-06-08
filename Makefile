@@ -28,6 +28,8 @@ $(NAME_AI):
 clean:
 	$(RM) $(NAME_AI)
 	$(CMAKE) --build $(CMAKE_DIRECTORY) --target clean
+
+fclean: clean
 	$(RM) -rf $(CMAKE_DIRECTORY)
 
 %: $(CMAKE_MAKEFILE)
