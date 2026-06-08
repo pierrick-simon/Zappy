@@ -278,7 +278,7 @@ namespace Maths {
             return *this;
         }
 
-        const std::array<std::array<Type, NbColumn>, NbRow> &getMatrix() const
+        [[nodiscard]] const std::array<std::array<Type, NbColumn>, NbRow> &getMatrix() const
         {
             return this->_matrix;
         }

@@ -14,7 +14,6 @@
 
     #include "Matrix.hpp"
 
-    #define TORAD(X) (X * (M_PI / 180.0))
 
 namespace Maths {
     template<typename T>
@@ -137,7 +136,7 @@ namespace Maths {
             return lerp(min, max, std::clamp(t, 0.0, 1.0));
         }
 
-        Vector crossProduct(const Vector &rhs) const
+        [[nodiscard]] Vector crossProduct(const Vector &rhs) const
             requires(Dim == 3)
         {
             return Vector((*this)[1] * rhs[2] - (*this)[2] * rhs[1],
@@ -159,7 +158,7 @@ namespace Maths {
             return Matrix<Dim, 1, Type>::operator-(rhs);
         }
 
-        const Type &getX() const
+        [[nodiscard]] const Type &getX() const
             requires(Dim >= 1 && Dim <= 4)
         {
             return (*this)[0];
@@ -171,7 +170,7 @@ namespace Maths {
             return (*this)[0];
         }
 
-        const Type &getY() const
+        [[nodiscard]] const Type &getY() const
             requires(Dim >= 2 && Dim <= 4)
         {
             return (*this)[1];
@@ -183,7 +182,7 @@ namespace Maths {
             return (*this)[1];
         }
 
-        const Type &getZ() const
+        [[nodiscard]] const Type &getZ() const
             requires(Dim == 3 || Dim == 4)
         {
             return (*this)[2];
@@ -195,7 +194,7 @@ namespace Maths {
             return (*this)[2];
         }
 
-        const Type &getW() const
+        [[nodiscard]] const Type &getW() const
             requires(Dim == 4)
         {
             return (*this)[3];
@@ -206,6 +205,8 @@ namespace Maths {
         {
             return (*this)[3];
         }
+
+        inline static const Vector ZERO {};
     };
 
     template<typename Type>

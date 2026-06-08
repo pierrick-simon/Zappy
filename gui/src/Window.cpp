@@ -21,6 +21,7 @@ namespace Graphics {
             WINDOW_TITLE, sf::Style::Default, CONTEXT_SETTINGS)
     {
         this->RenderWindow::setActive();
+        this->setVerticalSyncEnabled(true);
     }
 
     void Window::updateGl()
@@ -33,19 +34,18 @@ namespace Graphics {
         glLoadIdentity();
         gluPerspective(FOV, this->getAspectRatio(), NEAR_PLANE, FAR_PLANE);
         glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
         const Camera &camera = this->_scene.getCamera();
         auto &camPos = camera.getPosition();
         Maths::Vector3D cameraForward = camera.getForward() + camPos;
         gluLookAt(VEC_TO_LIST(camPos),
             VEC_TO_LIST(cameraForward),
             VEC_TO_LIST(Maths::UP));
-        this->pushGLStates();
     }
 
     double Window::getAspectRatio() const
     {
-        Maths::Vector2D size =
-            Maths::Vector2D(this->getSize().x, this->getSize().y);
+        Maths::Vector2D size {this->getSize().x, this->getSize().y};
         return size.getX() / size.getY();
     }
 
@@ -70,7 +70,7 @@ namespace Graphics {
 
     void Window::handleEvents()
     {
-        sf::Event event;
+        sf::Event event {};
 
         while (this->pollEvent(event))
             if (EVENTS_METHODS.contains(event.type))

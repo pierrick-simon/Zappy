@@ -8,7 +8,6 @@
 #include "GUI.hpp"
 #include "Connect.hpp"
 #include "Utils.hpp"
-#include "graphics/Cube.hpp"
 
 namespace Zappy {
     GUI::GUI(int port, const std::string &ip) :
@@ -20,7 +19,6 @@ namespace Zappy {
     void GUI::run()
     {
         bool connected = true;
-        this->_window.addObject<Graphics::Cube>();
 
         while (this->_window.isRunning() && connected) {
             auto info = _connect.infoToRead();

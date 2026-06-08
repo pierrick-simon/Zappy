@@ -17,9 +17,6 @@ namespace Graphics {
             target.draw(*object, states);
     }
 
-    void Scene::updateGl() const
-    {
-    }
 
     Camera &Scene::getCamera()
     {

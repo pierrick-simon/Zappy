@@ -18,7 +18,6 @@ namespace Graphics {
     public:
         explicit Scene() = default;
 
-        void updateGl() const;
         Camera &getCamera();
         [[nodiscard]] const Camera &getCamera() const;
 

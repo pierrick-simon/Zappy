@@ -5,14 +5,14 @@
 ** DESCRIPTION
 */
 
-#ifndef OPENGLGAMEOBJECT_HPP
-    #define OPENGLGAMEOBJECT_HPP
+#ifndef SFMLGAMEOBJECT_HPP
+    #define SFMLGAMEOBJECT_HPP
     #include "GameObject.hpp"
 
 namespace Graphics {
-    class GLGameObject : public GameObject {
+    class SFMLGameObject : public GameObject {
     public:
-        explicit GLGameObject();
+        explicit SFMLGameObject();
 
     protected:
         void draw(
