@@ -56,6 +56,10 @@ namespace Zappy {
         {
             return _width;
         }
+        [[nodiscard]] std::size_t getFreq() const
+        {
+            return _freq;
+        }
 
     private:
         using Tile = std::vector<ResourceName>;

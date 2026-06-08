@@ -35,6 +35,7 @@ namespace Zappy {
         void update();
         void addClient();
         void handleClient(const std::vector<int> &);
+        void handleDeadClient(const std::vector<int> &);
         void handleAIClient(AIIter);
         void handleGUIClient(GUIIter);
         void handleNewClient(std::unordered_map<int, NewClient>::iterator &);

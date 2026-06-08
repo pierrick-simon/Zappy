@@ -54,13 +54,28 @@ namespace Zappy {
         auto elapsed = _clock - now;
         _clock = now;
         _timeout = -1;
-        for (auto &[_, ai] : _aiClients) {
+        std::vector<int> deads;
+        for (auto &[id, ai] : _aiClients) {
             auto tmp = ai.update(elapsed);
             auto timeout =
                 int(std::chrono::duration_cast<std::chrono::microseconds>(tmp)
                         .count());
             if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
                 _timeout = timeout;
+            if (!ai.isAlive())
+                deads.push_back(id);
+        }
+        handleDeadClient(deads);
+    }
+
+    void Server::handleDeadClient(const std::vector<int> &deads)
+    {
+        for (auto dead : deads) {
+            auto find = _aiClients.find(dead);
+            if (find != _aiClients.end()) {
+                _connect.removeClient(dead);
+                _aiClients.erase(find);
+            }
         }
     }
 
@@ -160,7 +175,8 @@ namespace Zappy {
                     AIClient(iter->first,
                         iter->second.first,
                         find->first,
-                        _logFile));
+                        _logFile,
+                        _env));
                 _newClients.erase(iter);
             } else {
                 Shared::Connect::send(iter->first, "ko\n");
