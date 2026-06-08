@@ -17,7 +17,6 @@ namespace Graphics {
             target.draw(*object, states);
     }
 
-
     Camera &Scene::getCamera()
     {
         return this->_camera;
