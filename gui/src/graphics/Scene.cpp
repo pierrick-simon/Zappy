@@ -7,12 +7,18 @@
 
 #include "Scene.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 namespace Graphics {
 
-    void Scene::render() const
+    void Scene::draw(sf::RenderTarget &target, sf::RenderStates states) const
     {
-        for (const auto &object : this->_objects)
-            object->render();
+        for (auto &object : this->_objects)
+            target.draw(*object, states);
+    }
+
+    void Scene::updateGl() const
+    {
     }
 
     Camera &Scene::getCamera()

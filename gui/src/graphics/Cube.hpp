@@ -14,11 +14,9 @@ namespace Graphics
     class Cube : public GLGameObject
     {
     public:
-        explicit Cube(sf::RenderWindow& window)
-            : GLGameObject(window)
-        {
-        }
-        void glRender() const override;
+        explicit Cube() = default;
+    protected:
+        void glDraw() const override;
     private:
         static constexpr auto DEFAULT_SIZE = 1;
     };

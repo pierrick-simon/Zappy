@@ -8,13 +8,14 @@
 
 #include "Window.hpp"
 
-#include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SFML/Window/Context.hpp>
 #include <SFML/Window/Event.hpp>
 
 #include "OpenGLUtils.hpp"
+#include "maths/Vector.hpp"
+
 
 namespace Graphics {
     Window::Window() : RenderWindow(
@@ -23,7 +24,7 @@ namespace Graphics {
                                          WINDOW_BITS),
                            WINDOW_TITLE,
                            sf::Style::Default,
-                           CONTEXT_SETTINGS), _scene(*this)
+                           CONTEXT_SETTINGS)
     {
         this->RenderWindow::setActive();
     }
@@ -61,7 +62,7 @@ namespace Graphics {
     {
         this->updateGl();
         this->handleEvents();
-        this->_scene.render();
+        this->draw(this->_scene);
         this->display();
         glGetError();
     }

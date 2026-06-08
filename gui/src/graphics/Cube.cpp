@@ -13,7 +13,7 @@
 
 namespace Graphics
 {
-    void Cube::glRender() const
+    void Cube::glDraw() const
     {
         glBegin(GL_TRIANGLES);
         glColor3b(1, 0, 0);

@@ -20,7 +20,7 @@ set(MAIN
 set(SRCS
         src/graphics/Camera.cpp
         src/graphics/GameObject.cpp
-        src/graphics/IGameObject.cpp
+        src/graphics/Transformable3D.cpp
         src/graphics/Scene.cpp
         src/graphics/Cube.cpp
         src/graphics/GlGameObject.cpp

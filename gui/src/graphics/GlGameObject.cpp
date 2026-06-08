@@ -9,29 +9,29 @@
 
 #include "GlGameObject.hpp"
 
-#include <iostream>
-
 namespace Graphics
 {
-    GLGameObject::GLGameObject(sf::RenderWindow &window): GameObject(window)
+    GLGameObject::GLGameObject(): GameObject()
     {
     }
 
-    void GLGameObject::render() const
+    void GLGameObject::draw(sf::RenderTarget &target,
+        sf::RenderStates states) const
     {
-        this->preRender();
-        this->glRender();
-        this->postRender();
+        this->preDraw(target);
+        this->glDraw();
+        this->postDraw(target);
     }
 
-    void GLGameObject::preRender() const
+
+    void GLGameObject::preDraw(sf::RenderTarget& target) const
     {
-        this->_window.setActive();
-        this->_window.popGLStates();
+        target.setActive();
+        target.popGLStates();
     }
 
-    void GLGameObject::postRender() const
+    void GLGameObject::postDraw(sf::RenderTarget& target) const
     {
-        this->_window.pushGLStates();
+        target.pushGLStates();
     }
 } // Graphics
