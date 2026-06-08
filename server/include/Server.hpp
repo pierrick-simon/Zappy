@@ -13,9 +13,9 @@
     #include <unordered_map>
     #include "AIClient.hpp"
     #include "Connect.hpp"
+    #include "Environement.hpp"
     #include "GUIClient.hpp"
     #include "Utils.hpp"
-    #include "Environement.hpp"
 
 namespace Zappy {
     class Server {

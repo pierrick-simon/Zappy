@@ -56,7 +56,9 @@ namespace Zappy {
         _timeout = -1;
         for (auto &[_, ai] : _aiClients) {
             auto tmp = ai.update(elapsed);
-            int timeout = std::chrono::duration_cast<std::chrono::microseconds>(tmp).count();
+            auto timeout =
+                int(std::chrono::duration_cast<std::chrono::microseconds>(tmp)
+                        .count());
             if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
                 _timeout = timeout;
         }
