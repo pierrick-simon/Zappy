@@ -12,12 +12,13 @@
 namespace Graphics {
     class GLGameObject : public GameObject {
     public:
-        explicit GLGameObject(sf::RenderWindow& window);
+        explicit GLGameObject();
 
-        void render() const final;
-        virtual void preRender() const;
-        virtual void glRender() const = 0;
-        virtual void postRender() const;
+    protected:
+        void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+        virtual void preDraw(sf::RenderTarget& target) const;
+        virtual void glDraw() const = 0;
+        virtual void postDraw(sf::RenderTarget& target) const;
     };
 } // Graphics
 

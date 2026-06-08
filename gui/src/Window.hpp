@@ -6,13 +6,13 @@
 */
 
 #ifndef WINDOW_HPP
-#define WINDOW_HPP
-#include <functional>
-#include <unordered_map>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+    #define WINDOW_HPP
+    #include <functional>
+    #include <unordered_map>
+    #include <SFML/Window/Event.hpp>
+    #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "graphics/Scene.hpp"
+    #include "graphics/Scene.hpp"
 
 namespace Graphics {
     class Window : public sf::RenderWindow {
@@ -26,10 +26,10 @@ namespace Graphics {
         Scene &getScene();
 
         template<typename GameObjectType, typename... Args>
-        std::unique_ptr<IGameObject> &addObject(Args &&... args)
+        std::unique_ptr<GameObject> &addObject(Args &&... args)
         {
             return this->getScene().addObject(
-                std::move(std::make_unique<GameObjectType>(*this, args...)));
+                std::move(std::make_unique<GameObjectType>(args...)));
         }
 
     private:

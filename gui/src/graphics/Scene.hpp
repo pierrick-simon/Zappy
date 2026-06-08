@@ -11,30 +11,31 @@
     #include <vector>
 
     #include "Camera.hpp"
-    #include "IGameObject.hpp"
+    #include "GameObject.hpp"
+
 
 namespace Graphics
 {
-    class Scene
+    class Scene : public sf::Drawable
     {
     public:
-        explicit Scene(sf::RenderWindow &window)
-            : _camera(window)
-        {
-        }
+        explicit Scene() = default;
 
         void updateGl() const;
-        void render() const;
         Camera &getCamera();
         [[nodiscard]] const Camera &getCamera() const;
 
         template<typename GameObjectType>
-        std::unique_ptr<IGameObject> &addObject(std::unique_ptr<GameObjectType> gameObject)
+        std::unique_ptr<GameObject> &addObject(std::unique_ptr<GameObjectType> gameObject)
         {
             return this->_objects.emplace_back(std::move(gameObject));
         }
+
+    protected:
+        void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+
     private:
-        std::vector<std::unique_ptr<IGameObject>> _objects;
+        std::vector<std::unique_ptr<GameObject>> _objects;
         Camera _camera;
     };
 } // Graphics
