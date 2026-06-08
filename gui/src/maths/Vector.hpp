@@ -14,7 +14,6 @@
 
     #include "Matrix.hpp"
 
-
 namespace Maths {
     template<typename T>
     concept Scalar = std::is_arithmetic_v<std::remove_cvref_t<T>>;

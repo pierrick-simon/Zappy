@@ -15,7 +15,8 @@ namespace Graphics {
         explicit Cube() = default;
 
     protected:
-        void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+        void draw(
+            sf::RenderTarget &target, sf::RenderStates states) const override;
 
     private:
         static constexpr auto DEFAULT_SIZE = 1;

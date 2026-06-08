@@ -19,7 +19,7 @@ namespace Graphics {
         sf::RenderTarget &target, sf::RenderStates states) const
     {
         this->preDraw(target);
-        //this->glDraw();
+        // this->glDraw();
         this->postDraw(target);
     }
 

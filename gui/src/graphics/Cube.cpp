@@ -17,55 +17,54 @@ namespace Graphics {
         const double sz = DEFAULT_SIZE * this->getScale().getZ();
 
         glPushMatrix();
-        glTranslated(
-            this->getPosition().getX(),
+        glTranslated(this->getPosition().getX(),
             this->getPosition().getY(),
             this->getPosition().getZ());
 
         glColor3f(1.f, 0.f, 0.f);
         glBegin(GL_TRIANGLES);
 
-        glVertex3d(-sx, -sy,  sz);
-        glVertex3d( sx, -sy,  sz);
-        glVertex3d( sx,  sy,  sz);
-        glVertex3d(-sx, -sy,  sz);
-        glVertex3d( sx,  sy,  sz);
-        glVertex3d(-sx,  sy,  sz);
+        glVertex3d(-sx, -sy, sz);
+        glVertex3d(sx, -sy, sz);
+        glVertex3d(sx, sy, sz);
+        glVertex3d(-sx, -sy, sz);
+        glVertex3d(sx, sy, sz);
+        glVertex3d(-sx, sy, sz);
 
-        glVertex3d( sx, -sy, -sz);
+        glVertex3d(sx, -sy, -sz);
         glVertex3d(-sx, -sy, -sz);
-        glVertex3d(-sx,  sy, -sz);
-        glVertex3d( sx, -sy, -sz);
-        glVertex3d(-sx,  sy, -sz);
-        glVertex3d( sx,  sy, -sz);
-
-        glVertex3d(-sx, -sy, -sz);
-        glVertex3d(-sx, -sy,  sz);
-        glVertex3d(-sx,  sy,  sz);
-        glVertex3d(-sx, -sy, -sz);
-        glVertex3d(-sx,  sy,  sz);
-        glVertex3d(-sx,  sy, -sz);
-
-        glVertex3d( sx, -sy,  sz);
-        glVertex3d( sx, -sy, -sz);
-        glVertex3d( sx,  sy, -sz);
-        glVertex3d( sx, -sy,  sz);
-        glVertex3d( sx,  sy, -sz);
-        glVertex3d( sx,  sy,  sz);
-
-        glVertex3d(-sx,  sy,  sz);
-        glVertex3d( sx,  sy,  sz);
-        glVertex3d( sx,  sy, -sz);
-        glVertex3d(-sx,  sy,  sz);
-        glVertex3d( sx,  sy, -sz);
-        glVertex3d(-sx,  sy, -sz);
+        glVertex3d(-sx, sy, -sz);
+        glVertex3d(sx, -sy, -sz);
+        glVertex3d(-sx, sy, -sz);
+        glVertex3d(sx, sy, -sz);
 
         glVertex3d(-sx, -sy, -sz);
-        glVertex3d( sx, -sy, -sz);
-        glVertex3d( sx, -sy,  sz);
+        glVertex3d(-sx, -sy, sz);
+        glVertex3d(-sx, sy, sz);
         glVertex3d(-sx, -sy, -sz);
-        glVertex3d( sx, -sy,  sz);
-        glVertex3d(-sx, -sy,  sz);
+        glVertex3d(-sx, sy, sz);
+        glVertex3d(-sx, sy, -sz);
+
+        glVertex3d(sx, -sy, sz);
+        glVertex3d(sx, -sy, -sz);
+        glVertex3d(sx, sy, -sz);
+        glVertex3d(sx, -sy, sz);
+        glVertex3d(sx, sy, -sz);
+        glVertex3d(sx, sy, sz);
+
+        glVertex3d(-sx, sy, sz);
+        glVertex3d(sx, sy, sz);
+        glVertex3d(sx, sy, -sz);
+        glVertex3d(-sx, sy, sz);
+        glVertex3d(sx, sy, -sz);
+        glVertex3d(-sx, sy, -sz);
+
+        glVertex3d(-sx, -sy, -sz);
+        glVertex3d(sx, -sy, -sz);
+        glVertex3d(sx, -sy, sz);
+        glVertex3d(-sx, -sy, -sz);
+        glVertex3d(sx, -sy, sz);
+        glVertex3d(-sx, -sy, sz);
 
         glEnd();
         glPopMatrix();
