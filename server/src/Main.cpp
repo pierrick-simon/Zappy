@@ -9,6 +9,8 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
+#include "ArgsParser.hpp"
+#include "Help.hpp"
 
 int main(const int ac, const char *const *av)
 {
@@ -18,7 +20,10 @@ int main(const int ac, const char *const *av)
     try {
         Zappy::Server server(args);
         server.run();
-    } catch (std::exception &e) {
+    } catch (const Parser::ArgsParserError &) {
+        Help::help("server/docs/help.txt");
+        return Shared::EPIERROR;
+    } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
         return Shared::EPIERROR;
     }

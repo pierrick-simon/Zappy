@@ -10,6 +10,7 @@ set(SHARED_SRCS
     Connect.cpp
     Utils.cpp
     ArgsParser.cpp
+    Help.cpp
 )
 
 list(TRANSFORM SHARED_SRCS PREPEND ${CMAKE_SOURCE_DIR}/shared/src/)

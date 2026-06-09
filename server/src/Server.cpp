@@ -28,6 +28,9 @@ namespace Zappy {
             _teams.emplace(team, nbPerTeam);
         _teamsNames.clear();
 
+        if (_teams.empty())
+            throw Parser::ArgsParserError("No teams name given");
+
         Shared::Utils::logMsg(_logFile, "Server Open.");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
         _clock = std::chrono::steady_clock::now();

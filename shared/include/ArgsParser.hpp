@@ -18,11 +18,9 @@ namespace Parser{
     class ArgsParserError : public std::exception {
         public:
             ArgsParserError(const std::string &msg): _msg("Arguments error: " + msg) {};
+            ArgsParserError() = default;
 
-            [[nodiscard]] const char *what() const noexcept override
-            {
-                return _msg.data();
-            };
+            [[nodiscard]] const char *what() const noexcept override { return _msg.data(); };
         private:
             std::string _msg;
     };
