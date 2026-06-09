@@ -24,12 +24,17 @@ namespace Zappy {
         _f(Parser::ArgsParser::getArg<int>(args, "-f"))
     {
         auto nbPerTeam = Parser::ArgsParser::getArg<int>(args, "-c");
-        for (const auto &team : _teamsNames)
+        if (_teamsNames.empty())
+            throw Parser::ArgsParserError("No teams name given");
+        for (const auto &team : _teamsNames) {
+            if (_teams.count(team))
+                throw Parser::ArgsParserError("Cannot use duplicate teams name");
+            if (team == GRAPHIC)
+                throw Parser::ArgsParserError("Cannot use GRAPHIC as team name");
             _teams.emplace(team, nbPerTeam);
+        }
         _teamsNames.clear();
 
-        if (_teams.empty())
-            throw Parser::ArgsParserError("No teams name given");
 
         Shared::Utils::logMsg(_logFile, "Server Open.");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
