@@ -9,15 +9,16 @@
 
 namespace Parser {
 
-    void ArgsParser::checkStream(const std::istringstream &stream,
-        const std::string &flag)
+    void ArgsParser::checkStream(
+        const std::istringstream &stream, const std::string &flag)
     {
         if (stream.fail() || !stream.eof())
             throw ArgsParserError("incorect value after " + flag + " option");
     }
 
     bool ArgsParser::isArg(
-        std::reference_wrapper<std::vector<std::string>> args, const std::string &flag)
+        std::reference_wrapper<std::vector<std::string>> args,
+        const std::string &flag)
     {
         bool ret = false;
         for (auto arg = args.get().begin(); arg != args.get().end(); ++arg) {
@@ -31,10 +32,10 @@ namespace Parser {
     }
 
     std::size_t ArgsParser::getArgSize(
-            std::reference_wrapper<std::vector<std::string>> args,
-            const std::string &flag)
+        std::reference_wrapper<std::vector<std::string>> args,
+        const std::string &flag)
     {
-        long long value = ArgsParser::getArg<long long>(args, flag);
+        auto value = ArgsParser::getArg<long long>(args, flag);
 
         if (value <= 0)
             throw ArgsParserError(flag + " should have a positive value");
@@ -42,13 +43,14 @@ namespace Parser {
     }
 
     std::size_t ArgsParser::getArgSize(
-            std::reference_wrapper<std::vector<std::string>> args,
-            const std::string &flag, std::size_t fallBack)
+        std::reference_wrapper<std::vector<std::string>> args,
+        const std::string &flag, std::size_t fallBack)
     {
-        long long value = ArgsParser::getArg<long long>(args, flag, fallBack);
+        auto value = ArgsParser::getArg<long long>(args,
+            flag, static_cast<long long>(fallBack));
 
         if (value <= 0)
             throw ArgsParserError(flag + " should have a positive value");
         return value;
     }
-} // namespace RayTracer
+} // namespace Parser

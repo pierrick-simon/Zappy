@@ -8,6 +8,4 @@
 #ifndef HELP_HPP_
 #define HELP_HPP_
 
-
-
 #endif /* !HELP_HPP_ */

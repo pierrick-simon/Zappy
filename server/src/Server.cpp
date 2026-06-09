@@ -5,9 +5,9 @@
 ** Server
 */
 
+#include "Server.hpp"
 #include <csignal>
 #include <iostream>
-#include "Server.hpp"
 #include "ArgsParser.hpp"
 #include "Utils.hpp"
 
@@ -18,7 +18,7 @@ namespace Zappy {
     Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
         _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n")),
-        _connect(Parser::ArgsParser::getArgSize(args, "-p")),
+        _connect(Parser::ArgsParser::getArg<int>(args, "-p")),
         _x(Parser::ArgsParser::getArgSize(args, "-x", 100)),
         _y(Parser::ArgsParser::getArgSize(args, "-y", 100)),
         _f(Parser::ArgsParser::getArgSize(args, "-f"))
@@ -28,9 +28,11 @@ namespace Zappy {
             throw Parser::ArgsParserError("No teams name given");
         for (const auto &team : _teamsNames) {
             if (_teams.count(team))
-                throw Parser::ArgsParserError("Cannot use duplicate teams name");
+                throw Parser::ArgsParserError(
+                    "Cannot use duplicate teams name");
             if (team == GRAPHIC)
-                throw Parser::ArgsParserError("Cannot use \"GRAPHIC\" as team name");
+                throw Parser::ArgsParserError(
+                    "Cannot use \"GRAPHIC\" as team name");
             _teams.emplace(team, nbPerTeam);
         }
         _teamsNames.clear();

@@ -13,9 +13,8 @@
 #include <string>
 
 class Help {
-    public:
-        static void help(const std::string &path) noexcept;
+public:
+    static void help(const std::string &path) noexcept;
 };
-
 
 #endif /* !HELP_HPP_ */

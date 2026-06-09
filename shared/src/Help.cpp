@@ -7,7 +7,8 @@
 
 #include "Help.hpp"
 
-void Help::help(const std::string &path) noexcept {
+void Help::help(const std::string &path) noexcept
+{
     std::ifstream helpfile(path);
     std::string line;
 

@@ -6,16 +6,16 @@
 */
 
 #include <iostream>
+#include "ArgsParser.hpp"
+#include "Help.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
-#include "ArgsParser.hpp"
-#include "Help.hpp"
 
 int main(const int ac, const char *const *av)
 {
     std::vector<std::string> args;
-    for (++av;*av != NULL; ++av)
+    for (++av; *av != nullptr; ++av)
         args.emplace_back(*av);
     try {
         Zappy::Server server(args);

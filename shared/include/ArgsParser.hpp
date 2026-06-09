@@ -16,24 +16,33 @@
 
 namespace Parser {
     class ArgsParserError : public std::exception {
-        public:
-            ArgsParserError(const std::string &msg): _msg("Arguments error: " + msg) {};
-            ArgsParserError() = default;
+    public:
+        ArgsParserError(const std::string &msg) :
+            _msg("Arguments error: " + msg) {};
+        ArgsParserError() = default;
 
-            [[nodiscard]] const char *what() const noexcept override { return _msg.data(); };
-        private:
-            std::string _msg;
+        [[nodiscard]] const char *what() const noexcept override
+        {
+            return _msg.data();
+        };
+
+    private:
+        std::string _msg;
     };
 
     class MissingArgError : public ArgsParserError {
-        public:
-            MissingArgError(const std::string &flag): ArgsParserError(flag + " argument is mendatory") {};
+    public:
+        MissingArgError(const std::string &flag) :
+            ArgsParserError(flag + " argument is mendatory") {};
     };
 
     class Help : public std::exception {
-        public:
-            Help() = default;
-            [[nodiscard]] const char *what() const noexcept override { return ""; };
+    public:
+        Help() = default;
+        [[nodiscard]] const char *what() const noexcept override
+        {
+            return "";
+        };
     };
 
     class ArgsParser {
@@ -41,8 +50,8 @@ namespace Parser {
         static bool isArg(std::reference_wrapper<std::vector<std::string>> args,
             const std::string &flag);
 
-        static void checkStream(const std::istringstream &stream,
-            const std::string &flag);
+        static void checkStream(
+            const std::istringstream &stream, const std::string &flag);
 
         template<typename T>
         static std::optional<T> get(
@@ -67,9 +76,9 @@ namespace Parser {
         }
 
         template<typename T>
-        static T getArg(
-            std::reference_wrapper<std::vector<std::string>> args,
-            const std::string &flag, T fallBack) {
+        static T getArg(std::reference_wrapper<std::vector<std::string>> args,
+            const std::string &flag, T fallBack)
+        {
             auto item = get<T>(args, flag);
             auto ret = fallBack;
             if (item.has_value())
@@ -78,9 +87,9 @@ namespace Parser {
         };
 
         template<typename T>
-        static T getArg(
-            std::reference_wrapper<std::vector<std::string>> args,
-            const std::string &flag) {
+        static T getArg(std::reference_wrapper<std::vector<std::string>> args,
+            const std::string &flag)
+        {
             auto item = get<T>(args, flag);
             if (!item.has_value())
                 throw Help();
@@ -90,7 +99,7 @@ namespace Parser {
         static std::size_t getArgSize(
             std::reference_wrapper<std::vector<std::string>> args,
             const std::string &flag);
-        
+
         static std::size_t getArgSize(
             std::reference_wrapper<std::vector<std::string>> args,
             const std::string &flag, std::size_t fallBack);
@@ -102,7 +111,7 @@ namespace Parser {
         {
             std::vector<T> final;
             auto arg = args.get().begin();
-            for (;arg != args.get().end(); ++arg) {
+            for (; arg != args.get().end(); ++arg) {
                 if (*arg == flag) {
                     args.get().erase(arg);
                     break;
@@ -119,6 +128,6 @@ namespace Parser {
             return final;
         }
     };
-}
+} // namespace Parser
 
 #endif /* !ARGPARSER_HPP_ */
