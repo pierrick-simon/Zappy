@@ -9,16 +9,25 @@
 #include "GUI.hpp"
 #include "GUIException.hpp"
 #include "Utils.hpp"
+#include "Help.hpp"
+#include "ArgsParser.hpp"
 
-int main()
+int main(const int ac, const char *const *av)
 {
+    std::vector<std::string> args;
+    for (++av; *av != nullptr; ++av)
+        args.emplace_back(*av);
+    if (Parser::ArgsParser::isArg(args, "--help")) {
+        Help::help("gui/docs/help.txt");
+        return Shared::EPISUCCESS;
+    }
     try {
-        Zappy::GUI gui(4242, "127.0.0.1");
+        Zappy::GUI gui(args);
         gui.run();
-    } catch (Shared::SharedException &e) {
-        std::cerr << e.what() << std::endl;
+    } catch (const Parser::Help &) {
+        Help::help("gui/docs/help.txt");
         return Shared::EPIERROR;
-    } catch (Zappy::GUIException &e) {
+    } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
         return Shared::EPIERROR;
     }

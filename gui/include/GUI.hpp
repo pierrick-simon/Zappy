@@ -19,7 +19,7 @@
 namespace Zappy {
     class GUI {
     public:
-        GUI(int port, const std::string &ip);
+        GUI(std::vector<std::string> args);
 
         void run();
 

@@ -8,10 +8,13 @@
 #include "GUI.hpp"
 #include "Connect.hpp"
 #include "Utils.hpp"
+#include "ArgsParser.hpp"
 
 namespace Zappy {
-    GUI::GUI(int port, const std::string &ip) :
-        _connect(port, ip), _logFile(std::string(LOG_FILE))
+    GUI::GUI(std::vector<std::string> args) :
+        _connect(Parser::ArgsParser::getArgSize(args, "-p"),
+        Parser::ArgsParser::getArg<std::string>(args, "-h")),
+        _logFile(std::string(LOG_FILE))
     {
         Shared::Utils::logMsg(_logFile, "Client GUI Open.");
     }

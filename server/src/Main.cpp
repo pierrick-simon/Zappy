@@ -18,8 +18,7 @@ int main(const int ac, const char *const *av)
     std::vector<std::string> args;
     for (++av; *av != nullptr; ++av)
         args.emplace_back(*av);
-    if (Parser::ArgsParser::isArg(args, "-h") ||
-        Parser::ArgsParser::isArg(args, "--help")) {
+    if (Parser::ArgsParser::isArg(args, "--help")) {
         Help::help("server/docs/help.txt");
         return Shared::EPISUCCESS;
     }
