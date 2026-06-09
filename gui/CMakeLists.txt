@@ -59,7 +59,7 @@ add_executable(gui_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS} ${SHARED
 
 target_compile_options(gui_tests_run_bin PRIVATE --coverage)
 target_link_options(gui_tests_run_bin PRIVATE --coverage)
-target_link_libraries(gui_tests_run_bin criterion )
+target_link_libraries(gui_tests_run_bin criterion sfml-graphics sfml-window sfml-system GL GLU)
 
 add_custom_target(gui_tests_run
     COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete
