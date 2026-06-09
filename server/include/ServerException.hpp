@@ -25,6 +25,12 @@ namespace Zappy {
     private:
         std::string _str;
     };
+
+    class PlayerNotFoundException : public ServerException {
+    public:
+        PlayerNotFoundException(const std::size_t &id) :
+            ServerException("Player " + std::to_string(id) + " not found.") {};
+    };
 } // namespace Zappy
 
 #endif

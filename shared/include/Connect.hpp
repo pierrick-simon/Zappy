@@ -29,7 +29,7 @@ namespace Shared {
         void addClient(int fd);
         void removeClient(int fd);
 
-        std::vector<int> infoToRead();
+        std::vector<int> infoToRead(int = -1);
 
         static void send(int fd, const std::string &msg);
         static void receiveChunk(int fd, std::string &str, std::size_t = 4096);
