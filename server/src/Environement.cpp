@@ -32,7 +32,7 @@ namespace Zappy {
 
         for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
             const auto &egg = iter->second;
-            if (egg._team != team)
+            if (egg.team != team)
                 continue;
             if (nb != 0) {
                 nb--;
@@ -40,12 +40,12 @@ namespace Zappy {
             }
             auto item = _directions.begin();
             std::advance(item, std::rand() % _directions.size());
-            _players.emplace(id, Player {team, item->first, 1, egg._x, egg._y});
+            _players.emplace(id, Player {team, item->first, 1, egg.x, egg.y});
             _eggs.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(id) + "] spawned in (" +
-                    std::to_string(egg._x) + "," + std::to_string(egg._y) +
-                    "), looking " + _directions.at(item->first)._str + ".");
+                    std::to_string(egg.x) + "," + std::to_string(egg.y) +
+                    "), looking " + _directions.at(item->first).str + ".");
             return;
         }
         throw PlayerNotFoundException(id);
@@ -65,14 +65,14 @@ namespace Zappy {
         height %= _height;
         TileInfo info;
         auto tile = _width * height + width;
-        info._resources = _tiles[tile];
+        info.resources = _tiles[tile];
         for (auto egg : _eggs) {
-            if (egg.second._x = width && egg.second._y)
-                info._eggs.push_back({egg.first, egg.second._team});
+            if (egg.second.x = width && egg.second.y)
+                info.eggs.push_back({egg.first, egg.second.team});
         }
         for (auto player : _players) {
-            if (player.second._x = width && player.second._y)
-                info._players.push_back({player.first, player.second._team});
+            if (player.second.x = width && player.second.y)
+                info.players.push_back({player.first, player.second.team});
         }
         return info;
     }
@@ -93,9 +93,9 @@ namespace Zappy {
             throw PlayerNotFoundException(id);
         auto &player = find->second;
         auto [dx, dy, _] = _directions.at(dir);
-        player._x = circularMove(player._x, dx, _width);
-        player._y = circularMove(player._y, dy, _height);
-        player._dir = dir;
+        player.x = circularMove(player.x, dx, _width);
+        player.y = circularMove(player.y, dy, _height);
+        player.dir = dir;
     }
 
     Direction Environement::getOpositeDir(Direction dir)
@@ -116,7 +116,7 @@ namespace Zappy {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        auto tile = _width * find->second._y + find->second._x;
+        auto tile = _width * find->second.y + find->second.x;
         auto resource = _tiles[tile].find(name);
         if (resource != _tiles[tile].end() && resource->second > 0) {
             value = true;
@@ -130,7 +130,7 @@ namespace Zappy {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        auto tile = _width * find->second._y + find->second._x;
+        auto tile = _width * find->second.y + find->second.x;
         auto resource = _tiles[tile].find(name);
         if (resource != _tiles[tile].end())
             resource->second++;
@@ -144,7 +144,7 @@ namespace Zappy {
         auto tile = _width * y + x;
         auto elevation = _elevations.at(level);
         bool value = true;
-        for (auto [name, nb] : elevation._resources) {
+        for (auto [name, nb] : elevation.resources) {
             auto isHere = _tiles[tile].find(name);
             if (isHere != _tiles[tile].end() && isHere->second >= nb)
                 continue;
@@ -155,10 +155,10 @@ namespace Zappy {
         for (const auto &[id, player] : _players) {
             if (value == false)
                 break;
-            if (player._level == level && player._x == x && player._y == y)
+            if (player.level == level && player.x == x && player.y == y)
                 check.emplace_back(id);
         }
-        if (check.size() < elevation._nbPlayer)
+        if (check.size() < elevation.nbPlayer)
             check.clear();
         return check;
     }
@@ -168,16 +168,16 @@ namespace Zappy {
     {
         bool value = true;
         auto tile = _width * y + x;
-        if (players.size() < elevation._nbPlayer)
+        if (players.size() < elevation.nbPlayer)
             value = false;
-        for (auto [name, nb] : elevation._resources) {
+        for (auto [name, nb] : elevation.resources) {
             auto isHere = _tiles[tile].find(name);
             isHere->second - nb;
         }
         for (auto player : players) {
             auto find = _players.find(player);
             if (find != _players.end())
-                find->second._level++;
+                find->second.level++;
         }
     }
 
@@ -187,7 +187,7 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         return checkElevation(
-            find->second._x, find->second._y, find->second._level);
+            find->second.x, find->second.y, find->second.level);
     }
 
     std::vector<std::size_t> Environement::endElevation(
@@ -197,7 +197,7 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto end = checkElevation(
-            find->second._x, find->second._y, find->second._level);
+            find->second.x, find->second.y, find->second.level);
         start.erase(std::remove_if(start.begin(),
                         start.end(),
                         [&end](std::size_t x) {
@@ -205,12 +205,12 @@ namespace Zappy {
                                 end.end();
                         }),
             start.end());
-        const auto &elevation = _elevations.at(find->second._level);
-        if (start.size() < elevation._nbPlayer)
+        const auto &elevation = _elevations.at(find->second.level);
+        if (start.size() < elevation.nbPlayer)
             start.clear();
         else
             successElevation(
-                find->second._x, find->second._y, elevation, start);
+                find->second.x, find->second.y, elevation, start);
         return start;
     }
 

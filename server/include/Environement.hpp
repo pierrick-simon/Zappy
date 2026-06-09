@@ -29,14 +29,14 @@ namespace Zappy {
     };
 
     struct Team {
-        std::size_t _id;
-        std::string _team;
+        std::size_t id;
+        std::string team;
     };
 
     struct TileInfo {
-        std::unordered_map<ResourceName, std::size_t> _resources;
-        std::vector<Team> _eggs;
-        std::vector<Team> _players;
+        std::unordered_map<ResourceName, std::size_t> resources;
+        std::vector<Team> eggs;
+        std::vector<Team> players;
     };
 
     class Environement {
@@ -74,33 +74,33 @@ namespace Zappy {
         using Tile = std::unordered_map<ResourceName, std::size_t>;
 
         struct Resource {
-            float _density;
-            std::string _str;
+            float density;
+            std::string str;
         };
 
         struct Egg {
-            std::string _team;
-            std::size_t _x;
-            std::size_t _y;
+            std::string team;
+            std::size_t x;
+            std::size_t y;
         };
 
         struct Player {
-            std::string _team;
-            Direction _dir;
-            std::size_t _level;
-            std::size_t _x;
-            std::size_t _y;
+            std::string team;
+            Direction dir;
+            std::size_t level;
+            std::size_t x;
+            std::size_t y;
         };
 
         struct Dir {
-            int _x;
-            int _y;
-            std::string _str;
+            int x;
+            int y;
+            std::string str;
         };
 
         struct Elevation {
-            std::size_t _nbPlayer;
-            Tile _resources;
+            std::size_t nbPlayer;
+            Tile resources;
         };
 
         static std::size_t circularMove(
