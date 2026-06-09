@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2026
-** RayTracer
+** Zappy
 ** File description:
 ** DESCRIPTION
 */
@@ -126,6 +126,26 @@ namespace Maths {
         double pitch, double roll, double yaw)
     {
         return fromEuler(toRadians(pitch), toRadians(roll), toRadians(yaw));
+    }
+
+    std::array<double, 16> Quaternion::toGlMatrix() const
+    {
+        double xSquared = this->getX() * this->getX();
+        double ySquared = this->getY() * this->getY();
+        double zSquared = this->getZ() * this->getZ();
+        double xw = this->_x * this->_w;
+        double xy = this->_x * this->_y;
+        double xz = this->_x * this->_z;
+        double yw = this->_y * this->_w;
+        double yz = this->_y * this->_z;
+        double zw = this->_z * this->_w;
+
+        return {
+            1 - 2 * (ySquared + zSquared), 2 * (xy + zw), 2 * (xz - yw), 0,
+            2 * (xy - zw), 1 - 2 * (xSquared + zSquared), 2 * (yz + xw), 0,
+            2 * (xz + yw), 2 * (yz - xw), 1 - 2 * (xSquared + ySquared), 0,
+            0, 0, 0, 1
+        };
     }
 
     Quaternion Quaternion::identity()

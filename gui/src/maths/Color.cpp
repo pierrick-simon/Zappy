@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2026
-** RayTracer
+** Zappy
 ** File description:
 ** DESCRIPTION
 */
