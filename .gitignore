@@ -5,3 +5,4 @@ zappy_ai
 *tests_run_bin
 *.log
 clang.sh
+.vscode/
