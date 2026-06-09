@@ -21,6 +21,7 @@ set(SRCS
     src/Server.cpp
     src/AIClient.cpp
     src/GUIClient.cpp
+    src/Environement.cpp
 )
 
 set(HEADERS

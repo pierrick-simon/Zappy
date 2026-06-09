@@ -13,6 +13,7 @@
     #include <unordered_map>
     #include "AIClient.hpp"
     #include "Connect.hpp"
+    #include "Environement.hpp"
     #include "GUIClient.hpp"
     #include "Utils.hpp"
 
@@ -34,6 +35,7 @@ namespace Zappy {
         void update();
         void addClient();
         void handleClient(const std::vector<int> &);
+        void handleDeadClient(const std::vector<int> &);
         void handleAIClient(AIIter);
         void handleGUIClient(GUIIter);
         void handleNewClient(std::unordered_map<int, NewClient>::iterator &);
@@ -47,9 +49,9 @@ namespace Zappy {
         std::unordered_map<int, GUIClient> _guiClients;
 
         Shared::Clock _clock;
+        int _timeout = -1;
 
-        std::size_t x = 100;
-        std::size_t y = 100;
+        Environement _env;
 
         static bool RECEIVED_SIG_INT;
 
