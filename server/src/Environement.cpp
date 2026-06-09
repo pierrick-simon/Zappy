@@ -51,6 +51,13 @@ namespace Zappy {
         throw PlayerNotFoundException(id);
     }
 
+    void Environement::removePlayer(std::size_t id)
+    {
+        auto find = _players.find(id);
+        if (find != _players.end())
+            _players.erase(find);
+    }
+
     TileInfo Environement::getTileInfo(
         std::size_t width, std::size_t height) const
     {

@@ -48,6 +48,7 @@ namespace Zappy {
 
         void addPlayer(std::size_t id, const std::string &team,
             std::size_t _remainingPlace);
+        void removePlayer(std::size_t id);
         void movePlayer(std::size_t id, Direction dir);
         static Direction getOpositeDir(Direction);
         bool takeResource(std::size_t id, ResourceName);
