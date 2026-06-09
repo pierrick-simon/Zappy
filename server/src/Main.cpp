@@ -20,7 +20,7 @@ int main(const int ac, const char *const *av)
     try {
         Zappy::Server server(args);
         server.run();
-    } catch (const Parser::ArgsParserError &) {
+    } catch (const Parser::Help &) {
         Help::help("server/docs/help.txt");
         return Shared::EPIERROR;
     } catch (const std::exception &e) {

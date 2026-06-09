@@ -14,7 +14,7 @@
     #include <string>
     #include <vector>
 
-namespace Parser{
+namespace Parser {
     class ArgsParserError : public std::exception {
         public:
             ArgsParserError(const std::string &msg): _msg("Arguments error: " + msg) {};
@@ -28,6 +28,12 @@ namespace Parser{
     class MissingArgError : public ArgsParserError {
         public:
             MissingArgError(const std::string &flag): ArgsParserError(flag + " argument is mendatory") {};
+    };
+
+    class Help : public std::exception {
+        public:
+            Help() = default;
+            [[nodiscard]] const char *what() const noexcept override { return ""; };
     };
 
     class ArgsParser {
@@ -50,7 +56,7 @@ namespace Parser{
                     return tmp;
                 }
                 if (*arg == flag)
-                    throw ArgsParserError(flag);
+                    throw Help();
             }
             return {};
         }
@@ -72,7 +78,7 @@ namespace Parser{
             const std::string &flag) {
             auto item = get<T>(args, flag);
             if (!item.has_value())
-                throw MissingArgError(flag);
+                throw Help();
             return item.value();
         };
 
