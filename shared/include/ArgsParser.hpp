@@ -41,6 +41,9 @@ namespace Parser {
         static bool isArg(std::reference_wrapper<std::vector<std::string>> args,
             const std::string &flag);
 
+        static void checkStream(const std::istringstream &stream,
+            const std::string &flag);
+
         template<typename T>
         static std::optional<T> get(
             std::reference_wrapper<std::vector<std::string>> args,
@@ -50,7 +53,9 @@ namespace Parser {
                 ++arg) {
                 if (*arg == flag && arg + 1 != args.get().end()) {
                     T tmp;
-                    std::istringstream(*(arg + 1)) >> tmp;
+                    std::istringstream stream(*(arg + 1));
+                    stream >> tmp;
+                    checkStream(stream, flag);
                     args.get().erase(arg);
                     args.get().erase(arg);
                     return tmp;
@@ -81,6 +86,14 @@ namespace Parser {
                 throw Help();
             return item.value();
         };
+
+        static std::size_t getArgSize(
+            std::reference_wrapper<std::vector<std::string>> args,
+            const std::string &flag);
+        
+        static std::size_t getArgSize(
+            std::reference_wrapper<std::vector<std::string>> args,
+            const std::string &flag, std::size_t fallBack);
 
         template<typename T>
         static std::vector<T> getArgList(
