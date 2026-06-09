@@ -34,7 +34,7 @@ namespace Zappy {
     };
 
     struct TileInfo {
-        std::vector<ResourceName> _resources;
+        std::unordered_map<ResourceName, std::size_t> _resources;
         std::vector<Team> _eggs;
         std::vector<Team> _players;
     };
@@ -50,8 +50,11 @@ namespace Zappy {
             std::size_t _remainingPlace);
         void movePlayer(std::size_t id, Direction dir);
         static Direction getOpositeDir(Direction);
-        bool takeRessource(std::size_t id, ResourceName);
-        void setRessource(std::size_t id, ResourceName);
+        bool takeResource(std::size_t id, ResourceName);
+        void setResource(std::size_t id, ResourceName);
+        std::vector<std::size_t> startElevation(std::size_t id);
+        std::vector<std::size_t> endElevation(
+            std::size_t id, std::vector<std::size_t>);
 
         [[nodiscard]] std::size_t getHeight() const
         {
@@ -67,7 +70,7 @@ namespace Zappy {
         }
 
     private:
-        using Tile = std::vector<ResourceName>;
+        using Tile = std::unordered_map<ResourceName, std::size_t>;
 
         struct Resource {
             float _density;
@@ -83,6 +86,7 @@ namespace Zappy {
         struct Player {
             std::string _team;
             Direction _dir;
+            std::size_t _level;
             std::size_t _x;
             std::size_t _y;
         };
@@ -93,8 +97,17 @@ namespace Zappy {
             std::string _str;
         };
 
+        struct Elevation {
+            std::size_t _nbPlayer;
+            Tile _resources;
+        };
+
         static std::size_t circularMove(
             std::size_t pos, int delta, std::size_t size);
+        std::vector<std::size_t> checkElevation(
+            std::size_t x, std::size_t y, std::size_t level);
+        bool successElevation(std::size_t x, std::size_t y, const Elevation &,
+            const std::vector<size_t> &player);
 
         std::size_t _width;
         std::size_t _height;
@@ -108,6 +121,7 @@ namespace Zappy {
 
         static const std::unordered_map<ResourceName, Resource> _resources;
         static const std::map<Direction, Dir> _directions;
+        static const std::unordered_map<std::size_t, Elevation> _elevations;
     };
 } // namespace Zappy
 
