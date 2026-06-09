@@ -46,8 +46,8 @@ namespace Parser {
         std::reference_wrapper<std::vector<std::string>> args,
         const std::string &flag, std::size_t fallBack)
     {
-        auto value = ArgsParser::getArg<long long>(args,
-            flag, static_cast<long long>(fallBack));
+        auto value = ArgsParser::getArg<long long>(
+            args, flag, static_cast<long long>(fallBack));
 
         if (value <= 0)
             throw ArgsParserError(flag + " should have a positive value");

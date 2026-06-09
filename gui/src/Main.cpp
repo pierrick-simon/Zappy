@@ -6,11 +6,11 @@
 */
 
 #include <iostream>
+#include "ArgsParser.hpp"
 #include "GUI.hpp"
 #include "GUIException.hpp"
-#include "Utils.hpp"
 #include "Help.hpp"
-#include "ArgsParser.hpp"
+#include "Utils.hpp"
 
 int main(const int ac, const char *const *av)
 {

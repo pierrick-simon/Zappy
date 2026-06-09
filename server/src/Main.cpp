@@ -11,7 +11,6 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
-#include "ArgsParser.hpp"
 
 int main(const int ac, const char *const *av)
 {
