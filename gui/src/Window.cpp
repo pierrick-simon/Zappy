@@ -13,6 +13,7 @@
 #include <SFML/Window/Event.hpp>
 
 #include "OpenGLUtils.hpp"
+#include "graphics/primitives/Cube.hpp"
 #include "maths/Vector.hpp"
 
 namespace Graphics {
