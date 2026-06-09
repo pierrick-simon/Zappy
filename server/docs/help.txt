@@ -1,2 +1,1 @@
-help me pls
-je veux rentrer chez moi
+USAGE: ./zappy_server -p port -n name1 name2 ... -c clientsNb [-x width] [-y height] [-f freq]
