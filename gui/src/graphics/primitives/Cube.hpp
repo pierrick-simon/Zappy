@@ -7,7 +7,7 @@
 
 #ifndef CUBE_HPP
     #define CUBE_HPP
-    #include "GameObject.hpp"
+    #include "../GameObject.hpp"
 
 namespace Graphics {
     class Cube : public GameObject {

@@ -22,7 +22,7 @@ set(SRCS
         src/graphics/GameObject.cpp
         src/graphics/Transformable3D.cpp
         src/graphics/Scene.cpp
-        src/graphics/Cube.cpp
+        src/graphics/primitives/Cube.cpp
         src/graphics/SFMLGameObject.cpp
         src/Window.cpp
         src/GUI.cpp

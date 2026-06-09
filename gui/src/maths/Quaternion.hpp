@@ -120,6 +120,7 @@ namespace Maths {
          */
         static Quaternion fromEulerDegrees(
             double pitch, double roll, double yaw);
+        [[nodiscard]] std::array<double, 16> toGlMatrix() const;
 
         /**
          * The identity Quaternion means zero rotation.

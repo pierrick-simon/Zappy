@@ -9,6 +9,8 @@
 
 #include <SFML/OpenGL.hpp>
 
+#include "OpenGLUtils.hpp"
+
 namespace Graphics {
     void Cube::draw(sf::RenderTarget &target, sf::RenderStates states) const
     {
@@ -17,9 +19,8 @@ namespace Graphics {
         const double sz = DEFAULT_SIZE * this->getScale().getZ();
 
         glPushMatrix();
-        glTranslated(this->getPosition().getX(),
-            this->getPosition().getY(),
-            this->getPosition().getZ());
+        glTranslated(VEC_TO_LIST(this->getPosition()));
+        glMultMatrixd(this->getRotation().toGlMatrix().data());
 
         glColor3f(1.f, 0.f, 0.f);
         glBegin(GL_TRIANGLES);
