@@ -107,7 +107,7 @@ namespace Zappy {
             std::size_t pos, int delta, std::size_t size);
         std::vector<std::size_t> checkElevation(
             std::size_t x, std::size_t y, std::size_t level);
-        bool successElevation(std::size_t x, std::size_t y, const Elevation &,
+        void successElevation(std::size_t x, std::size_t y, const Elevation &,
             const std::vector<size_t> &player);
 
         std::size_t _width;

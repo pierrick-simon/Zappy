@@ -163,13 +163,10 @@ namespace Zappy {
         return check;
     }
 
-    bool Environement::successElevation(std::size_t x, std::size_t y,
+    void Environement::successElevation(std::size_t x, std::size_t y,
         const Elevation &elevation, const std::vector<size_t> &players)
     {
-        bool value = true;
         auto tile = _width * y + x;
-        if (players.size() < elevation.nbPlayer)
-            value = false;
         for (auto [name, nb] : elevation.resources) {
             auto isHere = _tiles[tile].find(name);
             isHere->second - nb;
