@@ -193,8 +193,8 @@ namespace Zappy {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        auto end = checkElevation(
-            find->second.x, find->second.y, find->second.level);
+        auto end =
+            checkElevation(find->second.x, find->second.y, find->second.level);
         start.erase(std::remove_if(start.begin(),
                         start.end(),
                         [&end](std::size_t x) {
@@ -206,8 +206,7 @@ namespace Zappy {
         if (start.size() < elevation.nbPlayer)
             start.clear();
         else
-            successElevation(
-                find->second.x, find->second.y, elevation, start);
+            successElevation(find->second.x, find->second.y, elevation, start);
         return start;
     }
 
