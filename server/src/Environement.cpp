@@ -14,15 +14,25 @@
 #include "Utils.hpp"
 
 namespace Zappy {
-    Environement::Environement(std::size_t width, std::size_t height,
-        std::size_t freq, std::ofstream &logFile) :
+    Environement::Environement(
+        std::size_t width, std::size_t height, std::ofstream &logFile) :
         _width(width),
         _height(height),
-        _freq(freq),
+        _sleep(SLEEP),
         _tiles(width * height),
         _logFile(logFile)
     {
         std::srand(std::time(nullptr));
+    }
+
+    std::chrono::nanoseconds Environement::update(
+        std::chrono::nanoseconds elapsed)
+    {
+        _sleep -= elapsed;
+        if (_sleep.count() <= 0) {
+            _sleep = SLEEP;
+        }
+        return _sleep;
     }
 
     void Environement::addPlayer(

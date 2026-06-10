@@ -8,6 +8,7 @@
 #ifndef ENVIRONEMENT_HPP
     #define ENVIRONEMENT_HPP
 
+    #include <chrono>
     #include <map>
     #include <string>
     #include <unordered_map>
@@ -41,9 +42,10 @@ namespace Zappy {
 
     class Environement {
     public:
-        Environement(std::size_t width, std::size_t height, std::size_t freq,
-            std::ofstream &logFile);
+        Environement(
+            std::size_t width, std::size_t height, std::ofstream &logFile);
 
+        std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
 
         void addPlayer(std::size_t id, const std::string &team,
@@ -64,10 +66,6 @@ namespace Zappy {
         [[nodiscard]] std::size_t getWidth() const
         {
             return _width;
-        }
-        [[nodiscard]] std::size_t getFreq() const
-        {
-            return _freq;
         }
 
     private:
@@ -112,7 +110,7 @@ namespace Zappy {
 
         std::size_t _width;
         std::size_t _height;
-        std::size_t _freq;
+        std::chrono::nanoseconds _sleep;
 
         std::vector<Tile> _tiles;
         std::unordered_map<std::size_t, Egg> _eggs;
@@ -123,6 +121,9 @@ namespace Zappy {
         static const std::unordered_map<ResourceName, Resource> _resources;
         static const std::map<Direction, Dir> _directions;
         static const std::unordered_map<std::size_t, Elevation> _elevations;
+
+        static constexpr std::chrono::nanoseconds SLEEP =
+            std::chrono::seconds(20);
     };
 } // namespace Zappy
 

@@ -19,9 +19,10 @@ namespace Zappy {
         _logFile(std::string(LOG_FILE)),
         _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n")),
         _connect(Parser::ArgsParser::getArg<int>(args, "-p")),
+        _f(Parser::ArgsParser::getArgSize(args, "-f")),
+        _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
-            Parser::ArgsParser::getArgSize(args, "-y", 100), _f, _logFile),
-        _f(Parser::ArgsParser::getArgSize(args, "-f"))
+            Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile)
     {
         auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c");
         if (_teamsNames.empty())
@@ -71,13 +72,18 @@ namespace Zappy {
     void Server::update()
     {
         auto now = std::chrono::steady_clock::now();
-        auto elapsed = _clock - now;
+        auto elapsed = std::chrono::nanoseconds((_clock - now) / _fn);
         _clock = now;
         _timeout = -1;
+        auto tmp = _env.update(elapsed);
+        auto timeout = int(
+            std::chrono::duration_cast<std::chrono::microseconds>(tmp).count());
+        if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
+            _timeout = timeout;
         std::vector<int> deads;
         for (auto &[id, ai] : _aiClients) {
-            auto tmp = ai.update(elapsed);
-            auto timeout =
+            tmp = ai.update(elapsed);
+            timeout =
                 int(std::chrono::duration_cast<std::chrono::microseconds>(tmp)
                         .count());
             if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
