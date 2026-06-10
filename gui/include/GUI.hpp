@@ -23,6 +23,8 @@ namespace Zappy {
 
         void run();
 
+        static constexpr std::string_view HELP_FILE = "gui/docs/help.txt";
+
     private:
         using Command = std::function<void(GUI &, std::istringstream &)>;
 

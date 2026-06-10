@@ -18,14 +18,14 @@ int main(const int ac, const char *const *av)
     for (++av; *av != nullptr; ++av)
         args.emplace_back(*av);
     if (Parser::ArgsParser::isArg(args, "--help")) {
-        Help::help("server/docs/help.txt");
+        Help::help(Zappy::Server::HELP_FILE.data());
         return Shared::EPISUCCESS;
     }
     try {
         Zappy::Server server(args);
         server.run();
     } catch (const Parser::Help &) {
-        Help::help("server/docs/help.txt");
+        Help::help(Zappy::Server::HELP_FILE.data());
         return Shared::EPIERROR;
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;

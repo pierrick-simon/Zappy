@@ -25,6 +25,8 @@ namespace Zappy {
 
         void run();
 
+        static constexpr std::string_view HELP_FILE = "server/docs/help.txt";
+
     private:
         using NewClient = std::pair<std::size_t, std::string>;
         using AIIter = std::unordered_map<int, AIClient>::iterator;
