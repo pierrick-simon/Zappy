@@ -100,7 +100,7 @@ namespace Zappy {
             auto find = _clients.ai.find(dead);
             if (find != _clients.ai.end()) {
                 _connect.removeClient(dead);
-                _env.removePlayer(find->second.getId());
+                _env.removePlayer(find);
                 _clients.ai.erase(find);
             }
         }
@@ -143,7 +143,7 @@ namespace Zappy {
             iter->second.infoToRead();
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
-            _env.removePlayer(iter->second.getId());
+            _env.removePlayer(iter);
             _clients.ai.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(iter->second.getId()) +

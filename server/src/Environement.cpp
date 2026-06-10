@@ -10,6 +10,8 @@
 #include <ctime>
 #include <optional>
 #include <random>
+#include "AIClient.hpp"
+#include "GUIClient.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
@@ -63,11 +65,16 @@ namespace Zappy {
         throw PlayerNotFoundException(id);
     }
 
-    void Environement::removePlayer(std::size_t id)
+    void Environement::removePlayer(
+        std::unordered_map<int, AIClient>::iterator iter)
     {
-        auto find = _players.find(id);
-        if (find != _players.end())
+        auto find = _players.find(iter->second.getId());
+        auto tile = _width * find->second.y + find->second.x;
+        if (find != _players.end()) {
+            for (auto [name, nb] : iter->second.getInventory())
+                setResource(tile, name, nb);
             _players.erase(find);
+        }
     }
 
     TileInfo Environement::getTileInfo(
@@ -148,6 +155,16 @@ namespace Zappy {
             resource->second++;
         else
             _tiles[tile].emplace(name, 1);
+    }
+
+    void Environement::setResource(
+        std::size_t tile, ResourceName name, std::size_t nb)
+    {
+        auto resource = _tiles[tile].find(name);
+        if (resource != _tiles[tile].end())
+            resource->second += nb;
+        else
+            _tiles[tile].emplace(name, nb);
     }
 
     std::vector<std::size_t> Environement::checkElevation(

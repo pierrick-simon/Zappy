@@ -41,6 +41,8 @@ namespace Zappy {
     };
 
     struct Clients;
+    class AIClient;
+    class GUIClient;
 
     class Environement {
     public:
@@ -52,7 +54,7 @@ namespace Zappy {
 
         void addPlayer(std::size_t id, const std::string &team,
             std::size_t _remainingPlace);
-        void removePlayer(std::size_t id);
+        void removePlayer(std::unordered_map<int, AIClient>::iterator);
         void movePlayer(std::size_t id, Direction dir);
         static Direction getOpositeDir(Direction);
         bool takeResource(std::size_t id, ResourceName);
@@ -109,6 +111,7 @@ namespace Zappy {
             std::size_t x, std::size_t y, std::size_t level);
         void successElevation(std::size_t x, std::size_t y, const Elevation &,
             const std::vector<size_t> &player);
+        void setResource(std::size_t tile, ResourceName name, std::size_t nb);
 
         std::size_t _width;
         std::size_t _height;
