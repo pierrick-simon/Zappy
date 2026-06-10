@@ -68,6 +68,7 @@ namespace Graphics {
     void Model::parseVertex(std::istringstream &line)
     {
         VertexType vertex;
+
         parseSingleValuePos(line, vertex.getX(), "vertex x");
         parseSingleValuePos(line, vertex.getY(), "vertex y");
         parseSingleValuePos(line, vertex.getZ(), "vertex z");
@@ -78,10 +79,21 @@ namespace Graphics {
         }
         this->_vertices.emplace_back(vertex);
     }
+    void Model::parseTexturePos(std::istringstream &line)
+    {
+        TexturePosType texturePos {0, 0, 0};
+
+        parseSingleValuePos(line, texturePos.getX(), "texture pos x");
+        if (!line.eof())
+            parseSingleValuePos(line, texturePos.getY(), "texture pos y");
+        if (!line.eof())
+            parseSingleValuePos(line, texturePos.getZ(), "texture pos z");
+        this->_texturePos.emplace_back(texturePos);
+    }
 
     const std::unordered_map<std::string, Model::LineMethod>
         Model::LINE_METHODS = {
             {"v", &Model::parseVertex},
-            {"vt", &Model::parseTextureCoord},
+            {"vt", &Model::parseTexturePos},
     };
 } // namespace Graphics
