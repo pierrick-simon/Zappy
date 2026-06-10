@@ -24,6 +24,7 @@ endif()
 
 add_subdirectory(server)
 
+include(CTest)
 add_subdirectory(gui)
 
 add_custom_target(tests_run
