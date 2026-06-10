@@ -5,9 +5,9 @@
 ** Server
 */
 
-#include "Server.hpp"
 #include <csignal>
 #include <iostream>
+#include "Server.hpp"
 #include "ArgsParser.hpp"
 #include "Utils.hpp"
 
@@ -19,10 +19,9 @@ namespace Zappy {
         _logFile(std::string(LOG_FILE)),
         _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n")),
         _connect(Parser::ArgsParser::getArg<int>(args, "-p")),
-        _x(Parser::ArgsParser::getArgSize(args, "-x", 100)),
-        _y(Parser::ArgsParser::getArgSize(args, "-y", 100)),
-        _f(Parser::ArgsParser::getArgSize(args, "-f")),
-        _env(_x, _y, _f, _logFile)
+        _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
+            Parser::ArgsParser::getArgSize(args, "-y", 100), _f, _logFile),
+        _f(Parser::ArgsParser::getArgSize(args, "-f"))
     {
         auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c");
         if (_teamsNames.empty())

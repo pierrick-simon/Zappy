@@ -54,8 +54,6 @@ namespace Zappy {
         int _timeout = -1;
 
         std::size_t _f;
-        std::size_t _x;
-        std::size_t _y;
         Environement _env;
 
         static bool RECEIVED_SIG_INT;
