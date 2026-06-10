@@ -18,19 +18,19 @@ static const auto DIRECTORY =
 Test(model_parsing, vertex_empty)
 {
     cr_assert_any_throw(
-        { Graphics::Model model(DIRECTORY / "empty_vertex.obj"); });
+        { Graphics::Model model(DIRECTORY / "vertex_empty.obj"); });
 }
 
 Test(model_parsing, vertex_only_x)
 {
     cr_assert_any_throw(
-        { Graphics::Model model(DIRECTORY / "only_x_vertex.obj"); });
+        { Graphics::Model model(DIRECTORY / "vertex_only_x.obj"); });
 }
 
 Test(model_parsing, vertex_no_z)
 {
     cr_assert_any_throw(
-        { Graphics::Model model(DIRECTORY / "no_z_vertex.obj"); });
+        { Graphics::Model model(DIRECTORY / "vertex_no_z.obj"); });
 }
 
 Test(model_parsing, vertex_simple)
@@ -38,7 +38,7 @@ Test(model_parsing, vertex_simple)
     Graphics::Model::VertexType expected {1, 2, 3};
 
     cr_assert_none_throw({
-        Graphics::Model model(DIRECTORY / "simple_vertex.obj");
+        Graphics::Model model(DIRECTORY / "vertex_simple.obj");
         cr_assert_eq(model.getVertices().front(), expected);
     });
 }
@@ -48,21 +48,21 @@ Test(model_parsing, vertex_w)
     Graphics::Model::VertexType expected {1, 2, 3};
     expected *= 4;
     cr_assert_none_throw({
-        Graphics::Model model(DIRECTORY / "w_vertex.obj");
+        Graphics::Model model(DIRECTORY / "vertex_w.obj");
         cr_assert_eq(model.getVertices().front(), expected);
     });
 }
 Test(model_parsing, texture_pos_empty)
 {
     cr_assert_any_throw(
-        { Graphics::Model model(DIRECTORY / "empty_texture_pos.obj"); });
+        { Graphics::Model model(DIRECTORY / "texture_pos_empty.obj"); });
 }
 
 Test(model_parsing, texture_pos_only_x)
 {
     Graphics::Model::TexturePosType expected {1, 0, 0};
     cr_assert_none_throw({
-        Graphics::Model model(DIRECTORY / "only_x_texture_pos.obj");
+        Graphics::Model model(DIRECTORY / "texture_pos_only_x.obj");
         cr_assert_eq(model.getTexturePos().front(), expected);
     });
 }
@@ -71,7 +71,7 @@ Test(model_parsing, texture_pos_simple)
 {
     Graphics::Model::TexturePosType expected {1, 2, 0};
     cr_assert_none_throw({
-        Graphics::Model model(DIRECTORY / "simple_texture_pos.obj");
+        Graphics::Model model(DIRECTORY / "texture_pos_simple.obj");
         cr_assert_eq(model.getTexturePos().front(), expected);
     });
 }
@@ -81,7 +81,7 @@ Test(model_parsing, texture_pos_3d)
     Graphics::Model::TexturePosType expected {1, 2, 3};
 
     cr_assert_none_throw({
-        Graphics::Model model(DIRECTORY / "3d_texture_pos.obj");
+        Graphics::Model model(DIRECTORY / "texture_pos_3d.obj");
         cr_assert_eq(model.getTexturePos().front(), expected);
     });
 }
@@ -89,21 +89,21 @@ Test(model_parsing, texture_pos_3d)
 Test(model_parsing, empty_normal)
 {
     cr_assert_any_throw(
-        { Graphics::Model model(DIRECTORY / "empty_normal.obj"); });
+        { Graphics::Model model(DIRECTORY / "normal_empty.obj"); });
 }
 
 Test(model_parsing, almost_normal)
 {
     cr_assert_any_throw(
-        { Graphics::Model model(DIRECTORY / "almost_normal.obj"); });
+        { Graphics::Model model(DIRECTORY / "normal_almost.obj"); });
 }
 
 Test(model_parsing, simple_normal)
 {
     Graphics::Model::NormalType expected {1, 2, 3};
 
-    cr_assert_any_throw({
-        Graphics::Model model(DIRECTORY / "almost_normal.obj");
+    cr_assert_none_throw({
+        Graphics::Model model(DIRECTORY / "normal_simple.obj");
         cr_assert_eq(model.getNormals().front(), expected);
     });
 }
