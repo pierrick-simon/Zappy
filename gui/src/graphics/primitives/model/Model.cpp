@@ -42,14 +42,22 @@ namespace Graphics {
                 }
         }
     }
+
     const std::vector<Model::VertexType> &Model::getVertices() const
     {
         return this->_vertices;
     }
+
     const std::vector<Model::TexturePosType> &Model::getTexturePos() const
     {
         return this->_texturePos;
     }
+
+    const std::vector<Model::NormalType> &Model::getNormals() const
+    {
+        return this->_normals;
+    }
+
     const std::vector<Face> &Model::getFaces() const
     {
         return this->_faces;
@@ -79,6 +87,7 @@ namespace Graphics {
         }
         this->_vertices.emplace_back(vertex);
     }
+
     void Model::parseTexturePos(std::istringstream &line)
     {
         TexturePosType texturePos {0, 0, 0};
@@ -91,9 +100,20 @@ namespace Graphics {
         this->_texturePos.emplace_back(texturePos);
     }
 
+    void Model::parseNormal(std::istringstream &line)
+    {
+        NormalType normal;
+
+        parseSingleValuePos(line, normal.getX(), "normal x");
+        parseSingleValuePos(line, normal.getY(), "normal y");
+        parseSingleValuePos(line, normal.getZ(), "normal z");
+        this->_normals.emplace_back(normal);
+    }
+
     const std::unordered_map<std::string, Model::LineMethod>
         Model::LINE_METHODS = {
             {"v", &Model::parseVertex},
             {"vt", &Model::parseTexturePos},
+            {"vn", &Model::parseNormal},
     };
 } // namespace Graphics

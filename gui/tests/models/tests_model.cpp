@@ -85,3 +85,25 @@ Test(model_parsing, texture_pos_3d)
         cr_assert_eq(model.getTexturePos().front(), expected);
     });
 }
+
+Test(model_parsing, empty_normal)
+{
+    cr_assert_any_throw(
+        { Graphics::Model model(DIRECTORY / "empty_normal.obj"); });
+}
+
+Test(model_parsing, almost_normal)
+{
+    cr_assert_any_throw(
+        { Graphics::Model model(DIRECTORY / "almost_normal.obj"); });
+}
+
+Test(model_parsing, simple_normal)
+{
+    Graphics::Model::NormalType expected {1, 2, 3};
+
+    cr_assert_any_throw({
+        Graphics::Model model(DIRECTORY / "almost_normal.obj");
+        cr_assert_eq(model.getNormals().front(), expected);
+    });
+}

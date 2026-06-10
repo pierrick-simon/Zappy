@@ -25,6 +25,7 @@ namespace Graphics {
 
         [[nodiscard]] const std::vector<VertexType> &getVertices() const;
         [[nodiscard]] const std::vector<TexturePosType> &getTexturePos() const;
+        [[nodiscard]] const std::vector<NormalType> &getNormals() const;
         [[nodiscard]] const std::vector<Face> &getFaces() const;
 
     private:
@@ -32,6 +33,7 @@ namespace Graphics {
             const std::string &posName);
         void parseVertex(std::istringstream &line);
         void parseTexturePos(std::istringstream &line);
+        void parseNormal(std::istringstream &line);
 
         std::vector<VertexType> _vertices;
         std::vector<TexturePosType> _texturePos;
