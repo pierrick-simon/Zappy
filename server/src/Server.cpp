@@ -5,9 +5,9 @@
 ** Server
 */
 
+#include "Server.hpp"
 #include <csignal>
 #include <iostream>
-#include "Server.hpp"
 #include "ArgsParser.hpp"
 #include "Utils.hpp"
 
