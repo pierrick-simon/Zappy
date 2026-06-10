@@ -8,6 +8,7 @@
 #ifndef ENVIRONEMENT_HPP
     #define ENVIRONEMENT_HPP
 
+    #include <chrono>
     #include <map>
     #include <string>
     #include <unordered_map>
@@ -39,16 +40,21 @@ namespace Zappy {
         std::vector<Team> players;
     };
 
+    struct Clients;
+    class AIClient;
+    class GUIClient;
+
     class Environement {
     public:
-        Environement(std::size_t width, std::size_t height, std::size_t freq,
-            std::ofstream &logFile);
+        Environement(std::size_t width, std::size_t height,
+            std::ofstream &logFile, Clients &clients);
 
+        std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
 
         void addPlayer(std::size_t id, const std::string &team,
             std::size_t _remainingPlace);
-        void removePlayer(std::size_t id);
+        void removePlayer(std::unordered_map<int, AIClient>::iterator);
         void movePlayer(std::size_t id, Direction dir);
         static Direction getOpositeDir(Direction);
         bool takeResource(std::size_t id, ResourceName);
@@ -64,10 +70,6 @@ namespace Zappy {
         [[nodiscard]] std::size_t getWidth() const
         {
             return _width;
-        }
-        [[nodiscard]] std::size_t getFreq() const
-        {
-            return _freq;
         }
 
     private:
@@ -109,20 +111,25 @@ namespace Zappy {
             std::size_t x, std::size_t y, std::size_t level);
         void successElevation(std::size_t x, std::size_t y, const Elevation &,
             const std::vector<size_t> &player);
+        void setResource(std::size_t tile, ResourceName name, std::size_t nb);
 
         std::size_t _width;
         std::size_t _height;
-        std::size_t _freq;
+        std::chrono::nanoseconds _sleep;
 
         std::vector<Tile> _tiles;
         std::unordered_map<std::size_t, Egg> _eggs;
         std::unordered_map<std::size_t, Player> _players;
 
         std::ofstream &_logFile;
+        Clients &_clients;
 
         static const std::unordered_map<ResourceName, Resource> _resources;
         static const std::map<Direction, Dir> _directions;
         static const std::unordered_map<std::size_t, Elevation> _elevations;
+
+        static constexpr std::chrono::nanoseconds SLEEP =
+            std::chrono::seconds(20);
     };
 } // namespace Zappy
 

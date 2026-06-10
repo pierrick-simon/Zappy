@@ -18,6 +18,15 @@
     #include "Utils.hpp"
 
 namespace Zappy {
+
+    using NewClient = std::pair<std::size_t, std::string>;
+
+    struct Clients {
+        std::unordered_map<int, NewClient> newClient;
+        std::unordered_map<int, AIClient> ai;
+        std::unordered_map<int, GUIClient> gui;
+    };
+
     class Server {
     public:
         Server(std::vector<std::string> args);
@@ -28,7 +37,6 @@ namespace Zappy {
         static constexpr std::string_view HELP_FILE = "server/docs/help.txt";
 
     private:
-        using NewClient = std::pair<std::size_t, std::string>;
         using AIIter = std::unordered_map<int, AIClient>::iterator;
         using GUIIter = std::unordered_map<int, GUIClient>::iterator;
 
@@ -46,14 +54,14 @@ namespace Zappy {
         Shared::Connect _connect;
         std::unordered_map<std::string, std::size_t> _teams;
         std::vector<std::string> _teamsNames;
-        std::unordered_map<int, NewClient> _newClients;
-        std::unordered_map<int, AIClient> _aiClients;
-        std::unordered_map<int, GUIClient> _guiClients;
+
+        Clients _clients;
 
         Shared::Clock _clock;
         int _timeout = -1;
 
         std::size_t _f;
+        std::chrono::nanoseconds _fn;
         Environement _env;
 
         static bool RECEIVED_SIG_INT;
@@ -62,6 +70,7 @@ namespace Zappy {
 
         static constexpr std::string_view LOG_FILE = "server.log";
         static constexpr std::string_view GRAPHIC = "GRAPHIC";
+        static constexpr std::size_t SECOND_IN_NANO = 1000000;
     };
 } // namespace Zappy
 

@@ -34,6 +34,12 @@ namespace Zappy {
             return _alive;
         }
 
+        [[nodiscard]] std::unordered_map<ResourceName, std::size_t>
+        getInventory() const
+        {
+            return _inventory;
+        }
+
         std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
         void executeCommand();
 
