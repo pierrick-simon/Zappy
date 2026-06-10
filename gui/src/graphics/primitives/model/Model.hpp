@@ -23,15 +23,15 @@ namespace Graphics {
         using TexturePosType = Maths::Vector3D;
         using NormalType = Maths::Vector3D;
 
-        const std::vector<VertexType> &getVertices() const;
-        const std::vector<TexturePosType> &getTexturePos() const;
-        const std::vector<Face> &getFaces() const;
+        [[nodiscard]] const std::vector<VertexType> &getVertices() const;
+        [[nodiscard]] const std::vector<TexturePosType> &getTexturePos() const;
+        [[nodiscard]] const std::vector<Face> &getFaces() const;
 
     private:
         static void parseSingleValuePos(std::istringstream &line, double &value,
             const std::string &posName);
         void parseVertex(std::istringstream &line);
-        void parseTextureCoord(std::istringstream &line);
+        void parseTexturePos(std::istringstream &line);
 
         std::vector<VertexType> _vertices;
         std::vector<TexturePosType> _texturePos;
