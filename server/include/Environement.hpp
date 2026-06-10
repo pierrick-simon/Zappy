@@ -40,10 +40,12 @@ namespace Zappy {
         std::vector<Team> players;
     };
 
+    struct Clients;
+
     class Environement {
     public:
-        Environement(
-            std::size_t width, std::size_t height, std::ofstream &logFile);
+        Environement(std::size_t width, std::size_t height,
+            std::ofstream &logFile, Clients &clients);
 
         std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
@@ -117,6 +119,7 @@ namespace Zappy {
         std::unordered_map<std::size_t, Player> _players;
 
         std::ofstream &_logFile;
+        Clients &_clients;
 
         static const std::unordered_map<ResourceName, Resource> _resources;
         static const std::map<Direction, Dir> _directions;

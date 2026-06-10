@@ -10,17 +10,19 @@
 #include <ctime>
 #include <optional>
 #include <random>
+#include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
 
 namespace Zappy {
-    Environement::Environement(
-        std::size_t width, std::size_t height, std::ofstream &logFile) :
+    Environement::Environement(std::size_t width, std::size_t height,
+        std::ofstream &logFile, Clients &clients) :
         _width(width),
         _height(height),
         _sleep(SLEEP),
         _tiles(width * height),
-        _logFile(logFile)
+        _logFile(logFile),
+        _clients(clients)
     {
         std::srand(std::time(nullptr));
     }
