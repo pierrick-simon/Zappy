@@ -8,22 +8,40 @@
 #include "Server.hpp"
 #include <csignal>
 #include <iostream>
+#include "ArgsParser.hpp"
 #include "Utils.hpp"
 
 namespace Zappy {
 
     bool Server::RECEIVED_SIG_INT = false;
 
-    Server::Server(int port, const std::vector<std::string> &teams,
-        std::size_t nbPerTeam) :
-        _connect(port),
+    Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
-        _env(100, 100, 100, _logFile)
+        _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n")),
+        _connect(Parser::ArgsParser::getArg<int>(args, "-p")),
+        _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
+            Parser::ArgsParser::getArgSize(args, "-y", 100), _f, _logFile),
+        _f(Parser::ArgsParser::getArgSize(args, "-f"))
     {
+        auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c");
+        if (_teamsNames.empty())
+            throw Parser::ArgsParserError("No teams name given");
+        for (const auto &team : _teamsNames) {
+            if (_teams.count(team))
+                throw Parser::ArgsParserError(
+                    "Cannot use duplicate teams name");
+            if (team == GRAPHIC)
+                throw Parser::ArgsParserError(
+                    "Cannot use \"GRAPHIC\" as team name");
+            _teams.emplace(team, nbPerTeam);
+        }
+        _teamsNames.clear();
+
+        if (!args.empty())
+            throw Parser::Help();
+
         Shared::Utils::logMsg(_logFile, "Server Open.");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
-        for (const auto &team : teams)
-            _teams.emplace(team, nbPerTeam);
         _clock = std::chrono::steady_clock::now();
     }
 
