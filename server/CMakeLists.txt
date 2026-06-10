@@ -42,8 +42,6 @@ endif()
 
 add_executable(zappy_server ${MAIN} ${SRCS} ${SHARED_SRCS})
 
-target_compile_options(zappy_server PRIVATE -g)
-
 find_library(CRITERION criterion REQUIRED)
 
 set(SRCS_TESTS

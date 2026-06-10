@@ -1,4 +1,5 @@
 build
+build_debug
 zappy_gui
 zappy_server
 zappy_ai
