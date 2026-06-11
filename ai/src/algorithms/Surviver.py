@@ -2,7 +2,7 @@
 ## EPITECH PROJECT, 2026
 ## Zappy
 ## File description:
-## main
+## Surviver AI
 ##
 
 import argparse
@@ -85,6 +85,8 @@ class SimConnection:
         self._step = 0
         self._pending_cmd = None
 
+        print(self._map.display(self._x, self._y))
+
     def send(self, cmd: str):
         self._pending_cmd = cmd
 
@@ -97,7 +99,6 @@ class SimConnection:
         if self._step % 15 == 0:
             self._inv["food"] = max(0, self._inv["food"] - 1)
             if self._inv["food"] == 0:
-                self.close()
                 raise "dead"
         response = self._dispatch(cmd)
         self._print_action(cmd, response)
@@ -224,7 +225,7 @@ class SurvivalAI:
 
     def _explore(self):
         self._cmd("Forward")
-        if self._turn > 0 and self._turn % 5 == 0:
+        if self._turn > 0 and self._turn % random.randint(3, 10) == 0:
             self._cmd("Right")
 
 def _parse_look(response: str) -> list[list[str]]:
@@ -269,8 +270,6 @@ def build_parser() -> argparse.ArgumentParser:
                         metavar="port", help="port du serveur")
     parser.add_argument("-n", required=True,
                         metavar="name", help="nom de l'équipe")
-    parser.add_argument("-h", dest="host", default="localhost",
-                        metavar="machine", help="adresse du serveur")
     parser.add_argument("--help", action="help")
     return parser
 
@@ -278,13 +277,18 @@ def build_parser() -> argparse.ArgumentParser:
 def main():
     parser = build_parser()
     args = parser.parse_args()
-    random.seed(random.randint(1, 100))
+    random.seed(time.time())
     conn = SimConnection(team=args.n, delay=0)
     ai = SurvivalAI(conn)
-    result = ai.run()
-    print(result)
-    conn.close()
-
+    try:
+        ai.run()
+    except KeyboardInterrupt:
+        conn.close()
+        return 0
+    finally:
+        print("AI is dead")
+        conn.close()
+        return 0
 
 if __name__ == "__main__":
     main()
