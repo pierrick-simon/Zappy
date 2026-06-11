@@ -7,24 +7,25 @@
 
 #ifndef IGAMEOBJECT_HPP
     #define IGAMEOBJECT_HPP
-    #include "../maths/Quaternion.hpp"
+
+    #include <raymath.h>
 
 namespace Graphics {
     class Transformable3D {
     public:
         virtual ~Transformable3D() = default;
-        virtual Maths::Vector3D &getPosition();
-        virtual Maths::Quaternion &getRotation();
-        virtual Maths::Vector3D &getScale();
-        [[nodiscard]] virtual const Maths::Vector3D &getPosition() const;
-        [[nodiscard]] virtual const Maths::Quaternion &getRotation() const;
-        [[nodiscard]] virtual const Maths::Vector3D &getScale() const;
-        [[nodiscard]] Maths::Vector3D getForward() const;
+        virtual RayMath::Vector3 &getPosition();
+        virtual RayMath::Quaternion &getRotation();
+        virtual RayMath::Vector3 &getScale();
+        [[nodiscard]] virtual const RayMath::Vector3 &getPosition() const;
+        [[nodiscard]] virtual const RayMath::Quaternion &getRotation() const;
+        [[nodiscard]] virtual const RayMath::Vector3 &getScale() const;
+        [[nodiscard]] RayMath::Vector3 getForward() const;
 
     protected:
-        Maths::Vector3D _position;
-        Maths::Quaternion _rotation;
-        Maths::Vector3D _scale {1, 1, 1};
+        Vector3 _position {};
+        RayMath::Quaternion _rotation {};
+        RayMath::Vector3 _scale {1, 1, 1};
     };
 } // namespace Graphics
 

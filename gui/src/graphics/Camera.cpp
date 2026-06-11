@@ -7,19 +7,14 @@
 
 #include "Camera.hpp"
 
+#include "RayMath.hpp"
+
 namespace Graphics {
-    Camera::Camera(double fov) :
-        _fov(fov)
+    Camera::Camera(float fov) :
+        Camera3D {}
     {
-    }
-
-    double Camera::getFov() const
-    {
-        return this->_fov;
-    }
-
-    void Camera::setFov(double fov)
-    {
-        this->_fov = fov;
+        this->fovy = fov;
+        this->projection = RayLib::CAMERA_PERSPECTIVE;
+        this->up = RayMath::Vector3UnitZ;
     }
 } // namespace Graphics

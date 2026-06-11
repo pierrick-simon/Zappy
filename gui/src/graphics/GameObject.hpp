@@ -6,16 +6,13 @@
 */
 
 #ifndef GAMEOBJECT_HPP
-#define GAMEOBJECT_HPP
-#include <SFML/Graphics/Drawable.hpp>
+    #define GAMEOBJECT_HPP
 
-#include "Transformable3D.hpp"
+    #include "Transformable3D.hpp"
+    #include "graphics/Drawable.hpp"
 
 namespace Graphics {
-    class GameObject : public Transformable3D, public sf::Drawable {
-    protected:
-        void applyTransform() const;
-    };
+    class GameObject : public Transformable3D, public Drawable {};
 } // namespace Graphics
 
 #endif
