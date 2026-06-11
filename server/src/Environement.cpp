@@ -62,7 +62,7 @@ namespace Zappy {
                     "), looking " + _directions.at(item->first).str + ".");
             return;
         }
-        throw PlayerNotFoundException(id);
+        throw EggNotFoundException();
     }
 
     void Environement::removePlayer(
@@ -75,6 +75,21 @@ namespace Zappy {
                 setResource(tile, name, nb);
             _players.erase(find);
         }
+    }
+
+    void Environement::spawnEgg(std::size_t id, const std::string &team)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        _eggs.emplace(_eggId, Egg{team, find->second.x, find->second.y});
+        _eggId++;
+    }
+
+    void Environement::spawnEgg(const std::string &team)
+    {
+        _eggs.emplace(_eggId, Egg{team, std::rand() % _width, std::rand() % _height});
+        _eggId++;
     }
 
     TileInfo Environement::getTileInfo(

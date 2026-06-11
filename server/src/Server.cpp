@@ -35,6 +35,8 @@ namespace Zappy {
                 throw Parser::ArgsParserError(
                     "Cannot use \"GRAPHIC\" as team name");
             _teams.emplace(team, nbPerTeam);
+            for (std::size_t i = 0; i < nbPerTeam; i++)
+                _env.spawnEgg(team);
         }
         _teamsNames.clear();
 
@@ -204,7 +206,7 @@ namespace Zappy {
                         find->first,
                         _logFile,
                         _env));
-                _env.addPlayer(iter->first, line.value(), find->second);
+                _env.addPlayer(iter->second.first, line.value(), find->second);
                 find->second--;
                 _clients.newClient.erase(iter);
             } else {
