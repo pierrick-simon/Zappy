@@ -49,7 +49,8 @@ namespace Zappy {
     class Environement {
     public:
         Environement(std::size_t width, std::size_t height,
-            std::ofstream &logFile, Clients &clients);
+            std::ofstream &logFile, Clients &clients,
+            std::unordered_map<std::string, std::size_t> &teams);
 
         std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
@@ -80,6 +81,7 @@ namespace Zappy {
         {
             return _resources.at(name).str;
         }
+        [[nodiscard]] std::size_t getConnectNbr(std::size_t) const;
 
     private:
         using Tile = std::unordered_map<ResourceName, std::size_t>;
@@ -133,6 +135,7 @@ namespace Zappy {
 
         std::ofstream &_logFile;
         Clients &_clients;
+        std::unordered_map<std::string, std::size_t> &_teams;
 
         static const std::unordered_map<ResourceName, Resource> _resources;
         static const std::map<Direction, Dir> _directions;

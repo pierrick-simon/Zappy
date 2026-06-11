@@ -18,13 +18,15 @@
 
 namespace Zappy {
     Environement::Environement(std::size_t width, std::size_t height,
-        std::ofstream &logFile, Clients &clients) :
+        std::ofstream &logFile, Clients &clients,
+        std::unordered_map<std::string, std::size_t> &teams) :
         _width(width),
         _height(height),
         _sleep(SLEEP),
         _tiles(width * height),
         _logFile(logFile),
-        _clients(clients)
+        _clients(clients),
+        _teams(teams)
     {
         std::srand(std::time(nullptr));
     }
@@ -271,6 +273,14 @@ namespace Zappy {
         else
             successElevation(find->second.x, find->second.y, elevation, start);
         return start;
+    }
+
+    std::size_t Environement::getConnectNbr(std::size_t id) const
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        return _teams.at(find->second.team);
     }
 
     const std::unordered_map<ResourceName, Environement::Resource>

@@ -60,6 +60,7 @@ namespace Zappy {
         static void right(AIClient &);
         static void left(AIClient &);
         static void inventory(AIClient &);
+        static void connectNbr(AIClient &);
 
         int _fd;
         bool _alive = true;
