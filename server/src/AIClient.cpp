@@ -8,6 +8,7 @@
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "Connect.hpp"
+#include "ServerException.hpp"
 #include "Utils.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
@@ -58,9 +59,10 @@ namespace Zappy {
             _sleep -= elapsed;
         if (_sleep.count() <= 0) {
             if (_command) {
-                _command.value()->second._func(*this);
+                _command.value().iter->second._func(
+                    *this, _command.value().stream);
                 Shared::Utils::logMsg(_logFile,
-                    "Executed command " + _command.value()->first +
+                    "Executed command " + _command.value().iter->first +
                         " for client[" + std::to_string(_id) + "].");
                 _command.reset();
             }
@@ -100,7 +102,7 @@ namespace Zappy {
         auto iter = COMMANDS.find(command);
         if (iter != COMMANDS.end()) {
             _sleep = iter->second._timeLimit;
-            _command = iter;
+            _command.emplace(SelectCommand {iter, stream});
         } else {
             _sleep = DEFAULT_SLEEP;
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
@@ -110,25 +112,25 @@ namespace Zappy {
         }
     }
 
-    void AIClient::forward(AIClient &client)
+    void AIClient::forward(AIClient &client, std::istringstream &stream)
     {
         client._env.movePlayer(client._id);
         Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::right(AIClient &client)
+    void AIClient::right(AIClient &client, std::istringstream &stream)
     {
         client._env.rotatePlayer(client._id, Rotate::Right);
         Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::left(AIClient &client)
+    void AIClient::left(AIClient &client, std::istringstream &stream)
     {
         client._env.rotatePlayer(client._id, Rotate::Left);
         Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::inventory(AIClient &client)
+    void AIClient::inventory(AIClient &client, std::istringstream &stream)
     {
         std::string msg = "[";
         bool first = true;
@@ -143,21 +145,60 @@ namespace Zappy {
         Shared::Connect::send(client._fd, msg);
     }
 
-    void AIClient::connectNbr(AIClient &client)
+    void AIClient::connectNbr(AIClient &client, std::istringstream &stream)
     {
         Shared::Connect::send(client._fd,
             std::to_string(client._env.getConnectNbr(client._id)) + "\n");
     }
 
-    void AIClient::fork(AIClient &client)
+    void AIClient::fork(AIClient &client, std::istringstream &stream)
     {
         client._env.spawnEgg(client._id);
         Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::eject(AIClient &client)
+    void AIClient::eject(AIClient &client, std::istringstream &stream)
     {
         if (client._env.eject(client._id))
+            Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+        else
+            Shared::Connect::send(client._fd, ServerCmd::KO.getStr() + "\n");
+    }
+
+    void AIClient::set(AIClient &client, std::istringstream &stream)
+    {
+        bool value = true;
+        std::string resource;
+        stream >> resource;
+        try {
+            auto type = Environement::getResource(resource);
+            value = client._env.takeResource(client._id, type);
+        } catch (ResourceNotFoundException &_) {
+            value = false;
+        }
+        if (value)
+            Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+        else
+            Shared::Connect::send(client._fd, ServerCmd::KO.getStr() + "\n");
+    }
+
+    void AIClient::take(AIClient &client, std::istringstream &stream)
+    {
+        bool value = true;
+        std::string resource;
+        stream >> resource;
+        try {
+            auto type = Environement::getResource(resource);
+            auto find = client._inventory.find(type);
+            if (find != client._inventory.end() && find->second != 0) {
+                find->second--;
+                client._env.setResource(client._id, type);
+            } else
+                value = false;
+        } catch (ResourceNotFoundException &_) {
+            value = false;
+        }
+        if (value)
             Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
         else
             Shared::Connect::send(client._fd, ServerCmd::KO.getStr() + "\n");
@@ -174,5 +215,8 @@ namespace Zappy {
             {ClientCmd::CNT.getStr(),
                 Command {connectNbr, std::chrono::nanoseconds(1)}},
             {ClientCmd::FRK.getStr(), Command {fork, std::chrono::seconds(42)}},
+            {ClientCmd::EJT.getStr(), Command {eject, std::chrono::seconds(7)}},
+            {ClientCmd::STO.getStr(), Command {set, std::chrono::seconds(7)}},
+            {ClientCmd::TKO.getStr(), Command {take, std::chrono::seconds(7)}},
     };
 }; // namespace Zappy

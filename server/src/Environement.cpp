@@ -84,7 +84,8 @@ namespace Zappy {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        _eggs.emplace(_eggId, Egg {find->second.team, find->second.x, find->second.y});
+        _eggs.emplace(
+            _eggId, Egg {find->second.team, find->second.x, find->second.y});
         _teams.at(find->second.team)++;
         _eggId++;
     }
@@ -285,14 +286,14 @@ namespace Zappy {
         for (auto iter = _players.begin(); iter != _players.end(); iter++) {
             if (find == iter)
                 continue;
-            if (iter->second.x == find->second.x
-                && iter->second.y == find->second.y) {
+            if (iter->second.x == find->second.x &&
+                iter->second.y == find->second.y) {
                 status = true;
             }
         }
         for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
-            if (iter->second.x == find->second.x
-                && iter->second.y == find->second.y) {
+            if (iter->second.x == find->second.x &&
+                iter->second.y == find->second.y) {
                 _teams.at(iter->second.team)--;
                 _eggs.erase(iter);
                 status = true;
@@ -307,6 +308,15 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         return _teams.at(find->second.team);
+    }
+
+    ResourceName Environement::getResource(const std::string &name)
+    {
+        for (const auto &[type, resource] : _resources) {
+            if (resource.str == name)
+                return type;
+        }
+        throw ResourceNotFoundException();
     }
 
     const std::unordered_map<ResourceName, Environement::Resource>

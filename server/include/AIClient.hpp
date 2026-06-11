@@ -46,23 +46,30 @@ namespace Zappy {
 
     private:
         struct Command {
-            std::function<void(AIClient &)> _func;
+            std::function<void(AIClient &, std::istringstream &)> _func;
             std::chrono::nanoseconds _timeLimit;
         };
 
         using CommandIter =
             std::unordered_map<std::string, Command>::const_iterator;
 
+        struct SelectCommand {
+            CommandIter iter;
+            std::istringstream &stream;
+        };
+
         void addCommand();
         void checkAlive();
 
-        static void forward(AIClient &);
-        static void right(AIClient &);
-        static void left(AIClient &);
-        static void inventory(AIClient &);
-        static void connectNbr(AIClient &);
-        static void fork(AIClient &);
-        static void eject(AIClient &);
+        static void forward(AIClient &, std::istringstream &);
+        static void right(AIClient &, std::istringstream &);
+        static void left(AIClient &, std::istringstream &);
+        static void inventory(AIClient &, std::istringstream &);
+        static void connectNbr(AIClient &, std::istringstream &);
+        static void fork(AIClient &, std::istringstream &);
+        static void eject(AIClient &, std::istringstream &);
+        static void set(AIClient &, std::istringstream &);
+        static void take(AIClient &, std::istringstream &);
 
         int _fd;
         bool _alive = true;
@@ -73,7 +80,7 @@ namespace Zappy {
         std::queue<std::string> _commands;
         std::chrono::nanoseconds _sleep;
         std::chrono::nanoseconds _live;
-        std::optional<CommandIter> _command;
+        std::optional<SelectCommand> _command;
 
         std::unordered_map<ResourceName, std::size_t> _inventory;
         Environement &_env;
