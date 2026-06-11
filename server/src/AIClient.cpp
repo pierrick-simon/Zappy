@@ -149,6 +149,12 @@ namespace Zappy {
             std::to_string(client._env.getConnectNbr(client._id)) + "\n");
     }
 
+    void AIClient::fork(AIClient &client)
+    {
+        client._env.spawnEgg(client._id);
+        Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+    }
+
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
             {ClientCmd::FWD.getStr(),
@@ -159,5 +165,6 @@ namespace Zappy {
                 Command {inventory, std::chrono::seconds(1)}},
             {ClientCmd::CNT.getStr(),
                 Command {connectNbr, std::chrono::nanoseconds(1)}},
+            {ClientCmd::FRK.getStr(), Command {fork, std::chrono::seconds(42)}},
     };
 }; // namespace Zappy

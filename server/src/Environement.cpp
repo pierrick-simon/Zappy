@@ -79,12 +79,13 @@ namespace Zappy {
         }
     }
 
-    void Environement::spawnEgg(std::size_t id, const std::string &team)
+    void Environement::spawnEgg(std::size_t id)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        _eggs.emplace(_eggId, Egg {team, find->second.x, find->second.y});
+        _eggs.emplace(_eggId, Egg {find->second.team, find->second.x, find->second.y});
+        _teams.at(find->second.team)++;
         _eggId++;
     }
 
