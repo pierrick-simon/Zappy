@@ -13,20 +13,30 @@
     #include <unordered_map>
     #include "AIClient.hpp"
     #include "Connect.hpp"
+    #include "Environement.hpp"
     #include "GUIClient.hpp"
     #include "Utils.hpp"
 
 namespace Zappy {
+
+    using NewClient = std::pair<std::size_t, std::string>;
+
+    struct Clients {
+        std::unordered_map<int, NewClient> newClient;
+        std::unordered_map<int, AIClient> ai;
+        std::unordered_map<int, GUIClient> gui;
+    };
+
     class Server {
     public:
-        Server(int port, const std::vector<std::string> &teams,
-            std::size_t nbPerTeams);
+        Server(std::vector<std::string> args);
         ~Server();
 
         void run();
 
+        static constexpr std::string_view HELP_FILE = "server/docs/help.txt";
+
     private:
-        using NewClient = std::pair<std::size_t, std::string>;
         using AIIter = std::unordered_map<int, AIClient>::iterator;
         using GUIIter = std::unordered_map<int, GUIClient>::iterator;
 
@@ -34,6 +44,7 @@ namespace Zappy {
         void update();
         void addClient();
         void handleClient(const std::vector<int> &);
+        void handleDeadClient(const std::vector<int> &);
         void handleAIClient(AIIter);
         void handleGUIClient(GUIIter);
         void handleNewClient(std::unordered_map<int, NewClient>::iterator &);
@@ -42,14 +53,16 @@ namespace Zappy {
 
         Shared::Connect _connect;
         std::unordered_map<std::string, std::size_t> _teams;
-        std::unordered_map<int, NewClient> _newClients;
-        std::unordered_map<int, AIClient> _aiClients;
-        std::unordered_map<int, GUIClient> _guiClients;
+        std::vector<std::string> _teamsNames;
+
+        Clients _clients;
 
         Shared::Clock _clock;
+        int _timeout = -1;
 
-        std::size_t x = 100;
-        std::size_t y = 100;
+        std::size_t _f;
+        std::chrono::nanoseconds _fn;
+        Environement _env;
 
         static bool RECEIVED_SIG_INT;
 
@@ -57,6 +70,7 @@ namespace Zappy {
 
         static constexpr std::string_view LOG_FILE = "server.log";
         static constexpr std::string_view GRAPHIC = "GRAPHIC";
+        static constexpr std::size_t SECOND_IN_NANO = 1000000;
     };
 } // namespace Zappy
 

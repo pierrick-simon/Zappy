@@ -94,11 +94,11 @@ namespace Shared {
         _fds.emplace_back(structFd);
     }
 
-    std::vector<int> Connect::infoToRead()
+    std::vector<int> Connect::infoToRead(int timeout)
     {
         std::vector<int> info;
 
-        if (poll(_fds.data(), _fds.size(), 0) < 0) {
+        if (poll(_fds.data(), _fds.size(), timeout) < 0) {
             if (errno == EINTR)
                 return info;
             throw PollException();
