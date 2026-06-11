@@ -201,13 +201,13 @@ namespace Zappy {
             }
             auto find = _teams.find(line.value());
             if (find != _teams.end() && find->second > 0) {
+                _env.addPlayer(iter->second.first, line.value(), find->second);
                 _clients.ai.emplace(iter->first,
                     AIClient(iter->first,
                         iter->second.first,
                         find->first,
                         _logFile,
                         _env));
-                _env.addPlayer(iter->second.first, line.value(), find->second);
                 find->second--;
                 _clients.newClient.erase(iter);
             } else {

@@ -35,6 +35,11 @@ namespace Zappy {
         _inventory.emplace(ResourceName::Mendiane, 0);
         _inventory.emplace(ResourceName::Phiras, 0);
         _inventory.emplace(ResourceName::Thystame, 0);
+        Shared::Connect::send(
+            _fd, std::to_string(_env.getConnectNbr(_id)) + "\n");
+        Shared::Connect::send(_fd,
+            std::to_string(_env.getWidth()) + " " +
+                std::to_string(_env.getHeight()) + "\n");
     }
 
     void AIClient::infoToRead()
