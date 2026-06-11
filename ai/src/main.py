@@ -5,6 +5,7 @@
 ## main
 ##
 
+import sys
 import argparse
 from src.player import Player
 
@@ -26,5 +27,12 @@ def handle_args():
 
 def main():
     args = handle_args()
-    player: Player = Player()
-    player.run(args.name, args.port, args.machine)
+    if (args.name == "GRAPHIC"):
+        print("Team cannot be GRAPHIC.", file=sys.stderr)
+        return 84
+    try:
+        player: Player = Player()
+        player.run(args.name, args.port, args.machine)
+    except BaseException as e:
+        print(e)
+        return 84
