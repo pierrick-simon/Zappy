@@ -56,6 +56,8 @@ namespace Zappy {
         void addCommand();
         void checkAlive();
 
+        static void forward(AIClient &);
+
         int _fd;
         bool _alive = true;
         std::size_t _id;

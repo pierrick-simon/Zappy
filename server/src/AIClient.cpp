@@ -104,8 +104,15 @@ namespace Zappy {
         }
     }
 
+    void AIClient::forward(AIClient &client)
+    {
+        client._env.movePlayer(client._id);
+        Shared::Connect::send(client._fd, ServerCmd::OK.getStr());
+    }
+
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
-
+            {ClientCmd::FWD.getStr(),
+                Command {forward, std::chrono::seconds(7)}},
     };
 }; // namespace Zappy

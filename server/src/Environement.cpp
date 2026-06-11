@@ -121,16 +121,15 @@ namespace Zappy {
             static_cast<int>(size));
     }
 
-    void Environement::movePlayer(std::size_t id, Direction dir)
+    void Environement::movePlayer(std::size_t id)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto &player = find->second;
-        auto [dx, dy, _] = _directions.at(dir);
+        auto [dx, dy, _] = _directions.at(find->second.dir);
         player.x = circularMove(player.x, dx, _width);
         player.y = circularMove(player.y, dy, _height);
-        player.dir = dir;
     }
 
     Direction Environement::getOpositeDir(Direction dir)

@@ -55,7 +55,7 @@ namespace Zappy {
         void addPlayer(std::size_t id, const std::string &team,
             std::size_t _remainingPlace);
         void removePlayer(std::unordered_map<int, AIClient>::iterator);
-        void movePlayer(std::size_t id, Direction dir);
+        void movePlayer(std::size_t id);
         void spawnEgg(std::size_t id, const std::string &team);
         void spawnEgg(const std::string &team);
         static Direction getOpositeDir(Direction);
