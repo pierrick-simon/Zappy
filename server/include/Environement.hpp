@@ -19,6 +19,8 @@ namespace Zappy {
 
     enum class Movement { Forward, Backward };
 
+    enum class Rotate { Left, Right };
+
     enum class ResourceName {
         Food,
         Linemate,
@@ -56,6 +58,7 @@ namespace Zappy {
             std::size_t _remainingPlace);
         void removePlayer(std::unordered_map<int, AIClient>::iterator);
         void movePlayer(std::size_t id);
+        void rotatePlayer(std::size_t id, Rotate);
         void spawnEgg(std::size_t id, const std::string &team);
         void spawnEgg(const std::string &team);
         static Direction getOpositeDir(Direction);

@@ -110,9 +110,23 @@ namespace Zappy {
         Shared::Connect::send(client._fd, ServerCmd::OK.getStr());
     }
 
+    void AIClient::right(AIClient &client)
+    {
+        client._env.rotatePlayer(client._id, Rotate::Right);
+        Shared::Connect::send(client._fd, ServerCmd::OK.getStr());
+    }
+
+    void AIClient::left(AIClient &client)
+    {
+        client._env.rotatePlayer(client._id, Rotate::Left);
+        Shared::Connect::send(client._fd, ServerCmd::OK.getStr());
+    }
+
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
             {ClientCmd::FWD.getStr(),
                 Command {forward, std::chrono::seconds(7)}},
+            {ClientCmd::RGT.getStr(), Command {right, std::chrono::seconds(7)}},
+            {ClientCmd::LFT.getStr(), Command {left, std::chrono::seconds(7)}},
     };
 }; // namespace Zappy

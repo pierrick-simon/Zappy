@@ -57,6 +57,8 @@ namespace Zappy {
         void checkAlive();
 
         static void forward(AIClient &);
+        static void right(AIClient &);
+        static void left(AIClient &);
 
         int _fd;
         bool _alive = true;

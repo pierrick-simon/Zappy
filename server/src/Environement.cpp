@@ -132,6 +132,25 @@ namespace Zappy {
         player.y = circularMove(player.y, dy, _height);
     }
 
+    void Environement::rotatePlayer(std::size_t id, Rotate rotate)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        auto dir = _directions.find(find->second.dir);
+        if (rotate == Rotate::Left) {
+            if (dir == _directions.begin())
+                find->second.dir = _directions.end()--->first;
+            else
+                find->second.dir = dir--->first;
+        } else {
+            if (dir == _directions.end()--)
+                find->second.dir = _directions.begin()->first;
+            else
+                find->second.dir = dir++->first;
+        }
+    }
+
     Direction Environement::getOpositeDir(Direction dir)
     {
         Direction value = Direction::North;
