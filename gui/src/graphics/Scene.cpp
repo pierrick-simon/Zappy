@@ -7,15 +7,7 @@
 
 #include "Scene.hpp"
 
-#include <SFML/Graphics/RenderTarget.hpp>
-
 namespace Graphics {
-
-    void Scene::draw(sf::RenderTarget &target, sf::RenderStates states) const
-    {
-        for (auto &object : this->_objects)
-            target.draw(*object, states);
-    }
 
     Camera &Scene::getCamera()
     {
@@ -25,5 +17,11 @@ namespace Graphics {
     const Camera &Scene::getCamera() const
     {
         return this->_camera;
+    }
+
+    void Scene::draw() const
+    {
+        for (auto &object : this->_objects)
+            object->draw();
     }
 } // namespace Graphics

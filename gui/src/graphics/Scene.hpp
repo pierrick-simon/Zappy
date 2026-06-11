@@ -14,7 +14,7 @@
     #include "GameObject.hpp"
 
 namespace Graphics {
-    class Scene : public sf::Drawable {
+    class Scene : public Drawable {
     public:
         explicit Scene() = default;
 
@@ -28,9 +28,7 @@ namespace Graphics {
             return this->_objects.emplace_back(std::move(gameObject));
         }
 
-    protected:
-        void draw(
-            sf::RenderTarget &target, sf::RenderStates states) const override;
+        void draw() const override;
 
     private:
         std::vector<std::unique_ptr<GameObject>> _objects;

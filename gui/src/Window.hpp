@@ -7,23 +7,22 @@
 
 #ifndef WINDOW_HPP
     #define WINDOW_HPP
-    #include <SFML/Graphics/RenderWindow.hpp>
-    #include <SFML/Window/Event.hpp>
     #include <functional>
     #include <unordered_map>
+#include "raylib.hpp"
 
     #include "graphics/Scene.hpp"
 
 namespace Graphics {
-    class Window : public sf::RenderWindow {
+    class Window {
     public:
         Window();
-        void updateGl();
-        double getAspectRatio() const;
+        ~Window();
         void update();
-        [[nodiscard]] bool isRunning() const;
+        [[nodiscard]] static bool isRunning();
 
         Scene &getScene();
+        static void close();
 
         template<typename GameObjectType, typename... Args>
         std::unique_ptr<GameObject> &addObject(Args &&...args)
@@ -37,18 +36,17 @@ namespace Graphics {
 
         Scene _scene;
 
-        static const std::unordered_map<sf::Event::EventType,
-            std::function<void(Window &, sf::Event &event)>>
-            EVENTS_METHODS;
+        static const std::unordered_map<::KeyboardKey,
+            std::function<void(Window &)>>
+            KEY_METHODS;
 
         static constexpr unsigned int WINDOW_SIZE_X = 1920;
         static constexpr unsigned int WINDOW_SIZE_Y = 1080;
-        static constexpr unsigned int WINDOW_BITS = 32;
+        static constexpr auto TARGET_FPS = 60;
         static constexpr auto WINDOW_TITLE = "Zappy GUI";
         static constexpr auto FOV = 60.0;
         static constexpr auto NEAR_PLANE = 0.001;
         static constexpr auto FAR_PLANE = 500.0;
-        static const sf::ContextSettings CONTEXT_SETTINGS;
     };
 } // namespace Graphics
 

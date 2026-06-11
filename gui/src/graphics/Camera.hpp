@@ -7,17 +7,14 @@
 
 #ifndef CAMERA_H
     #define CAMERA_H
-    #include "GameObject.hpp"
+    #include "RayLib.hpp"
 
 namespace Graphics {
-    class Camera : public Transformable3D {
+    class Camera : RayLib::Camera {
     public:
-        explicit Camera(double fov = DEFAULT_FOV);
-        [[nodiscard]] double getFov() const;
-        void setFov(double fov);
+        explicit Camera(float fov = DEFAULT_FOV);
 
     private:
-        double _fov;
         static constexpr auto DEFAULT_FOV = 60.0;
     };
 } // namespace Graphics

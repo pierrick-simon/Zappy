@@ -23,13 +23,8 @@ set(SRCS
         src/graphics/Transformable3D.cpp
         src/graphics/Scene.cpp
         src/graphics/primitives/Cube.cpp
-        src/graphics/SFMLGameObject.cpp
         src/Window.cpp
         src/GUI.cpp
-        src/maths/Color.cpp
-        src/maths/Quaternion.cpp
-        src/graphics/primitives/model/Model.cpp
-        src/graphics/primitives/model/Face.cpp
 )
 
 set(HEADERS
@@ -48,7 +43,7 @@ if (ENABLE_ASAN)
 endif ()
 
 add_executable(zappy_gui ${MAIN} ${SRCS} ${SHARED_SRCS})
-target_link_libraries(zappy_gui sfml-graphics sfml-window sfml-system GL GLU)
+target_link_libraries(zappy_gui raylib GL GLU)
 
 target_compile_options(zappy_gui PRIVATE)
 
@@ -66,7 +61,7 @@ add_executable(gui_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS} ${SHARED
 
 target_compile_options(gui_tests_run_bin PRIVATE --coverage)
 target_link_options(gui_tests_run_bin PRIVATE --coverage)
-target_link_libraries(gui_tests_run_bin criterion sfml-graphics sfml-window sfml-system GL GLU)
+target_link_libraries(gui_tests_run_bin criterion raylib GL GLU)
 
 add_custom_target(remove_coverage
         COMMAND find ${CMAKE_BINARY_DIR} -name "*.gc*" -delete
