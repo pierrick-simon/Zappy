@@ -12,6 +12,7 @@
     #include <fstream>
     #include <functional>
     #include <iomanip>
+    #include <optional>
     #include <queue>
     #include <unordered_map>
     #include "Environement.hpp"
@@ -49,6 +50,9 @@ namespace Zappy {
             std::chrono::nanoseconds _timeLimit;
         };
 
+        using CommandIter =
+            std::unordered_map<std::string, Command>::const_iterator;
+
         void addCommand();
         void checkAlive();
 
@@ -58,16 +62,20 @@ namespace Zappy {
         std::string _team;
         std::ofstream &_logFile;
         std::string _buffer;
-        std::queue<std::string> _command;
+        std::queue<std::string> _commands;
         std::chrono::nanoseconds _sleep;
         std::chrono::nanoseconds _live;
+        std::optional<CommandIter> _command;
 
         std::unordered_map<ResourceName, std::size_t> _inventory;
         Environement &_env;
 
         static constexpr std::size_t MAX_QUEUE = 10;
         static constexpr std::size_t START_FOOD = 10;
-        static constexpr std::size_t CYCLE_TO_DIE = 126;
+        static constexpr std::chrono::nanoseconds CYCLE_TO_DIE =
+            std::chrono::seconds(126);
+        static constexpr std::chrono::nanoseconds DEFAULT_SLEEP =
+            std::chrono::seconds(1);
 
         static const std::unordered_map<std::string, Command> COMMANDS;
     };

@@ -40,8 +40,8 @@ namespace Zappy {
     {
         auto line = Shared::Utils::parseLine(_buffer);
         while (line) {
-            if (!line->empty() && _command.size() < MAX_QUEUE)
-                _command.push(*line);
+            if (!line->empty() && _commands.size() < MAX_QUEUE)
+                _commands.push(*line);
             line = Shared::Utils::parseLine(_buffer);
         }
     }
@@ -50,8 +50,17 @@ namespace Zappy {
     {
         if (_sleep.count() > 0)
             _sleep -= elapsed;
-        if (_sleep.count() <= 0 && !_command.empty())
-            executeCommand();
+        if (_sleep.count() <= 0) {
+            if (_command) {
+                _command.value()->second._func(*this);
+                Shared::Utils::logMsg(_logFile,
+                    "Executed command " + _command.value()->first +
+                        " for client[" + std::to_string(_id) + "].");
+                _command.reset();
+            }
+            if (!_commands.empty())
+                executeCommand();
+        }
         _live -= elapsed;
         if (_live.count() <= 0)
             checkAlive();
@@ -72,26 +81,22 @@ namespace Zappy {
             _inventory.at(ResourceName::Food)--;
             Shared::Utils::logMsg(
                 _logFile, "Client[" + std::to_string(_id) + "] eat a food.");
-            _live = std::chrono::duration<std::size_t>(CYCLE_TO_DIE);
+            _live = CYCLE_TO_DIE;
         }
     }
 
     void AIClient::executeCommand()
     {
-        std::istringstream stream(_command.front());
+        std::istringstream stream(_commands.front());
         std::string command;
         stream >> command;
-        _command.pop();
-        if (stream.fail())
-            return Shared::Connect::send(_fd, ServerCmd::KO.getStr());
+        _commands.pop();
         auto iter = COMMANDS.find(command);
         if (iter != COMMANDS.end()) {
             _sleep = iter->second._timeLimit;
-            iter->second._func(*this);
-            Shared::Utils::logMsg(_logFile,
-                "Executed command " + iter->first + " for client[" +
-                    std::to_string(_id) + "].");
+            _command = iter;
         } else {
+            _sleep = DEFAULT_SLEEP;
             Shared::Connect::send(_fd, ServerCmd::KO.getStr());
             Shared::Utils::logMsg(_logFile,
                 "Try executing command " + command + " for client[" +
