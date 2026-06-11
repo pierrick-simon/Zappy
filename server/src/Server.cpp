@@ -17,14 +17,14 @@ namespace Zappy {
 
     Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
-        _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n")),
-        _connect(Parser::ArgsParser::getArg<int>(args, "-p")),
-        _f(Parser::ArgsParser::getArgSize(args, "-f")),
+        _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n", {"team1", "team2"})),
+        _connect(Parser::ArgsParser::getArg<int>(args, "-p", 8080)),
+        _f(Parser::ArgsParser::getArgSize(args, "-f", 100)),
         _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
             Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile, _clients)
     {
-        auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c");
+        auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c", 10);
         if (_teamsNames.empty())
             throw Parser::ArgsParserError("No teams name given");
         for (const auto &team : _teamsNames) {

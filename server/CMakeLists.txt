@@ -46,6 +46,7 @@ find_library(CRITERION criterion REQUIRED)
 
 set(SRCS_TESTS
     tests/tests_init.cpp
+    tests/tests_args.cpp
 )
 
 add_executable(server_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS} ${SHARED_SRCS})

@@ -60,7 +60,7 @@ namespace Parser {
         {
             for (auto arg = args.get().begin(); arg != args.get().end();
                 ++arg) {
-                if (*arg == flag && arg + 1 != args.get().end()) {
+                if (*arg == flag && arg + 1 != args.get().end() && (arg + 1)->rfind("-", 0) != 0) {
                     T tmp;
                     std::istringstream stream(*(arg + 1));
                     stream >> tmp;
@@ -117,6 +117,8 @@ namespace Parser {
                     break;
                 }
             }
+            if (arg == args.get().end())
+                throw Help();
             while (arg != args.get().end()) {
                 if (arg->rfind("-", 0) == 0)
                     break;
@@ -126,6 +128,20 @@ namespace Parser {
                 final.emplace_back(tmp);
             }
             return final;
+        }
+
+        template<typename T>
+        static std::vector<T> getArgList(
+            std::reference_wrapper<std::vector<std::string>> args,
+            const std::string &flag, std::vector<T> fallBack)
+        {
+            std::vector<T> ret;
+            try {
+                ret = getArgList<T>(args, flag);
+            } catch (const Help &) {
+                ret = fallBack;
+            }
+            return ret;
         }
     };
 } // namespace Parser
