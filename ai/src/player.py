@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from src.client import Client
 from src.command import Command
-from src.algorythme import algorythme
+from src.algorithm import algorithm
 
 
 class ObservationState:
@@ -53,7 +53,9 @@ class Player:
 
     def start_session(self):
         if self.client.recv() != "WELCOME":
-            raise ConnectionError("Il a pas dit bonjour.")
+            raise ConnectionError(
+                "The server did not initiate the connection with the client using WELCOME."
+            )
         self.client.send(self.client.name)
         self.state.slots = int(self.client.recv())
         if self.state.slots < 1:
@@ -61,12 +63,10 @@ class Player:
                 f"No slot available for the team: {self.client.name}."
             )
         self.state.dimension = tuple(self.client.recv().split())
-        print(f"Slot: {self.state.slots}, Dimension: {self.state.dimension}")
 
     def move(self):
         """Call AI"""
-        self.commands.append(algorythme(self.vision, self.inventory))
-    #        self.commands.append(Command("Fork", self.fork))
+        self.commands.append(algorithm(self.vision, self.inventory))
 
     def turn_right(self):
         """Call AI"""
@@ -120,6 +120,3 @@ class Player:
         while self.state.status:
             for command in self.commands:
                 self.client.send(str(command))
-                command.callback()
-        # self.state.handle_response(self.client.recv)
-        # self.commands.pop(0)

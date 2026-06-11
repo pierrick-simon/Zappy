@@ -1,8 +1,15 @@
+##
+## EPITECH PROJECT, 2026
+## Zappy
+## File description:
+## algorithm
+##
+
 from src.command import Command
 
 
-def algorythme(vision: list[str], inventory: list[str]):
-    """Fait des trucs"""
+def algorithm(vision: list[str], inventory: list[str]) -> Command:
+    """Algorithm"""
     return Command
 
 

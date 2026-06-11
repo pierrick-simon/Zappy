@@ -1,3 +1,10 @@
+##
+## EPITECH PROJECT, 2026
+## Zappy
+## File description:
+## command dataclass
+##
+
 from dataclasses import dataclass
 from collections.abc import Callable
 
@@ -8,5 +15,5 @@ class Command:
     callback: Callable[[None], None]
     argument: str = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name + " " + self.argument
