@@ -276,6 +276,31 @@ namespace Zappy {
         return start;
     }
 
+    bool Environement::eject(std::size_t id)
+    {
+        bool status = false;
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        for (auto iter = _players.begin(); iter != _players.end(); iter++) {
+            if (find == iter)
+                continue;
+            if (iter->second.x == find->second.x
+                && iter->second.y == find->second.y) {
+                status = true;
+            }
+        }
+        for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
+            if (iter->second.x == find->second.x
+                && iter->second.y == find->second.y) {
+                _teams.at(iter->second.team)--;
+                _eggs.erase(iter);
+                status = true;
+            }
+        }
+        return status;
+    }
+
     std::size_t Environement::getConnectNbr(std::size_t id) const
     {
         auto find = _players.find(id);

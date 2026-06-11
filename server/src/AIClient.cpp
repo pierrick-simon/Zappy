@@ -155,6 +155,14 @@ namespace Zappy {
         Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
     }
 
+    void AIClient::eject(AIClient &client)
+    {
+        if (client._env.eject(client._id))
+            Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+        else
+            Shared::Connect::send(client._fd, ServerCmd::KO.getStr() + "\n");
+    }
+
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
             {ClientCmd::FWD.getStr(),

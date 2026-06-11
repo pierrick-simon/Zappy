@@ -65,6 +65,7 @@ namespace Zappy {
         static Direction getOpositeDir(Direction);
         bool takeResource(std::size_t id, ResourceName);
         void setResource(std::size_t id, ResourceName);
+        bool eject(std::size_t id);
         std::vector<std::size_t> startElevation(std::size_t id);
         std::vector<std::size_t> endElevation(
             std::size_t id, std::vector<std::size_t>);
