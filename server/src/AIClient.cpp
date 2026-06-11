@@ -28,6 +28,12 @@ namespace Zappy {
             "Client[" + std::to_string(id) + "] joined the " + _team +
                 " team.");
         _inventory.emplace(ResourceName::Food, START_FOOD);
+        _inventory.emplace(ResourceName::Linemate, 0);
+        _inventory.emplace(ResourceName::Deraumere, 0);
+        _inventory.emplace(ResourceName::Sibur, 0);
+        _inventory.emplace(ResourceName::Mendiane, 0);
+        _inventory.emplace(ResourceName::Phiras, 0);
+        _inventory.emplace(ResourceName::Thystame, 0);
     }
 
     void AIClient::infoToRead()
@@ -73,7 +79,7 @@ namespace Zappy {
     void AIClient::checkAlive()
     {
         if (_inventory.at(ResourceName::Food) == 0) {
-            Shared::Connect::send(_fd, ServerCmd::DEAD.getStr());
+            Shared::Connect::send(_fd, ServerCmd::DEAD.getStr() + "\n");
             Shared::Utils::logMsg(
                 _logFile, "Client[" + std::to_string(_id) + "] Die.");
             _alive = false;
@@ -97,7 +103,7 @@ namespace Zappy {
             _command = iter;
         } else {
             _sleep = DEFAULT_SLEEP;
-            Shared::Connect::send(_fd, ServerCmd::KO.getStr());
+            Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
             Shared::Utils::logMsg(_logFile,
                 "Try executing command " + command + " for client[" +
                     std::to_string(_id) + "](Commmand Not found).");
@@ -107,19 +113,34 @@ namespace Zappy {
     void AIClient::forward(AIClient &client)
     {
         client._env.movePlayer(client._id);
-        Shared::Connect::send(client._fd, ServerCmd::OK.getStr());
+        Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
     }
 
     void AIClient::right(AIClient &client)
     {
         client._env.rotatePlayer(client._id, Rotate::Right);
-        Shared::Connect::send(client._fd, ServerCmd::OK.getStr());
+        Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
     }
 
     void AIClient::left(AIClient &client)
     {
         client._env.rotatePlayer(client._id, Rotate::Left);
-        Shared::Connect::send(client._fd, ServerCmd::OK.getStr());
+        Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+    }
+
+    void AIClient::inventory(AIClient &client)
+    {
+        std::string msg = "[";
+        bool first = true;
+        for (auto [name, nb] : client._inventory) {
+            if (!first)
+                msg += ",";
+            msg += Environement::getResourceName(name);
+            msg += " " + std::to_string(nb);
+            first = false;
+        }
+        msg += "]\n";
+        Shared::Connect::send(client._fd, msg);
     }
 
     const std::unordered_map<std::string, AIClient::Command>
@@ -128,5 +149,7 @@ namespace Zappy {
                 Command {forward, std::chrono::seconds(7)}},
             {ClientCmd::RGT.getStr(), Command {right, std::chrono::seconds(7)}},
             {ClientCmd::LFT.getStr(), Command {left, std::chrono::seconds(7)}},
+            {ClientCmd::IVT.getStr(),
+                Command {inventory, std::chrono::seconds(1)}},
     };
 }; // namespace Zappy

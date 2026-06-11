@@ -76,6 +76,10 @@ namespace Zappy {
         {
             return _width;
         }
+        static std::string getResourceName(ResourceName name)
+        {
+            return _resources.at(name).str;
+        }
 
     private:
         using Tile = std::unordered_map<ResourceName, std::size_t>;
