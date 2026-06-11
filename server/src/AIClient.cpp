@@ -14,13 +14,20 @@ namespace ServerCmd = Shared::AICommunication::Server;
 namespace ClientCmd = Shared::AICommunication::Client;
 
 namespace Zappy {
-    AIClient::AIClient(
-        int fd, std::size_t id, std::string team, std::ofstream &logFile) :
-        _fd(fd), _id(id), _team(std::move(team)), _logFile(logFile), _sleep(0)
+    AIClient::AIClient(int fd, std::size_t id, std::string team,
+        std::ofstream &logFile, Environement &env) :
+        _fd(fd),
+        _id(id),
+        _team(std::move(team)),
+        _logFile(logFile),
+        _sleep(0),
+        _live(CYCLE_TO_DIE),
+        _env(env)
     {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(id) + "] joined the " + _team +
                 " team.");
+        _inventory.emplace(ResourceName::Food, START_FOOD);
     }
 
     void AIClient::infoToRead()
@@ -39,30 +46,56 @@ namespace Zappy {
         }
     }
 
-    void AIClient::update(std::chrono::nanoseconds elapsed)
+    std::chrono::nanoseconds AIClient::update(std::chrono::nanoseconds elapsed)
     {
         if (_sleep.count() > 0)
             _sleep -= elapsed;
-        if (_sleep.count() <= 0 && !_command.empty()) {
-            std::istringstream stream(_command.front());
-            std::string command;
-            stream >> command;
-            _command.pop();
-            if (stream.fail())
-                return Shared::Connect::send(_fd, ServerCmd::KO.getStr());
-            auto iter = COMMANDS.find(command);
-            if (iter != COMMANDS.end()) {
-                _sleep = iter->second._timeLimit;
-                iter->second._func(*this);
-                Shared::Utils::logMsg(_logFile,
-                    "Executed command " + iter->first + " for client[" +
-                        std::to_string(_id) + "].");
-            } else {
-                Shared::Connect::send(_fd, ServerCmd::KO.getStr());
-                Shared::Utils::logMsg(_logFile,
-                    "Try executing command " + command + " for client[" +
-                        std::to_string(_id) + "](Commmand Not found).");
-            }
+        if (_sleep.count() <= 0 && !_command.empty())
+            executeCommand();
+        _live -= elapsed;
+        if (_live.count() <= 0)
+            checkAlive();
+        auto timeout = _sleep;
+        if (_live < timeout)
+            timeout = _live;
+        return _sleep;
+    }
+
+    void AIClient::checkAlive()
+    {
+        if (_inventory.at(ResourceName::Food) == 0) {
+            Shared::Connect::send(_fd, ServerCmd::DEAD.getStr());
+            Shared::Utils::logMsg(
+                _logFile, "Client[" + std::to_string(_id) + "] Die.");
+            _alive = false;
+        } else {
+            _inventory.at(ResourceName::Food)--;
+            Shared::Utils::logMsg(
+                _logFile, "Client[" + std::to_string(_id) + "] eat a food.");
+            _live = std::chrono::duration<std::size_t>(CYCLE_TO_DIE);
+        }
+    }
+
+    void AIClient::executeCommand()
+    {
+        std::istringstream stream(_command.front());
+        std::string command;
+        stream >> command;
+        _command.pop();
+        if (stream.fail())
+            return Shared::Connect::send(_fd, ServerCmd::KO.getStr());
+        auto iter = COMMANDS.find(command);
+        if (iter != COMMANDS.end()) {
+            _sleep = iter->second._timeLimit;
+            iter->second._func(*this);
+            Shared::Utils::logMsg(_logFile,
+                "Executed command " + iter->first + " for client[" +
+                    std::to_string(_id) + "].");
+        } else {
+            Shared::Connect::send(_fd, ServerCmd::KO.getStr());
+            Shared::Utils::logMsg(_logFile,
+                "Try executing command " + command + " for client[" +
+                    std::to_string(_id) + "](Commmand Not found).");
         }
     }
 

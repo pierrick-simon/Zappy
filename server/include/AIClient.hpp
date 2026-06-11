@@ -14,12 +14,13 @@
     #include <iomanip>
     #include <queue>
     #include <unordered_map>
+    #include "Environement.hpp"
 
 namespace Zappy {
     class AIClient {
     public:
-        AIClient(
-            int fd, std::size_t id, std::string team, std::ofstream &logFile);
+        AIClient(int fd, std::size_t id, std::string team,
+            std::ofstream &logFile, Environement &_env);
 
         void infoToRead();
 
@@ -28,7 +29,19 @@ namespace Zappy {
             return _id;
         }
 
-        void update(std::chrono::nanoseconds elapsed);
+        [[nodiscard]] bool isAlive() const
+        {
+            return _alive;
+        }
+
+        [[nodiscard]] std::unordered_map<ResourceName, std::size_t>
+        getInventory() const
+        {
+            return _inventory;
+        }
+
+        std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
+        void executeCommand();
 
     private:
         struct Command {
@@ -37,16 +50,24 @@ namespace Zappy {
         };
 
         void addCommand();
+        void checkAlive();
 
         int _fd;
+        bool _alive = true;
         std::size_t _id;
         std::string _team;
         std::ofstream &_logFile;
         std::string _buffer;
         std::queue<std::string> _command;
         std::chrono::nanoseconds _sleep;
+        std::chrono::nanoseconds _live;
+
+        std::unordered_map<ResourceName, std::size_t> _inventory;
+        Environement &_env;
 
         static constexpr std::size_t MAX_QUEUE = 10;
+        static constexpr std::size_t START_FOOD = 10;
+        static constexpr std::size_t CYCLE_TO_DIE = 126;
 
         static const std::unordered_map<std::string, Command> COMMANDS;
     };

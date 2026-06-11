@@ -1,4 +1,5 @@
 build
+build_debug
 zappy_gui
 zappy_server
 zappy_ai
@@ -7,3 +8,4 @@ zappy_ai
 .cache
 clang.sh
 .ruff_cache
+.vscode/

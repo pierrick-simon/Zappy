@@ -25,6 +25,8 @@ namespace Zappy {
     {
         Shared::Connect::receiveChunk(_fd, _buffer);
         addCommand();
+        while (!_command.empty())
+            update();
     }
 
     void GUIClient::addCommand()

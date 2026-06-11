@@ -6,19 +6,28 @@
 */
 
 #include <iostream>
+#include "ArgsParser.hpp"
+#include "Help.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
 
-int main()
+int main(const int ac, const char *const *av)
 {
+    std::vector<std::string> args;
+    for (++av; *av != nullptr; ++av)
+        args.emplace_back(*av);
+    if (Parser::ArgsParser::isArg(args, "--help")) {
+        Help::help(Zappy::Server::HELP_FILE.data());
+        return Shared::EPISUCCESS;
+    }
     try {
-        Zappy::Server server(4242, {"first"}, 2);
+        Zappy::Server server(args);
         server.run();
-    } catch (Shared::SharedException &e) {
-        std::cerr << e.what() << std::endl;
+    } catch (const Parser::Help &) {
+        Help::help(Zappy::Server::HELP_FILE.data());
         return Shared::EPIERROR;
-    } catch (Zappy::ServerException &e) {
+    } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
         return Shared::EPIERROR;
     }

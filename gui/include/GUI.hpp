@@ -19,9 +19,11 @@
 namespace Zappy {
     class GUI {
     public:
-        GUI(int port, const std::string &ip);
+        GUI(std::vector<std::string> args);
 
         void run();
+
+        static constexpr std::string_view HELP_FILE = "gui/docs/help.txt";
 
     private:
         using Command = std::function<void(GUI &, std::istringstream &)>;

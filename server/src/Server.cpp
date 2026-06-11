@@ -8,20 +8,41 @@
 #include "Server.hpp"
 #include <csignal>
 #include <iostream>
+#include "ArgsParser.hpp"
 #include "Utils.hpp"
 
 namespace Zappy {
 
     bool Server::RECEIVED_SIG_INT = false;
 
-    Server::Server(int port, const std::vector<std::string> &teams,
-        std::size_t nbPerTeam) :
-        _connect(port), _logFile(std::string(LOG_FILE))
+    Server::Server(std::vector<std::string> args) :
+        _logFile(std::string(LOG_FILE)),
+        _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n")),
+        _connect(Parser::ArgsParser::getArg<int>(args, "-p")),
+        _f(Parser::ArgsParser::getArgSize(args, "-f")),
+        _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
+        _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
+            Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile, _clients)
     {
+        auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c");
+        if (_teamsNames.empty())
+            throw Parser::ArgsParserError("No teams name given");
+        for (const auto &team : _teamsNames) {
+            if (_teams.count(team))
+                throw Parser::ArgsParserError(
+                    "Cannot use duplicate teams name");
+            if (team == GRAPHIC)
+                throw Parser::ArgsParserError(
+                    "Cannot use \"GRAPHIC\" as team name");
+            _teams.emplace(team, nbPerTeam);
+        }
+        _teamsNames.clear();
+
+        if (!args.empty())
+            throw Parser::Help();
+
         Shared::Utils::logMsg(_logFile, "Server Open.");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
-        for (const auto &team : teams)
-            _teams.emplace(team, nbPerTeam);
         _clock = std::chrono::steady_clock::now();
     }
 
@@ -40,7 +61,7 @@ namespace Zappy {
 
     void Server::infoToRead()
     {
-        auto infos = _connect.infoToRead();
+        auto infos = _connect.infoToRead(_timeout);
         if (!infos.empty()) {
             if (infos[0] == _connect.getFd())
                 addClient();
@@ -51,12 +72,38 @@ namespace Zappy {
     void Server::update()
     {
         auto now = std::chrono::steady_clock::now();
-        auto elapsed = _clock - now;
+        auto elapsed = std::chrono::nanoseconds((_clock - now) / _fn);
         _clock = now;
-        for (auto &[_, ai] : _aiClients)
-            ai.update(elapsed);
-        for (auto &[_, gui] : _guiClients)
-            gui.update();
+        _timeout = -1;
+        auto tmp = _env.update(elapsed);
+        auto timeout = int(
+            std::chrono::duration_cast<std::chrono::microseconds>(tmp).count());
+        if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
+            _timeout = timeout;
+        std::vector<int> deads;
+        for (auto &[id, ai] : _clients.ai) {
+            tmp = ai.update(elapsed);
+            timeout =
+                int(std::chrono::duration_cast<std::chrono::microseconds>(tmp)
+                        .count());
+            if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
+                _timeout = timeout;
+            if (!ai.isAlive())
+                deads.push_back(id);
+        }
+        handleDeadClient(deads);
+    }
+
+    void Server::handleDeadClient(const std::vector<int> &deads)
+    {
+        for (auto dead : deads) {
+            auto find = _clients.ai.find(dead);
+            if (find != _clients.ai.end()) {
+                _connect.removeClient(dead);
+                _env.removePlayer(find);
+                _clients.ai.erase(find);
+            }
+        }
     }
 
     void Server::addClient()
@@ -65,7 +112,7 @@ namespace Zappy {
         auto new_fd = _connect.acceptClient();
         _connect.addClient(new_fd);
         Shared::Connect::send(new_fd, "WELCOME\n");
-        _newClients.emplace(new_fd, std::make_pair(id, std::string()));
+        _clients.newClient.emplace(new_fd, std::make_pair(id, std::string()));
         Shared::Utils::logMsg(
             _logFile, "New client[" + std::to_string(id) + "].");
         id++;
@@ -74,18 +121,18 @@ namespace Zappy {
     void Server::handleClient(const std::vector<int> &infos)
     {
         for (const auto fd : infos) {
-            auto ai = _aiClients.find(fd);
-            if (ai != _aiClients.end()) {
+            auto ai = _clients.ai.find(fd);
+            if (ai != _clients.ai.end()) {
                 handleAIClient(ai);
                 continue;
             }
-            auto gui = _guiClients.find(fd);
-            if (gui != _guiClients.end()) {
+            auto gui = _clients.gui.find(fd);
+            if (gui != _clients.gui.end()) {
                 handleGUIClient(gui);
                 continue;
             }
-            auto newClient = _newClients.find(fd);
-            if (newClient != _newClients.end())
+            auto newClient = _clients.newClient.find(fd);
+            if (newClient != _clients.newClient.end())
                 handleNewClient(newClient);
         }
     }
@@ -96,7 +143,8 @@ namespace Zappy {
             iter->second.infoToRead();
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
-            _aiClients.erase(iter);
+            _env.removePlayer(iter);
+            _clients.ai.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(iter->second.getId()) +
                     "] Close (Disconnected from the server).");
@@ -109,7 +157,7 @@ namespace Zappy {
             iter->second.infoToRead();
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
-            _guiClients.erase(iter);
+            _clients.gui.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(iter->second.getId()) +
                     "] Close (Disconnected from the server).");
@@ -125,7 +173,7 @@ namespace Zappy {
             Shared::Connect::receiveChunk(iter->first, iter->second.second);
         } catch (Shared::Connect::CloseException &_) {
             _connect.removeClient(iter->first);
-            _newClients.erase(iter);
+            _clients.newClient.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(iter->second.first) +
                     "] Close (Disconnected from the server).");
@@ -143,24 +191,26 @@ namespace Zappy {
         auto line = getNewClientLine(iter);
         if (line.has_value()) {
             if (line.value() == GRAPHIC) {
-                _guiClients.emplace(iter->first,
+                _clients.gui.emplace(iter->first,
                     GUIClient(iter->first, iter->second.first, _logFile));
-                _newClients.erase(iter);
+                _clients.newClient.erase(iter);
                 return;
             }
             auto find = _teams.find(line.value());
             if (find != _teams.end() && find->second > 0) {
-                find->second--;
-                _aiClients.emplace(iter->first,
+                _clients.ai.emplace(iter->first,
                     AIClient(iter->first,
                         iter->second.first,
                         find->first,
-                        _logFile));
-                _newClients.erase(iter);
+                        _logFile,
+                        _env));
+                _env.addPlayer(iter->first, line.value(), find->second);
+                find->second--;
+                _clients.newClient.erase(iter);
             } else {
                 Shared::Connect::send(iter->first, "ko\n");
                 _connect.removeClient(iter->first);
-                _newClients.erase(iter);
+                _clients.newClient.erase(iter);
                 Shared::Utils::logMsg(_logFile,
                     "Client[" + std::to_string(iter->second.first) +
                         "] Close (Wrong Teams Selection).");
