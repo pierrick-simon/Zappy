@@ -56,7 +56,8 @@ namespace Zappy {
             }
             auto item = _directions.begin();
             std::advance(item, std::rand() % _directions.size());
-            _players.emplace(id, Player {team, item->first, 1, egg.x, egg.y});
+            _players.emplace(
+                id, Player {team, item->first, 1, false, egg.x, egg.y});
             _eggs.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(id) + "] spawned in (" +
@@ -222,7 +223,8 @@ namespace Zappy {
         for (const auto &[id, player] : _players) {
             if (value == false)
                 break;
-            if (player.level == level && player.x == x && player.y == y)
+            if (!player.elevation && player.level == level && player.x == x &&
+                player.y == y)
                 check.emplace_back(id);
         }
         if (check.size() < elevation.nbPlayer)
@@ -254,7 +256,7 @@ namespace Zappy {
             find->second.x, find->second.y, find->second.level);
     }
 
-    std::vector<std::size_t> Environement::endElevation(
+    void Environement::endElevation(
         std::size_t id, std::vector<std::size_t> start)
     {
         auto find = _players.find(id);
@@ -270,11 +272,8 @@ namespace Zappy {
                         }),
             start.end());
         const auto &elevation = _elevations.at(find->second.level);
-        if (start.size() < elevation.nbPlayer)
-            start.clear();
-        else
+        if (start.size() >= elevation.nbPlayer)
             successElevation(find->second.x, find->second.y, elevation, start);
-        return start;
     }
 
     bool Environement::eject(std::size_t id)

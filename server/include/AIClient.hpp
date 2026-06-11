@@ -42,7 +42,6 @@ namespace Zappy {
         }
 
         std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
-        void executeCommand();
 
     private:
         struct Command {
@@ -60,6 +59,8 @@ namespace Zappy {
 
         void addCommand();
         void checkAlive();
+        void executeCommand();
+        void startCheckIncantation(const std::string &name);
 
         static void forward(AIClient &, std::istringstream &);
         static void right(AIClient &, std::istringstream &);
@@ -70,6 +71,7 @@ namespace Zappy {
         static void eject(AIClient &, std::istringstream &);
         static void set(AIClient &, std::istringstream &);
         static void take(AIClient &, std::istringstream &);
+        static void incantation(AIClient &, std::istringstream &);
 
         int _fd;
         bool _alive = true;
@@ -83,6 +85,7 @@ namespace Zappy {
         std::optional<SelectCommand> _command;
 
         std::unordered_map<ResourceName, std::size_t> _inventory;
+        std::vector<std::size_t> _elevationPlayers;
         Environement &_env;
 
         static constexpr std::size_t MAX_QUEUE = 10;

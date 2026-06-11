@@ -103,12 +103,28 @@ namespace Zappy {
         if (iter != COMMANDS.end()) {
             _sleep = iter->second._timeLimit;
             _command.emplace(SelectCommand {iter, stream});
+            startCheckIncantation(command);
         } else {
             _sleep = DEFAULT_SLEEP;
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
             Shared::Utils::logMsg(_logFile,
                 "Try executing command " + command + " for client[" +
                     std::to_string(_id) + "](Commmand Not found).");
+        }
+    }
+
+    void AIClient::startCheckIncantation(const std::string &name)
+    {
+        if (name != ClientCmd::ICT.getStr())
+            return;
+        _elevationPlayers = _env.startElevation(_id);
+        if (_elevationPlayers.empty()) {
+            _command.reset();
+            _sleep = DEFAULT_SLEEP;
+            Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
+            Shared::Utils::logMsg(_logFile,
+                "Try executing command " + name + " for client[" +
+                    std::to_string(_id) + "](Start Verifications failed).");
         }
     }
 
@@ -204,6 +220,12 @@ namespace Zappy {
             Shared::Connect::send(client._fd, ServerCmd::KO.getStr() + "\n");
     }
 
+    void AIClient::incantation(AIClient &client, std::istringstream &stream)
+    {
+        client._env.endElevation(client._id, client._elevationPlayers);
+        client._elevationPlayers.clear();
+    }
+
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
             {ClientCmd::FWD.getStr(),
@@ -218,5 +240,7 @@ namespace Zappy {
             {ClientCmd::EJT.getStr(), Command {eject, std::chrono::seconds(7)}},
             {ClientCmd::STO.getStr(), Command {set, std::chrono::seconds(7)}},
             {ClientCmd::TKO.getStr(), Command {take, std::chrono::seconds(7)}},
+            {ClientCmd::ICT.getStr(),
+                Command {incantation, std::chrono::seconds(300)}},
     };
 }; // namespace Zappy

@@ -67,8 +67,7 @@ namespace Zappy {
         void setResource(std::size_t id, ResourceName);
         bool eject(std::size_t id);
         std::vector<std::size_t> startElevation(std::size_t id);
-        std::vector<std::size_t> endElevation(
-            std::size_t id, std::vector<std::size_t>);
+        void endElevation(std::size_t id, std::vector<std::size_t>);
 
         [[nodiscard]] std::size_t getHeight() const
         {
@@ -104,6 +103,7 @@ namespace Zappy {
             std::string team;
             Direction dir;
             std::size_t level;
+            bool elevation;
             std::size_t x;
             std::size_t y;
         };
