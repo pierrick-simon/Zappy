@@ -6,3 +6,4 @@ zappy_ai
 *.log
 .cache
 clang.sh
+.ruff_cache
