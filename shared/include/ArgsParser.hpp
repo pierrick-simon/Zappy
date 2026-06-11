@@ -60,7 +60,8 @@ namespace Parser {
         {
             for (auto arg = args.get().begin(); arg != args.get().end();
                 ++arg) {
-                if (*arg == flag && arg + 1 != args.get().end() && (arg + 1)->rfind("-", 0) != 0) {
+                if (*arg == flag && arg + 1 != args.get().end() &&
+                    (arg + 1)->rfind("-", 0) != 0) {
                     T tmp;
                     std::istringstream stream(*(arg + 1));
                     stream >> tmp;
@@ -139,7 +140,7 @@ namespace Parser {
             try {
                 ret = getArgList<T>(args, flag);
             } catch (const Help &) {
-                ret = fallBack;
+                ret = std::move(fallBack);
             }
             return ret;
         }
