@@ -82,13 +82,14 @@ namespace Zappy {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        _eggs.emplace(_eggId, Egg{team, find->second.x, find->second.y});
+        _eggs.emplace(_eggId, Egg {team, find->second.x, find->second.y});
         _eggId++;
     }
 
     void Environement::spawnEgg(const std::string &team)
     {
-        _eggs.emplace(_eggId, Egg{team, std::rand() % _width, std::rand() % _height});
+        _eggs.emplace(
+            _eggId, Egg {team, std::rand() % _width, std::rand() % _height});
         _eggId++;
     }
 
