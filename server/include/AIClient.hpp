@@ -62,16 +62,16 @@ namespace Zappy {
         void executeCommand();
         void startCheckIncantation(const std::string &name);
 
-        static void forward(AIClient &, std::istringstream &);
-        static void right(AIClient &, std::istringstream &);
-        static void left(AIClient &, std::istringstream &);
-        static void inventory(AIClient &, std::istringstream &);
-        static void connectNbr(AIClient &, std::istringstream &);
-        static void fork(AIClient &, std::istringstream &);
-        static void eject(AIClient &, std::istringstream &);
-        static void set(AIClient &, std::istringstream &);
-        static void take(AIClient &, std::istringstream &);
-        static void incantation(AIClient &, std::istringstream &);
+        void forward(std::istringstream &);
+        void right(std::istringstream &);
+        void left(std::istringstream &);
+        void inventory(std::istringstream &);
+        void connectNbr(std::istringstream &);
+        void fork(std::istringstream &);
+        void eject(std::istringstream &);
+        void set(std::istringstream &);
+        void take(std::istringstream &);
+        void incantation(std::istringstream &);
 
         int _fd;
         bool _alive = true;

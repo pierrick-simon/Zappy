@@ -133,29 +133,29 @@ namespace Zappy {
         }
     }
 
-    void AIClient::forward(AIClient &client, std::istringstream &stream)
+    void AIClient::forward(std::istringstream &stream)
     {
-        client._env.movePlayer(client._id);
-        Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+        _env.movePlayer(_id);
+        Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::right(AIClient &client, std::istringstream &stream)
+    void AIClient::right(std::istringstream &stream)
     {
-        client._env.rotatePlayer(client._id, Rotate::Right);
-        Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+        _env.rotatePlayer(_id, Rotate::Right);
+        Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::left(AIClient &client, std::istringstream &stream)
+    void AIClient::left(std::istringstream &stream)
     {
-        client._env.rotatePlayer(client._id, Rotate::Left);
-        Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+        _env.rotatePlayer(_id, Rotate::Left);
+        Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::inventory(AIClient &client, std::istringstream &stream)
+    void AIClient::inventory(std::istringstream &stream)
     {
         std::string msg = "[";
         bool first = true;
-        for (auto [name, nb] : client._inventory) {
+        for (auto [name, nb] : _inventory) {
             if (!first)
                 msg += ",";
             msg += Environement::getResourceName(name);
@@ -163,89 +163,95 @@ namespace Zappy {
             first = false;
         }
         msg += "]\n";
-        Shared::Connect::send(client._fd, msg);
+        Shared::Connect::send(_fd, msg);
     }
 
-    void AIClient::connectNbr(AIClient &client, std::istringstream &stream)
+    void AIClient::connectNbr(std::istringstream &stream)
     {
-        Shared::Connect::send(client._fd,
-            std::to_string(client._env.getConnectNbr(client._id)) + "\n");
+        Shared::Connect::send(
+            _fd, std::to_string(_env.getConnectNbr(_id)) + "\n");
     }
 
-    void AIClient::fork(AIClient &client, std::istringstream &stream)
+    void AIClient::fork(std::istringstream &stream)
     {
-        client._env.spawnEgg(client._id);
-        Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+        _env.spawnEgg(_id);
+        Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::eject(AIClient &client, std::istringstream &stream)
+    void AIClient::eject(std::istringstream &stream)
     {
-        if (client._env.eject(client._id))
-            Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+        if (_env.eject(_id))
+            Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
         else
-            Shared::Connect::send(client._fd, ServerCmd::KO.getStr() + "\n");
+            Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
-    void AIClient::set(AIClient &client, std::istringstream &stream)
+    void AIClient::set(std::istringstream &stream)
     {
         bool value = true;
         std::string resource;
         stream >> resource;
         try {
             auto type = Environement::getResource(resource);
-            value = client._env.takeResource(client._id, type);
+            value = _env.takeResource(_id, type);
         } catch (ResourceNotFoundException &_) {
             value = false;
         }
         if (value)
-            Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+            Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
         else
-            Shared::Connect::send(client._fd, ServerCmd::KO.getStr() + "\n");
+            Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
-    void AIClient::take(AIClient &client, std::istringstream &stream)
+    void AIClient::take(std::istringstream &stream)
     {
         bool value = true;
         std::string resource;
         stream >> resource;
         try {
             auto type = Environement::getResource(resource);
-            auto find = client._inventory.find(type);
-            if (find != client._inventory.end() && find->second != 0) {
+            auto find = _inventory.find(type);
+            if (find != _inventory.end() && find->second != 0) {
                 find->second--;
-                client._env.setResource(client._id, type);
+                _env.setResource(_id, type);
             } else
                 value = false;
         } catch (ResourceNotFoundException &_) {
             value = false;
         }
         if (value)
-            Shared::Connect::send(client._fd, ServerCmd::OK.getStr() + "\n");
+            Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
         else
-            Shared::Connect::send(client._fd, ServerCmd::KO.getStr() + "\n");
+            Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
-    void AIClient::incantation(AIClient &client, std::istringstream &stream)
+    void AIClient::incantation(std::istringstream &stream)
     {
-        client._env.endElevation(client._id, client._elevationPlayers);
-        client._elevationPlayers.clear();
+        _env.endElevation(_id, _elevationPlayers);
+        _elevationPlayers.clear();
     }
 
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
             {ClientCmd::FWD.getStr(),
-                Command {forward, std::chrono::seconds(7)}},
-            {ClientCmd::RGT.getStr(), Command {right, std::chrono::seconds(7)}},
-            {ClientCmd::LFT.getStr(), Command {left, std::chrono::seconds(7)}},
+                Command {&AIClient::forward, std::chrono::seconds(7)}},
+            {ClientCmd::RGT.getStr(),
+                Command {&AIClient::right, std::chrono::seconds(7)}},
+            {ClientCmd::LFT.getStr(),
+                Command {&AIClient::left, std::chrono::seconds(7)}},
             {ClientCmd::IVT.getStr(),
-                Command {inventory, std::chrono::seconds(1)}},
+                Command {&AIClient::inventory, std::chrono::seconds(1)}},
             {ClientCmd::CNT.getStr(),
-                Command {connectNbr, std::chrono::nanoseconds(1)}},
-            {ClientCmd::FRK.getStr(), Command {fork, std::chrono::seconds(42)}},
-            {ClientCmd::EJT.getStr(), Command {eject, std::chrono::seconds(7)}},
-            {ClientCmd::STO.getStr(), Command {set, std::chrono::seconds(7)}},
-            {ClientCmd::TKO.getStr(), Command {take, std::chrono::seconds(7)}},
+                Command {&AIClient::connectNbr, std::chrono::nanoseconds(1)}},
+            {ClientCmd::FRK.getStr(),
+                Command {&AIClient::fork, std::chrono::seconds(42)}},
+            {ClientCmd::EJT.getStr(),
+                Command {&AIClient::eject, std::chrono::seconds(7)}},
+            {ClientCmd::STO.getStr(),
+                Command {&AIClient::set, std::chrono::seconds(7)}},
+            {ClientCmd::TKO.getStr(),
+                Command {&AIClient::take, std::chrono::seconds(7)}},
             {ClientCmd::ICT.getStr(),
-                Command {incantation, std::chrono::seconds(300)}},
+                Command {&AIClient::incantation, std::chrono::seconds(300)}},
     };
 }; // namespace Zappy
