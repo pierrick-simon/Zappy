@@ -283,6 +283,7 @@ namespace Zappy {
         for (auto id : players) {
             auto find = _players.find(id);
             if (find != _players.end()) {
+                setPlayerElevate(id, false);
                 Shared::Connect::send(
                     getPlayerFd(id), ServerCmd::KO.getStr() + "\n");
                 Shared::Utils::logMsg(_logFile,
