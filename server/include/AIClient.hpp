@@ -41,6 +41,11 @@ namespace Zappy {
             return _inventory;
         }
 
+        void setElevate(bool elevate)
+        {
+            _elevate = elevate;
+        }
+
         std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
 
     private:
@@ -60,7 +65,7 @@ namespace Zappy {
         void addCommand();
         void checkAlive();
         void executeCommand();
-        void startCheckIncantation(const std::string &name);
+        bool startCheckIncantation(const std::string &name);
 
         void forward(std::istringstream &);
         void right(std::istringstream &);
@@ -83,6 +88,7 @@ namespace Zappy {
         std::chrono::nanoseconds _sleep;
         std::chrono::nanoseconds _live;
         std::optional<SelectCommand> _command;
+        bool _elevate = false;
 
         std::map<ResourceName, std::size_t> _inventory;
         std::vector<std::size_t> _elevationPlayers;
