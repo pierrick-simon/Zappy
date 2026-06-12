@@ -7,7 +7,5 @@
 
 #include "GameObject.hpp"
 
-#include "OpenGLUtils.hpp"
-
 namespace Graphics {
 } // namespace Graphics

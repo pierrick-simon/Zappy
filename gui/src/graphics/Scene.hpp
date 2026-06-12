@@ -17,7 +17,7 @@
 namespace Graphics {
     class Scene : public Drawable {
     public:
-        explicit Scene();
+        Scene();
 
         raylib::Camera &getCamera();
         [[nodiscard]] const raylib::Camera &getCamera() const;
