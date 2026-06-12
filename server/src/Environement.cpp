@@ -18,15 +18,26 @@
 
 namespace Zappy {
     Environement::Environement(std::size_t width, std::size_t height,
-        std::ofstream &logFile, Clients &clients) :
+        std::ofstream &logFile, Clients &clients,
+        std::unordered_map<std::string, std::size_t> &teams) :
         _width(width),
         _height(height),
         _sleep(SLEEP),
         _tiles(width * height),
         _logFile(logFile),
-        _clients(clients)
+        _clients(clients),
+        _teams(teams)
     {
         std::srand(std::time(nullptr));
+        for (auto tile : _tiles) {
+            tile.emplace(ResourceName::Food, 0);
+            tile.emplace(ResourceName::Linemate, 0);
+            tile.emplace(ResourceName::Deraumere, 0);
+            tile.emplace(ResourceName::Sibur, 0);
+            tile.emplace(ResourceName::Mendiane, 0);
+            tile.emplace(ResourceName::Phiras, 0);
+            tile.emplace(ResourceName::Thystame, 0);
+        }
     }
 
     std::chrono::nanoseconds Environement::update(
@@ -54,7 +65,8 @@ namespace Zappy {
             }
             auto item = _directions.begin();
             std::advance(item, std::rand() % _directions.size());
-            _players.emplace(id, Player {team, item->first, 1, egg.x, egg.y});
+            _players.emplace(
+                id, Player {team, item->first, 1, false, egg.x, egg.y});
             _eggs.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(id) + "] spawned in (" +
@@ -77,12 +89,14 @@ namespace Zappy {
         }
     }
 
-    void Environement::spawnEgg(std::size_t id, const std::string &team)
+    void Environement::spawnEgg(std::size_t id)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        _eggs.emplace(_eggId, Egg {team, find->second.x, find->second.y});
+        _eggs.emplace(
+            _eggId, Egg {find->second.team, find->second.x, find->second.y});
+        _teams.at(find->second.team)++;
         _eggId++;
     }
 
@@ -121,16 +135,34 @@ namespace Zappy {
             static_cast<int>(size));
     }
 
-    void Environement::movePlayer(std::size_t id, Direction dir)
+    void Environement::movePlayer(std::size_t id)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto &player = find->second;
-        auto [dx, dy, _] = _directions.at(dir);
+        auto [dx, dy, _] = _directions.at(find->second.dir);
         player.x = circularMove(player.x, dx, _width);
         player.y = circularMove(player.y, dy, _height);
-        player.dir = dir;
+    }
+
+    void Environement::rotatePlayer(std::size_t id, Rotate rotate)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        auto dir = _directions.find(find->second.dir);
+        if (rotate == Rotate::Left) {
+            if (dir == _directions.begin())
+                find->second.dir = _directions.end()--->first;
+            else
+                find->second.dir = dir--->first;
+        } else {
+            if (dir == _directions.end()--)
+                find->second.dir = _directions.begin()->first;
+            else
+                find->second.dir = dir++->first;
+        }
     }
 
     Direction Environement::getOpositeDir(Direction dir)
@@ -200,7 +232,8 @@ namespace Zappy {
         for (const auto &[id, player] : _players) {
             if (value == false)
                 break;
-            if (player.level == level && player.x == x && player.y == y)
+            if (!player.elevation && player.level == level && player.x == x &&
+                player.y == y)
                 check.emplace_back(id);
         }
         if (check.size() < elevation.nbPlayer)
@@ -232,7 +265,7 @@ namespace Zappy {
             find->second.x, find->second.y, find->second.level);
     }
 
-    std::vector<std::size_t> Environement::endElevation(
+    void Environement::endElevation(
         std::size_t id, std::vector<std::size_t> start)
     {
         auto find = _players.find(id);
@@ -248,11 +281,50 @@ namespace Zappy {
                         }),
             start.end());
         const auto &elevation = _elevations.at(find->second.level);
-        if (start.size() < elevation.nbPlayer)
-            start.clear();
-        else
+        if (start.size() >= elevation.nbPlayer)
             successElevation(find->second.x, find->second.y, elevation, start);
-        return start;
+    }
+
+    bool Environement::eject(std::size_t id)
+    {
+        bool status = false;
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        for (auto iter = _players.begin(); iter != _players.end(); iter++) {
+            if (find == iter)
+                continue;
+            if (iter->second.x == find->second.x &&
+                iter->second.y == find->second.y) {
+                status = true;
+            }
+        }
+        for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
+            if (iter->second.x == find->second.x &&
+                iter->second.y == find->second.y) {
+                _teams.at(iter->second.team)--;
+                _eggs.erase(iter);
+                status = true;
+            }
+        }
+        return status;
+    }
+
+    std::size_t Environement::getConnectNbr(std::size_t id) const
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        return _teams.at(find->second.team);
+    }
+
+    ResourceName Environement::getResource(const std::string &name)
+    {
+        for (const auto &[type, resource] : _resources) {
+            if (resource.str == name)
+                return type;
+        }
+        throw ResourceNotFoundException();
     }
 
     const std::unordered_map<ResourceName, Environement::Resource>

@@ -23,7 +23,8 @@ namespace Zappy {
         _f(Parser::ArgsParser::getArgSize(args, "-f", 100)),
         _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
-            Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile, _clients)
+            Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile, _clients,
+            _teams)
     {
         auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c", 10);
         if (_teamsNames.empty())
@@ -201,13 +202,13 @@ namespace Zappy {
             }
             auto find = _teams.find(line.value());
             if (find != _teams.end() && find->second > 0) {
+                _env.addPlayer(iter->second.first, line.value(), find->second);
                 _clients.ai.emplace(iter->first,
                     AIClient(iter->first,
                         iter->second.first,
                         find->first,
                         _logFile,
                         _env));
-                _env.addPlayer(iter->second.first, line.value(), find->second);
                 find->second--;
                 _clients.newClient.erase(iter);
             } else {

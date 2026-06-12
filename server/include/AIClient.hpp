@@ -12,6 +12,8 @@
     #include <fstream>
     #include <functional>
     #include <iomanip>
+    #include <map>
+    #include <optional>
     #include <queue>
     #include <unordered_map>
     #include "Environement.hpp"
@@ -34,23 +36,42 @@ namespace Zappy {
             return _alive;
         }
 
-        [[nodiscard]] std::unordered_map<ResourceName, std::size_t>
-        getInventory() const
+        [[nodiscard]] std::map<ResourceName, std::size_t> getInventory() const
         {
             return _inventory;
         }
 
         std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
-        void executeCommand();
 
     private:
         struct Command {
-            std::function<void(AIClient &)> _func;
+            std::function<void(AIClient &, std::istringstream &)> _func;
             std::chrono::nanoseconds _timeLimit;
+        };
+
+        using CommandIter =
+            std::unordered_map<std::string, Command>::const_iterator;
+
+        struct SelectCommand {
+            CommandIter iter;
+            std::istringstream &stream;
         };
 
         void addCommand();
         void checkAlive();
+        void executeCommand();
+        void startCheckIncantation(const std::string &name);
+
+        void forward(std::istringstream &);
+        void right(std::istringstream &);
+        void left(std::istringstream &);
+        void inventory(std::istringstream &);
+        void connectNbr(std::istringstream &);
+        void fork(std::istringstream &);
+        void eject(std::istringstream &);
+        void set(std::istringstream &);
+        void take(std::istringstream &);
+        void incantation(std::istringstream &);
 
         int _fd;
         bool _alive = true;
@@ -58,16 +79,21 @@ namespace Zappy {
         std::string _team;
         std::ofstream &_logFile;
         std::string _buffer;
-        std::queue<std::string> _command;
+        std::queue<std::string> _commands;
         std::chrono::nanoseconds _sleep;
         std::chrono::nanoseconds _live;
+        std::optional<SelectCommand> _command;
 
-        std::unordered_map<ResourceName, std::size_t> _inventory;
+        std::map<ResourceName, std::size_t> _inventory;
+        std::vector<std::size_t> _elevationPlayers;
         Environement &_env;
 
         static constexpr std::size_t MAX_QUEUE = 10;
         static constexpr std::size_t START_FOOD = 10;
-        static constexpr std::size_t CYCLE_TO_DIE = 126;
+        static constexpr std::chrono::nanoseconds CYCLE_TO_DIE =
+            std::chrono::seconds(126);
+        static constexpr std::chrono::nanoseconds DEFAULT_SLEEP =
+            std::chrono::seconds(1);
 
         static const std::unordered_map<std::string, Command> COMMANDS;
     };

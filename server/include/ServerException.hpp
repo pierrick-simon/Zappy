@@ -37,6 +37,12 @@ namespace Zappy {
         EggNotFoundException() :
             ServerException("Egg not found.") {};
     };
+
+    class ResourceNotFoundException : public ServerException {
+    public:
+        ResourceNotFoundException() :
+            ServerException("Resource not found.") {};
+    };
 } // namespace Zappy
 
 #endif
