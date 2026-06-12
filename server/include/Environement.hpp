@@ -37,7 +37,7 @@ namespace Zappy {
     };
 
     struct TileInfo {
-        std::unordered_map<ResourceName, std::size_t> resources;
+        std::map<ResourceName, std::size_t> resources;
         std::vector<Team> eggs;
         std::vector<Team> players;
     };
@@ -86,7 +86,7 @@ namespace Zappy {
         static ResourceName getResource(const std::string &name);
 
     private:
-        using Tile = std::unordered_map<ResourceName, std::size_t>;
+        using Tile = std::map<ResourceName, std::size_t>;
 
         struct Resource {
             float density;

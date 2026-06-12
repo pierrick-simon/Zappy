@@ -12,6 +12,7 @@
     #include <fstream>
     #include <functional>
     #include <iomanip>
+    #include <map>
     #include <optional>
     #include <queue>
     #include <unordered_map>
@@ -35,8 +36,7 @@ namespace Zappy {
             return _alive;
         }
 
-        [[nodiscard]] std::unordered_map<ResourceName, std::size_t>
-        getInventory() const
+        [[nodiscard]] std::map<ResourceName, std::size_t> getInventory() const
         {
             return _inventory;
         }
@@ -84,7 +84,7 @@ namespace Zappy {
         std::chrono::nanoseconds _live;
         std::optional<SelectCommand> _command;
 
-        std::unordered_map<ResourceName, std::size_t> _inventory;
+        std::map<ResourceName, std::size_t> _inventory;
         std::vector<std::size_t> _elevationPlayers;
         Environement &_env;
 
