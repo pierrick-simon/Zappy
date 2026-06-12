@@ -22,6 +22,11 @@ namespace Graphics {
         return this->_camera;
     }
 
+    void Scene::update()
+    {
+        this->_camera.Update(CAMERA_THIRD_PERSON);
+    }
+
     void Scene::draw() const
     {
         for (auto &object : this->_objects)

@@ -21,6 +21,7 @@ namespace Graphics {
 
         raylib::Camera &getCamera();
         [[nodiscard]] const raylib::Camera &getCamera() const;
+        void update();
 
         template<typename GameObjectType>
         std::unique_ptr<GameObject> &addObject(
