@@ -30,7 +30,7 @@ jobs:
           step-summary: 'true'
           tidy-review: 'true'
           format-review: 'true'
-          ignore: '.github|tests'
+          ignore: '.github|tests|build'
           version: '22'
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0
