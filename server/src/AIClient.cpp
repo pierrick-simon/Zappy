@@ -71,7 +71,7 @@ namespace Zappy {
                         " for client[" + std::to_string(_id) + "].");
                 _command.reset();
             }
-            if (!_commands.empty())
+            if (!_commands.empty() && !_elevate)
                 executeCommand();
         }
         _live -= elapsed;
@@ -104,11 +104,12 @@ namespace Zappy {
         std::string command;
         stream >> command;
         _commands.pop();
+        if (startCheckIncantation(command))
+            return;
         auto iter = COMMANDS.find(command);
         if (iter != COMMANDS.end()) {
             _sleep = iter->second._timeLimit;
             _command.emplace(SelectCommand {iter, stream});
-            startCheckIncantation(command);
         } else {
             _sleep = DEFAULT_SLEEP;
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
@@ -118,19 +119,19 @@ namespace Zappy {
         }
     }
 
-    void AIClient::startCheckIncantation(const std::string &name)
+    bool AIClient::startCheckIncantation(const std::string &name)
     {
+        bool value = true;
         if (name != ClientCmd::ICT.getStr())
-            return;
-        _elevationPlayers = _env.startElevation(_id);
-        if (_elevationPlayers.empty()) {
-            _command.reset();
+            value = false;
+        else if (!_env.startElevation(_id)) {
             _sleep = DEFAULT_SLEEP;
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
             Shared::Utils::logMsg(_logFile,
                 "Try executing command " + name + " for client[" +
                     std::to_string(_id) + "](Start Verifications failed).");
         }
+        return value;
     }
 
     void AIClient::forward(std::istringstream &stream)
@@ -225,12 +226,6 @@ namespace Zappy {
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
-    void AIClient::incantation(std::istringstream &stream)
-    {
-        _env.endElevation(_id, _elevationPlayers);
-        _elevationPlayers.clear();
-    }
-
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
             {ClientCmd::FWD.getStr(),
@@ -251,7 +246,5 @@ namespace Zappy {
                 Command {&AIClient::set, std::chrono::seconds(7)}},
             {ClientCmd::TKO.getStr(),
                 Command {&AIClient::take, std::chrono::seconds(7)}},
-            {ClientCmd::ICT.getStr(),
-                Command {&AIClient::incantation, std::chrono::seconds(300)}},
     };
 }; // namespace Zappy

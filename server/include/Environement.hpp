@@ -66,8 +66,9 @@ namespace Zappy {
         bool takeResource(std::size_t id, ResourceName);
         void setResource(std::size_t id, ResourceName);
         bool eject(std::size_t id);
-        std::vector<std::size_t> startElevation(std::size_t id);
-        void endElevation(std::size_t id, std::vector<std::size_t>);
+        bool startElevation(std::size_t id);
+        void endElevation(std::size_t x, std::size_t y, std::size_t level,
+            std::vector<std::size_t>);
 
         [[nodiscard]] std::size_t getHeight() const
         {
@@ -87,8 +88,6 @@ namespace Zappy {
 
     private:
         using Tile = std::map<ResourceName, std::size_t>;
-        using PlayerIter = std::unordered_map<std::size_t,
-            Zappy::Environement::Player>::iterator;
 
         struct Resource {
             float density;
@@ -110,6 +109,9 @@ namespace Zappy {
             std::size_t y;
         };
 
+        using PlayerIter = std::unordered_map<std::size_t,
+            Zappy::Environement::Player>::iterator;
+
         struct Dir {
             int x;
             int y;
@@ -121,14 +123,24 @@ namespace Zappy {
             Tile resources;
         };
 
+        struct Elevate {
+            std::chrono::nanoseconds sleep;
+            std::size_t x;
+            std::size_t y;
+            std::size_t level;
+            std::vector<std::size_t> players;
+        };
+
         static std::size_t circularMove(
             std::size_t pos, int delta, std::size_t size);
         std::vector<std::size_t> checkElevation(
-            std::size_t x, std::size_t y, std::size_t level);
+            std::size_t x, std::size_t y, std::size_t level, bool elevated);
         void successElevation(std::size_t x, std::size_t y, const Elevation &,
-            const std::vector<size_t> &player);
+            const std::vector<size_t> &players);
+        void failElevation(const std::vector<size_t> &players);
         void setResource(std::size_t tile, ResourceName name, std::size_t nb);
         int getPlayerFd(std::size_t id);
+        void setPlayerElevate(std::size_t id, bool value);
         void handleEjectPlayer(PlayerIter, Direction);
 
         std::size_t _width;
@@ -139,6 +151,7 @@ namespace Zappy {
         std::vector<Tile> _tiles;
         std::unordered_map<std::size_t, Egg> _eggs;
         std::unordered_map<std::size_t, Player> _players;
+        std::vector<Elevate> _elevates;
 
         std::ofstream &_logFile;
         Clients &_clients;
@@ -150,6 +163,8 @@ namespace Zappy {
 
         static constexpr std::chrono::nanoseconds SLEEP =
             std::chrono::seconds(20);
+        static constexpr std::chrono::nanoseconds ELEVATE =
+            std::chrono::seconds(300);
     };
 } // namespace Zappy
 
