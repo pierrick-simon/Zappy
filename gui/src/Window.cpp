@@ -17,7 +17,6 @@ namespace Graphics {
         raylib::Window(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE)
     {
         this->SetTargetFPS(TARGET_FPS);
-
     }
 
     void Window::update()
