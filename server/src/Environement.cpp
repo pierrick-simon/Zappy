@@ -115,12 +115,12 @@ namespace Zappy {
         TileInfo info;
         auto tile = _width * height + width;
         info.resources = _tiles[tile];
-        for (auto egg : _eggs) {
-            if (egg.second.x = width && egg.second.y)
+        for (const auto &egg : _eggs) {
+            if (egg.second.x == width && egg.second.y)
                 info.eggs.push_back({egg.first, egg.second.team});
         }
-        for (auto player : _players) {
-            if (player.second.x = width && player.second.y)
+        for (const auto &player : _players) {
+            if (player.second.x == width && player.second.y)
                 info.players.push_back({player.first, player.second.team});
         }
         return info;
@@ -247,7 +247,7 @@ namespace Zappy {
         auto tile = _width * y + x;
         for (auto [name, nb] : elevation.resources) {
             auto isHere = _tiles[tile].find(name);
-            isHere->second - nb;
+            isHere->second -= nb;
         }
         for (auto player : players) {
             auto find = _players.find(player);
