@@ -3,6 +3,7 @@ project(Zappy CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/server)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/gui)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/shared)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -10,7 +11,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(HEADERS
-        shared/include/
+    shared/include/
 )
 
 include_directories(${HEADERS})
@@ -23,11 +24,12 @@ if (ENABLE_ASAN)
     add_link_options(${ASAN_FLAGS})
 endif ()
 
+add_subdirectory(shared)
 add_subdirectory(server)
 
 include(CTest)
 add_subdirectory(gui)
 
 add_custom_target(tests_run
-        DEPENDS server_tests_run gui_tests_run
+    DEPENDS server_tests_run gui_tests_run
 )

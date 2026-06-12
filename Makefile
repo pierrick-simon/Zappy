@@ -20,7 +20,7 @@ CMAKE_MAKEFILE_DEBUG := $(CMAKE_DIRECTORY_DEBUG)/Makefile
 CMAKE_ARGS = -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang \
  			-DCMAKE_BUILD_TYPE="Release"
 
-all:	$(CMAKE_MAKEFILE) $(NAME_AI)
+all:	lib	$(CMAKE_MAKEFILE) $(NAME_AI)
 	$(CMAKE) --build $(CMAKE_DIRECTORY)
 
 debug:	$(CMAKE_MAKEFILE_DEBUG) $(NAME_AI)
@@ -48,4 +48,7 @@ fclean: clean
 %: $(CMAKE_MAKEFILE)
 	$(CMAKE) --build $(CMAKE_DIRECTORY) --target $@
 
-.PHONY: all debug clean fclean
+lib:
+	$(CMAKE) --build $(CMAKE_DIRECTORY) --target shared
+
+.PHONY: all debug clean fclean lib
