@@ -11,10 +11,13 @@
 #include <optional>
 #include <random>
 #include "AIClient.hpp"
+#include "AICommunication.hpp"
 #include "GUIClient.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
+
+namespace ServerCmd = Shared::AICommunication::Server;
 
 namespace Zappy {
     Environement::Environement(std::size_t width, std::size_t height,
@@ -285,6 +288,18 @@ namespace Zappy {
             successElevation(find->second.x, find->second.y, elevation, start);
     }
 
+    void Environement::handleEjectPlayer(PlayerIter iter, Direction dir)
+    {
+        auto [dx, dy, _] = _directions.at(dir);
+        iter->second.x = circularMove(iter->second.x, dx, _width);
+        iter->second.y = circularMove(iter->second.y, dy, _height);
+        Shared::Connect::send(getPlayerFd(iter->first),
+            ServerCmd::EJT.getStr() + ": " + _directions.at(dir).str + "\n");
+        Shared::Utils::logMsg(_logFile,
+            "Client[" + std::to_string(iter->first) + "] been push to the " +
+                _directions.at(dir).str + ".");
+    }
+
     bool Environement::eject(std::size_t id)
     {
         bool status = false;
@@ -296,6 +311,7 @@ namespace Zappy {
                 continue;
             if (iter->second.x == find->second.x &&
                 iter->second.y == find->second.y) {
+                handleEjectPlayer(iter, find->second.dir);
                 status = true;
             }
         }
@@ -325,6 +341,15 @@ namespace Zappy {
                 return type;
         }
         throw ResourceNotFoundException();
+    }
+
+    int Environement::getPlayerFd(std::size_t id)
+    {
+        for (auto &[fd, client] : _clients.ai) {
+            if (client.getId() == id)
+                return fd;
+        }
+        throw PlayerNotFoundException(id);
     }
 
     const std::unordered_map<ResourceName, Environement::Resource>

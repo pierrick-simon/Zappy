@@ -87,6 +87,8 @@ namespace Zappy {
 
     private:
         using Tile = std::map<ResourceName, std::size_t>;
+        using PlayerIter = std::unordered_map<std::size_t,
+            Zappy::Environement::Player>::iterator;
 
         struct Resource {
             float density;
@@ -126,6 +128,8 @@ namespace Zappy {
         void successElevation(std::size_t x, std::size_t y, const Elevation &,
             const std::vector<size_t> &player);
         void setResource(std::size_t tile, ResourceName name, std::size_t nb);
+        int getPlayerFd(std::size_t id);
+        void handleEjectPlayer(PlayerIter, Direction);
 
         std::size_t _width;
         std::size_t _height;
