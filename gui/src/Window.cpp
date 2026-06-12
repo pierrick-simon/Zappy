@@ -40,7 +40,6 @@ namespace Graphics {
         return this->_scene;
     }
 
-
     void Window::handleEvents()
     {
         for (const auto &[key, method] : KEY_METHODS) {
