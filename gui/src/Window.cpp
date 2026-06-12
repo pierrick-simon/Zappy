@@ -8,15 +8,19 @@
 #include "Window.hpp"
 
 #include "Assets.hpp"
-#include "UtilsVector.hpp"
 #include "graphics/primitives/Model.hpp"
 #include "raylib.hpp"
 
 namespace Graphics {
     Window::Window() :
-        raylib::Window(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE)
+        raylib::Window(
+            WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
     {
         this->SetTargetFPS(TARGET_FPS);
+        this->_scene.getCamera().SetPosition({500, 500, 0});
+        this->_scene.getCamera().SetTarget({0, 0, 0});
+        this->addObject<Model>(Assets::GetResource(
+            "map/Low_Poly_Low_Poly_Mill_obj/low-poly-mill.obj"));
     }
 
     void Window::update()

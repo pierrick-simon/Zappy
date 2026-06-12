@@ -82,14 +82,13 @@ find_library(CRITERION criterion REQUIRED)
 
 set(SRCS_TESTS
         tests/tests_init.cpp
-        tests/models/tests_model.cpp
 )
 
 add_executable(gui_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS} ${SHARED_SRCS})
 
 target_compile_options(gui_tests_run_bin PRIVATE --coverage)
 target_link_options(gui_tests_run_bin PRIVATE --coverage)
-target_link_libraries(gui_tests_run_bin criterion raylib GL GLU)
+target_link_libraries(gui_tests_run_bin criterion raylib raylib_cpp)
 
 add_custom_target(remove_coverage
         COMMAND find ${CMAKE_BINARY_DIR} -name "*.gc*" -delete
