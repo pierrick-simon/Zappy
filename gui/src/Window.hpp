@@ -8,21 +8,19 @@
 #ifndef WINDOW_HPP
     #define WINDOW_HPP
     #include <functional>
+    #include <raylib-cpp.hpp>
     #include <unordered_map>
-#include "raylib.hpp"
 
     #include "graphics/Scene.hpp"
 
 namespace Graphics {
-    class Window {
+    class Window : public raylib::Window {
     public:
         Window();
-        ~Window();
         void update();
         [[nodiscard]] static bool isRunning();
 
         Scene &getScene();
-        static void close();
 
         template<typename GameObjectType, typename... Args>
         std::unique_ptr<GameObject> &addObject(Args &&...args)
@@ -45,8 +43,6 @@ namespace Graphics {
         static constexpr auto TARGET_FPS = 60;
         static constexpr auto WINDOW_TITLE = "Zappy GUI";
         static constexpr auto FOV = 60.0;
-        static constexpr auto NEAR_PLANE = 0.001;
-        static constexpr auto FAR_PLANE = 500.0;
     };
 } // namespace Graphics
 

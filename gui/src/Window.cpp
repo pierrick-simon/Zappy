@@ -7,28 +7,33 @@
 
 #include "Window.hpp"
 
+#include "Assets.hpp"
+#include "UtilsVector.hpp"
+#include "graphics/primitives/Model.hpp"
 #include "raylib.hpp"
 
 namespace Graphics {
-    Window::Window()
+    Window::Window() :
+        raylib::Window(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE)
     {
-        InitWindow(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE);
-        SetTargetFPS(TARGET_FPS);
-    }
-    Window::~Window()
-    {
-        CloseWindow();
+        this->SetTargetFPS(TARGET_FPS);
+
     }
 
     void Window::update()
     {
         this->handleEvents();
+        this->BeginDrawing();
+        this->ClearBackground(raylib::Color::RayWhite());
+        this->getScene().getCamera().BeginMode();
         this->_scene.draw();
+        this->getScene().getCamera().EndMode();
+        this->EndDrawing();
     }
 
     bool Window::isRunning()
     {
-        return WindowShouldClose();
+        return !WindowShouldClose();
     }
 
     Scene &Window::getScene()
@@ -36,10 +41,6 @@ namespace Graphics {
         return this->_scene;
     }
 
-    void Window::close()
-    {
-        CloseWindow();
-    }
 
     void Window::handleEvents()
     {
@@ -50,6 +51,6 @@ namespace Graphics {
     }
 
     const std::unordered_map<::KeyboardKey, std::function<void(Window &)>>
-        Window::KEY_METHODS = {{KEY_P, [](Window &) { close(); }}};
+        Window::KEY_METHODS = {{KEY_P, [](Window &) { Close(); }}};
 
 } // namespace Graphics

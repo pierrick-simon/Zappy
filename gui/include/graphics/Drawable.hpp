@@ -12,7 +12,7 @@ namespace Graphics {
     class Drawable {
     public:
         virtual ~Drawable() = default;
-        virtual void draw() const;
+        virtual void draw() const = 0;
     };
 } // namespace Graphics
 
