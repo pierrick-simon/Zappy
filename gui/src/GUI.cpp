@@ -23,7 +23,7 @@ namespace Zappy {
     {
         bool connected = true;
 
-        while (this->_window.isRunning() && connected) {
+        while (Graphics::Window::isRunning() && connected) {
             auto info = _connect.infoToRead();
             if (!info.empty() && !infoToRead())
                 break;
