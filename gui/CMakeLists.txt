@@ -72,6 +72,21 @@ if (NOT raylib_cpp_FOUND)
     FetchContent_MakeAvailable(raylib_cpp)
 endif ()
 
+# criterion
+find_package(criterion QUIET)
+if (NOT criterion_FOUND)
+    if (NOT DEFINED CRITERION_VERSION)
+        set(CRITERION_VERSION v2.4.2)
+    endif ()
+    include(FetchContent)
+    FetchContent_Declare(
+            criterion
+            GIT_REPOSITORY https://github.com/Snaipe/Criterion.git
+            GIT_TAG ${CRITERION_VERSION}
+    )
+    FetchContent_MakeAvailable(criterion)
+endif ()
+
 add_executable(zappy_gui ${MAIN} ${SRCS} ${SHARED_SRCS})
 target_link_libraries(zappy_gui raylib raylib_cpp)
 
