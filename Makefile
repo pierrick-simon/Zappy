@@ -15,12 +15,14 @@ CMAKE := $(shell which cmake)
 
 CMAKE_MAKEFILE := $(CMAKE_DIRECTORY)/Makefile
 
+CMAKE_ARGS = -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+
 all:	$(CMAKE_MAKEFILE) $(NAME_AI)
 	$(CMAKE) --build $(CMAKE_DIRECTORY)
 
 $(CMAKE_MAKEFILE):
-	mkdir $(CMAKE_DIRECTORY)
-	cd $(CMAKE_DIRECTORY) && $(CMAKE) -S ..
+	mkdir -p $(CMAKE_DIRECTORY)
+	cd $(CMAKE_DIRECTORY) && $(CMAKE) -S .. $(CMAKE_ARGS)
 
 $(NAME_AI):
 	ln -s $(AI_DIR) $(NAME_AI)

@@ -8,13 +8,16 @@
 #include "Scene.hpp"
 
 namespace Graphics {
-
-    Camera &Scene::getCamera()
+    Scene::Scene()
+    {
+        this->_camera.Update(CAMERA_THIRD_PERSON);
+    }
+    raylib::Camera &Scene::getCamera()
     {
         return this->_camera;
     }
 
-    const Camera &Scene::getCamera() const
+    const raylib::Camera &Scene::getCamera() const
     {
         return this->_camera;
     }
