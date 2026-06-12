@@ -41,7 +41,7 @@ COMMAND_TIME = {
 RESOURCES = ["food", "linemate", "deraumere", "sibur",
              "mendiane", "phiras", "thystame"]
 
-class BackPackModule:
+class BackpackModule:
     def __init__(self) -> None:
         """! Initialisation of the backpack module.
 
