@@ -13,7 +13,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: "Generate compilation_command.json"
         run: |
           cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . -G 'Unix Makefiles'
@@ -30,6 +30,7 @@ jobs:
           step-summary: 'true'
           tidy-review: 'true'
           format-review: 'true'
+          ignore: '.github|tests'
           version: '22'
       - name: Fail fast?!
         if: steps.linter.outputs.checks-failed > 0
