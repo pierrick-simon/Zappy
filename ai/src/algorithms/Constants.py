@@ -1,3 +1,10 @@
+##
+## EPITECH PROJECT, 2026
+## Zappy
+## File description:
+## Constants
+##
+
 RESOURCES = ["food", "linemate", "deraumere", "sibur",
              "mendiane", "phiras", "thystame"]
 
