@@ -19,10 +19,12 @@ class ConnectionHandler:
     commands: deque[Command]
     events: deque[Event]
     slots: int
+    max_command: int
     status: bool = True
     dimension: tuple = ()
 
     def __init__(self, team: str, port: int, host: str, max_command=10):
+        self.max_command = max_command
         self.client = Client(team, port, host)
         self.commands = deque(maxlen=max_command)
         self.events = deque()
@@ -50,7 +52,7 @@ class ConnectionHandler:
     def handle_message(self, request: str) -> Optional[Event]:
         try:
             tokens: list[str] = re.split(r"[ ,]+", request)
-            _ = tokens.pop(0)
+            _ = tokens.popleft(0)
             direction: int = int(tokens.pop(0))
             return Event("message", direction, tokens[0].split(";"))
         except Exception as e:
@@ -99,24 +101,22 @@ class ConnectionHandler:
 
     def consume_command(self) -> Optional[Command]:
         try:
-            return self.commands.pop(0)
+            return self.commands.popleft()
         except IndexError as e:
             print(f"{e}")
             return None
 
     def consume_event(self) -> Optional[Event]:
         try:
-            return self.events.pop(0)
+            return self.events.popleft()
         except IndexError as e:
             print(f"{e}")
             return None
 
     def push_to_server(self, new_command: Command) -> None:
-        self.commands.append(new_command)
-        self.client.send(str(self.commands[-1]))
-
-    def send_command(self):
-        self.client.send(self.commands[0])
+        if len(self.commands) <= self.max_command:
+            self.commands.append(new_command)
+            self.client.send(str(self.commands[0]))
 
     def run(self):
         self.client.connect()
