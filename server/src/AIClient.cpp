@@ -131,8 +131,7 @@ namespace Zappy {
                 "Try executing command " + name + " for client[" +
                     std::to_string(_id) + "](Start Verifications failed).");
         } else {
-            Shared::Connect::send(
-                _fd, ServerCmd::EU.getStr() + "\n");
+            Shared::Connect::send(_fd, ServerCmd::EU.getStr() + "\n");
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(_id) +
                     "] start the elevation ritual.");
