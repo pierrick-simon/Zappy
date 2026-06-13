@@ -7,7 +7,7 @@
 
 import sys
 import argparse
-from src.player import Player
+from src.connexion_handler import ConnectionHandler
 
 
 def handle_args():
@@ -27,12 +27,14 @@ def handle_args():
 
 def main():
     args = handle_args()
-    if (args.name == "GRAPHIC"):
+    if args.name == "GRAPHIC":
         print("Team cannot be GRAPHIC.", file=sys.stderr)
         return 84
     try:
-        player: Player = Player()
-        player.run(args.name, args.port, args.machine)
+        entrypoint: ConnectionHandler = ConnectionHandler(
+            args.name, args.port, args.machine
+        )
+        entrypoint.run()
     except BaseException as e:
         print(e)
         return 84
