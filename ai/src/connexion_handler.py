@@ -1,7 +1,8 @@
-import sys
 import re
+import sys
+import ast
 from src.client import Client
-from typing import Optional
+from typing import Optional, Any
 from src.command import Command, Event
 from collections import deque
 from collections.abc import Callable
@@ -28,14 +29,21 @@ class ConnectionHandler:
         self.client = Client(team, port, host)
         self.commands = deque(maxlen=max_command)
         self.events = deque()
-        self.COMMON_EVENTS: dict[str, Callable[["ConnectionHandler", str], Event]] = {
+
+        self.COMMON_EVENTS: dict[str, Callable[["ConnectionHandler", str], Optional[Event]]] = {
             "dead": self.handle_dead,
             "message": self.handle_message,
             "eject": self.handle_eject,
             "Current level": self.handle_level,
         }
 
-    def handle_dead(self, request: str) -> Event:
+        self.SPECIAL_RESPONSE: dict[str, Callable[["ConnectionHandler", str], Any]] = {
+            "Look": self.handle_look_response,
+            "Inventory": self.handle_inventory_response,
+            "Connect_nbr": lambda self, request : int(request), 
+        }
+
+    def handle_dead(self, request: str) -> Optional[Event]:
         self.status = False
         return Event("dead")
 
@@ -71,6 +79,19 @@ class ConnectionHandler:
                 file=sys.stderr,
             )
             return None
+    
+    def handle_look_response(self, request: str) -> list[str]:
+            return request.split(",")
+    
+    def handle_inventory_response(self, request: str) -> dict[str, int]:
+        request.replace("[", "{").replace("]", "}").replace(" ", ": ")
+        return ast.literal_eval(request)
+    
+    def handle_response(self, request: str) -> Any:
+        if (self.commands[0] in self.SPECIAL_RESPONSE):
+            return self.SPECIAL_RESPONSE[self.commands[0]](request)
+        else:
+            return request
 
     def start_session(self):
         if self.client.recv() != "WELCOME":
@@ -95,9 +116,9 @@ class ConnectionHandler:
         key: str = get_key_from_dict(self.COMMON_EVENTS, request)
 
         if key:
-            self.COMMON_EVENTS[key](request)
+            self.events.append(self.COMMON_EVENTS[key](request))
         elif self.commands:
-            self.commands[0].response = request
+            self.commands[0].response = self.handle_response(request)
 
     def consume_command(self) -> Optional[Command]:
         try:
@@ -117,11 +138,3 @@ class ConnectionHandler:
         if len(self.commands) <= self.max_command:
             self.commands.append(new_command)
             self.client.send(str(self.commands[-1]))
-
-    def run(self):
-        self.client.connect()
-        self.start_session()
-
-        while self.status:
-            self.entrypoint()
-        self.client.disconnect()
