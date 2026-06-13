@@ -116,7 +116,7 @@ class ConnectionHandler:
     def push_to_server(self, new_command: Command) -> None:
         if len(self.commands) <= self.max_command:
             self.commands.append(new_command)
-            self.client.send(str(self.commands[0]))
+            self.client.send(str(self.commands[-1]))
 
     def run(self):
         self.client.connect()
