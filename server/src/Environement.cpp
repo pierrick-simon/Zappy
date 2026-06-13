@@ -284,8 +284,6 @@ namespace Zappy {
             auto find = _players.find(id);
             if (find != _players.end()) {
                 setPlayerElevate(id, false);
-                Shared::Connect::send(
-                    getPlayerFd(id), ServerCmd::KO.getStr() + "\n");
                 Shared::Utils::logMsg(_logFile,
                     "Client[" + std::to_string(id) +
                         "]: the elevation ritual fail.");
@@ -303,11 +301,6 @@ namespace Zappy {
         for (auto player : list) {
             _players.at(player).elevation = true;
             setPlayerElevate(player, true);
-            Shared::Connect::send(
-                getPlayerFd(player), ServerCmd::EU.getStr() + "\n");
-            Shared::Utils::logMsg(_logFile,
-                "Client[" + std::to_string(player) +
-                    "] start the elevation ritual.");
         }
         bool value = true;
         if (list.empty())
