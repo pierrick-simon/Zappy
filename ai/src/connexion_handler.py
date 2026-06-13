@@ -52,7 +52,7 @@ class ConnectionHandler:
     def handle_message(self, request: str) -> Optional[Event]:
         try:
             tokens: list[str] = re.split(r"[ ,]+", request)
-            _ = tokens.popleft(0)
+            _ = tokens.pop(0)
             direction: int = int(tokens.pop(0))
             return Event("message", direction, tokens[0].split(";"))
         except Exception as e:
