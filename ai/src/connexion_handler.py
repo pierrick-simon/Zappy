@@ -3,17 +3,15 @@ import sys
 import ast
 from src.client import Client
 from typing import Optional, Any
-from src.command import Command, Event
 from collections import deque
 from collections.abc import Callable
-
+from src.command import Command, Event
 
 def get_key_from_dict(dictionary: dict, string: str) -> Optional[str]:
     for key in dictionary.keys():
         if string.startswith(key):
             return key
     return None
-
 
 class ConnectionHandler:
     client: Client
@@ -80,20 +78,25 @@ class ConnectionHandler:
             )
             return None
     
-    def handle_look_response(self, request: str) -> list[str]:
-            return request.split(",")
+    def handle_look_response(self, request: str) -> list[list[str]]:
+        vision: list[list[str]] = [
+            [token for token in tile.strip().split() if token]
+            for tile in request.strip().strip("[]").split(",")
+        ]
+        return vision
     
     def handle_inventory_response(self, request: str) -> dict[str, int]:
         request.replace("[", "{").replace("]", "}").replace(" ", ": ")
         return ast.literal_eval(request)
     
     def handle_response(self, request: str) -> Any:
-        if (self.commands[0] in self.SPECIAL_RESPONSE):
-            return self.SPECIAL_RESPONSE[self.commands[0]](request)
+        if (self.commands[0].command in self.SPECIAL_RESPONSE):
+            return self.SPECIAL_RESPONSE[self.commands[0].command](request)
         else:
             return request
 
     def start_session(self):
+        self.client.connect()
         if self.client.recv() != "WELCOME":
             raise ConnectionError(
                 "The server did not initiate the connection with the client using WELCOME."
@@ -103,7 +106,7 @@ class ConnectionHandler:
             raw_slot: str = self.client.recv()
             self.slots = int(raw_slot)
         except ValueError:
-            raise ValueError(f"Number of available slot must be a number {raw_slot}.")
+            raise ValueError(f"Number of available slot must be a number, server response: {raw_slot}.")
         if self.slots < 1:
             raise ConnectionError(
                 f"No slot available for the team: {self.client.name}."
