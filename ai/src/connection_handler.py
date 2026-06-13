@@ -1,8 +1,17 @@
+##
+## EPITECH PROJECT, 2026
+## Zappy
+## File description:
+## connection handler
+##
+
+import sys
 import re
 import sys
 import ast
 from src.client import Client
-from typing import Optional, Any
+from typing import Optional
+from src.dataclasses_models import Command, Event
 from collections import deque
 from collections.abc import Callable
 from src.command import Command, Event

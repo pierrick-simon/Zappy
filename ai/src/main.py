@@ -7,9 +7,8 @@
 
 import sys
 import argparse
-from src.connexion_handler import ConnectionHandler
-from src.command import Command, Event
-from src.command import send_and_recv
+from src.connection_handler import ConnectionHandler
+
 
 def handle_args():
     args = argparse.ArgumentParser(description="Zappy AI Client", add_help=False)
@@ -36,7 +35,6 @@ def main():
             args.name, args.port, args.machine
         )
         entrypoint.start_session()
-        print("Response: ", send_and_recv(entrypoint, Command("Look")))
     except BaseException as e:
         print(e)
         return 84
