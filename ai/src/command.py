@@ -2,32 +2,13 @@
 ## EPITECH PROJECT, 2026
 ## Zappy
 ## File description:
-## command dataclass
+## commands
 ##
 
-from dataclasses import dataclass
-from typing import Optional, Any
-from src.connexion_handler import ConnectionHandler
+from dataclasses_models  import Command
+from connexion_handler import ConnectionHandler
+from typing import Optional
 from ai.src.algorithms import Constants as constants
-
-@dataclass
-class Command:
-    command: str
-    argument: str = None
-    response: Any = None
-
-    def __str__(self) -> str:
-        return " ".join(filter(None, [self.command, self.argument]))
-
-
-@dataclass
-class Event:
-    name: str
-    direction: Optional[int] = None
-    argument: Optional[Any] = None
-
-    def __str__(self):
-        return " ".join(filter(None, [self.name, self.argument, self.direction]))
 
 
 def send_and_recv(handler: ConnectionHandler, cmd: Command) -> str:
