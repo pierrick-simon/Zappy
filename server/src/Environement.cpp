@@ -11,32 +11,56 @@
 #include <optional>
 #include <random>
 #include "AIClient.hpp"
+#include "AICommunication.hpp"
 #include "GUIClient.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
 
+namespace ServerCmd = Shared::AICommunication::Server;
+
 namespace Zappy {
     Environement::Environement(std::size_t width, std::size_t height,
-        std::ofstream &logFile, Clients &clients) :
+        std::ofstream &logFile, Clients &clients,
+        std::unordered_map<std::string, std::size_t> &teams) :
         _width(width),
         _height(height),
         _sleep(SLEEP),
         _tiles(width * height),
         _logFile(logFile),
-        _clients(clients)
+        _clients(clients),
+        _teams(teams)
     {
         std::srand(std::time(nullptr));
+        for (auto tile : _tiles) {
+            tile.emplace(ResourceName::Food, 0);
+            tile.emplace(ResourceName::Linemate, 0);
+            tile.emplace(ResourceName::Deraumere, 0);
+            tile.emplace(ResourceName::Sibur, 0);
+            tile.emplace(ResourceName::Mendiane, 0);
+            tile.emplace(ResourceName::Phiras, 0);
+            tile.emplace(ResourceName::Thystame, 0);
+        }
     }
 
     std::chrono::nanoseconds Environement::update(
         std::chrono::nanoseconds elapsed)
     {
         _sleep -= elapsed;
+        auto min = _sleep;
         if (_sleep.count() <= 0) {
             _sleep = SLEEP;
         }
-        return _sleep;
+        for (auto iter = _elevates.begin(); iter != _elevates.end(); iter++) {
+            iter->sleep -= elapsed;
+            if (iter->sleep.count() <= 0) {
+                endElevation(iter->x, iter->y, iter->level, iter->players);
+                _elevates.erase(iter);
+            }
+            if (min > iter->sleep)
+                min = iter->sleep;
+        }
+        return min;
     }
 
     void Environement::addPlayer(
@@ -54,7 +78,8 @@ namespace Zappy {
             }
             auto item = _directions.begin();
             std::advance(item, std::rand() % _directions.size());
-            _players.emplace(id, Player {team, item->first, 1, egg.x, egg.y});
+            _players.emplace(
+                id, Player {team, item->first, 1, false, egg.x, egg.y});
             _eggs.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(id) + "] spawned in (" +
@@ -77,12 +102,14 @@ namespace Zappy {
         }
     }
 
-    void Environement::spawnEgg(std::size_t id, const std::string &team)
+    void Environement::spawnEgg(std::size_t id)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        _eggs.emplace(_eggId, Egg {team, find->second.x, find->second.y});
+        _eggs.emplace(
+            _eggId, Egg {find->second.team, find->second.x, find->second.y});
+        _teams.at(find->second.team)++;
         _eggId++;
     }
 
@@ -101,12 +128,12 @@ namespace Zappy {
         TileInfo info;
         auto tile = _width * height + width;
         info.resources = _tiles[tile];
-        for (auto egg : _eggs) {
-            if (egg.second.x = width && egg.second.y)
+        for (const auto &egg : _eggs) {
+            if (egg.second.x == width && egg.second.y)
                 info.eggs.push_back({egg.first, egg.second.team});
         }
-        for (auto player : _players) {
-            if (player.second.x = width && player.second.y)
+        for (const auto &player : _players) {
+            if (player.second.x == width && player.second.y)
                 info.players.push_back({player.first, player.second.team});
         }
         return info;
@@ -121,16 +148,34 @@ namespace Zappy {
             static_cast<int>(size));
     }
 
-    void Environement::movePlayer(std::size_t id, Direction dir)
+    void Environement::movePlayer(std::size_t id)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto &player = find->second;
-        auto [dx, dy, _] = _directions.at(dir);
+        auto [dx, dy, _] = _directions.at(find->second.dir);
         player.x = circularMove(player.x, dx, _width);
         player.y = circularMove(player.y, dy, _height);
-        player.dir = dir;
+    }
+
+    void Environement::rotatePlayer(std::size_t id, Rotate rotate)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        auto dir = _directions.find(find->second.dir);
+        if (rotate == Rotate::Left) {
+            if (dir == _directions.begin())
+                find->second.dir = _directions.end()--->first;
+            else
+                find->second.dir = dir--->first;
+        } else {
+            if (dir == _directions.end()--)
+                find->second.dir = _directions.begin()->first;
+            else
+                find->second.dir = dir++->first;
+        }
     }
 
     Direction Environement::getOpositeDir(Direction dir)
@@ -184,7 +229,7 @@ namespace Zappy {
     }
 
     std::vector<std::size_t> Environement::checkElevation(
-        std::size_t x, std::size_t y, std::size_t level)
+        std::size_t x, std::size_t y, std::size_t level, bool elevated)
     {
         auto tile = _width * y + x;
         auto elevation = _elevations.at(level);
@@ -200,7 +245,8 @@ namespace Zappy {
         for (const auto &[id, player] : _players) {
             if (value == false)
                 break;
-            if (player.level == level && player.x == x && player.y == y)
+            if (player.elevation == elevated && player.level == level &&
+                player.x == x && player.y == y)
                 check.emplace_back(id);
         }
         if (check.size() < elevation.nbPlayer)
@@ -214,45 +260,161 @@ namespace Zappy {
         auto tile = _width * y + x;
         for (auto [name, nb] : elevation.resources) {
             auto isHere = _tiles[tile].find(name);
-            isHere->second - nb;
+            isHere->second -= nb;
         }
         for (auto player : players) {
             auto find = _players.find(player);
-            if (find != _players.end())
+            if (find != _players.end()) {
                 find->second.level++;
+                find->second.elevation = false;
+                setPlayerElevate(player, false);
+                Shared::Connect::send(getPlayerFd(player),
+                    ServerCmd::CL.getStr() + ": " +
+                        std::to_string(find->second.level) + "\n");
+                Shared::Utils::logMsg(_logFile,
+                    "Client[" + std::to_string(player) + "]: raise to level " +
+                        std::to_string(find->second.level) + ".");
+            }
         }
     }
 
-    std::vector<std::size_t> Environement::startElevation(std::size_t id)
+    void Environement::failElevation(const std::vector<size_t> &players)
     {
-        auto find = _players.find(id);
-        if (find == _players.end())
-            throw PlayerNotFoundException(id);
-        return checkElevation(
-            find->second.x, find->second.y, find->second.level);
+        for (auto id : players) {
+            auto find = _players.find(id);
+            if (find != _players.end()) {
+                setPlayerElevate(id, false);
+                Shared::Connect::send(
+                    getPlayerFd(id), ServerCmd::KO.getStr() + "\n");
+                Shared::Utils::logMsg(_logFile,
+                    "Client[" + std::to_string(id) +
+                        "]: the elevation ritual fail.");
+            }
+        }
     }
 
-    std::vector<std::size_t> Environement::endElevation(
-        std::size_t id, std::vector<std::size_t> start)
+    bool Environement::startElevation(std::size_t id)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        auto end =
-            checkElevation(find->second.x, find->second.y, find->second.level);
-        start.erase(std::remove_if(start.begin(),
-                        start.end(),
-                        [&end](std::size_t x) {
-                            return std::find(end.begin(), end.end(), x) ==
-                                end.end();
-                        }),
-            start.end());
-        const auto &elevation = _elevations.at(find->second.level);
-        if (start.size() < elevation.nbPlayer)
-            start.clear();
+        auto list = checkElevation(
+            find->second.x, find->second.y, find->second.level, false);
+        for (auto player : list) {
+            _players.at(player).elevation = true;
+            setPlayerElevate(player, true);
+            Shared::Connect::send(
+                getPlayerFd(player), ServerCmd::EU.getStr() + "\n");
+            Shared::Utils::logMsg(_logFile,
+                "Client[" + std::to_string(player) +
+                    "] start the elevation ritual.");
+        }
+        bool value = true;
+        if (list.empty())
+            value = false;
         else
-            successElevation(find->second.x, find->second.y, elevation, start);
-        return start;
+            _elevates.emplace_back(Elevate {ELEVATE,
+                find->second.x,
+                find->second.y,
+                find->second.level,
+                list});
+        return value;
+    }
+
+    void Environement::endElevation(std::size_t x, std::size_t y,
+        std::size_t level, std::vector<std::size_t> start)
+    {
+        auto end = checkElevation(x, y, level, true);
+        if (end.empty())
+            failElevation(start);
+        else {
+            start.erase(std::remove_if(start.begin(),
+                            start.end(),
+                            [&end](std::size_t x) {
+                                return std::find(end.begin(), end.end(), x) ==
+                                    end.end();
+                            }),
+                start.end());
+            const auto &elevation = _elevations.at(level);
+            if (start.size() >= elevation.nbPlayer)
+                successElevation(x, y, elevation, start);
+            else
+                failElevation(start);
+        }
+    }
+
+    void Environement::handleEjectPlayer(PlayerIter iter, Direction dir)
+    {
+        auto [dx, dy, _] = _directions.at(dir);
+        iter->second.x = circularMove(iter->second.x, dx, _width);
+        iter->second.y = circularMove(iter->second.y, dy, _height);
+        Shared::Connect::send(getPlayerFd(iter->first),
+            ServerCmd::EJT.getStr() + ": " + _directions.at(dir).str + "\n");
+        Shared::Utils::logMsg(_logFile,
+            "Client[" + std::to_string(iter->first) + "] been push to the " +
+                _directions.at(dir).str + ".");
+    }
+
+    bool Environement::eject(std::size_t id)
+    {
+        bool status = false;
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        for (auto iter = _players.begin(); iter != _players.end(); iter++) {
+            if (find == iter)
+                continue;
+            if (iter->second.x == find->second.x &&
+                iter->second.y == find->second.y) {
+                handleEjectPlayer(iter, find->second.dir);
+                status = true;
+            }
+        }
+        for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
+            if (iter->second.x == find->second.x &&
+                iter->second.y == find->second.y) {
+                _teams.at(iter->second.team)--;
+                _eggs.erase(iter);
+                status = true;
+            }
+        }
+        return status;
+    }
+
+    std::size_t Environement::getConnectNbr(std::size_t id) const
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        return _teams.at(find->second.team);
+    }
+
+    ResourceName Environement::getResource(const std::string &name)
+    {
+        for (const auto &[type, resource] : _resources) {
+            if (resource.str == name)
+                return type;
+        }
+        throw ResourceNotFoundException();
+    }
+
+    int Environement::getPlayerFd(std::size_t id)
+    {
+        for (auto &[fd, client] : _clients.ai) {
+            if (client.getId() == id)
+                return fd;
+        }
+        throw PlayerNotFoundException(id);
+    }
+
+    void Environement::setPlayerElevate(std::size_t id, bool value)
+    {
+        for (auto &[fd, client] : _clients.ai) {
+            if (client.getId() == id) {
+                client.setElevate(value);
+            }
+        }
+        throw PlayerNotFoundException(id);
     }
 
     const std::unordered_map<ResourceName, Environement::Resource>

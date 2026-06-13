@@ -1,12 +1,13 @@
-#!.venv/bin/python
+#!/usr/bin/env python3
+
 ## EPITECH PROJECT, 2026
 ## Zappy
 ## File description:
 ## zappy_ai
 ##
 
-import src.main as main
 import sys
+from src.main import main
 
 if __name__ == "__main__":
-    main.main(sys.argv)
+    sys.exit(main())

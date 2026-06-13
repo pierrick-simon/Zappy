@@ -67,7 +67,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-  
+
   push_to_mirror:
     needs: [run_tests, linter]
     runs-on: ubuntu-latest
