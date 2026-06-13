@@ -7,7 +7,7 @@
 
 import sys
 import argparse
-from src.connexion_handler import ConnectionHandler
+from src.connection_handler import ConnectionHandler
 
 
 def handle_args():

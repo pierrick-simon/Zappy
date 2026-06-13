@@ -6,7 +6,7 @@
 ##
 
 from dataclasses_models  import Command
-from connexion_handler import ConnectionHandler
+from connection_handler import ConnectionHandler
 from typing import Optional
 from ai.src.algorithms import Constants as constants
 
