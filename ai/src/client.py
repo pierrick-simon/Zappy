@@ -7,7 +7,6 @@
 
 import socket
 
-
 class Client:
     name: str
     port: int
