@@ -31,6 +31,18 @@ namespace Zappy {
         PlayerNotFoundException(const std::size_t &id) :
             ServerException("Player " + std::to_string(id) + " not found.") {};
     };
+
+    class EggNotFoundException : public ServerException {
+    public:
+        EggNotFoundException() :
+            ServerException("Egg not found.") {};
+    };
+
+    class ResourceNotFoundException : public ServerException {
+    public:
+        ResourceNotFoundException() :
+            ServerException("Resource not found.") {};
+    };
 } // namespace Zappy
 
 #endif

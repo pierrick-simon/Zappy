@@ -17,14 +17,16 @@ namespace Zappy {
 
     Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
-        _teamsNames(Parser::ArgsParser::getArgList<std::string>(args, "-n")),
-        _connect(Parser::ArgsParser::getArg<int>(args, "-p")),
-        _f(Parser::ArgsParser::getArgSize(args, "-f")),
+        _teamsNames(Parser::ArgsParser::getArgList<std::string>(
+            args, "-n", {"team1", "team2"})),
+        _connect(Parser::ArgsParser::getArg<int>(args, "-p", 8080)),
+        _f(Parser::ArgsParser::getArgSize(args, "-f", 100)),
         _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
-            Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile, _clients)
+            Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile, _clients,
+            _teams)
     {
-        auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c");
+        auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c", 10);
         if (_teamsNames.empty())
             throw Parser::ArgsParserError("No teams name given");
         for (const auto &team : _teamsNames) {
@@ -35,6 +37,8 @@ namespace Zappy {
                 throw Parser::ArgsParserError(
                     "Cannot use \"GRAPHIC\" as team name");
             _teams.emplace(team, nbPerTeam);
+            for (std::size_t i = 0; i < nbPerTeam; i++)
+                _env.spawnEgg(team);
         }
         _teamsNames.clear();
 
@@ -198,13 +202,13 @@ namespace Zappy {
             }
             auto find = _teams.find(line.value());
             if (find != _teams.end() && find->second > 0) {
+                _env.addPlayer(iter->second.first, line.value(), find->second);
                 _clients.ai.emplace(iter->first,
                     AIClient(iter->first,
                         iter->second.first,
                         find->first,
                         _logFile,
                         _env));
-                _env.addPlayer(iter->first, line.value(), find->second);
                 find->second--;
                 _clients.newClient.erase(iter);
             } else {
