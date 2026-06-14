@@ -37,8 +37,6 @@ namespace Zappy {
         [[nodiscard]] std::optional<std::size_t> timeUnitUpdate();
 
         void timeUnitEvent(std::size_t f);
-        void endOfGameEvent(const std::string &team) const;
-        void serverMsgEvent(const std::string &msg) const;
 
     private:
         using Command = std::function<void(GUIClient &, std::istringstream &)>;

@@ -30,6 +30,7 @@ set(SRCS
     src/gui/ResourceEvent.cpp
     src/gui/EggLaidEvent.cpp
     src/gui/NbEvent.cpp
+    src/gui/StrEvent.cpp
 )
 
 set(HEADERS

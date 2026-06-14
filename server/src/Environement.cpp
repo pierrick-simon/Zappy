@@ -281,8 +281,7 @@ namespace Zappy {
         }
         if (greatest->second >= WIN) {
             _end = true;
-            for (auto &[_, client] : _clients.gui)
-                client.endOfGameEvent(greatest->first);
+            sendToGUI<Shared::EndOfGameEvent>(greatest->first);
             Shared::Utils::logMsg(
                 _logFile, "The " + greatest->first + " team won the game.");
         }

@@ -169,16 +169,6 @@ namespace Zappy {
         send<Shared::SetTimeUnit>(_f);
     }
 
-    void GUIClient::endOfGameEvent(const std::string &team) const
-    {
-        Shared::Connect::send(_fd, ServerCmd::SEG.getStr() + " " + team + "\n");
-    }
-
-    void GUIClient::serverMsgEvent(const std::string &msg) const
-    {
-        Shared::Connect::send(_fd, ServerCmd::SMG.getStr() + " " + msg + "\n");
-    }
-
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},

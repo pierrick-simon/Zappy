@@ -21,6 +21,7 @@
     #include "PlayerPositionEvent.hpp"
     #include "ResourceEvent.hpp"
     #include "StartIncantationEvent.hpp"
+    #include "StrEvent.hpp"
     #include "TeamNameEvent.hpp"
     #include "TileInfoEvent.hpp"
 
@@ -98,6 +99,22 @@ namespace Shared {
             NbEvent(ServerCmd::SST, id) {};
         SetTimeUnit() :
             NbEvent(ServerCmd::SST) {};
+    };
+
+    class EndOfGameEvent : public StrEvent {
+    public:
+        EndOfGameEvent(std::string str) :
+            StrEvent(ServerCmd::SEG, std::move(str)) {};
+        EndOfGameEvent() :
+            StrEvent(ServerCmd::SEG) {};
+    };
+
+    class ServerMsgEvent : public StrEvent {
+    public:
+        ServerMsgEvent(std::string str) :
+            StrEvent(ServerCmd::SMG, std::move(str)) {};
+        ServerMsgEvent() :
+            StrEvent(ServerCmd::SMG) {};
     };
 } // namespace Shared
 
