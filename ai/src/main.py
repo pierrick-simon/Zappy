@@ -6,7 +6,6 @@
 ##
 
 import sys
-import random
 import argparse
 
 from src.constants.ai_list import AI_LIST
