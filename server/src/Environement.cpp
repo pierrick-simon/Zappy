@@ -293,7 +293,8 @@ namespace Zappy {
     }
 
     void Environement::successElevation(std::size_t x, std::size_t y,
-        const Elevation &elevation, const std::vector<size_t> &players, std::size_t level)
+        const Elevation &elevation, const std::vector<size_t> &players,
+        std::size_t level)
     {
         auto tile = _width * y + x;
         for (auto [name, nb] : elevation.resources) {
