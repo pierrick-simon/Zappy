@@ -7,6 +7,8 @@
 
 #include "Camera.hpp"
 
+#include <algorithm>
+
 namespace Graphics {
     void Camera::update(float dt)
     {
@@ -31,6 +33,7 @@ namespace Graphics {
         raylib::Vector2 mousePosDelta = raylib::Mouse::GetDelta();
 
         this->yaw(-mousePosDelta.x * MOUSE_MOVE_SENSITIVITY);
+        this->roll(-mousePosDelta.y * MOUSE_MOVE_SENSITIVITY);
     }
 
     raylib::Vector3 Camera::alignToWorldPlane(raylib::Vector3 vector) const
@@ -91,6 +94,23 @@ namespace Graphics {
         auto targetPosition =
             raylib::Vector3(this->GetTarget()) - this->GetPosition();
         targetPosition = Vector3RotateByAxisAngle(targetPosition, up, angle);
+        this->position = raylib::Vector3(this->GetTarget()) - targetPosition;
+    }
+
+    void Camera::roll(float angle)
+    {
+        raylib::Vector3 up(this->GetUp());
+        auto targetPosition =
+            raylib::Vector3(this->GetTarget()) - this->GetPosition();
+
+        float maxAngleUp = Vector3Angle(up, targetPosition) -
+            std::numeric_limits<float>::epsilon();
+        float maxAngleDown = -Vector3Angle(-up, targetPosition) +
+            std::numeric_limits<float>::epsilon();
+        angle = std::ranges::clamp(angle, maxAngleDown, maxAngleUp);
+
+        auto right = this->getRight();
+        targetPosition = Vector3RotateByAxisAngle(targetPosition, right, angle);
         this->position = raylib::Vector3(this->GetTarget()) - targetPosition;
     }
 

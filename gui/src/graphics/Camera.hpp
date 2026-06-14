@@ -26,6 +26,7 @@ namespace Graphics {
         raylib::Vector3 getRight() const;
 
         void yaw(float angle);
+        void roll(float angle);
 
         static constexpr auto CAMERA_MOVE_SPEED = 4.0;
         static constexpr KeyboardKey SPRINT_KEY = KEY_LEFT_SHIFT;
@@ -45,7 +46,6 @@ namespace Graphics {
         static const std::unordered_map<AxisMovementKeys, MovementMethod>
             MOVEMENT_KEYS;
     };
-
 } // namespace Graphics
 
 template<>
