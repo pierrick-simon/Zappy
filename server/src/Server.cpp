@@ -57,9 +57,10 @@ namespace Zappy {
 
     void Server::run()
     {
-        while (!RECEIVED_SIG_INT) {
+        auto end = false;
+        while (!RECEIVED_SIG_INT && !end) {
             infoToRead();
-            update();
+            end = update();
         }
     }
 
@@ -73,21 +74,33 @@ namespace Zappy {
         }
     }
 
-    void Server::update()
+    bool Server::update()
     {
         auto now = std::chrono::steady_clock::now();
         auto elapsed = std::chrono::nanoseconds((_clock - now) / _fn);
         _clock = now;
         _timeout = -1;
+        updateEnv(elapsed);
+        updateAi(elapsed);
+        updateGui();
+        return _env.getEnd();
+    }
+
+    void Server::updateEnv(std::chrono::nanoseconds elapsed)
+    {
         auto tmp = _env.update(elapsed);
         auto timeout = int(
             std::chrono::duration_cast<std::chrono::microseconds>(tmp).count());
         if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
             _timeout = timeout;
+    }
+
+    void Server::updateAi(std::chrono::nanoseconds elapsed)
+    {
         std::vector<int> deads;
         for (auto &[id, ai] : _clients.ai) {
-            tmp = ai.update(elapsed);
-            timeout =
+            auto tmp = ai.update(elapsed);
+            auto timeout =
                 int(std::chrono::duration_cast<std::chrono::microseconds>(tmp)
                         .count());
             if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
@@ -96,6 +109,18 @@ namespace Zappy {
                 deads.push_back(id);
         }
         handleDeadClient(deads);
+    }
+
+    void Server::updateGui()
+    {
+        for (auto &[_, gui] : _clients.gui) {
+            auto tmp = gui.timeUnitUpdate();
+            if (tmp && *tmp != _f) {
+                _f = *tmp;
+                _fn = std::chrono::nanoseconds(SECOND_IN_NANO / _f);
+                gui.timeUnitEvent(_f);
+            }
+        }
     }
 
     void Server::handleDeadClient(const std::vector<int> &deads)
@@ -196,7 +221,8 @@ namespace Zappy {
         if (line.has_value()) {
             if (line.value() == GRAPHIC) {
                 _clients.gui.emplace(iter->first,
-                    GUIClient(iter->first, iter->second.first, _logFile));
+                    GUIClient(
+                        iter->first, iter->second.first, _logFile, _env, _f));
                 _clients.newClient.erase(iter);
                 return;
             }

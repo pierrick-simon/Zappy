@@ -16,9 +16,12 @@
     #include <optional>
     #include <queue>
     #include <unordered_map>
-    #include "Environement.hpp"
 
 namespace Zappy {
+
+    class Environement;
+    enum class ResourceName;
+
     class AIClient {
     public:
         AIClient(int fd, std::size_t id, std::string team,
@@ -66,6 +69,7 @@ namespace Zappy {
         void checkAlive();
         void executeCommand();
         bool startCheckIncantation(const std::string &name);
+        void eggLaying(const std::string &name);
 
         void forward(std::istringstream &);
         void right(std::istringstream &);
@@ -76,7 +80,7 @@ namespace Zappy {
         void eject(std::istringstream &);
         void set(std::istringstream &);
         void take(std::istringstream &);
-        void incantation(std::istringstream &);
+        void broadcast(std::istringstream &);
 
         int _fd;
         bool _alive = true;

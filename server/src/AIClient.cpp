@@ -8,6 +8,7 @@
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "Connect.hpp"
+#include "Environement.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
 
@@ -106,6 +107,7 @@ namespace Zappy {
         _commands.pop();
         if (startCheckIncantation(command))
             return;
+        eggLaying(command);
         auto iter = COMMANDS.find(command);
         if (iter != COMMANDS.end()) {
             _sleep = iter->second._timeLimit;
@@ -137,6 +139,13 @@ namespace Zappy {
                     "] start the elevation ritual.");
         }
         return value;
+    }
+
+    void AIClient::eggLaying(const std::string &name)
+    {
+        if (name != ClientCmd::FRK.getStr())
+            return;
+        _env.eggLaying(_id);
     }
 
     void AIClient::forward(std::istringstream &stream)
@@ -231,6 +240,13 @@ namespace Zappy {
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
+    void AIClient::broadcast(std::istringstream &stream)
+    {
+        std::string text = stream.str();
+        _env.broadcast(_id, text);
+        Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
+    }
+
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
             {ClientCmd::FWD.getStr(),
@@ -251,5 +267,7 @@ namespace Zappy {
                 Command {&AIClient::set, std::chrono::seconds(7)}},
             {ClientCmd::TKO.getStr(),
                 Command {&AIClient::take, std::chrono::seconds(7)}},
+            {ClientCmd::BDT.getStr(),
+                Command {&AIClient::broadcast, std::chrono::seconds(7)}},
     };
 }; // namespace Zappy

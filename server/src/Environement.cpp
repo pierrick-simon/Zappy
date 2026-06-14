@@ -10,9 +10,11 @@
 #include <ctime>
 #include <optional>
 #include <random>
+#include <ranges>
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "GUIClient.hpp"
+#include "GUIEvents.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
@@ -80,11 +82,14 @@ namespace Zappy {
             std::advance(item, std::rand() % _directions.size());
             _players.emplace(
                 id, Player {team, item->first, 1, false, egg.x, egg.y});
-            _eggs.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(id) + "] spawned in (" +
                     std::to_string(egg.x) + "," + std::to_string(egg.y) +
                     "), looking " + _directions.at(item->first).str + ".");
+            sendToGUI<Shared::NewPlayerEvent>(
+                id, egg.x, egg.y, item->second.nb, team);
+            sendToGUI<Shared::EggHatchedEvent>(iter->first);
+            _eggs.erase(iter);
             return;
         }
         throw EggNotFoundException();
@@ -98,6 +103,7 @@ namespace Zappy {
         if (find != _players.end()) {
             for (auto [name, nb] : iter->second.getInventory())
                 setResource(tile, name, nb);
+            sendToGUI<Shared::PlayerDeathEvent>(find->first);
             _players.erase(find);
         }
     }
@@ -110,6 +116,8 @@ namespace Zappy {
         _eggs.emplace(
             _eggId, Egg {find->second.team, find->second.x, find->second.y});
         _teams.at(find->second.team)++;
+        sendToGUI<Shared::EggLaidEvent>(
+            _eggId, id, find->second.x, find->second.y);
         _eggId++;
     }
 
@@ -118,6 +126,14 @@ namespace Zappy {
         _eggs.emplace(
             _eggId, Egg {team, std::rand() % _width, std::rand() % _height});
         _eggId++;
+    }
+
+    void Environement::eggLaying(std::size_t id)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        sendToGUI<Shared::EggLayingEvent>(id);
     }
 
     TileInfo Environement::getTileInfo(
@@ -154,9 +170,11 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto &player = find->second;
-        auto [dx, dy, _] = _directions.at(find->second.dir);
-        player.x = circularMove(player.x, dx, _width);
-        player.y = circularMove(player.y, dy, _height);
+        const auto &dir = _directions.at(find->second.dir);
+        player.x = circularMove(player.x, dir.x, _width);
+        player.y = circularMove(player.y, dir.y, _height);
+        sendToGUI<Shared::PlayerPositionEvent>(
+            id, player.x, player.y, _directions.at(player.dir).nb);
     }
 
     void Environement::rotatePlayer(std::size_t id, Rotate rotate)
@@ -164,30 +182,21 @@ namespace Zappy {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        auto dir = _directions.find(find->second.dir);
+        auto &player = find->second;
+        auto dir = _directions.find(player.dir);
         if (rotate == Rotate::Left) {
             if (dir == _directions.begin())
-                find->second.dir = _directions.end()--->first;
+                player.dir = _directions.end()--->first;
             else
-                find->second.dir = dir--->first;
+                player.dir = dir--->first;
         } else {
             if (dir == _directions.end()--)
-                find->second.dir = _directions.begin()->first;
+                player.dir = _directions.begin()->first;
             else
-                find->second.dir = dir++->first;
+                player.dir = dir++->first;
         }
-    }
-
-    Direction Environement::getOpositeDir(Direction dir)
-    {
-        Direction value = Direction::North;
-        if (dir == Direction::North)
-            value = Direction::South;
-        if (dir == Direction::East)
-            value = Direction::West;
-        if (dir == Direction::West)
-            value = Direction::East;
-        return value;
+        sendToGUI<Shared::PlayerPositionEvent>(
+            id, player.x, player.y, _directions.at(player.dir).nb);
     }
 
     bool Environement::takeResource(std::size_t id, ResourceName name)
@@ -201,6 +210,9 @@ namespace Zappy {
         if (resource != _tiles[tile].end() && resource->second > 0) {
             value = true;
             resource->second--;
+            sendToGUI<Shared::TakeResourceEvent>(id, _resources.at(name).nb);
+            sendToGUI<Shared::TileInfoEvent>(
+                find->second.x, find->second.y, getTileValue(tile));
         }
         return value;
     }
@@ -216,6 +228,9 @@ namespace Zappy {
             resource->second++;
         else
             _tiles[tile].emplace(name, 1);
+        sendToGUI<Shared::SetResourceEvent>(id, _resources.at(name).nb);
+        sendToGUI<Shared::TileInfoEvent>(
+            find->second.x, find->second.y, getTileValue(tile));
     }
 
     void Environement::setResource(
@@ -226,6 +241,8 @@ namespace Zappy {
             resource->second += nb;
         else
             _tiles[tile].emplace(name, nb);
+        sendToGUI<Shared::TileInfoEvent>(
+            tile % _width, tile / _width, getTileValue(tile));
     }
 
     std::vector<std::size_t> Environement::checkElevation(
@@ -254,8 +271,32 @@ namespace Zappy {
         return check;
     }
 
+    void Environement::checkEnd()
+    {
+        std::map<std::string, std::size_t> map;
+        for (const auto &[_, player] : _players) {
+            auto find = map.find(player.team);
+            if (find != map.end())
+                find->second++;
+            else
+                map.emplace(player.team, 1);
+        }
+        auto greatest = map.begin();
+        for (auto iter = map.begin(); iter != map.end(); iter++) {
+            if (greatest->second < iter->second)
+                greatest = iter;
+        }
+        if (greatest->second >= WIN) {
+            _end = true;
+            sendToGUI<Shared::EndOfGameEvent>(greatest->first);
+            Shared::Utils::logMsg(
+                _logFile, "The " + greatest->first + " team won the game.");
+        }
+    }
+
     void Environement::successElevation(std::size_t x, std::size_t y,
-        const Elevation &elevation, const std::vector<size_t> &players)
+        const Elevation &elevation, const std::vector<size_t> &players,
+        std::size_t level)
     {
         auto tile = _width * y + x;
         for (auto [name, nb] : elevation.resources) {
@@ -276,6 +317,9 @@ namespace Zappy {
                         std::to_string(find->second.level) + ".");
             }
         }
+        sendToGUI<Shared::TileInfoEvent>(x, y, getTileValue(tile));
+        if (level + 1 == MAX_LEVEL)
+            checkEnd();
     }
 
     void Environement::failElevation(const std::vector<size_t> &players)
@@ -305,18 +349,22 @@ namespace Zappy {
         bool value = true;
         if (list.empty())
             value = false;
-        else
+        else {
             _elevates.emplace_back(Elevate {ELEVATE,
                 find->second.x,
                 find->second.y,
                 find->second.level,
                 list});
+            sendToGUI<Shared::StartIncantationEvent>(
+                find->second.x, find->second.y, find->second.level, list);
+        }
         return value;
     }
 
     void Environement::endElevation(std::size_t x, std::size_t y,
         std::size_t level, std::vector<std::size_t> start)
     {
+        bool result = false;
         auto end = checkElevation(x, y, level, true);
         if (end.empty())
             failElevation(start);
@@ -329,23 +377,33 @@ namespace Zappy {
                             }),
                 start.end());
             const auto &elevation = _elevations.at(level);
-            if (start.size() >= elevation.nbPlayer)
-                successElevation(x, y, elevation, start);
-            else
+            if (start.size() >= elevation.nbPlayer) {
+                successElevation(x, y, elevation, start, level);
+                result = true;
+            } else
                 failElevation(start);
         }
+        sendToGUI<Shared::EndIncantationEvent>(x, y, result);
     }
 
     void Environement::handleEjectPlayer(PlayerIter iter, Direction dir)
     {
-        auto [dx, dy, _] = _directions.at(dir);
-        iter->second.x = circularMove(iter->second.x, dx, _width);
-        iter->second.y = circularMove(iter->second.y, dy, _height);
+        const auto &info = _directions.at(dir);
+        iter->second.x = circularMove(iter->second.x, info.x, _width);
+        iter->second.y = circularMove(iter->second.y, info.y, _height);
         Shared::Connect::send(getPlayerFd(iter->first),
             ServerCmd::EJT.getStr() + ": " + _directions.at(dir).str + "\n");
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(iter->first) + "] been push to the " +
                 _directions.at(dir).str + ".");
+        sendToGUI<Shared::PlayerExpulsionEvent>(iter->first);
+    }
+
+    void Environement::handleDestroyEgg(EggIter iter)
+    {
+        _teams.at(iter->second.team)--;
+        sendToGUI<Shared::EggDestroyEvent>(iter->first);
+        _eggs.erase(iter);
     }
 
     bool Environement::eject(std::size_t id)
@@ -366,12 +424,19 @@ namespace Zappy {
         for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
             if (iter->second.x == find->second.x &&
                 iter->second.y == find->second.y) {
-                _teams.at(iter->second.team)--;
-                _eggs.erase(iter);
+                handleDestroyEgg(iter);
                 status = true;
             }
         }
         return status;
+    }
+
+    void Environement::broadcast(std::size_t id, const std::string &text)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        sendToGUI<Shared::BroadcastEvent>(id, text);
     }
 
     std::size_t Environement::getConnectNbr(std::size_t id) const
@@ -410,22 +475,61 @@ namespace Zappy {
         throw PlayerNotFoundException(id);
     }
 
+    PlayerInfo Environement::getPlayerInfo(std::size_t id) const
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        auto player = find->second;
+        PlayerInfo info;
+        info.x = player.x;
+        info.y = player.y;
+        info.team = player.team;
+        info.level = info.level;
+        info.dir = _directions.at(player.dir).nb;
+        for (const auto &[_, client] : _clients.ai) {
+            if (client.getId() == id) {
+                info.inventory = client.getInventory();
+                return info;
+            }
+        }
+        throw PlayerNotFoundException(id);
+    }
+
+    std::vector<std::string> Environement::getTeamsName() const
+    {
+        std::vector<std::string> names;
+        names.reserve(_teams.size());
+        std::transform(_teams.begin(),
+            _teams.end(),
+            std::back_inserter(names),
+            [](const auto &pair) { return pair.first; });
+        return names;
+    }
+
+    std::vector<std::size_t> Environement::getTileValue(std::size_t tile)
+    {
+        std::vector<std::size_t> value(_tiles[tile].size());
+        std::ranges::copy(std::views::values(_tiles[tile]), value.begin());
+        return value;
+    }
+
     const std::unordered_map<ResourceName, Environement::Resource>
         Environement::_resources = {
-            {ResourceName::Food, {0.5, "food"}},
-            {ResourceName::Linemate, {0.3, "linemate"}},
-            {ResourceName::Deraumere, {0.15, "deraumere"}},
-            {ResourceName::Sibur, {0.1, "sibur"}},
-            {ResourceName::Mendiane, {0.1, "mendiane"}},
-            {ResourceName::Phiras, {0.08, "phiras"}},
-            {ResourceName::Thystame, {0.05, "thystame"}},
+            {ResourceName::Food, {0.5, "food", 0}},
+            {ResourceName::Linemate, {0.3, "linemate", 1}},
+            {ResourceName::Deraumere, {0.15, "deraumere", 2}},
+            {ResourceName::Sibur, {0.1, "sibur", 3}},
+            {ResourceName::Mendiane, {0.1, "mendiane", 4}},
+            {ResourceName::Phiras, {0.08, "phiras", 5}},
+            {ResourceName::Thystame, {0.05, "thystame", 6}},
     };
 
     const std::map<Direction, Environement::Dir> Environement::_directions = {
-        {Direction::North, {0, -1, "North"}},
-        {Direction::East, {1, 0, "East"}},
-        {Direction::South, {0, 1, "South"}},
-        {Direction::West, {-1, 0, "West"}}};
+        {Direction::North, {0, -1, "North", 1}},
+        {Direction::East, {1, 0, "East", 2}},
+        {Direction::South, {0, 1, "South", 3}},
+        {Direction::West, {-1, 0, "West", 4}}};
 
     const std::unordered_map<std::size_t, Environement::Elevation>
         Environement::_elevations = {

@@ -11,13 +11,21 @@
     #include <fstream>
     #include <functional>
     #include <iomanip>
+    #include <map>
+    #include <optional>
     #include <queue>
     #include <unordered_map>
+    #include "GUIEvent.hpp"
 
 namespace Zappy {
+
+    class Environement;
+    enum class ResourceName;
+
     class GUIClient {
     public:
-        GUIClient(int fd, std::size_t id, std::ofstream &logFile);
+        GUIClient(int fd, std::size_t id, std::ofstream &logFile,
+            Environement &env, std::size_t f);
 
         void infoToRead();
 
@@ -26,18 +34,43 @@ namespace Zappy {
             return _id;
         }
 
-        void update();
+        [[nodiscard]] std::optional<std::size_t> timeUnitUpdate();
+
+        void timeUnitEvent(std::size_t f);
 
     private:
         using Command = std::function<void(GUIClient &, std::istringstream &)>;
 
         void addCommand();
+        void update();
+
+        void mapSize(std::istringstream &);
+        void tileInfo(std::istringstream &);
+        void tilesInfo(std::istringstream &);
+        void teamsName(std::istringstream &);
+        void playerPosition(std::istringstream &);
+        void playerLevel(std::istringstream &);
+        void playerInventory(std::istringstream &);
+        void getTimeUnit(std::istringstream &);
+        void setTimeUnit(std::istringstream &);
+
+        template<std::derived_from<Shared::GUIEvent> EventType,
+            typename... Args>
+        void send(Args &&...args)
+        {
+            EventType event(std::forward<Args>(args)...);
+            event.send({_fd});
+        }
 
         int _fd;
         std::size_t _id;
         std::ofstream &_logFile;
         std::string _buffer;
-        std::queue<std::string> _command;
+        std::queue<std::string> _commands;
+        std::optional<std::size_t> _requestF;
+
+        std::size_t _f;
+        Environement &_env;
 
         static const std::unordered_map<std::string, Command> COMMANDS;
     };

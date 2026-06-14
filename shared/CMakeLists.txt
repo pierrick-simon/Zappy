@@ -7,18 +7,35 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SHARED
-        shared
+    shared
 )
 
 set(SRCS
-        src/ArgsParser.cpp
-        src/Connect.cpp
-        src/Help.cpp
-        src/Utils.cpp
+    src/ArgsParser.cpp
+    src/Connect.cpp
+    src/Help.cpp
+    src/Utils.cpp
+    src/gui/GUIEvent.cpp
+    src/gui/TileInfoEvent.cpp
+    src/gui/PlayerPositionEvent.cpp
+    src/gui/MapSizeEvent.cpp
+    src/gui/TeamNameEvent.cpp
+    src/gui/NewPlayerEvent.cpp
+    src/gui/PlayerLevelEvent.cpp
+    src/gui/PlayerInventoryEvent.cpp
+    src/gui/IdEvent.cpp
+    src/gui/StartIncantationEvent.cpp
+    src/gui/EndIncantationEvent.cpp
+    src/gui/BroadcastEvent.cpp
+    src/gui/ResourceEvent.cpp
+    src/gui/EggLaidEvent.cpp
+    src/gui/NbEvent.cpp
+    src/gui/StrEvent.cpp
 )
 
 set(HEADERS
     include/
+    include/gui/
 )
 
 include_directories(${HEADERS})
@@ -47,5 +64,5 @@ if (NOT criterion_FOUND)
 endif ()
 
 add_library(${SHARED} ${SRCS})
-target_include_directories(${SHARED} PRIVATE ${HEADERS})
+target_include_directories(${SHARED} PUBLIC ${HEADERS})
 set_target_properties(${SHARED} PROPERTIES PREFIX "")
