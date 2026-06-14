@@ -8,6 +8,6 @@
 from src.algorithms.Survivor import SurvivalAI
 
 
-AI_LIST = [
-    SurvivalAI
-]
+AI_LIST = {
+    "survivor": SurvivalAI
+}
