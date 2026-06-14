@@ -84,8 +84,10 @@ namespace Zappy {
                 "Client[" + std::to_string(id) + "] spawned in (" +
                     std::to_string(egg.x) + "," + std::to_string(egg.y) +
                     "), looking " + _directions.at(item->first).str + ".");
-            for (auto &[_, client] : _clients.gui)
+            for (auto &[_, client] : _clients.gui) {
+                client.eggHatchedEvent(iter->first);
                 client.newPlayerEvent(id, egg.x, egg.y, item->second.nb, team);
+            }
             _eggs.erase(iter);
             return;
         }
@@ -112,6 +114,8 @@ namespace Zappy {
         _eggs.emplace(
             _eggId, Egg {find->second.team, find->second.x, find->second.y});
         _teams.at(find->second.team)++;
+        for (auto &[_, client] : _clients.gui)
+            client.eggLayingEvent(_eggId, id, find->second.x, find->second.y);
         _eggId++;
     }
 

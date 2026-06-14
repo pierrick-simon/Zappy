@@ -246,6 +246,25 @@ namespace Zappy {
         Shared::Connect::send(_fd, msg);
     }
 
+    void GUIClient::eggLayingEvent(
+        std::size_t egg, std::size_t player, std::size_t x, std::size_t y) const
+    {
+        Shared::Connect::send(
+            _fd, ServerCmd::PFK.getStr() + " " + std::to_string(player) + "\n");
+        std::string msg = ServerCmd::ENW.getStr() + " ";
+        msg += std::to_string(egg) + " ";
+        msg += std::to_string(player) + " ";
+        msg += std::to_string(x) + " ";
+        msg += std::to_string(y) + "\n";
+        Shared::Connect::send(_fd, msg);
+    }
+
+    void GUIClient::eggHatchedEvent(std::size_t egg) const
+    {
+        Shared::Connect::send(
+            _fd, ServerCmd::EBO.getStr() + " " + std::to_string(egg) + "\n");
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},
