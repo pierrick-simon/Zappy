@@ -15,9 +15,9 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace ClientCmd = Shared::GUICommunication::Client;
 
 namespace Zappy {
-    GUIClient::GUIClient(
-        int fd, std::size_t id, std::ofstream &logFile, Environement &env) :
-        _fd(fd), _id(id), _logFile(logFile), _env(env)
+    GUIClient::GUIClient(int fd, std::size_t id, std::ofstream &logFile,
+        Environement &env, std::size_t f) :
+        _fd(fd), _id(id), _logFile(logFile), _env(env), _f(f)
     {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(id) + "] joined the GRAPHIC team.");
@@ -61,6 +61,13 @@ namespace Zappy {
                 "Try executing command " + command + " for client[" +
                     std::to_string(_id) + "](Commmand Not found).");
         }
+    }
+
+    std::optional<std::size_t> GUIClient::timeUnitUpdate()
+    {
+        auto tmp = _requestF;
+        _requestF.reset();
+        return tmp;
     }
 
     void GUIClient::mapSize(std::istringstream &stream)
@@ -175,6 +182,27 @@ namespace Zappy {
         }
     }
 
+    void GUIClient::getTimeUnit(std::istringstream &stream) const
+    {
+        Shared::Connect::send(
+            _fd, ServerCmd::SGT.getStr() + " " + std::to_string(_f) + "\n");
+    }
+
+    void GUIClient::setTimeUnit(std::istringstream &stream)
+    {
+        std::size_t id = 0;
+        stream >> id;
+        if (id != 0)
+            _requestF = id;
+    }
+
+    void GUIClient::timeUnitEvent(std::size_t f)
+    {
+        _f = f;
+        Shared::Connect::send(
+            _fd, ServerCmd::SGT.getStr() + " " + std::to_string(_f) + "\n");
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},
@@ -184,5 +212,7 @@ namespace Zappy {
             {ClientCmd::PPO.getStr(), &GUIClient::playerPosition},
             {ClientCmd::PLV.getStr(), &GUIClient::playerLevel},
             {ClientCmd::PIN.getStr(), &GUIClient::playerInventory},
+            {ClientCmd::SGT.getStr(), &GUIClient::getTimeUnit},
+            {ClientCmd::SST.getStr(), &GUIClient::setTimeUnit},
     };
 } // namespace Zappy

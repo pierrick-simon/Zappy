@@ -96,6 +96,14 @@ namespace Zappy {
                 deads.push_back(id);
         }
         handleDeadClient(deads);
+        for (auto &[_, gui] : _clients.gui) {
+            auto tmp = gui.timeUnitUpdate();
+            if (tmp && *tmp != _f) {
+                _f = *tmp;
+                _fn = std::chrono::nanoseconds(SECOND_IN_NANO / _f);
+                gui.timeUnitEvent(_f);
+            }
+        }
     }
 
     void Server::handleDeadClient(const std::vector<int> &deads)
@@ -196,7 +204,8 @@ namespace Zappy {
         if (line.has_value()) {
             if (line.value() == GRAPHIC) {
                 _clients.gui.emplace(iter->first,
-                    GUIClient(iter->first, iter->second.first, _logFile, _env));
+                    GUIClient(
+                        iter->first, iter->second.first, _logFile, _env, _f));
                 _clients.newClient.erase(iter);
                 return;
             }
