@@ -231,6 +231,14 @@ namespace Zappy {
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
+    void AIClient::broadcast(std::istringstream &stream)
+    {
+        std::string text;
+        stream >> text;
+        _env.broadcast(_id, text);
+        Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
+    }
+
     const std::unordered_map<std::string, AIClient::Command>
         AIClient::COMMANDS = {
             {ClientCmd::FWD.getStr(),
@@ -251,5 +259,7 @@ namespace Zappy {
                 Command {&AIClient::set, std::chrono::seconds(7)}},
             {ClientCmd::TKO.getStr(),
                 Command {&AIClient::take, std::chrono::seconds(7)}},
+            {ClientCmd::BDT.getStr(),
+                Command {&AIClient::broadcast, std::chrono::seconds(7)}},
     };
 }; // namespace Zappy

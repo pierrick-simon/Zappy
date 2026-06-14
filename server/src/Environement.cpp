@@ -344,9 +344,9 @@ namespace Zappy {
 
     void Environement::handleEjectPlayer(PlayerIter iter, Direction dir)
     {
-        auto [dx, dy, _, _] = _directions.at(dir);
-        iter->second.x = circularMove(iter->second.x, dx, _width);
-        iter->second.y = circularMove(iter->second.y, dy, _height);
+        const auto &info = _directions.at(dir);
+        iter->second.x = circularMove(iter->second.x, info.x, _width);
+        iter->second.y = circularMove(iter->second.y, info.y, _height);
         Shared::Connect::send(getPlayerFd(iter->first),
             ServerCmd::EJT.getStr() + ": " + _directions.at(dir).str + "\n");
         Shared::Utils::logMsg(_logFile,
@@ -387,6 +387,15 @@ namespace Zappy {
             }
         }
         return status;
+    }
+
+    void Environement::broadcast(std::size_t id, const std::string &text)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        for (auto &[_, client] : _clients.gui)
+            client.broadcastEvent(id, text);
     }
 
     std::size_t Environement::getConnectNbr(std::size_t id) const

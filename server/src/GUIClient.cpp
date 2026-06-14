@@ -215,6 +215,14 @@ namespace Zappy {
             _fd, ServerCmd::EDI.getStr() + " " + std::to_string(id) + "\n");
     }
 
+    void GUIClient::broadcastEvent(
+        std::size_t id, const std::string &text) const
+    {
+        Shared::Connect::send(_fd,
+            ServerCmd::EDI.getStr() + " " + std::to_string(id) + " " + text +
+                "\n");
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},

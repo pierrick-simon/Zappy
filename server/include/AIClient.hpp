@@ -76,7 +76,7 @@ namespace Zappy {
         void eject(std::istringstream &);
         void set(std::istringstream &);
         void take(std::istringstream &);
-        void incantation(std::istringstream &);
+        void broadcast(std::istringstream &);
 
         int _fd;
         bool _alive = true;

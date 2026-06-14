@@ -77,6 +77,7 @@ namespace Zappy {
         bool startElevation(std::size_t id);
         void endElevation(std::size_t x, std::size_t y, std::size_t level,
             std::vector<std::size_t>);
+        void broadcast(std::size_t id, const std::string &text);
 
         [[nodiscard]] std::size_t getHeight() const
         {
@@ -111,8 +112,8 @@ namespace Zappy {
             std::size_t y;
         };
 
-        using EggIter = std::unordered_map<std::size_t,
-            Zappy::Environement::Egg>::iterator;
+        using EggIter =
+            std::unordered_map<std::size_t, Zappy::Environement::Egg>::iterator;
 
         struct Player {
             std::string team;
