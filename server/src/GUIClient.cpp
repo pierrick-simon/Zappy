@@ -120,7 +120,7 @@ namespace Zappy {
     void GUIClient::playerPositionEvent(
         std::size_t id, std::size_t x, std::size_t y, std::size_t dir) const
     {
-        std::string msg = ServerCmd::PPO.getStr() + " ";
+        std::string msg = ServerCmd::PPO.getStr() + " #";
         msg += std::to_string(id) + " ";
         msg += std::to_string(x) + " ";
         msg += std::to_string(y) + " ";
@@ -131,7 +131,8 @@ namespace Zappy {
     void GUIClient::playerPosition(std::istringstream &stream)
     {
         std::size_t id;
-        stream >> id;
+        char hash;
+        stream >> hash >> id;
         try {
             auto player = _env.getPlayerInfo(id);
             playerPositionEvent(id, player.x, player.y, player.dir);
@@ -142,7 +143,7 @@ namespace Zappy {
     void GUIClient::newPlayerEvent(std::size_t id, std::size_t x, std::size_t y,
         std::size_t dir, const std::string &team) const
     {
-        std::string msg = ServerCmd::PNW.getStr() + " ";
+        std::string msg = ServerCmd::PNW.getStr() + " #";
         msg += std::to_string(id) + " ";
         msg += std::to_string(x) + " ";
         msg += std::to_string(y) + " ";
@@ -155,10 +156,11 @@ namespace Zappy {
     void GUIClient::playerLevel(std::istringstream &stream)
     {
         std::size_t id;
-        stream >> id;
+        char hash;
+        stream >> hash >> id;
         try {
             auto player = _env.getPlayerInfo(id);
-            std::string msg = ServerCmd::PLV.getStr() + " ";
+            std::string msg = ServerCmd::PLV.getStr() + " #";
             msg += std::to_string(id) + " ";
             msg += std::to_string(player.level) + "\n";
             Shared::Connect::send(_fd, msg);
@@ -169,10 +171,11 @@ namespace Zappy {
     void GUIClient::playerInventory(std::istringstream &stream)
     {
         std::size_t id;
-        stream >> id;
+        char hash;
+        stream >> hash >> id;
         try {
             auto player = _env.getPlayerInfo(id);
-            std::string msg = ServerCmd::PIN.getStr() + " ";
+            std::string msg = ServerCmd::PIN.getStr() + " #";
             msg += std::to_string(id);
             for (auto [_, nb] : player.inventory)
                 msg += " " + std::to_string(nb);
@@ -206,20 +209,20 @@ namespace Zappy {
     void GUIClient::playerExpulsionEvent(std::size_t id) const
     {
         Shared::Connect::send(
-            _fd, ServerCmd::PEX.getStr() + " " + std::to_string(id) + "\n");
+            _fd, ServerCmd::PEX.getStr() + " #" + std::to_string(id) + "\n");
     }
 
     void GUIClient::eggDestroyEvent(std::size_t id) const
     {
         Shared::Connect::send(
-            _fd, ServerCmd::EDI.getStr() + " " + std::to_string(id) + "\n");
+            _fd, ServerCmd::EDI.getStr() + " #" + std::to_string(id) + "\n");
     }
 
     void GUIClient::broadcastEvent(
         std::size_t id, const std::string &text) const
     {
         Shared::Connect::send(_fd,
-            ServerCmd::PBC.getStr() + " " + std::to_string(id) + " " + text +
+            ServerCmd::PBC.getStr() + " #" + std::to_string(id) + " " + text +
                 "\n");
     }
 
@@ -231,7 +234,7 @@ namespace Zappy {
         msg += std::to_string(y) + " ";
         msg += std::to_string(level);
         for (auto player : players)
-            msg += " " + std::to_string(player);
+            msg += " #" + std::to_string(player);
         msg += "\n";
         Shared::Connect::send(_fd, msg);
     }
@@ -249,10 +252,10 @@ namespace Zappy {
     void GUIClient::eggLayingEvent(
         std::size_t egg, std::size_t player, std::size_t x, std::size_t y) const
     {
-        Shared::Connect::send(
-            _fd, ServerCmd::PFK.getStr() + " " + std::to_string(player) + "\n");
-        std::string msg = ServerCmd::ENW.getStr() + " ";
-        msg += std::to_string(egg) + " ";
+        Shared::Connect::send(_fd,
+            ServerCmd::PFK.getStr() + " #" + std::to_string(player) + "\n");
+        std::string msg = ServerCmd::ENW.getStr() + " #";
+        msg += std::to_string(egg) + " #";
         msg += std::to_string(player) + " ";
         msg += std::to_string(x) + " ";
         msg += std::to_string(y) + "\n";
@@ -262,14 +265,14 @@ namespace Zappy {
     void GUIClient::eggHatchedEvent(std::size_t egg) const
     {
         Shared::Connect::send(
-            _fd, ServerCmd::EBO.getStr() + " " + std::to_string(egg) + "\n");
+            _fd, ServerCmd::EBO.getStr() + " #" + std::to_string(egg) + "\n");
     }
 
     void GUIClient::resourceDroppingEvent(
         std::size_t id, std::size_t resource) const
     {
         Shared::Connect::send(_fd,
-            ServerCmd::PDR.getStr() + " " + std::to_string(id) + " " +
+            ServerCmd::PDR.getStr() + " #" + std::to_string(id) + " " +
                 std::to_string(resource) + "\n");
     }
 
@@ -277,14 +280,14 @@ namespace Zappy {
         std::size_t id, std::size_t resource) const
     {
         Shared::Connect::send(_fd,
-            ServerCmd::PGT.getStr() + " " + std::to_string(id) + " " +
+            ServerCmd::PGT.getStr() + " #" + std::to_string(id) + " " +
                 std::to_string(resource) + "\n");
     }
 
     void GUIClient::playerDeathEvent(std::size_t id) const
     {
         Shared::Connect::send(
-            _fd, ServerCmd::PDI.getStr() + " " + std::to_string(id) + "\n");
+            _fd, ServerCmd::PDI.getStr() + " #" + std::to_string(id) + "\n");
     }
 
     void GUIClient::endOfGameEvent(const std::string &team) const
