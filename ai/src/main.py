@@ -40,7 +40,8 @@ def main():
         handler.start_session()
         ai = AI_LIST[args.algo.lower()]
         ai(handler).run()
-    except BaseException:
+    except BaseException as e:
+        print(e, file=sys.stderr)
         return 84
 
 
