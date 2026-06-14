@@ -41,6 +41,10 @@ namespace Zappy {
         void playerExpulsionEvent(std::size_t id) const;
         void eggDestroyEvent(std::size_t id) const;
         void broadcastEvent(std::size_t id, const std::string &text) const;
+        void startIncantationEvent(std::size_t x, std::size_t y,
+            std::size_t level, const std::vector<std::size_t> &players) const;
+        void endIncantationEvent(
+            std::size_t x, std::size_t y, bool result) const;
 
     private:
         using Command = std::function<void(GUIClient &, std::istringstream &)>;

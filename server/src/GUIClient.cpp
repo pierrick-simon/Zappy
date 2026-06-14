@@ -219,8 +219,31 @@ namespace Zappy {
         std::size_t id, const std::string &text) const
     {
         Shared::Connect::send(_fd,
-            ServerCmd::EDI.getStr() + " " + std::to_string(id) + " " + text +
+            ServerCmd::PBC.getStr() + " " + std::to_string(id) + " " + text +
                 "\n");
+    }
+
+    void GUIClient::startIncantationEvent(std::size_t x, std::size_t y,
+        std::size_t level, const std::vector<std::size_t> &players) const
+    {
+        std::string msg = ServerCmd::PIC.getStr() + " ";
+        msg += std::to_string(x) + " ";
+        msg += std::to_string(y) + " ";
+        msg += std::to_string(level);
+        for (auto player : players)
+            msg += " " + std::to_string(player);
+        msg += "\n";
+        Shared::Connect::send(_fd, msg);
+    }
+
+    void GUIClient::endIncantationEvent(
+        std::size_t x, std::size_t y, bool result) const
+    {
+        std::string msg = ServerCmd::PIE.getStr() + " ";
+        msg += std::to_string(x) + " ";
+        msg += std::to_string(y) + " ";
+        msg += std::to_string(result) + "\n";
+        Shared::Connect::send(_fd, msg);
     }
 
     const std::unordered_map<std::string, GUIClient::Command>

@@ -311,18 +311,23 @@ namespace Zappy {
         bool value = true;
         if (list.empty())
             value = false;
-        else
+        else {
             _elevates.emplace_back(Elevate {ELEVATE,
                 find->second.x,
                 find->second.y,
                 find->second.level,
                 list});
+            for (auto &[_, client] : _clients.gui)
+                client.startIncantationEvent(
+                    find->second.x, find->second.y, find->second.level, list);
+        }
         return value;
     }
 
     void Environement::endElevation(std::size_t x, std::size_t y,
         std::size_t level, std::vector<std::size_t> start)
     {
+        bool result = false;
         auto end = checkElevation(x, y, level, true);
         if (end.empty())
             failElevation(start);
@@ -335,11 +340,14 @@ namespace Zappy {
                             }),
                 start.end());
             const auto &elevation = _elevations.at(level);
-            if (start.size() >= elevation.nbPlayer)
+            if (start.size() >= elevation.nbPlayer) {
                 successElevation(x, y, elevation, start);
-            else
+                result = true;
+            } else
                 failElevation(start);
         }
+        for (auto &[_, client] : _clients.gui)
+            client.endIncantationEvent(x, y, result);
     }
 
     void Environement::handleEjectPlayer(PlayerIter iter, Direction dir)
