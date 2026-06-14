@@ -6,7 +6,10 @@
 ##
 
 import sys
+import random
 import argparse
+
+from algorithms import Constants
 from src.algorithms.Survivor import SurvivalAI
 from src.connection_handler import ConnectionHandler
 
@@ -35,8 +38,9 @@ def main():
         handler = ConnectionHandler(args.name, args.port, args.machine)
         handler.client.connect()
         handler.start_session()
-        SurvivalAI(handler).run()
-    except BaseException as e:
+        ai = random.choice(Constants.AI_LIST)
+        ai(handler).run()
+    except BaseException:
         return 84
 
 

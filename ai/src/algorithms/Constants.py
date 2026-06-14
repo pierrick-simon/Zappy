@@ -7,6 +7,7 @@
 
 from src.command import (forward, right, left, look, take, set_down, inventory, broadcast,
                          fork, eject, incantation, connect_nbr)
+from src.algorithms.Survivor import SurvivalAI
 
 RESOURCES = ["food", "linemate", "deraumere", "sibur",
              "mendiane", "phiras", "thystame"]
@@ -43,4 +44,8 @@ COMMAND_TIME = {
     "Take": 7,
     "Set": 7,
     "Incantation": 300
+}
+
+AI_LIST = {
+    SurvivalAI
 }
