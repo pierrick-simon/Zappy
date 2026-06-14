@@ -23,6 +23,7 @@ set(SRCS
     src/gui/NewPlayerEvent.cpp
     src/gui/PlayerLevelEvent.cpp
     src/gui/PlayerInventoryEvent.cpp
+    src/gui/IdEvent.cpp
 )
 
 set(HEADERS

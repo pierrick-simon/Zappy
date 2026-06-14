@@ -14,11 +14,9 @@
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "GUIClient.hpp"
-#include "NewPlayerEvent.hpp"
-#include "PlayerPositionEvent.hpp"
+#include "GUIEvents.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
-#include "TileInfoEvent.hpp"
 #include "Utils.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
@@ -90,8 +88,7 @@ namespace Zappy {
                     "), looking " + _directions.at(item->first).str + ".");
             sendToGUI<Shared::NewPlayerEvent>(
                 id, egg.x, egg.y, item->second.nb, team);
-            for (auto &[_, client] : _clients.gui)
-                client.eggHatchedEvent(iter->first);
+            sendToGUI<Shared::EggHatchedEvent>(iter->first);
             _eggs.erase(iter);
             return;
         }
@@ -106,8 +103,7 @@ namespace Zappy {
         if (find != _players.end()) {
             for (auto [name, nb] : iter->second.getInventory())
                 setResource(tile, name, nb);
-            for (auto &[_, client] : _clients.gui)
-                client.playerDeathEvent(find->first);
+            sendToGUI<Shared::PlayerDeathEvent>(find->first);
             _players.erase(find);
         }
     }
@@ -120,6 +116,7 @@ namespace Zappy {
         _eggs.emplace(
             _eggId, Egg {find->second.team, find->second.x, find->second.y});
         _teams.at(find->second.team)++;
+        sendToGUI<Shared::EggLayingEvent>(id);
         for (auto &[_, client] : _clients.gui)
             client.eggLayingEvent(_eggId, id, find->second.x, find->second.y);
         _eggId++;
@@ -397,15 +394,13 @@ namespace Zappy {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(iter->first) + "] been push to the " +
                 _directions.at(dir).str + ".");
-        for (auto &[_, client] : _clients.gui)
-            client.playerExpulsionEvent(iter->first);
+        sendToGUI<Shared::PlayerExpulsionEvent>(iter->first);
     }
 
     void Environement::handleDestroyEgg(EggIter iter)
     {
         _teams.at(iter->second.team)--;
-        for (auto &[_, client] : _clients.gui)
-            client.eggDestroyEvent(iter->first);
+        sendToGUI<Shared::EggDestroyEvent>(iter->first);
         _eggs.erase(iter);
     }
 

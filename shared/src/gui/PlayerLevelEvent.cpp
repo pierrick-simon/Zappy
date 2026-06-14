@@ -12,12 +12,12 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 
 namespace Shared {
     PlayerLevelEvent::PlayerLevelEvent(std::size_t id, std::size_t level) :
-        GUIEvent(ServerCmd::PPO), _id(id), _level(level)
+        GUIEvent(ServerCmd::PLV), _id(id), _level(level)
     {
     }
 
     PlayerLevelEvent::PlayerLevelEvent() :
-        GUIEvent(ServerCmd::PPO), _id(0), _level(0)
+        GUIEvent(ServerCmd::PLV), _id(0), _level(0)
     {
     }
 

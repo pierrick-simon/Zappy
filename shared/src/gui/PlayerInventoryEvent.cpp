@@ -13,12 +13,12 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace Shared {
     PlayerInventoryEvent::PlayerInventoryEvent(
         std::size_t id, const std::vector<std::size_t> &resources) :
-        GUIEvent(ServerCmd::BCT), _id(id), _resources(resources)
+        GUIEvent(ServerCmd::PIN), _id(id), _resources(resources)
     {
     }
 
     PlayerInventoryEvent::PlayerInventoryEvent() :
-        GUIEvent(ServerCmd::BCT), _id(0), _resources(NB_RESOURCE)
+        GUIEvent(ServerCmd::PIN), _id(0), _resources(NB_RESOURCE)
     {
     }
 

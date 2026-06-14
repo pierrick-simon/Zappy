@@ -10,13 +10,8 @@
 #include "Connect.hpp"
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
-#include "MapSizeEvent.hpp"
-#include "PlayerInventoryEvent.hpp"
-#include "PlayerLevelEvent.hpp"
-#include "PlayerPositionEvent.hpp"
+#include "GUIEvents.hpp"
 #include "ServerException.hpp"
-#include "TeamNameEvent.hpp"
-#include "TileInfoEvent.hpp"
 #include "Utils.hpp"
 
 namespace ServerCmd = Shared::GUICommunication::Server;
@@ -176,18 +171,6 @@ namespace Zappy {
             _fd, ServerCmd::SST.getStr() + " " + std::to_string(_f) + "\n");
     }
 
-    void GUIClient::playerExpulsionEvent(std::size_t id) const
-    {
-        Shared::Connect::send(
-            _fd, ServerCmd::PEX.getStr() + " #" + std::to_string(id) + "\n");
-    }
-
-    void GUIClient::eggDestroyEvent(std::size_t id) const
-    {
-        Shared::Connect::send(
-            _fd, ServerCmd::EDI.getStr() + " #" + std::to_string(id) + "\n");
-    }
-
     void GUIClient::broadcastEvent(
         std::size_t id, const std::string &text) const
     {
@@ -222,20 +205,12 @@ namespace Zappy {
     void GUIClient::eggLayingEvent(
         std::size_t egg, std::size_t player, std::size_t x, std::size_t y) const
     {
-        Shared::Connect::send(_fd,
-            ServerCmd::PFK.getStr() + " #" + std::to_string(player) + "\n");
         std::string msg = ServerCmd::ENW.getStr() + " #";
         msg += std::to_string(egg) + " #";
         msg += std::to_string(player) + " ";
         msg += std::to_string(x) + " ";
         msg += std::to_string(y) + "\n";
         Shared::Connect::send(_fd, msg);
-    }
-
-    void GUIClient::eggHatchedEvent(std::size_t egg) const
-    {
-        Shared::Connect::send(
-            _fd, ServerCmd::EBO.getStr() + " #" + std::to_string(egg) + "\n");
     }
 
     void GUIClient::resourceDroppingEvent(
@@ -252,12 +227,6 @@ namespace Zappy {
         Shared::Connect::send(_fd,
             ServerCmd::PGT.getStr() + " #" + std::to_string(id) + " " +
                 std::to_string(resource) + "\n");
-    }
-
-    void GUIClient::playerDeathEvent(std::size_t id) const
-    {
-        Shared::Connect::send(
-            _fd, ServerCmd::PDI.getStr() + " #" + std::to_string(id) + "\n");
     }
 
     void GUIClient::endOfGameEvent(const std::string &team) const
