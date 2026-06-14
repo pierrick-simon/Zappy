@@ -34,7 +34,7 @@ def main():
         entrypoint: ConnectionHandler = ConnectionHandler(
             args.name, args.port, args.machine
         )
-        entrypoint.run()
+        entrypoint.start_session()
     except BaseException as e:
         print(e)
         return 84

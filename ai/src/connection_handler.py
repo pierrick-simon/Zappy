@@ -8,7 +8,8 @@
 import sys
 import re
 from src.client import Client
-from typing import Optional
+from typing import Optional, Any
+from src.algorithms.Constants import RESOURCES
 from src.dataclasses_models import Command, Event
 from collections import deque
 from collections.abc import Callable
@@ -35,14 +36,23 @@ class ConnectionHandler:
         self.client = Client(team, port, host)
         self.commands = deque(maxlen=max_command)
         self.events = deque()
-        self.COMMON_EVENTS: dict[str, Callable[["ConnectionHandler", str], Event]] = {
+
+        self.COMMON_EVENTS: dict[
+            str, Callable[["ConnectionHandler", str], Optional[Event]]
+        ] = {
             "dead": self.handle_dead,
             "message": self.handle_message,
             "eject": self.handle_eject,
             "Current level": self.handle_level,
         }
 
-    def handle_dead(self, request: str) -> Event:
+        self.SPECIAL_RESPONSE: dict[str, Callable[["ConnectionHandler", str], Any]] = {
+            "Look": self.handle_look_response,
+            "Inventory": self.handle_inventory_response,
+            "Connect_nbr": lambda request: int(request),
+        }
+
+    def handle_dead(self, request: str) -> Optional[Event]:
         self.status = False
         return Event("dead")
 
@@ -79,7 +89,37 @@ class ConnectionHandler:
             )
             return None
 
+    def handle_look_response(self, request: str) -> list[list[str]]:
+        vision: list[list[str]] = [
+            [token for token in tile.strip().split() if token]
+            for tile in request.strip().strip("[]").split(",")
+        ]
+        return vision
+
+    def handle_inventory_response(self, request: str) -> dict[str, int]:
+        inventory: dict[str, int] = {}
+
+        for item in request.strip().strip("[]").split(","):
+            item = item.strip()
+            if not item:
+                continue
+            parts = item.split()
+            if len(parts) != 2 or parts[0] not in RESOURCES:
+                continue
+            try:
+                inventory[parts[0]] = int(parts[1])
+            except ValueError:
+                print(f"Invalid quantity for {parts[0]}: {parts[1]} must be an int.")
+        return inventory
+
+    def handle_response(self, request: str) -> Any:
+        if self.commands[0].command in self.SPECIAL_RESPONSE:
+            return self.SPECIAL_RESPONSE[self.commands[0].command](request)
+        else:
+            return request
+
     def start_session(self):
+        self.client.connect()
         if self.client.recv() != "WELCOME":
             raise ConnectionError(
                 "The server did not initiate the connection with the client using WELCOME."
@@ -89,7 +129,9 @@ class ConnectionHandler:
             raw_slot: str = self.client.recv()
             self.slots = int(raw_slot)
         except ValueError:
-            raise ValueError(f"Number of available slot must be a number {raw_slot}.")
+            raise ValueError(
+                f"Number of available slot must be a number, server response: {raw_slot}."
+            )
         if self.slots < 1:
             raise ConnectionError(
                 f"No slot available for the team: {self.client.name}."
@@ -102,9 +144,10 @@ class ConnectionHandler:
         key: str = get_key_from_dict(self.COMMON_EVENTS, request)
 
         if key:
-            self.COMMON_EVENTS[key](request)
+            self.events.append(self.COMMON_EVENTS[key](request))
+            print(self.events)
         elif self.commands:
-            self.commands[0].response = request
+            self.commands[0].response = self.handle_response(request)
 
     def consume_command(self) -> Optional[Command]:
         try:
@@ -121,14 +164,18 @@ class ConnectionHandler:
             return None
 
     def push_to_server(self, new_command: Command) -> None:
-        if len(self.commands) <= self.max_command:
+        if len(self.commands) < self.max_command:
             self.commands.append(new_command)
             self.client.send(str(self.commands[-1]))
 
-    def run(self):
-        self.client.connect()
-        self.start_session()
+    def display_commands(self):
+        print("Commandes: ")
 
-        while self.status:
-            self.entrypoint()
-        self.client.disconnect()
+        for command in self.commands:
+            print(f"[{command} | Response: {command.response}]")
+
+    def display_events(self):
+        print("Events: ")
+
+        for event in self.events:
+            print(f"[{event}]")
