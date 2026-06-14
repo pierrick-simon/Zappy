@@ -28,6 +28,7 @@ set(SRCS
     src/gui/EndIncantationEvent.cpp
     src/gui/BroadcastEvent.cpp
     src/gui/ResourceEvent.cpp
+    src/gui/EggLaidEvent.cpp
 )
 
 set(HEADERS

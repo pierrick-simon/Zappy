@@ -37,8 +37,6 @@ namespace Zappy {
         [[nodiscard]] std::optional<std::size_t> timeUnitUpdate();
 
         void timeUnitEvent(std::size_t f);
-        void eggLayingEvent(std::size_t egg, std::size_t player, std::size_t x,
-            std::size_t y) const;
         void endOfGameEvent(const std::string &team) const;
         void serverMsgEvent(const std::string &msg) const;
 

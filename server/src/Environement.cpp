@@ -117,8 +117,8 @@ namespace Zappy {
             _eggId, Egg {find->second.team, find->second.x, find->second.y});
         _teams.at(find->second.team)++;
         sendToGUI<Shared::EggLayingEvent>(id);
-        for (auto &[_, client] : _clients.gui)
-            client.eggLayingEvent(_eggId, id, find->second.x, find->second.y);
+        sendToGUI<Shared::EggLaidEvent>(
+            _eggId, id, find->second.x, find->second.y);
         _eggId++;
     }
 

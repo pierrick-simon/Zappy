@@ -171,17 +171,6 @@ namespace Zappy {
             _fd, ServerCmd::SST.getStr() + " " + std::to_string(_f) + "\n");
     }
 
-    void GUIClient::eggLayingEvent(
-        std::size_t egg, std::size_t player, std::size_t x, std::size_t y) const
-    {
-        std::string msg = ServerCmd::ENW.getStr() + " #";
-        msg += std::to_string(egg) + " #";
-        msg += std::to_string(player) + " ";
-        msg += std::to_string(x) + " ";
-        msg += std::to_string(y) + "\n";
-        Shared::Connect::send(_fd, msg);
-    }
-
     void GUIClient::endOfGameEvent(const std::string &team) const
     {
         Shared::Connect::send(_fd, ServerCmd::SEG.getStr() + " " + team + "\n");
