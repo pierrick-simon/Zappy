@@ -410,6 +410,17 @@ namespace Zappy {
         throw PlayerNotFoundException(id);
     }
 
+    std::vector<std::string> Environement::getTeamsName() const
+    {
+        std::vector<std::string> names;
+        names.reserve(_teams.size());
+        std::transform(_teams.begin(),
+            _teams.end(),
+            std::back_inserter(names),
+            [](const auto &pair) { return pair.first; });
+        return names;
+    }
+
     const std::unordered_map<ResourceName, Environement::Resource>
         Environement::_resources = {
             {ResourceName::Food, {0.5, "food"}},

@@ -86,6 +86,8 @@ namespace Zappy {
 
         static ResourceName getResource(const std::string &name);
 
+        [[nodiscard]] std::vector<std::string> getTeamsName() const;
+
     private:
         using Tile = std::map<ResourceName, std::size_t>;
 

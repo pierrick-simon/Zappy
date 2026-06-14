@@ -96,10 +96,19 @@ namespace Zappy {
         }
     }
 
+    void GUIClient::teamsName(std::istringstream &stream)
+    {
+        auto names = _env.getTeamsName();
+        for (const auto &name : names)
+            Shared::Connect::send(
+                _fd, ServerCmd::TNA.getStr() + " " + name + "\n");
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},
             {ClientCmd::BCT.getStr(), &GUIClient::tileInfo},
             {ClientCmd::MCT.getStr(), &GUIClient::tilesInfo},
+            {ClientCmd::TNA.getStr(), &GUIClient::teamsName},
     };
 } // namespace Zappy
