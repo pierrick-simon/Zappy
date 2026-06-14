@@ -30,9 +30,6 @@ from src.algorithms.modules.backpack_module import BackpackModule
 from src.command import forward, right, left, look
 from src.constants.constants import COMMAND_FACTORY
 
-FOOD_LOW = 20
-
-
 class SurvivalAI:
     def __init__(self, handler: ConnectionHandler) -> None:
         """! Initialisation of the SurvivalAI
