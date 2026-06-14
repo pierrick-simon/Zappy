@@ -12,21 +12,13 @@
     #include <optional>
     #include <unordered_map>
     #include "AIClient.hpp"
+    #include "Client.hpp"
     #include "Connect.hpp"
     #include "Environement.hpp"
     #include "GUIClient.hpp"
     #include "Utils.hpp"
 
 namespace Zappy {
-
-    using NewClient = std::pair<std::size_t, std::string>;
-
-    struct Clients {
-        std::unordered_map<int, NewClient> newClient;
-        std::unordered_map<int, AIClient> ai;
-        std::unordered_map<int, GUIClient> gui;
-    };
-
     class Server {
     public:
         Server(std::vector<std::string> args);
@@ -41,7 +33,10 @@ namespace Zappy {
         using GUIIter = std::unordered_map<int, GUIClient>::iterator;
 
         void infoToRead();
-        void update();
+        bool update();
+        void updateEnv(std::chrono::nanoseconds elapsed);
+        void updateAi(std::chrono::nanoseconds elapsed);
+        void updateGui();
         void addClient();
         void handleClient(const std::vector<int> &);
         void handleDeadClient(const std::vector<int> &);

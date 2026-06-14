@@ -10,12 +10,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(HEADERS
-    shared/include/
-)
-
-include_directories(${HEADERS})
-
 option(ENABLE_ASAN "Enable Address Sanitizer" OFF)
 
 if (ENABLE_ASAN)
