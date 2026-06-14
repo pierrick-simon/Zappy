@@ -8,6 +8,7 @@
 #include "GUIClient.hpp"
 #include "Connect.hpp"
 #include "GUICommunication.hpp"
+#include "ServerException.hpp"
 #include "Utils.hpp"
 
 namespace ServerCmd = Shared::GUICommunication::Server;
@@ -104,11 +105,28 @@ namespace Zappy {
                 _fd, ServerCmd::TNA.getStr() + " " + name + "\n");
     }
 
+    void GUIClient::playerPosition(std::istringstream &stream)
+    {
+        std::size_t id;
+        stream >> id;
+        try {
+            auto player = _env.getPlayerInfo(id);
+            std::string msg = ServerCmd::PPO.getStr() + " ";
+            msg += std::to_string(id) + " ";
+            msg += std::to_string(player.x) + " ";
+            msg += std::to_string(player.y) + " ";
+            msg += std::to_string(player.dir) + "\n";
+            Shared::Connect::send(_fd, msg);
+        } catch (PlayerNotFoundException &e) {
+        }
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},
             {ClientCmd::BCT.getStr(), &GUIClient::tileInfo},
             {ClientCmd::MCT.getStr(), &GUIClient::tilesInfo},
             {ClientCmd::TNA.getStr(), &GUIClient::teamsName},
+            {ClientCmd::PPO.getStr(), &GUIClient::playerPosition},
     };
 } // namespace Zappy

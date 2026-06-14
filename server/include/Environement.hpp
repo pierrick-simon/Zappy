@@ -42,6 +42,15 @@ namespace Zappy {
         std::vector<Team> players;
     };
 
+    struct PlayerInfo {
+        std::size_t x = 0;
+        std::size_t y = 0;
+        std::size_t dir = 0;
+        std::size_t level = 0;
+        std::string team;
+        std::map<ResourceName, std::size_t> inventory = {};
+    };
+
     struct Clients;
     class AIClient;
     class GUIClient;
@@ -87,6 +96,7 @@ namespace Zappy {
         static ResourceName getResource(const std::string &name);
 
         [[nodiscard]] std::vector<std::string> getTeamsName() const;
+        [[nodiscard]] PlayerInfo getPlayerInfo(std::size_t id) const;
 
     private:
         using Tile = std::map<ResourceName, std::size_t>;
@@ -118,6 +128,7 @@ namespace Zappy {
             int x;
             int y;
             std::string str;
+            std::size_t nb;
         };
 
         struct Elevation {

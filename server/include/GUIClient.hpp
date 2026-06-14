@@ -38,6 +38,7 @@ namespace Zappy {
         void tileInfo(std::istringstream &);
         void tilesInfo(std::istringstream &);
         void teamsName(std::istringstream &);
+        void playerPosition(std::istringstream &);
 
         int _fd;
         std::size_t _id;

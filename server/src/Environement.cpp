@@ -154,9 +154,9 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto &player = find->second;
-        auto [dx, dy, _] = _directions.at(find->second.dir);
-        player.x = circularMove(player.x, dx, _width);
-        player.y = circularMove(player.y, dy, _height);
+        const auto &dir = _directions.at(find->second.dir);
+        player.x = circularMove(player.x, dir.x, _width);
+        player.y = circularMove(player.y, dir.y, _height);
     }
 
     void Environement::rotatePlayer(std::size_t id, Rotate rotate)
@@ -338,7 +338,7 @@ namespace Zappy {
 
     void Environement::handleEjectPlayer(PlayerIter iter, Direction dir)
     {
-        auto [dx, dy, _] = _directions.at(dir);
+        auto [dx, dy, _, _] = _directions.at(dir);
         iter->second.x = circularMove(iter->second.x, dx, _width);
         iter->second.y = circularMove(iter->second.y, dy, _height);
         Shared::Connect::send(getPlayerFd(iter->first),
@@ -410,6 +410,27 @@ namespace Zappy {
         throw PlayerNotFoundException(id);
     }
 
+    PlayerInfo Environement::getPlayerInfo(std::size_t id) const
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        auto player = find->second;
+        PlayerInfo info;
+        info.x = player.x;
+        info.y = player.y;
+        info.team = player.team;
+        info.level = info.level;
+        info.dir = _directions.at(player.dir).nb;
+        for (const auto &[_, client] : _clients.ai) {
+            if (client.getId() == id) {
+                info.inventory = client.getInventory();
+                return info;
+            }
+        }
+        throw PlayerNotFoundException(id);
+    }
+
     std::vector<std::string> Environement::getTeamsName() const
     {
         std::vector<std::string> names;
@@ -433,10 +454,10 @@ namespace Zappy {
     };
 
     const std::map<Direction, Environement::Dir> Environement::_directions = {
-        {Direction::North, {0, -1, "North"}},
-        {Direction::East, {1, 0, "East"}},
-        {Direction::South, {0, 1, "South"}},
-        {Direction::West, {-1, 0, "West"}}};
+        {Direction::North, {0, -1, "North", 1}},
+        {Direction::East, {1, 0, "East", 2}},
+        {Direction::South, {0, 1, "South", 3}},
+        {Direction::West, {-1, 0, "West", 4}}};
 
     const std::unordered_map<std::size_t, Environement::Elevation>
         Environement::_elevations = {
