@@ -21,7 +21,7 @@ namespace Graphics {
     void Window::update()
     {
         this->handleEvents();
-        this->_scene.update(this->GetFrameTime());
+        this->_scene.update(Graphics::Window::GetFrameTime());
         this->BeginDrawing();
         this->ClearBackground(raylib::Color::RayWhite());
         this->getScene().getCamera().BeginMode();
