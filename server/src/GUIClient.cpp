@@ -150,10 +150,9 @@ namespace Zappy {
         }
     }
 
-    void GUIClient::getTimeUnit(std::istringstream &stream) const
+    void GUIClient::getTimeUnit(std::istringstream &stream)
     {
-        Shared::Connect::send(
-            _fd, ServerCmd::SGT.getStr() + " " + std::to_string(_f) + "\n");
+        send<Shared::GetTimeUnit>(_f);
     }
 
     void GUIClient::setTimeUnit(std::istringstream &stream)
@@ -167,8 +166,7 @@ namespace Zappy {
     void GUIClient::timeUnitEvent(std::size_t f)
     {
         _f = f;
-        Shared::Connect::send(
-            _fd, ServerCmd::SST.getStr() + " " + std::to_string(_f) + "\n");
+        send<Shared::SetTimeUnit>(_f);
     }
 
     void GUIClient::endOfGameEvent(const std::string &team) const

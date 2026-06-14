@@ -14,6 +14,7 @@
     #include "GUICommunication.hpp"
     #include "IdEvent.hpp"
     #include "MapSizeEvent.hpp"
+    #include "NbEvent.hpp"
     #include "NewPlayerEvent.hpp"
     #include "PlayerInventoryEvent.hpp"
     #include "PlayerLevelEvent.hpp"
@@ -81,6 +82,22 @@ namespace Shared {
             ResourceEvent(ServerCmd::PGT, id, nb) {};
         TakeResourceEvent() :
             ResourceEvent(ServerCmd::PGT) {};
+    };
+
+    class GetTimeUnit : public NbEvent {
+    public:
+        GetTimeUnit(std::size_t id) :
+            NbEvent(ServerCmd::SGT, id) {};
+        GetTimeUnit() :
+            NbEvent(ServerCmd::SGT) {};
+    };
+
+    class SetTimeUnit : public NbEvent {
+    public:
+        SetTimeUnit(std::size_t id) :
+            NbEvent(ServerCmd::SST, id) {};
+        SetTimeUnit() :
+            NbEvent(ServerCmd::SST) {};
     };
 } // namespace Shared
 

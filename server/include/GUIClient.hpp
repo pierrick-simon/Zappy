@@ -53,7 +53,7 @@ namespace Zappy {
         void playerPosition(std::istringstream &);
         void playerLevel(std::istringstream &);
         void playerInventory(std::istringstream &);
-        void getTimeUnit(std::istringstream &) const;
+        void getTimeUnit(std::istringstream &);
         void setTimeUnit(std::istringstream &);
 
         template<std::derived_from<Shared::GUIEvent> EventType,
