@@ -21,7 +21,7 @@ while AI.alive:
     backpack.tick(action)
 """
 
-from src.constants.resources import *
+from src.constants.resources import COMMAND_TIME, FOOD_DECAY_TIME_UNITS, TIME_UNIT
 
 class BackpackModule:
     def __init__(self) -> None:

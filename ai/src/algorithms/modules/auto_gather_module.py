@@ -35,7 +35,7 @@ for action in plan:
     # send actions to server
 """
 
-from src.constants.resources import *
+from src.constants.resources import RESOURCES, COMMAND_TIME
 
 
 class AutoGatherModule:
