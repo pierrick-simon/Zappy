@@ -111,6 +111,9 @@ namespace Zappy {
             std::size_t y;
         };
 
+        using EggIter = std::unordered_map<std::size_t,
+            Zappy::Environement::Egg>::iterator;
+
         struct Player {
             std::string team;
             Direction dir;
@@ -154,6 +157,7 @@ namespace Zappy {
         int getPlayerFd(std::size_t id);
         void setPlayerElevate(std::size_t id, bool value);
         void handleEjectPlayer(PlayerIter, Direction);
+        void handleDestroyEgg(EggIter);
 
         std::size_t _width;
         std::size_t _height;

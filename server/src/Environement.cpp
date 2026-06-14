@@ -352,6 +352,16 @@ namespace Zappy {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(iter->first) + "] been push to the " +
                 _directions.at(dir).str + ".");
+        for (auto &[_, client] : _clients.gui)
+            client.playerExpulsionEvent(iter->first);
+    }
+
+    void Environement::handleDestroyEgg(EggIter iter)
+    {
+        _teams.at(iter->second.team)--;
+        for (auto &[_, client] : _clients.gui)
+            client.eggDestroyEvent(iter->first);
+        _eggs.erase(iter);
     }
 
     bool Environement::eject(std::size_t id)
@@ -372,8 +382,7 @@ namespace Zappy {
         for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
             if (iter->second.x == find->second.x &&
                 iter->second.y == find->second.y) {
-                _teams.at(iter->second.team)--;
-                _eggs.erase(iter);
+                handleDestroyEgg(iter);
                 status = true;
             }
         }

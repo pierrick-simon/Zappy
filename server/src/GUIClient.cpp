@@ -203,6 +203,18 @@ namespace Zappy {
             _fd, ServerCmd::SGT.getStr() + " " + std::to_string(_f) + "\n");
     }
 
+    void GUIClient::playerExpulsionEvent(std::size_t id) const
+    {
+        Shared::Connect::send(
+            _fd, ServerCmd::PEX.getStr() + " " + std::to_string(id) + "\n");
+    }
+
+    void GUIClient::eggDestroyEvent(std::size_t id) const
+    {
+        Shared::Connect::send(
+            _fd, ServerCmd::EDI.getStr() + " " + std::to_string(id) + "\n");
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},
