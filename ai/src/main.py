@@ -6,7 +6,10 @@
 ##
 
 import sys
+import random
 import argparse
+
+from src.constants.ai_list import AI_LIST
 from src.connection_handler import ConnectionHandler
 
 
@@ -31,10 +34,14 @@ def main():
         print("Team cannot be GRAPHIC.", file=sys.stderr)
         return 84
     try:
-        entrypoint: ConnectionHandler = ConnectionHandler(
-            args.name, args.port, args.machine
-        )
-        entrypoint.start_session()
-    except BaseException as e:
-        print(e)
+        handler = ConnectionHandler(args.name, args.port, args.machine)
+        handler.client.connect()
+        handler.start_session()
+        ai = random.choice(AI_LIST)
+        ai(handler).run()
+    except BaseException:
         return 84
+
+
+if __name__ == "__main__":
+    sys.exit(main())

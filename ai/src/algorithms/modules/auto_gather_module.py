@@ -35,9 +35,7 @@ for action in plan:
     # send actions to server
 """
 
-from ai.src.algorithms import Constants as constants
-
-aimed_mats = {"food": 3, "linemate": 1}
+from src.constants.resources import RESOURCES, COMMAND_TIME
 
 
 class AutoGatherModule:
@@ -65,6 +63,7 @@ class AutoGatherModule:
             for resource in self._parse_tile(tile_str):
                 if resource in self.remaining:
                     paths.append((tile_idx, resource))
+
         return paths
 
     def _find_best_path(self, paths: list, cur_x: int, cur_y: int, cur_orient: int):
@@ -92,8 +91,8 @@ class AutoGatherModule:
             )
 
             length = (
-                sum(constants.COMMAND_TIME[m] for m in moves)
-                + constants.COMMAND_TIME["Take"]
+                    sum(COMMAND_TIME[m] for m in moves)
+                    + COMMAND_TIME["Take"]
             )
 
             if best_length is None or length < best_length:
@@ -228,10 +227,10 @@ class AutoGatherModule:
             return ["Left"]
 
     @staticmethod
-    def _parse_tile(tile_str: str) -> list:
-        """! Extracts resource names from a tile string
+    def _parse_tile(tile) -> list:
+        """! Extracts resource names from a tile
 
-        @param tile_str: tile content
+        @param tile: list of tokens from a parsed Look response
         @return List of resource names found on the tile
         """
-        return [t for t in tile_str.strip().split() if t in constants.RESOURCES]
+        return [t for t in tile if t in RESOURCES]

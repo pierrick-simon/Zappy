@@ -2,13 +2,11 @@
 ## EPITECH PROJECT, 2026
 ## Zappy
 ## File description:
-## Constants
+## resources
 ##
 
-RESOURCES = ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
-
-FOOD_DECAY_TIME_UNITS = 126
-TIME_UNIT = 10
+RESOURCES = ["food", "linemate", "deraumere", "sibur",
+             "mendiane", "phiras", "thystame"]
 
 COMMAND_TIME = {
     "Forward": 7,
@@ -23,3 +21,6 @@ COMMAND_TIME = {
     "Set": 7,
     "Incantation": 300,
 }
+
+FOOD_DECAY_TIME_UNITS = 126
+TIME_UNIT = 10

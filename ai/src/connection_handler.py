@@ -9,7 +9,7 @@ import sys
 import re
 from src.client import Client
 from typing import Optional, Any
-from src.algorithms.Constants import RESOURCES
+from src.constants.resources import RESOURCES
 from src.dataclasses_models import Command, Event
 from collections import deque
 from collections.abc import Callable
