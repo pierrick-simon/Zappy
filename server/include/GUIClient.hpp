@@ -52,6 +52,7 @@ namespace Zappy {
         void resourceCollectingEvent(
             std::size_t id, std::size_t resource) const;
         void playerDeathEvent(std::size_t id) const;
+        void endOfGameEvent(const std::string &team) const;
 
     private:
         using Command = std::function<void(GUIClient &, std::istringstream &)>;

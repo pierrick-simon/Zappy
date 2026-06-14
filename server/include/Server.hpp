@@ -41,7 +41,7 @@ namespace Zappy {
         using GUIIter = std::unordered_map<int, GUIClient>::iterator;
 
         void infoToRead();
-        void update();
+        bool update();
         void addClient();
         void handleClient(const std::vector<int> &);
         void handleDeadClient(const std::vector<int> &);

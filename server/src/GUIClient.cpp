@@ -283,8 +283,13 @@ namespace Zappy {
 
     void GUIClient::playerDeathEvent(std::size_t id) const
     {
-        Shared::Connect::send(_fd,
-            ServerCmd::PDI.getStr() + " " + std::to_string(id) + "\n");
+        Shared::Connect::send(
+            _fd, ServerCmd::PDI.getStr() + " " + std::to_string(id) + "\n");
+    }
+
+    void GUIClient::endOfGameEvent(const std::string &team) const
+    {
+        Shared::Connect::send(_fd, ServerCmd::SEG.getStr() + " " + team + "\n");
     }
 
     const std::unordered_map<std::string, GUIClient::Command>

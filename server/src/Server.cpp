@@ -57,9 +57,10 @@ namespace Zappy {
 
     void Server::run()
     {
-        while (!RECEIVED_SIG_INT) {
+        auto end = false;
+        while (!RECEIVED_SIG_INT && !end) {
             infoToRead();
-            update();
+            end = update();
         }
     }
 
@@ -73,7 +74,7 @@ namespace Zappy {
         }
     }
 
-    void Server::update()
+    bool Server::update()
     {
         auto now = std::chrono::steady_clock::now();
         auto elapsed = std::chrono::nanoseconds((_clock - now) / _fn);
@@ -104,6 +105,7 @@ namespace Zappy {
                 gui.timeUnitEvent(_f);
             }
         }
+        return _env.getEnd();
     }
 
     void Server::handleDeadClient(const std::vector<int> &deads)

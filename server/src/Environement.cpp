@@ -268,8 +268,32 @@ namespace Zappy {
         return check;
     }
 
+    void Environement::checkEnd()
+    {
+        std::map<std::string, std::size_t> map;
+        for (const auto &[_, player] : _players) {
+            auto find = map.find(player.team);
+            if (find != map.end())
+                find->second++;
+            else
+                map.emplace(player.team, 1);
+        }
+        auto greatest = map.begin();
+        for (auto iter = map.begin(); iter != map.end(); iter++) {
+            if (greatest->second < iter->second)
+                greatest = iter;
+        }
+        if (greatest->second >= WIN) {
+            _end = true;
+            for (auto &[_, client] : _clients.gui)
+                client.endOfGameEvent(greatest->first);
+            Shared::Utils::logMsg(
+                _logFile, "The " + greatest->first + " team won the game.");
+        }
+    }
+
     void Environement::successElevation(std::size_t x, std::size_t y,
-        const Elevation &elevation, const std::vector<size_t> &players)
+        const Elevation &elevation, const std::vector<size_t> &players, std::size_t level)
     {
         auto tile = _width * y + x;
         for (auto [name, nb] : elevation.resources) {
@@ -292,6 +316,8 @@ namespace Zappy {
         }
         for (auto &[_, client] : _clients.gui)
             client.tileInfoEvent(x, y, _tiles[tile]);
+        if (level + 1 == MAX_LEVEL)
+            checkEnd();
     }
 
     void Environement::failElevation(const std::vector<size_t> &players)
@@ -351,7 +377,7 @@ namespace Zappy {
                 start.end());
             const auto &elevation = _elevations.at(level);
             if (start.size() >= elevation.nbPlayer) {
-                successElevation(x, y, elevation, start);
+                successElevation(x, y, elevation, start, level);
                 result = true;
             } else
                 failElevation(start);

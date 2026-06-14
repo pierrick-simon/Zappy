@@ -87,6 +87,10 @@ namespace Zappy {
         {
             return _width;
         }
+        [[nodiscard]] bool getEnd() const
+        {
+            return _end;
+        }
         static std::string getResourceName(ResourceName name)
         {
             return _resources.at(name).str;
@@ -153,18 +157,20 @@ namespace Zappy {
         std::vector<std::size_t> checkElevation(
             std::size_t x, std::size_t y, std::size_t level, bool elevated);
         void successElevation(std::size_t x, std::size_t y, const Elevation &,
-            const std::vector<size_t> &players);
+            const std::vector<size_t> &players, std::size_t level);
         void failElevation(const std::vector<size_t> &players);
         void setResource(std::size_t tile, ResourceName name, std::size_t nb);
         int getPlayerFd(std::size_t id);
         void setPlayerElevate(std::size_t id, bool value);
         void handleEjectPlayer(PlayerIter, Direction);
         void handleDestroyEgg(EggIter);
+        void checkEnd();
 
         std::size_t _width;
         std::size_t _height;
         std::size_t _eggId = 0;
         std::chrono::nanoseconds _sleep;
+        bool _end = false;
 
         std::vector<Tile> _tiles;
         std::unordered_map<std::size_t, Egg> _eggs;
@@ -183,6 +189,8 @@ namespace Zappy {
             std::chrono::seconds(20);
         static constexpr std::chrono::nanoseconds ELEVATE =
             std::chrono::seconds(300);
+        static constexpr std::size_t MAX_LEVEL = 8;
+        static constexpr std::size_t WIN = 6;
     };
 } // namespace Zappy
 
