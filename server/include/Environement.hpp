@@ -71,7 +71,6 @@ namespace Zappy {
         void rotatePlayer(std::size_t id, Rotate);
         void spawnEgg(std::size_t id);
         void spawnEgg(const std::string &team);
-        static Direction getOpositeDir(Direction);
         bool takeResource(std::size_t id, ResourceName);
         void setResource(std::size_t id, ResourceName);
         bool eject(std::size_t id);

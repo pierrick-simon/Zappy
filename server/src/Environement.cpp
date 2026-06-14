@@ -157,6 +157,9 @@ namespace Zappy {
         const auto &dir = _directions.at(find->second.dir);
         player.x = circularMove(player.x, dir.x, _width);
         player.y = circularMove(player.y, dir.y, _height);
+        for (auto &[_, client] : _clients.gui)
+            client.playerPositionEvent(
+                id, player.x, player.y, _directions.at(player.dir).nb);
     }
 
     void Environement::rotatePlayer(std::size_t id, Rotate rotate)
@@ -164,30 +167,22 @@ namespace Zappy {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        auto dir = _directions.find(find->second.dir);
+        auto &player = find->second;
+        auto dir = _directions.find(player.dir);
         if (rotate == Rotate::Left) {
             if (dir == _directions.begin())
-                find->second.dir = _directions.end()--->first;
+                player.dir = _directions.end()--->first;
             else
-                find->second.dir = dir--->first;
+                player.dir = dir--->first;
         } else {
             if (dir == _directions.end()--)
-                find->second.dir = _directions.begin()->first;
+                player.dir = _directions.begin()->first;
             else
-                find->second.dir = dir++->first;
+                player.dir = dir++->first;
         }
-    }
-
-    Direction Environement::getOpositeDir(Direction dir)
-    {
-        Direction value = Direction::North;
-        if (dir == Direction::North)
-            value = Direction::South;
-        if (dir == Direction::East)
-            value = Direction::West;
-        if (dir == Direction::West)
-            value = Direction::East;
-        return value;
+        for (auto &[_, client] : _clients.gui)
+            client.playerPositionEvent(
+                id, player.x, player.y, _directions.at(player.dir).nb);
     }
 
     bool Environement::takeResource(std::size_t id, ResourceName name)
@@ -201,6 +196,9 @@ namespace Zappy {
         if (resource != _tiles[tile].end() && resource->second > 0) {
             value = true;
             resource->second--;
+            for (auto &[_, client] : _clients.gui)
+                client.tileInfoEvent(
+                    find->second.x, find->second.y, _tiles[tile]);
         }
         return value;
     }
@@ -216,6 +214,8 @@ namespace Zappy {
             resource->second++;
         else
             _tiles[tile].emplace(name, 1);
+        for (auto &[_, client] : _clients.gui)
+            client.tileInfoEvent(find->second.x, find->second.y, _tiles[tile]);
     }
 
     void Environement::setResource(
@@ -226,6 +226,8 @@ namespace Zappy {
             resource->second += nb;
         else
             _tiles[tile].emplace(name, nb);
+        for (auto &[_, client] : _clients.gui)
+            client.tileInfoEvent(tile % _width, tile / _width, _tiles[tile]);
     }
 
     std::vector<std::size_t> Environement::checkElevation(
@@ -276,6 +278,8 @@ namespace Zappy {
                         std::to_string(find->second.level) + ".");
             }
         }
+        for (auto &[_, client] : _clients.gui)
+            client.tileInfoEvent(x, y, _tiles[tile]);
     }
 
     void Environement::failElevation(const std::vector<size_t> &players)

@@ -70,18 +70,23 @@ namespace Zappy {
         Shared::Connect::send(_fd, ServerCmd::MSZ.getStr() + x + y + "\n");
     }
 
+    void GUIClient::tileInfoEvent(std::size_t x, std::size_t y,
+        const std::map<ResourceName, std::size_t> &resources) const
+    {
+        std::string msg = ServerCmd::BCT.getStr() + " ";
+        msg += std::to_string(x) + " " + std::to_string(y);
+        for (auto [_, nb] : resources)
+            msg += " " + std::to_string(nb);
+        msg += "\n";
+        Shared::Connect::send(_fd, msg);
+    }
+
     void GUIClient::tileInfo(std::istringstream &stream)
     {
         std::size_t x;
         std::size_t y;
         stream >> x >> y;
-        std::string msg = ServerCmd::BCT.getStr() + " ";
-        msg += std::to_string(x) + " " + std::to_string(y);
-        auto [resources, _, _] = _env.getTileInfo(x, y);
-        for (auto [_, nb] : resources)
-            msg += " " + std::to_string(nb);
-        msg += "\n";
-        Shared::Connect::send(_fd, msg);
+        tileInfoEvent(x, y, _env.getTileInfo(x, y).resources);
     }
 
     void GUIClient::tilesInfo(std::istringstream &stream)
@@ -105,18 +110,24 @@ namespace Zappy {
                 _fd, ServerCmd::TNA.getStr() + " " + name + "\n");
     }
 
+    void GUIClient::playerPositionEvent(
+        std::size_t id, std::size_t x, std::size_t y, std::size_t dir) const
+    {
+        std::string msg = ServerCmd::PPO.getStr() + " ";
+        msg += std::to_string(id) + " ";
+        msg += std::to_string(x) + " ";
+        msg += std::to_string(y) + " ";
+        msg += std::to_string(dir) + "\n";
+        Shared::Connect::send(_fd, msg);
+    }
+
     void GUIClient::playerPosition(std::istringstream &stream)
     {
         std::size_t id;
         stream >> id;
         try {
             auto player = _env.getPlayerInfo(id);
-            std::string msg = ServerCmd::PPO.getStr() + " ";
-            msg += std::to_string(id) + " ";
-            msg += std::to_string(player.x) + " ";
-            msg += std::to_string(player.y) + " ";
-            msg += std::to_string(player.dir) + "\n";
-            Shared::Connect::send(_fd, msg);
+            playerPositionEvent(id, player.x, player.y, player.dir);
         } catch (PlayerNotFoundException &e) {
         }
     }
