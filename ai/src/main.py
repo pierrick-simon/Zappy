@@ -7,6 +7,7 @@
 
 import sys
 import argparse
+from src.algorithms.Survivor import SurvivalAI
 from src.connection_handler import ConnectionHandler
 
 
@@ -31,10 +32,13 @@ def main():
         print("Team cannot be GRAPHIC.", file=sys.stderr)
         return 84
     try:
-        entrypoint: ConnectionHandler = ConnectionHandler(
-            args.name, args.port, args.machine
-        )
-        entrypoint.run()
+        handler = ConnectionHandler(args.name, args.port, args.machine)
+        handler.client.connect()
+        handler.start_session()
+        SurvivalAI(handler).run()
     except BaseException as e:
-        print(e)
         return 84
+
+
+if __name__ == "__main__":
+    sys.exit(main())

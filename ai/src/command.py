@@ -5,10 +5,10 @@
 ## commands
 ##
 
-from dataclasses_models  import Command
-from connection_handler import ConnectionHandler
+from src.dataclasses_models  import Command
+from src.connection_handler import ConnectionHandler
 from typing import Optional
-from ai.src.algorithms import Constants as constants
+from src.algorithms import Constants as constants
 
 
 def send_and_recv(handler: ConnectionHandler, cmd: Command) -> str:

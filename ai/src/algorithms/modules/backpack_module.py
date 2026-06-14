@@ -21,7 +21,7 @@ while AI.alive:
     backpack.tick(action)
 """
 
-from ai.src.algorithms import Constants as constants
+from src.algorithms import Constants as constants
 
 class BackpackModule:
     def __init__(self) -> None:
