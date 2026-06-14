@@ -116,7 +116,6 @@ namespace Zappy {
         _eggs.emplace(
             _eggId, Egg {find->second.team, find->second.x, find->second.y});
         _teams.at(find->second.team)++;
-        sendToGUI<Shared::EggLayingEvent>(id);
         sendToGUI<Shared::EggLaidEvent>(
             _eggId, id, find->second.x, find->second.y);
         _eggId++;
@@ -127,6 +126,14 @@ namespace Zappy {
         _eggs.emplace(
             _eggId, Egg {team, std::rand() % _width, std::rand() % _height});
         _eggId++;
+    }
+
+    void Environement::eggLaying(std::size_t id)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        sendToGUI<Shared::EggLayingEvent>(id);
     }
 
     TileInfo Environement::getTileInfo(

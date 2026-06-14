@@ -107,6 +107,7 @@ namespace Zappy {
         _commands.pop();
         if (startCheckIncantation(command))
             return;
+        eggLaying(command);
         auto iter = COMMANDS.find(command);
         if (iter != COMMANDS.end()) {
             _sleep = iter->second._timeLimit;
@@ -138,6 +139,13 @@ namespace Zappy {
                     "] start the elevation ritual.");
         }
         return value;
+    }
+
+    void AIClient::eggLaying(const std::string &name)
+    {
+        if (name != ClientCmd::FRK.getStr())
+            return;
+        _env.eggLaying(_id);
     }
 
     void AIClient::forward(std::istringstream &stream)
