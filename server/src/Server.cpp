@@ -80,15 +80,27 @@ namespace Zappy {
         auto elapsed = std::chrono::nanoseconds((_clock - now) / _fn);
         _clock = now;
         _timeout = -1;
+        updateEnv(elapsed);
+        updateAi(elapsed);
+        updateGui();
+        return _env.getEnd();
+    }
+
+    void Server::updateEnv(std::chrono::nanoseconds elapsed)
+    {
         auto tmp = _env.update(elapsed);
         auto timeout = int(
             std::chrono::duration_cast<std::chrono::microseconds>(tmp).count());
         if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
             _timeout = timeout;
+    }
+
+    void Server::updateAi(std::chrono::nanoseconds elapsed)
+    {
         std::vector<int> deads;
         for (auto &[id, ai] : _clients.ai) {
-            tmp = ai.update(elapsed);
-            timeout =
+            auto tmp = ai.update(elapsed);
+            auto timeout =
                 int(std::chrono::duration_cast<std::chrono::microseconds>(tmp)
                         .count());
             if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
@@ -97,6 +109,10 @@ namespace Zappy {
                 deads.push_back(id);
         }
         handleDeadClient(deads);
+    }
+
+    void Server::updateGui()
+    {
         for (auto &[_, gui] : _clients.gui) {
             auto tmp = gui.timeUnitUpdate();
             if (tmp && *tmp != _f) {
@@ -105,7 +121,6 @@ namespace Zappy {
                 gui.timeUnitEvent(_f);
             }
         }
-        return _env.getEnd();
     }
 
     void Server::handleDeadClient(const std::vector<int> &deads)

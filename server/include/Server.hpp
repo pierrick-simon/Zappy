@@ -34,6 +34,9 @@ namespace Zappy {
 
         void infoToRead();
         bool update();
+        void updateEnv(std::chrono::nanoseconds elapsed);
+        void updateAi(std::chrono::nanoseconds elapsed);
+        void updateGui();
         void addClient();
         void handleClient(const std::vector<int> &);
         void handleDeadClient(const std::vector<int> &);
