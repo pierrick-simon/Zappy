@@ -6,7 +6,6 @@
 ##
 
 import sys
-import random
 import argparse
 
 from src.constants.ai_list import AI_LIST
@@ -17,6 +16,8 @@ def handle_args():
     args = argparse.ArgumentParser(description="Zappy AI Client", add_help=False)
     args.add_argument("-p", dest="port", type=int, help="-p port number")
     args.add_argument("-n", dest="name", type=str, help="-n name of the team")
+    args.add_argument("-a", dest="algo", type=str, help="-n name of the ai/algorithm to use",
+                      default="survivor")
     args.add_argument(
         "-h",
         dest="machine",
@@ -37,7 +38,7 @@ def main():
         handler = ConnectionHandler(args.name, args.port, args.machine)
         handler.client.connect()
         handler.start_session()
-        ai = random.choice(AI_LIST)
+        ai = AI_LIST[args.algo.lower()]
         ai(handler).run()
     except BaseException:
         return 84
