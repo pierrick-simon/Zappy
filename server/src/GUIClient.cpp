@@ -14,7 +14,8 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace ClientCmd = Shared::GUICommunication::Client;
 
 namespace Zappy {
-    GUIClient::GUIClient(int fd, std::size_t id, std::ofstream &logFile, Environement &env) :
+    GUIClient::GUIClient(
+        int fd, std::size_t id, std::ofstream &logFile, Environement &env) :
         _fd(fd), _id(id), _logFile(logFile), _env(env)
     {
         Shared::Utils::logMsg(_logFile,
@@ -68,8 +69,37 @@ namespace Zappy {
         Shared::Connect::send(_fd, ServerCmd::MSZ.getStr() + x + y + "\n");
     }
 
+    void GUIClient::tileInfo(std::istringstream &stream)
+    {
+        std::size_t x;
+        std::size_t y;
+        stream >> x >> y;
+        std::string msg = ServerCmd::BCT.getStr() + " ";
+        msg += std::to_string(x) + " " + std::to_string(y);
+        auto [resources, _, _] = _env.getTileInfo(x, y);
+        for (auto [_, nb] : resources)
+            msg += " " + std::to_string(nb);
+        msg += "\n";
+        Shared::Connect::send(_fd, msg);
+    }
+
+    void GUIClient::tilesInfo(std::istringstream &stream)
+    {
+        auto x = _env.getWidth();
+        auto y = _env.getHeight();
+        for (std::size_t i = 0; i < x; i++) {
+            for (std::size_t j = 0; j < y; j++) {
+                std::istringstream tmp(
+                    std::to_string(x) + " " + std::to_string(y));
+                tileInfo(tmp);
+            }
+        }
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},
+            {ClientCmd::BCT.getStr(), &GUIClient::tileInfo},
+            {ClientCmd::MCT.getStr(), &GUIClient::tilesInfo},
     };
 } // namespace Zappy

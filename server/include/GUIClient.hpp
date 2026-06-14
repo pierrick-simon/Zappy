@@ -18,7 +18,8 @@
 namespace Zappy {
     class GUIClient {
     public:
-        GUIClient(int fd, std::size_t id, std::ofstream &logFile, Environement &env);
+        GUIClient(
+            int fd, std::size_t id, std::ofstream &logFile, Environement &env);
 
         void infoToRead();
 
@@ -34,13 +35,15 @@ namespace Zappy {
         void update();
 
         void mapSize(std::istringstream &);
+        void tileInfo(std::istringstream &);
+        void tilesInfo(std::istringstream &);
 
         int _fd;
         std::size_t _id;
         std::ofstream &_logFile;
         std::string _buffer;
         std::queue<std::string> _commands;
-        
+
         Environement &_env;
 
         static const std::unordered_map<std::string, Command> COMMANDS;
