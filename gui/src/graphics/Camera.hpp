@@ -18,18 +18,19 @@ namespace Graphics {
         // using raylib::Camera::Camera;
         void update(float dt);
         void updateMouse();
-        raylib::Vector3 alignToWorldPlane(raylib::Vector3 vector) const;
+        [[nodiscard]] raylib::Vector3 alignToWorldPlane(
+            raylib::Vector3 vector) const;
         void moveForward(float distance);
         void moveRight(float distance);
         void moveUp(float distance);
         void moveToTarget(float delta);
-        raylib::Vector3 getForward() const;
-        raylib::Vector3 getRight() const;
+        [[nodiscard]] raylib::Vector3 getForward() const;
+        [[nodiscard]] raylib::Vector3 getRight() const;
 
         void yaw(float angle);
         void roll(float angle);
 
-        static constexpr auto CAMERA_MOVE_SPEED = 4.0;
+        static constexpr auto CAMERA_MOVE_SPEED = 4.0f;
         static constexpr KeyboardKey SPRINT_KEY = KEY_LEFT_SHIFT;
         static constexpr MouseButton ROTATE_BUTTON = MOUSE_BUTTON_RIGHT;
         static constexpr auto SPRINT_SCALE = 4;
