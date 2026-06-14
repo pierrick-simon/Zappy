@@ -203,10 +203,9 @@ namespace Zappy {
         if (resource != _tiles[tile].end() && resource->second > 0) {
             value = true;
             resource->second--;
+            sendToGUI<Shared::TakeResourceEvent>(id, _resources.at(name).nb);
             sendToGUI<Shared::TileInfoEvent>(
                 find->second.x, find->second.y, getTileValue(tile));
-            for (auto &[_, client] : _clients.gui)
-                client.resourceCollectingEvent(id, _resources.at(name).nb);
         }
         return value;
     }
@@ -222,10 +221,9 @@ namespace Zappy {
             resource->second++;
         else
             _tiles[tile].emplace(name, 1);
+        sendToGUI<Shared::SetResourceEvent>(id, _resources.at(name).nb);
         sendToGUI<Shared::TileInfoEvent>(
             find->second.x, find->second.y, getTileValue(tile));
-        for (auto &[_, client] : _clients.gui)
-            client.resourceDroppingEvent(id, _resources.at(name).nb);
     }
 
     void Environement::setResource(

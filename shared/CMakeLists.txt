@@ -27,6 +27,7 @@ set(SRCS
     src/gui/StartIncantationEvent.cpp
     src/gui/EndIncantationEvent.cpp
     src/gui/BroadcastEvent.cpp
+    src/gui/ResourceEvent.cpp
 )
 
 set(HEADERS

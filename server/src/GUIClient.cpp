@@ -182,22 +182,6 @@ namespace Zappy {
         Shared::Connect::send(_fd, msg);
     }
 
-    void GUIClient::resourceDroppingEvent(
-        std::size_t id, std::size_t resource) const
-    {
-        Shared::Connect::send(_fd,
-            ServerCmd::PDR.getStr() + " #" + std::to_string(id) + " " +
-                std::to_string(resource) + "\n");
-    }
-
-    void GUIClient::resourceCollectingEvent(
-        std::size_t id, std::size_t resource) const
-    {
-        Shared::Connect::send(_fd,
-            ServerCmd::PGT.getStr() + " #" + std::to_string(id) + " " +
-                std::to_string(resource) + "\n");
-    }
-
     void GUIClient::endOfGameEvent(const std::string &team) const
     {
         Shared::Connect::send(_fd, ServerCmd::SEG.getStr() + " " + team + "\n");

@@ -17,6 +17,7 @@
     #include "PlayerInventoryEvent.hpp"
     #include "PlayerLevelEvent.hpp"
     #include "PlayerPositionEvent.hpp"
+    #include "ResourceEvent.hpp"
     #include "StartIncantationEvent.hpp"
     #include "TeamNameEvent.hpp"
     #include "TileInfoEvent.hpp"
@@ -63,6 +64,22 @@ namespace Shared {
             IdEvent(ServerCmd::EDI, id) {};
         EggDestroyEvent() :
             IdEvent(ServerCmd::EDI) {};
+    };
+
+    class SetResourceEvent : public ResourceEvent {
+    public:
+        SetResourceEvent(std::size_t id, std::size_t nb) :
+            ResourceEvent(ServerCmd::PDR, id, nb) {};
+        SetResourceEvent() :
+            ResourceEvent(ServerCmd::PDR) {};
+    };
+
+    class TakeResourceEvent : public ResourceEvent {
+    public:
+        TakeResourceEvent(std::size_t id, std::size_t nb) :
+            ResourceEvent(ServerCmd::PGT, id, nb) {};
+        TakeResourceEvent() :
+            ResourceEvent(ServerCmd::PGT) {};
     };
 } // namespace Shared
 
