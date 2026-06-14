@@ -10,7 +10,7 @@
 namespace Graphics {
     Scene::Scene()
     {
-        this->_camera.Update(CAMERA_THIRD_PERSON);
+        this->_camera.Update(CAMERA_CUSTOM);
     }
     raylib::Camera &Scene::getCamera()
     {
@@ -22,9 +22,9 @@ namespace Graphics {
         return this->_camera;
     }
 
-    void Scene::update()
+    void Scene::update(float dt)
     {
-        this->_camera.Update(CAMERA_THIRD_PERSON);
+        this->_camera.update(dt);
     }
 
     void Scene::draw() const

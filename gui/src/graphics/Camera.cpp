@@ -1,0 +1,87 @@
+/*
+** EPITECH PROJECT, 2026
+** Zappy
+** File description:
+** DESCRIPTION
+*/
+
+#include "Camera.hpp"
+
+namespace Graphics {
+    void Camera::update(float dt)
+    {
+        if (raylib::Mouse::IsButtonDown(MOUSE_RIGHT_BUTTON))
+            return;
+
+        float cameraMoveSpeed = CAMERA_MOVE_SPEED * dt;
+
+        if (IsKeyDown(SPRINT_KEY))
+            cameraMoveSpeed *= SPRINT_SCALE;
+
+        for (const auto &[keys, method] : MOVEMENT_KEYS) {
+            if (IsKeyDown(keys.positive))
+                method(*this, cameraMoveSpeed);
+            if (IsKeyDown(keys.negative))
+                method(*this, -cameraMoveSpeed);
+        }
+    }
+
+    raylib::Vector3 Camera::alignToWorldPlane(raylib::Vector3 vector) const
+    {
+        if (fabsf(this->up.z) > WORLD_AXIS_THRESHOLD)
+            vector.z = 0;
+        else if (fabsf(this->up.x) > WORLD_AXIS_THRESHOLD)
+            vector.x = 0;
+        else
+            vector.y = 0;
+
+        return vector.Normalize();
+    }
+
+    void Camera::moveForward(float distance)
+    {
+        auto forward = alignToWorldPlane(this->getForward());
+
+        raylib::Vector3 delta = forward * distance;
+        this->position = raylib::Vector3(this->position) + delta;
+        this->target = raylib::Vector3(this->target) + delta;
+    }
+
+    void Camera::moveRight(float distance)
+    {
+        auto right = alignToWorldPlane(this->getRight());
+
+        right = right * distance;
+        this->position = raylib::Vector3(this->position) + right;
+        this->target = raylib::Vector3(this->target) + right;
+    }
+
+    void Camera::moveUp(float distance)
+    {
+        raylib::Vector3 up = this->GetUp();
+
+        up *= distance;
+        this->position = raylib::Vector3(this->position) + up;
+        this->target = raylib::Vector3(this->target) + up;
+    }
+
+    raylib::Vector3 Camera::getForward() const
+    {
+        return (raylib::Vector3(this->target) - raylib::Vector3(this->position))
+            .Normalize();
+    }
+
+    raylib::Vector3 Camera::getRight() const
+    {
+        raylib::Vector3 forward = this->getForward();
+        raylib::Vector3 up = this->GetUp();
+
+        return forward.CrossProduct(up).Normalize();
+    }
+
+    const std::unordered_map<Camera::AxisMovementKeys, Camera::MovementMethod> Camera::MOVEMENT_KEYS = {
+        {{KEY_S, KEY_W}, {&Camera::moveForward}},
+        {{KEY_A, KEY_D}, {&Camera::moveRight}},
+        {{KEY_Q, KEY_E}, {&Camera::moveUp}},
+    };
+} // namespace Graphics

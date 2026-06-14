@@ -23,6 +23,7 @@ set(SRCS
         src/graphics/GameObject.cpp
         src/graphics/Transformable3D.cpp
         src/graphics/Scene.cpp
+        src/graphics/Camera.cpp
         src/graphics/primitives/Model.cpp
         src/Window.cpp
         src/GUI.cpp
