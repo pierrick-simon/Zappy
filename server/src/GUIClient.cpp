@@ -265,6 +265,22 @@ namespace Zappy {
             _fd, ServerCmd::EBO.getStr() + " " + std::to_string(egg) + "\n");
     }
 
+    void GUIClient::resourceDroppingEvent(
+        std::size_t id, std::size_t resource) const
+    {
+        Shared::Connect::send(_fd,
+            ServerCmd::PDR.getStr() + " " + std::to_string(id) + " " +
+                std::to_string(resource) + "\n");
+    }
+
+    void GUIClient::resourceCollectingEvent(
+        std::size_t id, std::size_t resource) const
+    {
+        Shared::Connect::send(_fd,
+            ServerCmd::PGT.getStr() + " " + std::to_string(id) + " " +
+                std::to_string(resource) + "\n");
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},

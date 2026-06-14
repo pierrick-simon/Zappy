@@ -48,6 +48,9 @@ namespace Zappy {
         void eggLayingEvent(std::size_t egg, std::size_t player, std::size_t x,
             std::size_t y) const;
         void eggHatchedEvent(std::size_t egg) const;
+        void resourceDroppingEvent(std::size_t id, std::size_t resource) const;
+        void resourceCollectingEvent(
+            std::size_t id, std::size_t resource) const;
 
     private:
         using Command = std::function<void(GUIClient &, std::istringstream &)>;

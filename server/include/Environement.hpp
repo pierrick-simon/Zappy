@@ -104,6 +104,7 @@ namespace Zappy {
         struct Resource {
             float density;
             std::string str;
+            std::size_t nb;
         };
 
         struct Egg {

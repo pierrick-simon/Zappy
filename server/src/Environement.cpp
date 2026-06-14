@@ -202,9 +202,11 @@ namespace Zappy {
         if (resource != _tiles[tile].end() && resource->second > 0) {
             value = true;
             resource->second--;
-            for (auto &[_, client] : _clients.gui)
+            for (auto &[_, client] : _clients.gui) {
+                client.resourceCollectingEvent(id, _resources.at(name).nb);
                 client.tileInfoEvent(
                     find->second.x, find->second.y, _tiles[tile]);
+            }
         }
         return value;
     }
@@ -220,8 +222,10 @@ namespace Zappy {
             resource->second++;
         else
             _tiles[tile].emplace(name, 1);
-        for (auto &[_, client] : _clients.gui)
+        for (auto &[_, client] : _clients.gui) {
+            client.resourceDroppingEvent(id, _resources.at(name).nb);
             client.tileInfoEvent(find->second.x, find->second.y, _tiles[tile]);
+        }
     }
 
     void Environement::setResource(
@@ -480,13 +484,13 @@ namespace Zappy {
 
     const std::unordered_map<ResourceName, Environement::Resource>
         Environement::_resources = {
-            {ResourceName::Food, {0.5, "food"}},
-            {ResourceName::Linemate, {0.3, "linemate"}},
-            {ResourceName::Deraumere, {0.15, "deraumere"}},
-            {ResourceName::Sibur, {0.1, "sibur"}},
-            {ResourceName::Mendiane, {0.1, "mendiane"}},
-            {ResourceName::Phiras, {0.08, "phiras"}},
-            {ResourceName::Thystame, {0.05, "thystame"}},
+            {ResourceName::Food, {0.5, "food", 0}},
+            {ResourceName::Linemate, {0.3, "linemate", 1}},
+            {ResourceName::Deraumere, {0.15, "deraumere", 2}},
+            {ResourceName::Sibur, {0.1, "sibur", 3}},
+            {ResourceName::Mendiane, {0.1, "mendiane", 4}},
+            {ResourceName::Phiras, {0.08, "phiras", 5}},
+            {ResourceName::Thystame, {0.05, "thystame", 6}},
     };
 
     const std::map<Direction, Environement::Dir> Environement::_directions = {
