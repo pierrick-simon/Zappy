@@ -11,6 +11,7 @@
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
 #include "MapSizeEvent.hpp"
+#include "PlayerInventoryEvent.hpp"
 #include "PlayerLevelEvent.hpp"
 #include "PlayerPositionEvent.hpp"
 #include "ServerException.hpp"
@@ -146,12 +147,10 @@ namespace Zappy {
         stream >> hash >> id;
         try {
             auto player = _env.getPlayerInfo(id);
-            std::string msg = ServerCmd::PIN.getStr() + " #";
-            msg += std::to_string(id);
-            for (auto [_, nb] : player.inventory)
-                msg += " " + std::to_string(nb);
-            msg += "\n";
-            Shared::Connect::send(_fd, msg);
+            std::vector<std::size_t> resources(player.inventory.size());
+            std::ranges::copy(
+                std::views::values(player.inventory), resources.begin());
+            send<Shared::PlayerInventoryEvent>(id, resources);
         } catch (PlayerNotFoundException &e) {
         }
     }
