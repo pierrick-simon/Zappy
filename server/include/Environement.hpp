@@ -9,10 +9,14 @@
     #define ENVIRONEMENT_HPP
 
     #include <chrono>
+    #include <concepts>
     #include <map>
+    #include <ranges>
     #include <string>
     #include <unordered_map>
     #include <vector>
+    #include "Client.hpp"
+    #include "GUIEvent.hpp"
 
 namespace Zappy {
     enum class Direction { North, East, South, West };
@@ -51,7 +55,6 @@ namespace Zappy {
         std::map<ResourceName, std::size_t> inventory = {};
     };
 
-    struct Clients;
     class AIClient;
     class GUIClient;
 
@@ -165,6 +168,14 @@ namespace Zappy {
         void handleEjectPlayer(PlayerIter, Direction);
         void handleDestroyEgg(EggIter);
         void checkEnd();
+
+        template<std::derived_from<Shared::GUIEvent> EventType,
+            typename... Args>
+        void sendToGUI(Args &&...args)
+        {
+            EventType event(std::forward<Args>(args)...);
+            event.send(std::views::keys(_clients.gui));
+        }
 
         std::size_t _width;
         std::size_t _height;

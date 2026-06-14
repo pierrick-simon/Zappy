@@ -7,6 +7,7 @@
 
 #include "GUIClient.hpp"
 #include "Connect.hpp"
+#include "Environement.hpp"
 #include "GUICommunication.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
@@ -203,7 +204,7 @@ namespace Zappy {
     {
         _f = f;
         Shared::Connect::send(
-            _fd, ServerCmd::SGT.getStr() + " " + std::to_string(_f) + "\n");
+            _fd, ServerCmd::SST.getStr() + " " + std::to_string(_f) + "\n");
     }
 
     void GUIClient::playerExpulsionEvent(std::size_t id) const

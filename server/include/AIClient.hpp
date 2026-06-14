@@ -16,9 +16,12 @@
     #include <optional>
     #include <queue>
     #include <unordered_map>
-    #include "Environement.hpp"
 
 namespace Zappy {
+
+    class Environement;
+    enum class ResourceName;
+
     class AIClient {
     public:
         AIClient(int fd, std::size_t id, std::string team,

@@ -7,18 +7,19 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SHARED
-        shared
+    shared
 )
 
 set(SRCS
-        src/ArgsParser.cpp
-        src/Connect.cpp
-        src/Help.cpp
-        src/Utils.cpp
+    src/ArgsParser.cpp
+    src/Connect.cpp
+    src/Help.cpp
+    src/Utils.cpp
 )
 
 set(HEADERS
     include/
+    include/gui/
 )
 
 include_directories(${HEADERS})
@@ -47,5 +48,5 @@ if (NOT criterion_FOUND)
 endif ()
 
 add_library(${SHARED} ${SRCS})
-target_include_directories(${SHARED} PRIVATE ${HEADERS})
+target_include_directories(${SHARED} PUBLIC ${HEADERS})
 set_target_properties(${SHARED} PROPERTIES PREFIX "")

@@ -8,6 +8,7 @@
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "Connect.hpp"
+#include "Environement.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
 
