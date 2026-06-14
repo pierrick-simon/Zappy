@@ -32,6 +32,8 @@ namespace Zappy {
             const std::map<ResourceName, std::size_t> &resources) const;
         void playerPositionEvent(std::size_t id, std::size_t x, std::size_t y,
             std::size_t dir) const;
+        void newPlayerEvent(std::size_t id, std::size_t x, std::size_t y,
+            std::size_t dir, const std::string &team) const;
 
     private:
         using Command = std::function<void(GUIClient &, std::istringstream &)>;
@@ -44,6 +46,8 @@ namespace Zappy {
         void tilesInfo(std::istringstream &);
         void teamsName(std::istringstream &);
         void playerPosition(std::istringstream &);
+        void playerLevel(std::istringstream &);
+        void playerInventory(std::istringstream &);
 
         int _fd;
         std::size_t _id;

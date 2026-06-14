@@ -132,6 +132,49 @@ namespace Zappy {
         }
     }
 
+    void GUIClient::newPlayerEvent(std::size_t id, std::size_t x, std::size_t y,
+        std::size_t dir, const std::string &team) const
+    {
+        std::string msg = ServerCmd::PNW.getStr() + " ";
+        msg += std::to_string(id) + " ";
+        msg += std::to_string(x) + " ";
+        msg += std::to_string(y) + " ";
+        msg += std::to_string(dir) + " ";
+        msg += std::to_string(1) + " ";
+        msg += team + "\n";
+        Shared::Connect::send(_fd, msg);
+    }
+
+    void GUIClient::playerLevel(std::istringstream &stream)
+    {
+        std::size_t id;
+        stream >> id;
+        try {
+            auto player = _env.getPlayerInfo(id);
+            std::string msg = ServerCmd::PLV.getStr() + " ";
+            msg += std::to_string(id) + " ";
+            msg += std::to_string(player.level) + "\n";
+            Shared::Connect::send(_fd, msg);
+        } catch (PlayerNotFoundException &e) {
+        }
+    }
+
+    void GUIClient::playerInventory(std::istringstream &stream)
+    {
+        std::size_t id;
+        stream >> id;
+        try {
+            auto player = _env.getPlayerInfo(id);
+            std::string msg = ServerCmd::PIN.getStr() + " ";
+            msg += std::to_string(id);
+            for (auto [_, nb] : player.inventory)
+                msg += " " + std::to_string(nb);
+            msg += "\n";
+            Shared::Connect::send(_fd, msg);
+        } catch (PlayerNotFoundException &e) {
+        }
+    }
+
     const std::unordered_map<std::string, GUIClient::Command>
         GUIClient::COMMANDS = {
             {ClientCmd::MSZ.getStr(), &GUIClient::mapSize},
@@ -139,5 +182,7 @@ namespace Zappy {
             {ClientCmd::MCT.getStr(), &GUIClient::tilesInfo},
             {ClientCmd::TNA.getStr(), &GUIClient::teamsName},
             {ClientCmd::PPO.getStr(), &GUIClient::playerPosition},
+            {ClientCmd::PLV.getStr(), &GUIClient::playerLevel},
+            {ClientCmd::PIN.getStr(), &GUIClient::playerInventory},
     };
 } // namespace Zappy

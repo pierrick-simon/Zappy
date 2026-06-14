@@ -80,11 +80,13 @@ namespace Zappy {
             std::advance(item, std::rand() % _directions.size());
             _players.emplace(
                 id, Player {team, item->first, 1, false, egg.x, egg.y});
-            _eggs.erase(iter);
             Shared::Utils::logMsg(_logFile,
                 "Client[" + std::to_string(id) + "] spawned in (" +
                     std::to_string(egg.x) + "," + std::to_string(egg.y) +
                     "), looking " + _directions.at(item->first).str + ".");
+            for (auto &[_, client] : _clients.gui)
+                client.newPlayerEvent(id, egg.x, egg.y, item->second.nb, team);
+            _eggs.erase(iter);
             return;
         }
         throw EggNotFoundException();
