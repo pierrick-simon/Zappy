@@ -17,6 +17,7 @@ namespace Graphics {
     public:
         // using raylib::Camera::Camera;
         void update(float dt);
+        void updateMouse();
         raylib::Vector3 alignToWorldPlane(raylib::Vector3 vector) const;
         void moveForward(float distance);
         void moveRight(float distance);
@@ -24,10 +25,13 @@ namespace Graphics {
         raylib::Vector3 getForward() const;
         raylib::Vector3 getRight() const;
 
+        void yaw(float angle);
+
         static constexpr auto CAMERA_MOVE_SPEED = 4.0;
         static constexpr KeyboardKey SPRINT_KEY = KEY_LEFT_SHIFT;
         static constexpr auto SPRINT_SCALE = 4;
-        static constexpr float WORLD_AXIS_THRESHOLD = 0.7071f;
+        static constexpr auto WORLD_AXIS_THRESHOLD = 0.7071f;
+        static constexpr auto MOUSE_MOVE_SENSITIVITY = 0.003f;
 
         using MovementMethod = std::function<void(Camera &, float)>;
 

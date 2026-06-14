@@ -11,7 +11,7 @@ namespace Graphics {
     void Camera::update(float dt)
     {
         if (raylib::Mouse::IsButtonDown(MOUSE_RIGHT_BUTTON))
-            return;
+            this->updateMouse();
 
         float cameraMoveSpeed = CAMERA_MOVE_SPEED * dt;
 
@@ -24,6 +24,13 @@ namespace Graphics {
             if (IsKeyDown(keys.negative))
                 method(*this, -cameraMoveSpeed);
         }
+    }
+
+    void Camera::updateMouse()
+    {
+        raylib::Vector2 mousePosDelta = raylib::Mouse::GetDelta();
+
+        this->yaw(-mousePosDelta.x * MOUSE_MOVE_SENSITIVITY);
     }
 
     raylib::Vector3 Camera::alignToWorldPlane(raylib::Vector3 vector) const
@@ -58,7 +65,7 @@ namespace Graphics {
 
     void Camera::moveUp(float distance)
     {
-        raylib::Vector3 up = this->GetUp();
+        raylib::Vector3 up(this->GetUp());
 
         up *= distance;
         this->position = raylib::Vector3(this->position) + up;
@@ -78,10 +85,19 @@ namespace Graphics {
 
         return forward.CrossProduct(up).Normalize();
     }
+    void Camera::yaw(float angle)
+    {
+        raylib::Vector3 up(this->GetUp());
+        auto targetPosition =
+            raylib::Vector3(this->GetTarget()) - this->GetPosition();
+        targetPosition = Vector3RotateByAxisAngle(targetPosition, up, angle);
+        this->position = raylib::Vector3(this->GetTarget()) - targetPosition;
+    }
 
-    const std::unordered_map<Camera::AxisMovementKeys, Camera::MovementMethod> Camera::MOVEMENT_KEYS = {
-        {{KEY_S, KEY_W}, {&Camera::moveForward}},
-        {{KEY_A, KEY_D}, {&Camera::moveRight}},
-        {{KEY_Q, KEY_E}, {&Camera::moveUp}},
+    const std::unordered_map<Camera::AxisMovementKeys, Camera::MovementMethod>
+        Camera::MOVEMENT_KEYS = {
+            {{KEY_S, KEY_W}, {&Camera::moveForward}},
+            {{KEY_A, KEY_D}, {&Camera::moveRight}},
+            {{KEY_Q, KEY_E}, {&Camera::moveUp}},
     };
 } // namespace Graphics
