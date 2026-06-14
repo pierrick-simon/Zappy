@@ -11,6 +11,7 @@
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
 #include "MapSizeEvent.hpp"
+#include "PlayerLevelEvent.hpp"
 #include "PlayerPositionEvent.hpp"
 #include "ServerException.hpp"
 #include "TeamNameEvent.hpp"
@@ -133,10 +134,7 @@ namespace Zappy {
         stream >> hash >> id;
         try {
             auto player = _env.getPlayerInfo(id);
-            std::string msg = ServerCmd::PLV.getStr() + " #";
-            msg += std::to_string(id) + " ";
-            msg += std::to_string(player.level) + "\n";
-            Shared::Connect::send(_fd, msg);
+            send<Shared::PlayerLevelEvent>(id, player.level);
         } catch (PlayerNotFoundException &e) {
         }
     }
