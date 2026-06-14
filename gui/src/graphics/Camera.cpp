@@ -23,7 +23,7 @@ namespace Graphics {
                 method(*this, -cameraMoveSpeed);
         }
 
-        if (raylib::Mouse::IsButtonDown(MOUSE_RIGHT_BUTTON))
+        if (raylib::Mouse::IsButtonDown(ROTATE_BUTTON))
             this->updateMouse();
         this->moveToTarget(-raylib::Mouse::GetWheelMove());
     }
