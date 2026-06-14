@@ -7,6 +7,8 @@
 
 import sys
 import argparse
+
+from src.constants.ai_list import AI_LIST
 from src.connection_handler import ConnectionHandler
 
 
@@ -14,6 +16,8 @@ def handle_args():
     args = argparse.ArgumentParser(description="Zappy AI Client", add_help=False)
     args.add_argument("-p", dest="port", type=int, help="-p port number")
     args.add_argument("-n", dest="name", type=str, help="-n name of the team")
+    args.add_argument("-a", dest="algo", type=str, help="-n name of the ai/algorithm to use",
+                      default="survivor")
     args.add_argument(
         "-h",
         dest="machine",
@@ -31,10 +35,14 @@ def main():
         print("Team cannot be GRAPHIC.", file=sys.stderr)
         return 84
     try:
-        entrypoint: ConnectionHandler = ConnectionHandler(
-            args.name, args.port, args.machine
-        )
-        entrypoint.run()
-    except BaseException as e:
-        print(e)
+        handler = ConnectionHandler(args.name, args.port, args.machine)
+        handler.client.connect()
+        handler.start_session()
+        ai = AI_LIST[args.algo.lower()]
+        ai(handler).run()
+    except BaseException:
         return 84
+
+
+if __name__ == "__main__":
+    sys.exit(main())

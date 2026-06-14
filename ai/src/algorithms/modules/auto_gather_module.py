@@ -35,9 +35,7 @@ for action in plan:
     # send actions to server
 """
 
-from ai.src.algorithms import Constants as constants
-
-aimed_mats = {"food": 3, "linemate": 1}
+from src.constants.resources import RESOURCES, COMMAND_TIME
 
 
 class AutoGatherModule:
@@ -65,6 +63,7 @@ class AutoGatherModule:
             for resource in self._parse_tile(tile_str):
                 if resource in self.remaining:
                     paths.append((tile_idx, resource))
+
         return paths
 
     def _find_best_path(self, paths: list, cur_x: int, cur_y: int, cur_orient: int):
@@ -91,8 +90,10 @@ class AutoGatherModule:
                 cur_x, cur_y, cur_orient, tx, ty
             )
 
-            length = sum(constants.COMMAND_TIME[m] for m in moves) \
-                   + constants.COMMAND_TIME["Take"]
+            length = (
+                    sum(COMMAND_TIME[m] for m in moves)
+                    + COMMAND_TIME["Take"]
+            )
 
             if best_length is None or length < best_length:
                 best_length = length
@@ -133,7 +134,8 @@ class AutoGatherModule:
 
         while paths and self.remaining:
             best, best_length, best_moves, best_state = self._find_best_path(
-                paths, cur_x, cur_y, cur_orient)
+                paths, cur_x, cur_y, cur_orient
+            )
 
             if best is None:
                 break
@@ -178,8 +180,9 @@ class AutoGatherModule:
         return (offset, row)
 
     @staticmethod
-    def _moves_between(cur_x: int, cur_y: int, cur_orient: int,
-                       target_x: int, target_y: int):
+    def _moves_between(
+        cur_x: int, cur_y: int, cur_orient: int, target_x: int, target_y: int
+    ):
         """! Computes the move commands needed to go from
         (cur_x, cur_y) oriented to cur_orient to (target_x, target_y).
 
@@ -224,10 +227,10 @@ class AutoGatherModule:
             return ["Left"]
 
     @staticmethod
-    def _parse_tile(tile_str: str) -> list:
-        """! Extracts resource names from a tile string
+    def _parse_tile(tile) -> list:
+        """! Extracts resource names from a tile
 
-        @param tile_str: tile content
+        @param tile: list of tokens from a parsed Look response
         @return List of resource names found on the tile
         """
-        return [t for t in tile_str.strip().split() if t in constants.RESOURCES]
+        return [t for t in tile if t in RESOURCES]
