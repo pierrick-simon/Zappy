@@ -6,13 +6,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(SHARED_SRCS
-        Connect.cpp
-        Utils.cpp
-        ArgsParser.cpp
-        Help.cpp
-)
-
 list(TRANSFORM SHARED_SRCS PREPEND ${CMAKE_SOURCE_DIR}/shared/src/)
 
 set(MAIN
@@ -56,7 +49,8 @@ if (NOT criterion_FOUND)
     FetchContent_MakeAvailable(criterion)
 endif ()
 
-add_executable(zappy_server ${MAIN} ${SRCS} ${SHARED_SRCS})
+add_executable(zappy_server ${MAIN} ${SRCS})
+target_link_libraries(zappy_server shared)
 
 find_library(CRITERION criterion REQUIRED)
 
@@ -65,11 +59,11 @@ set(SRCS_TESTS
         tests/tests_args.cpp
 )
 
-add_executable(server_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS} ${SHARED_SRCS})
+add_executable(server_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS})
 
 target_compile_options(server_tests_run_bin PRIVATE --coverage)
 target_link_options(server_tests_run_bin PRIVATE --coverage)
-target_link_libraries(server_tests_run_bin criterion)
+target_link_libraries(server_tests_run_bin criterion shared)
 
 add_custom_target(server_tests_run
         COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete
