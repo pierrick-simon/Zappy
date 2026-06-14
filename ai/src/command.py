@@ -5,20 +5,20 @@
 ## commands
 ##
 
-from dataclasses_models  import Command
-from connection_handler import ConnectionHandler
+from src.dataclasses_models import Command
+from src.connection_handler import ConnectionHandler
 from typing import Optional
-from ai.src.algorithms import Constants as constants
 
 
 def send_and_recv(handler: ConnectionHandler, cmd: Command) -> str:
     """! Sends a command and blocks until its response is received
 
-    Pushes the command to the handler queue, then entrypoint()
+        Pushes the command to the handler queue, then entrypoint()
 
-    @param handler: Active ConnectionHandler instance
-    @param cmd: Command to send
-    @return Raw response string from the server
+    from ai.src.algorithms import Constants as constants
+        @param handler: Active ConnectionHandler instance
+        @param cmd: Command to send
+        @return Raw response string from the server
     """
     handler.push_to_server(cmd)
     while cmd.response is None:
@@ -62,11 +62,7 @@ def look(handler: ConnectionHandler) -> list[list[str]]:
     @param handler: ConnectionHandler instance
     @return List of tiles, each tile is a list of string
     """
-    response = send_and_recv(handler, Command("Look"))
-    return [
-        [token for token in tile.strip().split() if token]
-        for tile in response.strip().strip("[]").split(",")
-    ]
+    return send_and_recv(handler, Command("Look"))
 
 
 def inventory(handler: ConnectionHandler) -> dict[str, int]:
@@ -77,16 +73,7 @@ def inventory(handler: ConnectionHandler) -> dict[str, int]:
     @param handler: ConnectionHandler instance
     @return Dict mapping each resource name and its quantity
     """
-    response = send_and_recv(handler, Command("Inventory"))
-    result = {r: 0 for r in constants.RESOURCES}
-    for item in response.strip().strip("[]").split(","):
-        parts = item.strip().split()
-        if len(parts) == 2 and parts[0] in result:
-            try:
-                result[parts[0]] = int(parts[1])
-            except ValueError:
-                pass
-    return result
+    return send_and_recv(handler, Command("Inventory"))
 
 
 def take(handler: ConnectionHandler, resource: str) -> bool:

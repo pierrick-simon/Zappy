@@ -5,8 +5,7 @@
 ## Constants
 ##
 
-RESOURCES = ["food", "linemate", "deraumere", "sibur",
-             "mendiane", "phiras", "thystame"]
+RESOURCES = ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
 
 FOOD_DECAY_TIME_UNITS = 126
 TIME_UNIT = 10
@@ -22,5 +21,5 @@ COMMAND_TIME = {
     "Eject": 7,
     "Take": 7,
     "Set": 7,
-    "Incantation": 300
+    "Incantation": 300,
 }

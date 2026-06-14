@@ -8,6 +8,7 @@
 from dataclasses import dataclass
 from typing import Optional, Any
 
+
 @dataclass
 class Command:
     command: str
@@ -25,4 +26,4 @@ class Event:
     argument: Optional[Any] = None
 
     def __str__(self):
-        return " ".join(filter(None, [self.name, self.argument, self.direction]))
+        return " ".join(filter(None, [self.name, str(self.argument), str(self.direction)]))
