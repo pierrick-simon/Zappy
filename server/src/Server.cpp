@@ -196,7 +196,7 @@ namespace Zappy {
         if (line.has_value()) {
             if (line.value() == GRAPHIC) {
                 _clients.gui.emplace(iter->first,
-                    GUIClient(iter->first, iter->second.first, _logFile));
+                    GUIClient(iter->first, iter->second.first, _logFile, _env));
                 _clients.newClient.erase(iter);
                 return;
             }

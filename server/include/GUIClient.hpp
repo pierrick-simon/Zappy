@@ -13,11 +13,12 @@
     #include <iomanip>
     #include <queue>
     #include <unordered_map>
+    #include "Environement.hpp"
 
 namespace Zappy {
     class GUIClient {
     public:
-        GUIClient(int fd, std::size_t id, std::ofstream &logFile);
+        GUIClient(int fd, std::size_t id, std::ofstream &logFile, Environement &env);
 
         void infoToRead();
 
@@ -26,18 +27,21 @@ namespace Zappy {
             return _id;
         }
 
-        void update();
-
     private:
         using Command = std::function<void(GUIClient &, std::istringstream &)>;
 
         void addCommand();
+        void update();
+
+        void mapSize(std::istringstream &);
 
         int _fd;
         std::size_t _id;
         std::ofstream &_logFile;
         std::string _buffer;
-        std::queue<std::string> _command;
+        std::queue<std::string> _commands;
+        
+        Environement &_env;
 
         static const std::unordered_map<std::string, Command> COMMANDS;
     };
