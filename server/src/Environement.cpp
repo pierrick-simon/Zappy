@@ -14,6 +14,7 @@
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "GUIClient.hpp"
+#include "PlayerPositionEvent.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "TileInfoEvent.hpp"
@@ -167,9 +168,8 @@ namespace Zappy {
         const auto &dir = _directions.at(find->second.dir);
         player.x = circularMove(player.x, dir.x, _width);
         player.y = circularMove(player.y, dir.y, _height);
-        for (auto &[_, client] : _clients.gui)
-            client.playerPositionEvent(
-                id, player.x, player.y, _directions.at(player.dir).nb);
+        sendToGUI<Shared::PlayerPositionEvent>(
+            id, player.x, player.y, _directions.at(player.dir).nb);
     }
 
     void Environement::rotatePlayer(std::size_t id, Rotate rotate)
@@ -190,9 +190,8 @@ namespace Zappy {
             else
                 player.dir = dir++->first;
         }
-        for (auto &[_, client] : _clients.gui)
-            client.playerPositionEvent(
-                id, player.x, player.y, _directions.at(player.dir).nb);
+        sendToGUI<Shared::PlayerPositionEvent>(
+            id, player.x, player.y, _directions.at(player.dir).nb);
     }
 
     bool Environement::takeResource(std::size_t id, ResourceName name)

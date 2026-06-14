@@ -10,6 +10,7 @@
 #include "Connect.hpp"
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
+#include "PlayerPositionEvent.hpp"
 #include "ServerException.hpp"
 #include "TileInfoEvent.hpp"
 #include "Utils.hpp"
@@ -89,7 +90,7 @@ namespace Zappy {
         std::vector<std::size_t> resources(info.resources.size());
         std::ranges::copy(
             std::views::values(info.resources), resources.begin());
-        Shared::TileInfoEvent event(x, y, resources);
+        send<Shared::TileInfoEvent>(x, y, resources);
     }
 
     void GUIClient::tilesInfo(std::istringstream &stream)
@@ -113,17 +114,6 @@ namespace Zappy {
                 _fd, ServerCmd::TNA.getStr() + " " + name + "\n");
     }
 
-    void GUIClient::playerPositionEvent(
-        std::size_t id, std::size_t x, std::size_t y, std::size_t dir) const
-    {
-        std::string msg = ServerCmd::PPO.getStr() + " #";
-        msg += std::to_string(id) + " ";
-        msg += std::to_string(x) + " ";
-        msg += std::to_string(y) + " ";
-        msg += std::to_string(dir) + "\n";
-        Shared::Connect::send(_fd, msg);
-    }
-
     void GUIClient::playerPosition(std::istringstream &stream)
     {
         std::size_t id;
@@ -131,7 +121,8 @@ namespace Zappy {
         stream >> hash >> id;
         try {
             auto player = _env.getPlayerInfo(id);
-            playerPositionEvent(id, player.x, player.y, player.dir);
+            send<Shared::PlayerPositionEvent>(
+                id, player.x, player.y, player.dir);
         } catch (PlayerNotFoundException &e) {
         }
     }

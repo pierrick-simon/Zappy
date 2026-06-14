@@ -168,6 +168,7 @@ namespace Zappy {
         void handleEjectPlayer(PlayerIter, Direction);
         void handleDestroyEgg(EggIter);
         void checkEnd();
+        std::vector<std::size_t> getTileValue(std::size_t tile);
 
         template<std::derived_from<Shared::GUIEvent> EventType,
             typename... Args>
@@ -177,7 +178,6 @@ namespace Zappy {
             event.send(std::vector<int>(std::views::keys(_clients.gui).begin(),
                 std::views::keys(_clients.gui).end()));
         }
-        std::vector<std::size_t> getTileValue(std::size_t tile);
 
         std::size_t _width;
         std::size_t _height;

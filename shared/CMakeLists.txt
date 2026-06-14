@@ -17,6 +17,7 @@ set(SRCS
     src/Utils.cpp
     src/gui/GUIEvent.cpp
     src/gui/TileInfoEvent.cpp
+    src/gui/PlayerPositionEvent.cpp
 )
 
 set(HEADERS

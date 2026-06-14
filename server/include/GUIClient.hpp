@@ -15,6 +15,7 @@
     #include <optional>
     #include <queue>
     #include <unordered_map>
+    #include "GUIEvent.hpp"
 
 namespace Zappy {
 
@@ -35,8 +36,6 @@ namespace Zappy {
 
         [[nodiscard]] std::optional<std::size_t> timeUnitUpdate();
 
-        void playerPositionEvent(std::size_t id, std::size_t x, std::size_t y,
-            std::size_t dir) const;
         void newPlayerEvent(std::size_t id, std::size_t x, std::size_t y,
             std::size_t dir, const std::string &team) const;
         void timeUnitEvent(std::size_t f);
@@ -72,6 +71,14 @@ namespace Zappy {
         void playerInventory(std::istringstream &);
         void getTimeUnit(std::istringstream &) const;
         void setTimeUnit(std::istringstream &);
+
+        template<std::derived_from<Shared::GUIEvent> EventType,
+            typename... Args>
+        void send(Args &&...args)
+        {
+            EventType event(std::forward<Args>(args)...);
+            event.send({_fd});
+        }
 
         int _fd;
         std::size_t _id;
