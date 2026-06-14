@@ -35,8 +35,6 @@ namespace Zappy {
 
         [[nodiscard]] std::optional<std::size_t> timeUnitUpdate();
 
-        void tileInfoEvent(std::size_t x, std::size_t y,
-            const std::map<ResourceName, std::size_t> &resources) const;
         void playerPositionEvent(std::size_t id, std::size_t x, std::size_t y,
             std::size_t dir) const;
         void newPlayerEvent(std::size_t id, std::size_t x, std::size_t y,

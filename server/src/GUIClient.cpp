@@ -6,10 +6,12 @@
 */
 
 #include "GUIClient.hpp"
+#include <ranges>
 #include "Connect.hpp"
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
 #include "ServerException.hpp"
+#include "TileInfoEvent.hpp"
 #include "Utils.hpp"
 
 namespace ServerCmd = Shared::GUICommunication::Server;
@@ -78,23 +80,16 @@ namespace Zappy {
         Shared::Connect::send(_fd, ServerCmd::MSZ.getStr() + x + y + "\n");
     }
 
-    void GUIClient::tileInfoEvent(std::size_t x, std::size_t y,
-        const std::map<ResourceName, std::size_t> &resources) const
-    {
-        std::string msg = ServerCmd::BCT.getStr() + " ";
-        msg += std::to_string(x) + " " + std::to_string(y);
-        for (auto [_, nb] : resources)
-            msg += " " + std::to_string(nb);
-        msg += "\n";
-        Shared::Connect::send(_fd, msg);
-    }
-
     void GUIClient::tileInfo(std::istringstream &stream)
     {
         std::size_t x;
         std::size_t y;
         stream >> x >> y;
-        tileInfoEvent(x, y, _env.getTileInfo(x, y).resources);
+        TileInfo info = _env.getTileInfo(x, y);
+        std::vector<std::size_t> resources(info.resources.size());
+        std::ranges::copy(
+            std::views::values(info.resources), resources.begin());
+        Shared::TileInfoEvent event(x, y, resources);
     }
 
     void GUIClient::tilesInfo(std::istringstream &stream)

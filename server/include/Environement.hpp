@@ -174,8 +174,10 @@ namespace Zappy {
         void sendToGUI(Args &&...args)
         {
             EventType event(std::forward<Args>(args)...);
-            event.send(std::views::keys(_clients.gui));
+            event.send(std::vector<int>(std::views::keys(_clients.gui).begin(),
+                std::views::keys(_clients.gui).end()));
         }
+        std::vector<std::size_t> getTileValue(std::size_t tile);
 
         std::size_t _width;
         std::size_t _height;

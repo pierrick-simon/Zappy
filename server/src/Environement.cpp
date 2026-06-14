@@ -10,11 +10,13 @@
 #include <ctime>
 #include <optional>
 #include <random>
+#include <ranges>
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "GUIClient.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
+#include "TileInfoEvent.hpp"
 #include "Utils.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
@@ -204,11 +206,10 @@ namespace Zappy {
         if (resource != _tiles[tile].end() && resource->second > 0) {
             value = true;
             resource->second--;
-            for (auto &[_, client] : _clients.gui) {
+            sendToGUI<Shared::TileInfoEvent>(
+                find->second.x, find->second.y, getTileValue(tile));
+            for (auto &[_, client] : _clients.gui)
                 client.resourceCollectingEvent(id, _resources.at(name).nb);
-                client.tileInfoEvent(
-                    find->second.x, find->second.y, _tiles[tile]);
-            }
         }
         return value;
     }
@@ -224,10 +225,10 @@ namespace Zappy {
             resource->second++;
         else
             _tiles[tile].emplace(name, 1);
-        for (auto &[_, client] : _clients.gui) {
+        sendToGUI<Shared::TileInfoEvent>(
+            find->second.x, find->second.y, getTileValue(tile));
+        for (auto &[_, client] : _clients.gui)
             client.resourceDroppingEvent(id, _resources.at(name).nb);
-            client.tileInfoEvent(find->second.x, find->second.y, _tiles[tile]);
-        }
     }
 
     void Environement::setResource(
@@ -238,8 +239,8 @@ namespace Zappy {
             resource->second += nb;
         else
             _tiles[tile].emplace(name, nb);
-        for (auto &[_, client] : _clients.gui)
-            client.tileInfoEvent(tile % _width, tile / _width, _tiles[tile]);
+        sendToGUI<Shared::TileInfoEvent>(
+            tile % _width, tile / _width, getTileValue(tile));
     }
 
     std::vector<std::size_t> Environement::checkElevation(
@@ -315,8 +316,7 @@ namespace Zappy {
                         std::to_string(find->second.level) + ".");
             }
         }
-        for (auto &[_, client] : _clients.gui)
-            client.tileInfoEvent(x, y, _tiles[tile]);
+        sendToGUI<Shared::TileInfoEvent>(x, y, getTileValue(tile));
         if (level + 1 == MAX_LEVEL)
             checkEnd();
     }
@@ -509,6 +509,13 @@ namespace Zappy {
             std::back_inserter(names),
             [](const auto &pair) { return pair.first; });
         return names;
+    }
+
+    std::vector<std::size_t> Environement::getTileValue(std::size_t tile)
+    {
+        std::vector<std::size_t> value(_tiles[tile].size());
+        std::ranges::copy(std::views::values(_tiles[tile]), value.begin());
+        return value;
     }
 
     const std::unordered_map<ResourceName, Environement::Resource>

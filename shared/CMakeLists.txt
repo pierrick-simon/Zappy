@@ -15,6 +15,8 @@ set(SRCS
     src/Connect.cpp
     src/Help.cpp
     src/Utils.cpp
+    src/gui/GUIEvent.cpp
+    src/gui/TileInfoEvent.cpp
 )
 
 set(HEADERS
