@@ -12,11 +12,7 @@
 namespace Graphics {
     void Camera::update(float dt)
     {
-        if (raylib::Mouse::IsButtonDown(MOUSE_RIGHT_BUTTON))
-            this->updateMouse();
-
         float cameraMoveSpeed = CAMERA_MOVE_SPEED * dt;
-
         if (IsKeyDown(SPRINT_KEY))
             cameraMoveSpeed *= SPRINT_SCALE;
 
@@ -26,6 +22,10 @@ namespace Graphics {
             if (IsKeyDown(keys.negative))
                 method(*this, -cameraMoveSpeed);
         }
+
+        if (raylib::Mouse::IsButtonDown(MOUSE_RIGHT_BUTTON))
+            this->updateMouse();
+        this->moveToTarget(-raylib::Mouse::GetWheelMove());
     }
 
     void Camera::updateMouse()
@@ -73,6 +73,19 @@ namespace Graphics {
         up *= distance;
         this->position = raylib::Vector3(this->position) + up;
         this->target = raylib::Vector3(this->target) + up;
+    }
+
+    void Camera::moveToTarget(float delta)
+    {
+        float distance =
+            raylib::Vector3(this->GetPosition()).Distance(this->GetTarget());
+
+        distance += delta;
+        distance = std::max(distance, 0.001f);
+
+        auto forward = this->getForward();
+        this->SetPosition(
+            raylib::Vector3(this->GetTarget()) + forward * -distance);
     }
 
     raylib::Vector3 Camera::getForward() const

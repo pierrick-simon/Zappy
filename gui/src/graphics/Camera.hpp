@@ -22,6 +22,7 @@ namespace Graphics {
         void moveForward(float distance);
         void moveRight(float distance);
         void moveUp(float distance);
+        void moveToTarget(float delta);
         raylib::Vector3 getForward() const;
         raylib::Vector3 getRight() const;
 
