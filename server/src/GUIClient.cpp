@@ -179,16 +179,6 @@ namespace Zappy {
                 "\n");
     }
 
-    void GUIClient::endIncantationEvent(
-        std::size_t x, std::size_t y, bool result) const
-    {
-        std::string msg = ServerCmd::PIE.getStr() + " ";
-        msg += std::to_string(x) + " ";
-        msg += std::to_string(y) + " ";
-        msg += std::to_string(result) + "\n";
-        Shared::Connect::send(_fd, msg);
-    }
-
     void GUIClient::eggLayingEvent(
         std::size_t egg, std::size_t player, std::size_t x, std::size_t y) const
     {

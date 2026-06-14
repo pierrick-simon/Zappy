@@ -379,8 +379,7 @@ namespace Zappy {
             } else
                 failElevation(start);
         }
-        for (auto &[_, client] : _clients.gui)
-            client.endIncantationEvent(x, y, result);
+        sendToGUI<Shared::EndIncantationEvent>(x, y, result);
     }
 
     void Environement::handleEjectPlayer(PlayerIter iter, Direction dir)
