@@ -49,6 +49,7 @@ class BackpackModule:
         @param action: The action took as string (example: "Forward")
         @return None
         """
+        print(action)
         if action.startswith("Take"):
             self.food_decay += COMMAND_TIME["Take"]
             self.inventory[action.split(' ')[1]] += 1
