@@ -5,9 +5,11 @@
 ## AI list
 ##
 
+from src.algorithms.common import CommonAI
 from src.algorithms.Survivor import SurvivalAI
 
 
 AI_LIST = {
-    "survivor": SurvivalAI
+    "survivor": SurvivalAI,
+    "common": CommonAI
 }

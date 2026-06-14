@@ -38,7 +38,7 @@ class SurvivalAI:
         @return An instance of SurvivalAI
         """
         self._handler = handler
-        self._backpack = BackpackModule()
+        self._backpack = BackpackModule(handler)
         self._turn = 0
 
     def run(self) -> None:

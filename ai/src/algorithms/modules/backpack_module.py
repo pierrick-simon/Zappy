@@ -21,15 +21,17 @@ while AI.alive:
     backpack.tick(action)
 """
 
-from src.constants.resources import COMMAND_TIME, FOOD_DECAY_TIME_UNITS, TIME_UNIT
+from src.connection_handler import ConnectionHandler
+from src.constants.resources import COMMAND_TIME, FOOD_DECAY_TIME_UNITS
+from src.constants.constants import COMMAND_FACTORY
 
 class BackpackModule:
-    def __init__(self) -> None:
+    def __init__(self, handler: ConnectionHandler) -> None:
         """! Initialisation of the backpack module.
 
         @return  An instance of the backpack module.
-
         """
+        self._handler = handler
         self.inventory = {
             "food": 10,
             "linemate": 0,
@@ -55,9 +57,9 @@ class BackpackModule:
 
         @return None
         """
-        if self.food_decay >= FOOD_DECAY_TIME_UNITS * TIME_UNIT:
+        if self.food_decay >= FOOD_DECAY_TIME_UNITS:
             self.inventory["food"] -= 1
-            self.food_decay -= FOOD_DECAY_TIME_UNITS * TIME_UNIT
+            self.food_decay -= FOOD_DECAY_TIME_UNITS
 
     def add_to_inventory(self, objects: list) -> None:
         """! Function to add the objects to the inventory.
@@ -76,3 +78,12 @@ class BackpackModule:
         """
         for o in objects:
             self.inventory[o] -= 1
+
+    def refresh_inventory(self) -> None:
+        """! Function to refresh the inventory with real informations from server.
+
+        @return None
+        """
+        self.inventory = COMMAND_FACTORY["Inventory"](self._handler)
+        self.food_decay += COMMAND_TIME["Inventory"]
+        pass

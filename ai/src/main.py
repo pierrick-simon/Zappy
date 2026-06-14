@@ -40,7 +40,9 @@ def main():
         handler.start_session()
         ai = AI_LIST[args.algo.lower()]
         ai(handler).run()
-    except BaseException:
+    except BaseException as e:
+        import traceback
+        traceback.print_exc()
         return 84
 
 

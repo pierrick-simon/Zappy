@@ -23,8 +23,9 @@ example:
     ai.run()
 """
 
-from algorithms.modules.backpack_module import BackpackModule
-from connection_handler import ConnectionHandler
+from src.constants.constants import COMMAND_FACTORY
+from src.algorithms.modules.backpack_module import BackpackModule
+from src.connection_handler import ConnectionHandler
 
 
 class CommonAI:
@@ -35,7 +36,7 @@ class CommonAI:
         @return An instance of CommonAI
         """
         self._handler = handler
-        self._backpack = BackpackModule()
+        self._backpack = BackpackModule(handler)
         self._turn = 0
 
     def run(self) -> None:
@@ -45,9 +46,11 @@ class CommonAI:
 
         @return None
         """
-        while self._backpack.inventory["food"] > 0:
+        while True:
             self._tick()
 
 
     def _tick(self) -> None:
+        COMMAND_FACTORY["Forward"](self._handler)
+        self._backpack.tick("Forward")
         pass
