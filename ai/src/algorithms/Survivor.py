@@ -24,9 +24,11 @@ example:
 
 import random
 
+from src.algorithms.modules import auto_gather_module as ag
 from src.connection_handler import ConnectionHandler
 from src.algorithms.modules.backpack_module import BackpackModule
-from src.command import forward, right, left, look, take
+from src.command import forward, right, left, look
+from src.algorithms.Constants import COMMAND_FACTORY
 
 FOOD_LOW = 20
 
@@ -53,41 +55,35 @@ class SurvivalAI:
             self._tick()
 
     def _tick(self) -> None:
-        """! Executes one tick
-
-        @return None
-        """
         tiles = self._exec(look)
-        food_tile = next((i for i, t in enumerate(tiles) if "food" in t), None)
 
-        if food_tile is not None:
-            self._go_and_take(food_tile)
-            self._turn = 0
-        else:
+        food_count = sum(t.count("food") for t in tiles)
+
+        if food_count == 0:
             self._explore()
             self._turn += 1
+            return
 
-    def _go_and_take(self, tile_idx: int) -> None:
-        """! Navigates to a tile and picks up food
+        auto_gather = ag.AutoGatherModule()
+        plan = auto_gather.auto_gather(
+            obs=tiles,
+            aimed_materials={"food": food_count},
+            max_time=1000
+        )
 
-        @param tile_idx: Tile with the food
-        @return None
-        """
-        row = 0
-        while (row + 1) ** 2 <= tile_idx:
-            row += 1
+        for action in plan:
+            parts = action.split()
+            fn = COMMAND_FACTORY[parts[0]]
+            result = self._exec(fn, *parts[1:])
 
-        offset = (tile_idx - row * row) - row
+            if parts[0] == "Take" and result:
+                self._backpack.add_to_inventory([parts[1]])
 
-        for _ in range(row):
-            self._exec(forward)
-
-        for _ in range(abs(offset)):
-            self._exec(right if offset > 0 else left)
-            self._exec(forward)
-
-        if self._exec(take, "food"):
-            self._backpack.add_to_inventory(["food"])
+        if not auto_gather.is_complete():
+            self._explore()
+            self._turn += 1
+        else:
+            self._turn = 0
 
     def _explore(self) -> None:
         """! Moves forward and randomly turns to avoid looping
@@ -96,7 +92,7 @@ class SurvivalAI:
         """
         self._exec(forward)
         if self._turn > 0 and self._turn % random.randint(3, 10) == 0:
-            self._exec(right)
+            self._exec(random.choice([right, left]))
 
     def _exec(self, fn, *args):
         """! Calls a command function and ticks the backpack

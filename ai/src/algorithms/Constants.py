@@ -5,11 +5,31 @@
 ## Constants
 ##
 
+from src.command import (forward, right, left, look, take, set_down, inventory, broadcast,
+                         fork, eject, incantation, connect_nbr)
+
 RESOURCES = ["food", "linemate", "deraumere", "sibur",
              "mendiane", "phiras", "thystame"]
 
+NB_TILES_OBS = 16
+
 FOOD_DECAY_TIME_UNITS = 126
 TIME_UNIT = 10
+
+COMMAND_FACTORY = {
+    "Forward": forward,
+    "Right": right,
+    "Left": left,
+    "Look": look,
+    "Take": take,
+    "Set": set_down,
+    "Inventory": inventory,
+    "Broadcast": broadcast,
+    "Connect_nbr": connect_nbr,
+    "Fork": fork,
+    "Eject": eject,
+    "Incantation": incantation,
+}
 
 COMMAND_TIME = {
     "Forward": 7,
