@@ -102,6 +102,8 @@ namespace Zappy {
         if (find != _players.end()) {
             for (auto [name, nb] : iter->second.getInventory())
                 setResource(tile, name, nb);
+            for (auto &[_, client] : _clients.gui)
+                client.playerDeathEvent(find->first);
             _players.erase(find);
         }
     }
