@@ -21,8 +21,7 @@ while AI.alive:
     backpack.tick(action)
 """
 
-from src.algorithms import Constants as constants
-
+from src.constants.resources import *
 
 class BackpackModule:
     def __init__(self) -> None:
@@ -48,7 +47,7 @@ class BackpackModule:
         @param action: The action took as string (example: "Forward")
         @return None
         """
-        self.food_decay += constants.COMMAND_TIME[action]
+        self.food_decay += COMMAND_TIME[action]
         self._update()
 
     def _update(self) -> None:
@@ -56,9 +55,9 @@ class BackpackModule:
 
         @return None
         """
-        if self.food_decay >= constants.FOOD_DECAY_TIME_UNITS * constants.TIME_UNIT:
+        if self.food_decay >= FOOD_DECAY_TIME_UNITS * TIME_UNIT:
             self.inventory["food"] -= 1
-            self.food_decay -= constants.FOOD_DECAY_TIME_UNITS * constants.TIME_UNIT
+            self.food_decay -= FOOD_DECAY_TIME_UNITS * TIME_UNIT
 
     def add_to_inventory(self, objects: list) -> None:
         """! Function to add the objects to the inventory.

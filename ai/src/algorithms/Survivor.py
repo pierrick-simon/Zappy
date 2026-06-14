@@ -28,7 +28,7 @@ from src.algorithms.modules import auto_gather_module as ag
 from src.connection_handler import ConnectionHandler
 from src.algorithms.modules.backpack_module import BackpackModule
 from src.command import forward, right, left, look
-from src.algorithms.Constants import COMMAND_FACTORY
+from src.constants.constants import COMMAND_FACTORY
 
 FOOD_LOW = 20
 

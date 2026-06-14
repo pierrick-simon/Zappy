@@ -35,9 +35,7 @@ for action in plan:
     # send actions to server
 """
 
-from src.algorithms import Constants as constants
-
-aimed_mats = {"food": 3, "linemate": 1}
+from src.constants.resources import *
 
 
 class AutoGatherModule:
@@ -93,8 +91,8 @@ class AutoGatherModule:
             )
 
             length = (
-                sum(constants.COMMAND_TIME[m] for m in moves)
-                + constants.COMMAND_TIME["Take"]
+                    sum(COMMAND_TIME[m] for m in moves)
+                    + COMMAND_TIME["Take"]
             )
 
             if best_length is None or length < best_length:
@@ -235,4 +233,4 @@ class AutoGatherModule:
         @param tile: list of tokens from a parsed Look response
         @return List of resource names found on the tile
         """
-        return [t for t in tile if t in constants.RESOURCES]
+        return [t for t in tile if t in RESOURCES]
