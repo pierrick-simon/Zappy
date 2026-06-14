@@ -26,4 +26,6 @@ class Event:
     argument: Optional[Any] = None
 
     def __str__(self):
-        return " ".join(filter(None, [self.name, str(self.argument), str(self.direction)]))
+        return " ".join(
+            filter(None, [self.name, str(self.argument), str(self.direction)])
+        )

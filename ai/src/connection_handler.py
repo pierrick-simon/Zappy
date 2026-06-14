@@ -7,7 +7,6 @@
 
 import sys
 import re
-import ast
 from src.client import Client
 from typing import Optional, Any
 from src.algorithms.Constants import RESOURCES
@@ -168,13 +167,13 @@ class ConnectionHandler:
         if len(self.commands) < self.max_command:
             self.commands.append(new_command)
             self.client.send(str(self.commands[-1]))
-    
+
     def display_commands(self):
         print("Commandes: ")
 
         for command in self.commands:
             print(f"[{command} | Response: {command.response}]")
-    
+
     def display_events(self):
         print("Events: ")
 

@@ -8,7 +8,6 @@
 import sys
 import argparse
 from src.connection_handler import ConnectionHandler
-from src.command import *
 
 
 def handle_args():
