@@ -234,8 +234,7 @@ namespace Zappy {
 
     void AIClient::broadcast(std::istringstream &stream)
     {
-        std::string text;
-        stream >> text;
+        std::string text = stream.str();
         _env.broadcast(_id, text);
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }

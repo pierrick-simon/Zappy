@@ -432,8 +432,7 @@ namespace Zappy {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
-        for (auto &[_, client] : _clients.gui)
-            client.broadcastEvent(id, text);
+        sendToGUI<Shared::BroadcastEvent>(id, text);
     }
 
     std::size_t Environement::getConnectNbr(std::size_t id) const

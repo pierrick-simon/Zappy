@@ -171,14 +171,6 @@ namespace Zappy {
             _fd, ServerCmd::SST.getStr() + " " + std::to_string(_f) + "\n");
     }
 
-    void GUIClient::broadcastEvent(
-        std::size_t id, const std::string &text) const
-    {
-        Shared::Connect::send(_fd,
-            ServerCmd::PBC.getStr() + " #" + std::to_string(id) + " " + text +
-                "\n");
-    }
-
     void GUIClient::eggLayingEvent(
         std::size_t egg, std::size_t player, std::size_t x, std::size_t y) const
     {

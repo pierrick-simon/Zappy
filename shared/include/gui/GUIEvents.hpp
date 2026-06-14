@@ -8,6 +8,7 @@
 #ifndef GUIEVENTS_HPP
     #define GUIEVENTS_HPP
 
+    #include "BroadcastEvent.hpp"
     #include "EndIncantationEvent.hpp"
     #include "GUICommunication.hpp"
     #include "IdEvent.hpp"
