@@ -126,19 +126,6 @@ namespace Zappy {
         }
     }
 
-    void GUIClient::newPlayerEvent(std::size_t id, std::size_t x, std::size_t y,
-        std::size_t dir, const std::string &team) const
-    {
-        std::string msg = ServerCmd::PNW.getStr() + " #";
-        msg += std::to_string(id) + " ";
-        msg += std::to_string(x) + " ";
-        msg += std::to_string(y) + " ";
-        msg += std::to_string(dir) + " ";
-        msg += std::to_string(1) + " ";
-        msg += team + "\n";
-        Shared::Connect::send(_fd, msg);
-    }
-
     void GUIClient::playerLevel(std::istringstream &stream)
     {
         std::size_t id;

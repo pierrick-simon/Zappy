@@ -14,6 +14,7 @@
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "GUIClient.hpp"
+#include "NewPlayerEvent.hpp"
 #include "PlayerPositionEvent.hpp"
 #include "Server.hpp"
 #include "ServerException.hpp"
@@ -87,10 +88,10 @@ namespace Zappy {
                 "Client[" + std::to_string(id) + "] spawned in (" +
                     std::to_string(egg.x) + "," + std::to_string(egg.y) +
                     "), looking " + _directions.at(item->first).str + ".");
-            for (auto &[_, client] : _clients.gui) {
+            sendToGUI<Shared::NewPlayerEvent>(
+                id, egg.x, egg.y, item->second.nb, team);
+            for (auto &[_, client] : _clients.gui)
                 client.eggHatchedEvent(iter->first);
-                client.newPlayerEvent(id, egg.x, egg.y, item->second.nb, team);
-            }
             _eggs.erase(iter);
             return;
         }

@@ -20,6 +20,7 @@ set(SRCS
     src/gui/PlayerPositionEvent.cpp
     src/gui/MapSizeEvent.cpp
     src/gui/TeamNameEvent.cpp
+    src/gui/NewPlayerEvent.cpp
 )
 
 set(HEADERS
