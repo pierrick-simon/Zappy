@@ -10,7 +10,6 @@ import random
 import argparse
 
 from algorithms import Constants
-from src.algorithms.Survivor import SurvivalAI
 from src.connection_handler import ConnectionHandler
 
 
