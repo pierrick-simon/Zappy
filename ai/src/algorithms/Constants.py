@@ -49,3 +49,4 @@ COMMAND_TIME = {
 AI_LIST = {
     SurvivalAI
 }
+

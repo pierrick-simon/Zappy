@@ -7,17 +7,17 @@
 
 import socket
 
+
 class Client:
     name: str
     port: int
     host: str
     socket_client: socket.socket
 
-    def __init__(self, name: str, port: int, host: str) -> None:
+    def __init__(self, name: str, port: str, host: str) -> None:
         self.name = name
         self.port = port
         self.host = host
-        self._buffer = b""
 
     def connect(self) -> None:
         self.socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,10 +27,10 @@ class Client:
         self.socket_client.send(bytes(message + "\n", "utf-8"))
 
     def recv(self) -> str:
-        while b"\n" not in self._buffer:
-            self._buffer += self.socket_client.recv(1024)
-        line, _, self._buffer = self._buffer.partition(b"\n")
-        return line.decode().strip()
+        data = b""
+        while not data.endswith(b"\n"):
+            data += self.socket_client.recv(1)
+        return data.decode().strip()
 
     def disconnect(self) -> None:
         self.socket_client.close()

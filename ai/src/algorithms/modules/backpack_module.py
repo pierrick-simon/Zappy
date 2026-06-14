@@ -23,6 +23,7 @@ while AI.alive:
 
 from src.algorithms import Constants as constants
 
+
 class BackpackModule:
     def __init__(self) -> None:
         """! Initialisation of the backpack module.
@@ -30,8 +31,15 @@ class BackpackModule:
         @return  An instance of the backpack module.
 
         """
-        self.inventory = {"food": 10, "linemate": 0, "deraumere": 0, "sibur": 0,
-                          "mendiane": 0, "phiras": 0, "thystame": 0}
+        self.inventory = {
+            "food": 10,
+            "linemate": 0,
+            "deraumere": 0,
+            "sibur": 0,
+            "mendiane": 0,
+            "phiras": 0,
+            "thystame": 0,
+        }
         self.food_decay = 0
 
     def tick(self, action: str) -> None:
