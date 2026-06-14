@@ -33,7 +33,7 @@ class BackpackModule:
         """
         self._handler = handler
         self.inventory = {
-            "food": 10,
+            "food": 9,
             "linemate": 0,
             "deraumere": 0,
             "sibur": 0,
