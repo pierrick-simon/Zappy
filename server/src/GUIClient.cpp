@@ -13,6 +13,7 @@
 #include "MapSizeEvent.hpp"
 #include "PlayerPositionEvent.hpp"
 #include "ServerException.hpp"
+#include "TeamNameEvent.hpp"
 #include "TileInfoEvent.hpp"
 #include "Utils.hpp"
 
@@ -109,8 +110,7 @@ namespace Zappy {
     {
         auto names = _env.getTeamsName();
         for (const auto &name : names)
-            Shared::Connect::send(
-                _fd, ServerCmd::TNA.getStr() + " " + name + "\n");
+            send<Shared::TeamNameEvent>(name);
     }
 
     void GUIClient::playerPosition(std::istringstream &stream)

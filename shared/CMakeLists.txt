@@ -19,6 +19,7 @@ set(SRCS
     src/gui/TileInfoEvent.cpp
     src/gui/PlayerPositionEvent.cpp
     src/gui/MapSizeEvent.cpp
+    src/gui/TeamNameEvent.cpp
 )
 
 set(HEADERS
