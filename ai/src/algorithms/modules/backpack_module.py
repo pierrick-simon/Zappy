@@ -49,7 +49,16 @@ class BackpackModule:
         @param action: The action took as string (example: "Forward")
         @return None
         """
-        self.food_decay += COMMAND_TIME[action]
+        if action.startswith("Take"):
+            self.food_decay += COMMAND_TIME["Take"]
+            self.inventory[action.split(' ')[1]] += 1
+        elif action.startswith("Set"):
+            self.food_decay += COMMAND_TIME["Set"]
+            self.inventory[action.split(' ')[1]] += 1
+        elif action.startswith("Broadcast"):
+            self.food_decay += COMMAND_TIME["Broadcast"]
+        else:
+            self.food_decay += COMMAND_TIME[action]
         self._update()
 
     def _update(self) -> None:
