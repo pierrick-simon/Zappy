@@ -10,6 +10,7 @@
 #include "Connect.hpp"
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
+#include "MapSizeEvent.hpp"
 #include "PlayerPositionEvent.hpp"
 #include "ServerException.hpp"
 #include "TileInfoEvent.hpp"
@@ -76,9 +77,7 @@ namespace Zappy {
 
     void GUIClient::mapSize(std::istringstream &stream)
     {
-        auto x = " " + std::to_string(_env.getWidth());
-        auto y = " " + std::to_string(_env.getHeight());
-        Shared::Connect::send(_fd, ServerCmd::MSZ.getStr() + x + y + "\n");
+        send<Shared::MapSizeEvent>(_env.getWidth(), _env.getHeight());
     }
 
     void GUIClient::tileInfo(std::istringstream &stream)
