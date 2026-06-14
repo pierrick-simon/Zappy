@@ -179,19 +179,6 @@ namespace Zappy {
                 "\n");
     }
 
-    void GUIClient::startIncantationEvent(std::size_t x, std::size_t y,
-        std::size_t level, const std::vector<std::size_t> &players) const
-    {
-        std::string msg = ServerCmd::PIC.getStr() + " ";
-        msg += std::to_string(x) + " ";
-        msg += std::to_string(y) + " ";
-        msg += std::to_string(level);
-        for (auto player : players)
-            msg += " #" + std::to_string(player);
-        msg += "\n";
-        Shared::Connect::send(_fd, msg);
-    }
-
     void GUIClient::endIncantationEvent(
         std::size_t x, std::size_t y, bool result) const
     {

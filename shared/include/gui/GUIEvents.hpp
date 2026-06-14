@@ -15,6 +15,7 @@
     #include "PlayerInventoryEvent.hpp"
     #include "PlayerLevelEvent.hpp"
     #include "PlayerPositionEvent.hpp"
+    #include "StartIncantationEvent.hpp"
     #include "TeamNameEvent.hpp"
     #include "TileInfoEvent.hpp"
 

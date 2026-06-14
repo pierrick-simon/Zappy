@@ -351,9 +351,8 @@ namespace Zappy {
                 find->second.y,
                 find->second.level,
                 list});
-            for (auto &[_, client] : _clients.gui)
-                client.startIncantationEvent(
-                    find->second.x, find->second.y, find->second.level, list);
+            sendToGUI<Shared::StartIncantationEvent>(
+                find->second.x, find->second.y, find->second.level, list);
         }
         return value;
     }

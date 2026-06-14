@@ -24,6 +24,7 @@ set(SRCS
     src/gui/PlayerLevelEvent.cpp
     src/gui/PlayerInventoryEvent.cpp
     src/gui/IdEvent.cpp
+    src/gui/StartIncantationEvent.cpp
 )
 
 set(HEADERS

@@ -38,8 +38,6 @@ namespace Zappy {
 
         void timeUnitEvent(std::size_t f);
         void broadcastEvent(std::size_t id, const std::string &text) const;
-        void startIncantationEvent(std::size_t x, std::size_t y,
-            std::size_t level, const std::vector<std::size_t> &players) const;
         void endIncantationEvent(
             std::size_t x, std::size_t y, bool result) const;
         void eggLayingEvent(std::size_t egg, std::size_t player, std::size_t x,
