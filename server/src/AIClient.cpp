@@ -29,13 +29,13 @@ namespace Zappy {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(id) + "] joined the " + _team +
                 " team.");
-        _inventory.emplace(ResourceName::Food, START_FOOD);
-        _inventory.emplace(ResourceName::Linemate, 0);
-        _inventory.emplace(ResourceName::Deraumere, 0);
-        _inventory.emplace(ResourceName::Sibur, 0);
-        _inventory.emplace(ResourceName::Mendiane, 0);
-        _inventory.emplace(ResourceName::Phiras, 0);
-        _inventory.emplace(ResourceName::Thystame, 0);
+        _inventory.emplace(Info::ResourceName::Food, START_FOOD);
+        _inventory.emplace(Info::ResourceName::Linemate, 0);
+        _inventory.emplace(Info::ResourceName::Deraumere, 0);
+        _inventory.emplace(Info::ResourceName::Sibur, 0);
+        _inventory.emplace(Info::ResourceName::Mendiane, 0);
+        _inventory.emplace(Info::ResourceName::Phiras, 0);
+        _inventory.emplace(Info::ResourceName::Thystame, 0);
         Shared::Connect::send(
             _fd, std::to_string(_env.getConnectNbr(_id)) + "\n");
         Shared::Connect::send(_fd,
@@ -81,18 +81,18 @@ namespace Zappy {
         auto timeout = _sleep;
         if (_live < timeout)
             timeout = _live;
-        return _sleep;
+        return timeout;
     }
 
     void AIClient::checkAlive()
     {
-        if (_inventory.at(ResourceName::Food) == 0) {
+        if (_inventory.at(Info::ResourceName::Food) == 0) {
             Shared::Connect::send(_fd, ServerCmd::DEAD.getStr() + "\n");
             Shared::Utils::logMsg(
                 _logFile, "Client[" + std::to_string(_id) + "] Die.");
             _alive = false;
         } else {
-            _inventory.at(ResourceName::Food)--;
+            _inventory.at(Info::ResourceName::Food)--;
             Shared::Utils::logMsg(
                 _logFile, "Client[" + std::to_string(_id) + "] eat a food.");
             _live = CYCLE_TO_DIE;
@@ -179,7 +179,7 @@ namespace Zappy {
         for (auto [name, nb] : _inventory) {
             if (!first)
                 msg += ",";
-            msg += Environement::getResourceName(name);
+            msg += Info::getResourceName(name);
             msg += " " + std::to_string(nb);
             first = false;
         }
@@ -213,9 +213,9 @@ namespace Zappy {
         std::string resource;
         stream >> resource;
         try {
-            auto type = Environement::getResource(resource);
+            auto type = Info::getResource(resource);
             value = _env.takeResource(_id, type);
-        } catch (ResourceNotFoundException &_) {
+        } catch (Info::ResourceNotFoundException &_) {
             value = false;
         }
         if (value)
@@ -230,14 +230,14 @@ namespace Zappy {
         std::string resource;
         stream >> resource;
         try {
-            auto type = Environement::getResource(resource);
+            auto type = Info::getResource(resource);
             auto find = _inventory.find(type);
             if (find != _inventory.end() && find->second != 0) {
                 find->second--;
                 _env.setResource(_id, type);
             } else
                 value = false;
-        } catch (ResourceNotFoundException &_) {
+        } catch (Info::ResourceNotFoundException &_) {
             value = false;
         }
         if (value)

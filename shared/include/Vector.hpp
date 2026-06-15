@@ -19,7 +19,8 @@ namespace Shared {
 
             Vector2(const T &x, const T &y): x(x), y(y) {};
 
-            T &operator+=(const Vector2 &v) { x += v.x; y += v.y; return *this };
+            Vector2<T> &operator+=(const Vector2 &v) { x += v.x; y += v.y; return *this; };
+            Vector2<T> operator*(const T &v) { return Vector2<T>(x * v, y * v); };
 
     };
 
