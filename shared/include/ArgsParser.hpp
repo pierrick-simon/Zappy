@@ -81,7 +81,7 @@ namespace Parser {
             const std::string &flag, T fallBack)
         {
             auto item = get<T>(args, flag);
-            auto ret = fallBack;
+            auto &ret = fallBack;
             if (item.has_value())
                 ret = item.value();
             return ret;
