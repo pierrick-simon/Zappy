@@ -10,6 +10,7 @@ import argparse
 
 from src.constants.ai_list import AI_LIST
 from src.connection_handler import ConnectionHandler
+from src.command import broadcast
 
 
 def handle_args():
@@ -38,8 +39,9 @@ def main():
         handler = ConnectionHandler(args.name, args.port, args.machine)
         handler.client.connect()
         handler.start_session()
-        ai = AI_LIST[args.algo.lower()]
-        ai(handler).run()
+        broadcast(handler, "OK")
+        #ai = AI_LIST[args.algo.lower()]
+        #ai(handler).run()
     except BaseException as e:
         print(e, file=sys.stderr)
         return 84
