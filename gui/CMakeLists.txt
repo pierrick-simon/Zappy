@@ -26,6 +26,7 @@ set(SRCS
         src/elements/Resource.cpp
         src/elements/Tile.cpp
         src/elements/Map.cpp
+        src/elements/Elevation.cpp
 )
 
 set(HEADERS
