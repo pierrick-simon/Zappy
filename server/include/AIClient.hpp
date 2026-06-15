@@ -16,11 +16,11 @@
     #include <optional>
     #include <queue>
     #include <unordered_map>
+    #include "Info.hpp"
 
 namespace Zappy {
 
     class Environement;
-    enum class ResourceName;
 
     class AIClient {
     public:
@@ -39,7 +39,8 @@ namespace Zappy {
             return _alive;
         }
 
-        [[nodiscard]] std::map<ResourceName, std::size_t> getInventory() const
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getInventory() const
         {
             return _inventory;
         }
@@ -94,7 +95,7 @@ namespace Zappy {
         std::optional<SelectCommand> _command;
         bool _elevate = false;
 
-        std::map<ResourceName, std::size_t> _inventory;
+        std::map<Info::ResourceName, std::size_t> _inventory;
         std::vector<std::size_t> _elevationPlayers;
         Environement &_env;
 
