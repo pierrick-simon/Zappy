@@ -12,18 +12,27 @@ namespace Shared {
 
     template<typename T>
     class Vector2 {
-        public:
+    public:
+        T x;
+        T y;
 
-            T x;
-            T y;
+        Vector2(const T &x, const T &y) :
+            x(x), y(y) {};
 
-            Vector2(const T &x, const T &y): x(x), y(y) {};
-
-            Vector2<T> &operator+=(const Vector2 &v) { x += v.x; y += v.y; return *this; };
-            Vector2<T> operator*(const T &v) { return Vector2<T>(x * v, y * v); };
-
+        template<typename VT>
+        Vector2<T> &operator+=(const Vector2<VT> &v)
+        {
+            x += v.x;
+            y += v.y;
+            return *this;
+        };
+        template<typename VT>
+        Vector2<T> operator*(const VT &v)
+        {
+            return Vector2<T>(x * v, y * v);
+        };
     };
 
-}
+} // namespace Shared
 
 #endif /* !VECTIR_HPP_ */

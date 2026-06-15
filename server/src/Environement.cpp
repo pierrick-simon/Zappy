@@ -66,18 +66,20 @@ namespace Zappy {
         return min;
     }
 
-    std::string Environement::formatTile(std::size_t width, std::size_t height)
+    std::string Environement::formatTile(
+        std::size_t width, std::size_t height) const
     {
         auto info = getTileInfo(width, height);
         std::string formatedTile;
-    
-        for (auto p: info.players)
+
+        for (auto p : info.players)
             formatedTile += "player ";
-        for (auto e: info.eggs)
+        for (auto e : info.eggs)
             formatedTile += "egg ";
-        for (auto r: info.resources)
+        for (auto r : info.resources)
             formatedTile += Info::resources.at(r.first).str + " ";
-        if (!info.players.empty() || !info.eggs.empty() || !info.resources.empty())
+        if (!info.players.empty() || !info.eggs.empty() ||
+            !info.resources.empty())
             formatedTile += "\b";
         return formatedTile;
     }
@@ -86,16 +88,18 @@ namespace Zappy {
     {
         auto p = _players.at(id);
         std::string list = "[";
-        Shared::Vector2<std::size_t> left(p.y, -p.x);
-        Shared::Vector2<std::size_t> right(-p.y, p.x);
+        Shared::Vector2<long> left(
+            static_cast<long>(p.y), static_cast<long>(-p.x));
+        Shared::Vector2<long> right(
+            static_cast<long>(-p.y), static_cast<long>(p.x));
 
         for (std::size_t i = 0; i <= p.level; ++i) {
             Shared::Vector2<std::size_t> pos(p.x, p.y);
             pos += left * i;
             for (std::size_t j = 0; j < (p.level * 2) + 1; ++j) {
                 list += formatTile(pos.x, pos.y) + ",";
-                pos.x = circularMove(pos.x, right.x, _width);
-                pos.y = circularMove(pos.y, right.y, _height);
+                pos.x = circularMove(pos.x, static_cast<int>(right.x), _width);
+                pos.y = circularMove(pos.y, static_cast<int>(right.y), _height);
             }
         }
         list += "\b]";
