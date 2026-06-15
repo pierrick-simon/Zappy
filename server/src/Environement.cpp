@@ -18,6 +18,7 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
+#include "Vector.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
 
@@ -63,6 +64,46 @@ namespace Zappy {
                 min = iter->sleep;
         }
         return min;
+    }
+
+    std::string Environement::formatTile(
+        std::size_t width, std::size_t height) const
+    {
+        auto info = getTileInfo(width, height);
+        std::string formatedTile;
+
+        for (auto p : info.players)
+            formatedTile += "player ";
+        for (auto e : info.eggs)
+            formatedTile += "egg ";
+        for (auto r : info.resources)
+            formatedTile += Info::resources.at(r.first).str + " ";
+        if (!info.players.empty() || !info.eggs.empty() ||
+            !info.resources.empty())
+            formatedTile += "\b";
+        return formatedTile;
+    }
+
+    std::string Environement::lookAround(std::size_t id)
+    {
+        auto p = _players.at(id);
+        std::string list = "[";
+        Shared::Vector2<long> left(
+            static_cast<long>(p.y), static_cast<long>(-p.x));
+        Shared::Vector2<long> right(
+            static_cast<long>(-p.y), static_cast<long>(p.x));
+
+        for (std::size_t i = 0; i <= p.level; ++i) {
+            Shared::Vector2<std::size_t> pos(p.x, p.y);
+            pos += left * i;
+            for (std::size_t j = 0; j < (p.level * 2) + 1; ++j) {
+                list += formatTile(pos.x, pos.y) + ",";
+                pos.x = circularMove(pos.x, static_cast<int>(right.x), _width);
+                pos.y = circularMove(pos.y, static_cast<int>(right.y), _height);
+            }
+        }
+        list += "\b]";
+        return list;
     }
 
     void Environement::addPlayer(

@@ -56,6 +56,8 @@ namespace Zappy {
         std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
 
+        std::string formatTile(std::size_t width, std::size_t height) const;
+        std::string lookAround(std::size_t id);
         void newGuiInfo(int fd);
         void addPlayer(std::size_t id, const std::string &team,
             std::size_t _remainingPlace);
