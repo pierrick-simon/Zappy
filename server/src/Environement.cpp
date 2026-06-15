@@ -485,7 +485,7 @@ namespace Zappy {
         info.x = player.x;
         info.y = player.y;
         info.team = player.team;
-        info.level = info.level;
+        info.level = player.level;
         info.dir = _directions.at(player.dir).nb;
         for (const auto &[_, client] : _clients.ai) {
             if (client.getId() == id) {

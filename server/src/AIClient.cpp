@@ -81,7 +81,7 @@ namespace Zappy {
         auto timeout = _sleep;
         if (_live < timeout)
             timeout = _live;
-        return _sleep;
+        return timeout;
     }
 
     void AIClient::checkAlive()
