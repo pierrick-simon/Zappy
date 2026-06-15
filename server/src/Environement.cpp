@@ -65,6 +65,15 @@ namespace Zappy {
         return min;
     }
 
+    std::string Environement::lookAround(std::size_t id)
+    {
+        auto player = _players.at(id);
+        
+        for (std::size_t i = 1; i <= player.level; ++i) {
+            
+        }
+    }
+
     void Environement::addPlayer(
         std::size_t id, const std::string &team, std::size_t _remainingPlace)
     {

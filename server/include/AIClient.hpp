@@ -74,6 +74,7 @@ namespace Zappy {
         void forward(std::istringstream &);
         void right(std::istringstream &);
         void left(std::istringstream &);
+        void look(std::istringstream &);
         void inventory(std::istringstream &);
         void connectNbr(std::istringstream &);
         void fork(std::istringstream &);

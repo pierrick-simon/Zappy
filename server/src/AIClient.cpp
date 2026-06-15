@@ -166,6 +166,12 @@ namespace Zappy {
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
+    void AIClient::look(std::istringstream &stream)
+    {
+        auto infos = _env.lookAround(_id);
+        Shared::Connect::send(_fd, infos + "\n");
+    }
+
     void AIClient::inventory(std::istringstream &stream)
     {
         std::string msg = "[";
@@ -255,6 +261,8 @@ namespace Zappy {
                 Command {&AIClient::right, std::chrono::seconds(7)}},
             {ClientCmd::LFT.getStr(),
                 Command {&AIClient::left, std::chrono::seconds(7)}},
+            {ClientCmd::LK.getStr(),
+                Command {&AIClient::look, std::chrono::seconds(7)}},
             {ClientCmd::IVT.getStr(),
                 Command {&AIClient::inventory, std::chrono::seconds(1)}},
             {ClientCmd::CNT.getStr(),
