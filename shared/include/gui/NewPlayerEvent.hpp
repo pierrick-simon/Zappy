@@ -14,11 +14,11 @@ namespace Shared {
     class NewPlayerEvent : public GUIEvent {
     public:
         struct NewPlayer {
-            std::size_t id;
-            std::size_t x;
-            std::size_t y;
-            std::size_t dir;
-            std::size_t level;
+            std::size_t id = 0;
+            std::size_t x = 0;
+            std::size_t y = 0;
+            std::size_t dir = 1;
+            std::size_t level = 1;
             std::string team;
         };
 

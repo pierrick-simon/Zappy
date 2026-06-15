@@ -146,7 +146,8 @@ namespace Zappy {
             std::vector<std::size_t> resources(player.inventory.size());
             std::ranges::copy(
                 std::views::values(player.inventory), resources.begin());
-            send<Shared::PlayerInventoryEvent>(id, resources);
+            send<Shared::PlayerInventoryEvent>(
+                id, player.x, player.y, resources);
         } catch (PlayerNotFoundException &e) {
         }
     }
