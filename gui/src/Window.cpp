@@ -7,9 +7,10 @@
 
 #include "Window.hpp"
 
+#include <raylib-cpp.hpp>
+
 #include "Assets.hpp"
 #include "graphics/primitives/Model.hpp"
-#include "raylib-cpp.hpp"
 
 namespace Graphics {
     Window::Window() :
@@ -21,7 +22,7 @@ namespace Graphics {
     void Window::update()
     {
         this->handleEvents();
-        this->_scene.update(Graphics::Window::GetFrameTime());
+        this->_scene.update(GetFrameTime());
         this->BeginDrawing();
         this->ClearBackground(raylib::Color::RayWhite());
         this->getScene().getCamera().BeginMode();
