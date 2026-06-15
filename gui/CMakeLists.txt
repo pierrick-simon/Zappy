@@ -21,9 +21,11 @@ set(SRCS
         src/Window.cpp
         src/GUI.cpp
         src/Assets.cpp
+        src/elements/Player.cpp
 )
 
 set(HEADERS
+        include/elements/
         include/
         src/
 )

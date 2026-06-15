@@ -58,11 +58,18 @@ namespace Zappy {
         }
 
         static ResourceName getResource(const std::string &name);
+        static Direction getDirection(std::size_t nb);
 
         class ResourceNotFoundException : public Shared::SharedException {
         public:
             ResourceNotFoundException() :
                 Shared::SharedException("Resource not found.") {};
+        };
+
+        class DirectionNotFoundException : public Shared::SharedException {
+        public:
+            DirectionNotFoundException() :
+                Shared::SharedException("Direction not found.") {};
         };
     };
 } // namespace Zappy

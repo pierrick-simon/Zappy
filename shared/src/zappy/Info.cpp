@@ -17,6 +17,15 @@ namespace Zappy {
         throw ResourceNotFoundException();
     }
 
+    Info::Direction Info::getDirection(std::size_t nb)
+    {
+        for (const auto &[type, direction] : directions) {
+            if (direction.nb == nb)
+                return type;
+        }
+        throw DirectionNotFoundException();
+    }
+
     const std::unordered_map<Info::ResourceName, Info::Resource>
         Info::resources = {
             {ResourceName::Food, {0.5, "food", 0}},
