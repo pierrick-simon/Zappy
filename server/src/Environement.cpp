@@ -87,12 +87,26 @@ namespace Zappy {
                     std::to_string(egg.x) + "," + std::to_string(egg.y) +
                     "), looking " + Info::directions.at(item->first).str + ".");
             sendToGUI<Shared::NewPlayerEvent>(
-                id, egg.x, egg.y, item->second.nb, team);
+                Shared::NewPlayerEvent::NewPlayer {
+                    id, egg.x, egg.y, item->second.nb, 1, team});
             sendToGUI<Shared::EggHatchedEvent>(iter->first);
             _eggs.erase(iter);
             return;
         }
         throw EggNotFoundException();
+    }
+
+    void Environement::newGuiInfo(int fd)
+    {
+        for (const auto &[id, player] : _players) {
+            Shared::NewPlayerEvent event(Shared::NewPlayerEvent::NewPlayer {id,
+                player.x,
+                player.y,
+                Info::directions.at(player.dir).nb,
+                player.level,
+                player.team});
+            event.send({fd});
+        }
     }
 
     void Environement::removePlayer(

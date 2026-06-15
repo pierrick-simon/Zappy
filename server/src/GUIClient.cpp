@@ -24,6 +24,7 @@ namespace Zappy {
     {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(id) + "] joined the GRAPHIC team.");
+        _env.newGuiInfo(_fd);
     }
 
     void GUIClient::infoToRead()
