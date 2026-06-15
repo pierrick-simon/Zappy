@@ -22,6 +22,7 @@ set(SRCS
         src/GUI.cpp
         src/Assets.cpp
         src/elements/Player.cpp
+        src/elements/Egg.cpp
 )
 
 set(HEADERS
