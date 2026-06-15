@@ -31,11 +31,13 @@ set(SRCS
     src/gui/EggLaidEvent.cpp
     src/gui/NbEvent.cpp
     src/gui/StrEvent.cpp
+    src/zappy/Info.cpp
 )
 
 set(HEADERS
     include/
     include/gui/
+    include/zappy/
 )
 
 include_directories(${HEADERS})
