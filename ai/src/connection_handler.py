@@ -143,6 +143,7 @@ class ConnectionHandler:
         request: str = self.client.recv()
         key: str = get_key_from_dict(self.COMMON_EVENTS, request)
 
+        print("Raw request: ", request)
         if key:
             self.events.append(self.COMMON_EVENTS[key](request))
             print(self.events)
