@@ -50,7 +50,7 @@ if (NOT criterion_FOUND)
 endif ()
 
 add_executable(zappy_server ${MAIN} ${SRCS})
-target_link_libraries(zappy_server shared)
+target_link_libraries(zappy_server shared sfml-graphics sfml-window sfml-system)
 
 find_library(CRITERION criterion REQUIRED)
 

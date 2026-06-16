@@ -62,7 +62,12 @@ namespace Zappy {
     void Server::run()
     {
         auto end = false;
-        while (!RECEIVED_SIG_INT && !end) {
+        auto masterClose = false;
+        while (!RECEIVED_SIG_INT && !end && !masterClose) {
+            if (_master) {
+                masterClose = !_master->update();
+                _timeout = 0;
+            }
             infoToRead();
             end = update();
         }
