@@ -46,6 +46,16 @@ namespace Zappy {
             {ResourceName::Thystame, {0.05, "thystame", 6}},
     };
 
+    const std::map<Info::ResourceName, std::size_t> Info::INIT_RESOUCES = {
+        {ResourceName::Food, 0},
+        {ResourceName::Linemate, 0},
+        {ResourceName::Deraumere, 0},
+        {ResourceName::Sibur, 0},
+        {ResourceName::Mendiane, 0},
+        {ResourceName::Phiras, 0},
+        {ResourceName::Thystame, 0},
+    };
+
     const std::map<Info::Direction, Info::Dir> Info::directions = {
         {Direction::North, {0, -1, "North", 1}},
         {Direction::East, {1, 0, "East", 2}},

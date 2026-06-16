@@ -49,6 +49,7 @@ namespace Zappy {
         };
 
         static const std::unordered_map<ResourceName, Resource> resources;
+        static const std::map<ResourceName, std::size_t> INIT_RESOUCES;
         static const std::map<Direction, Dir> directions;
         static const std::unordered_map<std::size_t, Elevation> elevations;
 

@@ -22,13 +22,7 @@ namespace Zappy {
         Shared::Utils::logMsg(_logFile,
             "Player [" + std::to_string(_id) + "] joined the " + _team +
                 " team.");
-        _inventory.emplace(Info::ResourceName::Food, 0);
-        _inventory.emplace(Info::ResourceName::Linemate, 0);
-        _inventory.emplace(Info::ResourceName::Deraumere, 0);
-        _inventory.emplace(Info::ResourceName::Sibur, 0);
-        _inventory.emplace(Info::ResourceName::Mendiane, 0);
-        _inventory.emplace(Info::ResourceName::Phiras, 0);
-        _inventory.emplace(Info::ResourceName::Thystame, 0);
+        _inventory = Info::INIT_RESOUCES;
     }
 
     Player::~Player()

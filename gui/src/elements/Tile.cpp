@@ -10,13 +10,7 @@
 namespace Zappy {
     Tile::Tile()
     {
-        _resources.insert({Info::ResourceName::Food, {}});
-        _resources.insert({Info::ResourceName::Linemate, {}});
-        _resources.insert({Info::ResourceName::Deraumere, {}});
-        _resources.insert({Info::ResourceName::Sibur, {}});
-        _resources.insert({Info::ResourceName::Mendiane, {}});
-        _resources.insert({Info::ResourceName::Phiras, {}});
-        _resources.insert({Info::ResourceName::Thystame, {}});
+        _resources = INIT_RESOURCES;
     }
 
     void Tile::updateResource(
@@ -40,4 +34,15 @@ namespace Zappy {
             iter++;
         }
     }
+
+    const std::map<Info::ResourceName, std::queue<Resource>>
+        Tile::INIT_RESOURCES = {
+            {Info::ResourceName::Food, {}},
+            {Info::ResourceName::Linemate, {}},
+            {Info::ResourceName::Deraumere, {}},
+            {Info::ResourceName::Sibur, {}},
+            {Info::ResourceName::Mendiane, {}},
+            {Info::ResourceName::Phiras, {}},
+            {Info::ResourceName::Thystame, {}},
+    };
 } // namespace Zappy

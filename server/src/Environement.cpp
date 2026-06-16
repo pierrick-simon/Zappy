@@ -35,15 +35,8 @@ namespace Zappy {
         _teams(teams)
     {
         std::srand(std::time(nullptr));
-        for (auto tile : _tiles) {
-            tile.emplace(Info::ResourceName::Food, 0);
-            tile.emplace(Info::ResourceName::Linemate, 0);
-            tile.emplace(Info::ResourceName::Deraumere, 0);
-            tile.emplace(Info::ResourceName::Sibur, 0);
-            tile.emplace(Info::ResourceName::Mendiane, 0);
-            tile.emplace(Info::ResourceName::Phiras, 0);
-            tile.emplace(Info::ResourceName::Thystame, 0);
-        }
+        for (auto tile : _tiles)
+            tile = Info::INIT_RESOUCES;
     }
 
     std::chrono::nanoseconds Environement::update(

@@ -24,6 +24,8 @@ namespace Zappy {
         static void updateResource(std::queue<Resource> &resource,
             std::size_t nb, Info::ResourceName type);
         std::map<Info::ResourceName, std::queue<Resource>> _resources;
+        static const std::map<Info::ResourceName, std::queue<Resource>>
+            INIT_RESOURCES;
     };
 } // namespace Zappy
 
