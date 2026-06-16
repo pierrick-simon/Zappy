@@ -23,8 +23,8 @@ namespace Shared {
         Process(const Process &) = delete;
         Process &operator=(const Process &) = delete;
 
-        void add(const std::string &program,
-            const std::vector<std::string> &args);
+        void add(
+            const std::string &program, const std::vector<std::string> &args);
         void wait();
 
         class ProcessException : public SharedException {

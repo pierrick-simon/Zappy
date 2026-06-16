@@ -17,9 +17,10 @@ namespace Zappy {
 
     Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
+        _port(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT)),
         _teamsNames(Parser::ArgsParser::getArgList<std::string>(
             args, "-n", DEFAULT_TEAMS)),
-        _connect(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT)),
+        _connect(_port),
         _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
         _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
@@ -41,6 +42,9 @@ namespace Zappy {
                 _env.spawnEgg(team);
         }
         _teamsNames.clear();
+
+        if (Parser::ArgsParser::isArg(args, "-m"))
+            _master.emplace(_port, _clients, _teams);
 
         if (!args.empty())
             throw Parser::Help();

@@ -15,10 +15,12 @@ set(SRCS
         src/AIClient.cpp
         src/GUIClient.cpp
         src/Environement.cpp
+        src/master/Master.cpp
 )
 
 set(HEADERS
         include/
+        include/master/
 )
 
 include_directories(${HEADERS})
