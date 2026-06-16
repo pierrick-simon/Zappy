@@ -92,6 +92,7 @@ namespace Zappy {
 
         static constexpr std::string_view WELCOME = "WELCOME";
         static constexpr std::string_view TEAM = "GRAPHIC";
+        static constexpr std::size_t SMALL_SLEEP = 100;
     };
 } // namespace Zappy
 

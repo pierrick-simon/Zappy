@@ -6,6 +6,8 @@
 */
 
 #include "Environement.hpp"
+#include <chrono>
+#include <thread>
 #include "GUICommunication.hpp"
 #include "Utils.hpp"
 
@@ -52,6 +54,8 @@ namespace Zappy {
                 _loading = true;
                 Shared::Utils::logMsg(
                     _logFile, "Client GUI connect to the server.");
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(SMALL_SLEEP));
                 Shared::Connect::send(
                     _connect.getFd(), ClientCmd::MSZ.getStr() + "\n");
                 Shared::Connect::send(
