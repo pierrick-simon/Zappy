@@ -74,4 +74,11 @@ namespace Zappy {
     {
         return _y * width + _x;
     }
+
+    void Player::died()
+    {
+        _incantate = false;
+        _fork = false;
+        _dead = true;
+    }
 } // namespace Zappy

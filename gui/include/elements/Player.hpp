@@ -10,6 +10,7 @@
 
     #include <fstream>
     #include <string>
+    #include "GUIException.hpp"
     #include "Info.hpp"
     #include "NewPlayerEvent.hpp"
 
@@ -26,8 +27,38 @@ namespace Zappy {
         void setInventory(const std::vector<std::size_t> &inventory);
         void setIncantate(bool incantate);
         void setFork(bool fork);
+        void died();
 
         [[nodiscard]] std::size_t getTile(std::size_t width) const;
+
+        [[nodiscard]] bool isDead() const
+        {
+            return _dead;
+        }
+        [[nodiscard]] std::string getTeam() const
+        {
+            return _team;
+        }
+
+        class PlayerException : public GUIException {
+        public:
+            PlayerException(const std::string &str) :
+                GUIException(str) {};
+        };
+
+        class PlayerNotFoundException : public PlayerException {
+        public:
+            PlayerNotFoundException(std::size_t id) :
+                PlayerException(
+                    "Player[" + std::to_string(id) + "] Not Found.") {};
+        };
+
+        class DeadPlayerException : public PlayerException {
+        public:
+            DeadPlayerException(std::size_t id) :
+                PlayerException(
+                    "Event on dead Player[" + std::to_string(id) + "].") {};
+        };
 
     private:
         std::size_t _id;
@@ -39,6 +70,7 @@ namespace Zappy {
         std::map<Info::ResourceName, std::size_t> _inventory;
         bool _incantate = false;
         bool _fork = false;
+        bool _dead = false;
 
         std::ofstream &_logFile;
     };

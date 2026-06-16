@@ -17,6 +17,15 @@ namespace Zappy {
         throw ResourceNotFoundException();
     }
 
+    Info::ResourceName Info::getResource(std::size_t nb)
+    {
+        for (const auto &[type, resource] : resources) {
+            if (resource.nb == nb)
+                return type;
+        }
+        throw ResourceNotFoundException();
+    }
+
     Info::Direction Info::getDirection(std::size_t nb)
     {
         for (const auto &[type, direction] : directions) {

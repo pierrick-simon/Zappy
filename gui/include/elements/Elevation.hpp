@@ -8,19 +8,46 @@
 #ifndef ELEVATION_HPP_
     #define ELEVATION_HPP_
 
-    #include <vector>
+    #include <map>
 
 namespace Zappy {
     class Elevation {
     public:
         Elevation(std::size_t x, std::size_t y, std::size_t level,
-            std::vector<std::size_t> players);
+            std::map<std::size_t, bool> players);
+
+        void end(bool success);
+
+        void setFinish(bool finish);
+
+        [[nodiscard]] std::size_t getX() const
+        {
+            return _x;
+        }
+        [[nodiscard]] std::size_t getY() const
+        {
+            return _y;
+        }
+        [[nodiscard]] bool getFinish() const
+        {
+            return _finish;
+        }
+        [[nodiscard]] std::map<std::size_t, bool> getPlayers() const
+        {
+            return _players;
+        }
+        [[nodiscard]] std::map<std::size_t, bool> &getPlayers()
+        {
+            return _players;
+        }
 
     private:
         std::size_t _x;
         std::size_t _y;
         std::size_t _level;
-        std::vector<std::size_t> _players;
+        bool _finish = false;
+        bool _success = false;
+        std::map<std::size_t, bool> _players;
     };
 } // namespace Zappy
 

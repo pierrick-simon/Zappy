@@ -28,6 +28,7 @@ set(SRCS
         src/elements/Map.cpp
         src/elements/Elevation.cpp
         src/elements/Environement.cpp
+        src/elements/Events.cpp
 )
 
 set(HEADERS

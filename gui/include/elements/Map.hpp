@@ -17,6 +17,15 @@ namespace Zappy {
         void updateTile(std::size_t x, std::size_t y,
             const std::vector<std::size_t> &resources);
 
+        [[nodiscard]] std::size_t getWidth() const
+        {
+            return _width;
+        }
+        [[nodiscard]] std::size_t getHeight() const
+        {
+            return _height;
+        }
+
     private:
         std::size_t _width = 0;
         std::size_t _height = 0;
