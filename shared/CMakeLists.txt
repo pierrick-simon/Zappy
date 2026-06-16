@@ -15,6 +15,7 @@ set(SRCS
     src/Connect.cpp
     src/Help.cpp
     src/Utils.cpp
+    src/Process.cpp
     src/gui/GUIEvent.cpp
     src/gui/TileInfoEvent.cpp
     src/gui/PlayerPositionEvent.cpp
