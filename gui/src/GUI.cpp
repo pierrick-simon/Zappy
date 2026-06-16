@@ -13,7 +13,8 @@
 namespace Zappy {
     GUI::GUI(std::vector<std::string> args) :
         _connect(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT),
-            Parser::ArgsParser::getArg<std::string>(args, "-h", DEFAULT_HOST.data())),
+            Parser::ArgsParser::getArg<std::string>(
+                args, "-h", DEFAULT_HOST.data())),
         _logFile(std::string(LOG_FILE))
     {
         Shared::Utils::logMsg(_logFile, "Client GUI Open.");
