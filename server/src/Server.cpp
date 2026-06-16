@@ -18,7 +18,7 @@ namespace Zappy {
     Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
         _teamsNames(Parser::ArgsParser::getArgList<std::string>(
-            args, "-n", {"team1", "team2"})),
+            args, "-n", DEFAULT_TEAMS)),
         _connect(Parser::ArgsParser::getArg<int>(args, "-p", 8080)),
         _f(Parser::ArgsParser::getArgSize(args, "-f", 100)),
         _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
@@ -247,4 +247,5 @@ namespace Zappy {
             }
         }
     }
+    const std::vector<std::string> Server::DEFAULT_TEAMS = {"team1", "team2"};
 }; // namespace Zappy

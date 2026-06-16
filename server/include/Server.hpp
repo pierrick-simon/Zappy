@@ -66,6 +66,11 @@ namespace Zappy {
         static constexpr std::string_view LOG_FILE = "server.log";
         static constexpr std::string_view GRAPHIC = "GRAPHIC";
         static constexpr std::size_t SECOND_IN_NANO = 1000000;
+        static const std::vector<std::string> DEFAULT_TEAMS;
+        static constexpr int DEFAULT_PORT = 8080;
+        static constexpr std::size_t DEFAULT_FREQ = 100;
+        static constexpr std::size_t DEFAULT_X = 100;
+        static constexpr std::size_t DEFAULT_Y = 100;
     };
 } // namespace Zappy
 
