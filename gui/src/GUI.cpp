@@ -13,7 +13,8 @@ namespace Zappy {
     GUI::GUI(std::vector<std::string> args) :
         _env(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT),
             Parser::ArgsParser::getArg<std::string>(
-                args, "-h", DEFAULT_HOST.data()), _logFile, _isConnect),
+                args, "-h", DEFAULT_HOST.data()),
+            _logFile, _isConnect),
 
         _logFile(std::string(LOG_FILE))
     {
