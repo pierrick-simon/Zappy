@@ -16,6 +16,7 @@ namespace Shared {
         T x;
         T y;
 
+        Vector2() = default;
         Vector2(const T &x, const T &y) :
             x(x), y(y) {};
 

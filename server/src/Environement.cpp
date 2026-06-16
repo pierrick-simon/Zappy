@@ -10,6 +10,7 @@
 #include <ctime>
 #include <optional>
 #include <random>
+#include <array>
 #include <ranges>
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
@@ -18,7 +19,6 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
-#include "Vector.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
 
@@ -488,12 +488,30 @@ namespace Zappy {
         return status;
     }
 
+    Shared::Vector2<int> Environement::getBroadCastVector(Player &sender, Player &receiver)
+    {
+
+        std::array<std::pair<Shared::Vector2<int>, double>, 9> distances;
+        std::size_t index = 0;
+
+        for (std::size_t i = -_width; i < _width; i += _width) {
+            for (std::size_t j = -_height; j < _height; j += _height) {
+                distances[index].first.x = (receiver.x + i) - sender.x;
+                distances[index].first.y = (receiver.y + j) - sender.y;
+                distances[index].second = std::sqrt(std::pow(distances[index].first.x, 2) + std::pow(distances[index].first.y, 2));
+                ++index;
+            }
+        }
+    }
+
     void Environement::broadcast(std::size_t id, const std::string &text)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
+        for (auto &p: _players)
+            auto v = getBroadCastVector(find->second, p.second);
     }
 
     std::size_t Environement::getConnectNbr(std::size_t id) const
