@@ -24,7 +24,7 @@ namespace Zappy {
     {
         while (resource.size() != nb) {
             if (resource.size() < nb)
-                resource.push(Resource {type});
+                resource.emplace(type);
             else
                 resource.pop();
         }

@@ -21,8 +21,8 @@ namespace Zappy {
         void updateTile(const std::vector<std::size_t> &resources);
 
     private:
-        void updateResource(std::queue<Resource> &resource, std::size_t nb,
-            Info::ResourceName type);
+        static void updateResource(std::queue<Resource> &resource,
+            std::size_t nb, Info::ResourceName type);
         std::map<Info::ResourceName, std::queue<Resource>> _resources;
     };
 } // namespace Zappy
