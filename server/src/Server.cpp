@@ -23,8 +23,8 @@ namespace Zappy {
         _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
         _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
-            Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile, _clients,
-            _teams)
+            Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile,
+            _clients, _teams)
     {
         auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c", 10);
         if (_teamsNames.empty())
