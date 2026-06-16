@@ -7,6 +7,7 @@
 
 #include "Window.hpp"
 
+#include <iostream>
 #include <raylib-cpp.hpp>
 
 #include "Assets.hpp"
@@ -14,7 +15,8 @@
 
 namespace Graphics {
     Window::Window() :
-        raylib::Window(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_ALL)
+        raylib::Window(
+            WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
     {
         this->SetTargetFPS(TARGET_FPS);
     }
