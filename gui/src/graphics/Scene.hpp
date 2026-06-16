@@ -25,10 +25,11 @@ namespace Graphics {
         void update(float dt);
 
         template<typename GameObjectType>
-        std::unique_ptr<GameObject> &addObject(
+        std::unique_ptr<GameObjectType> &addObject(
             std::unique_ptr<GameObjectType> gameObject)
         {
-            return this->_objects.emplace_back(std::move(gameObject));
+            return reinterpret_cast<std::unique_ptr<GameObjectType> &>(
+                this->_objects.emplace_back(std::move(gameObject)));
         }
 
         void draw() const override;

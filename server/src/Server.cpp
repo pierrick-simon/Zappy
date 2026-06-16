@@ -18,13 +18,13 @@ namespace Zappy {
     Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
         _teamsNames(Parser::ArgsParser::getArgList<std::string>(
-            args, "-n", {"team1", "team2"})),
-        _connect(Parser::ArgsParser::getArg<int>(args, "-p", 8080)),
-        _f(Parser::ArgsParser::getArgSize(args, "-f", 100)),
+            args, "-n", DEFAULT_TEAMS)),
+        _connect(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT)),
+        _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
         _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
-        _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
-            Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile, _clients,
-            _teams)
+        _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
+            Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile,
+            _clients, _teams)
     {
         auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c", 10);
         if (_teamsNames.empty())
@@ -247,4 +247,5 @@ namespace Zappy {
             }
         }
     }
+    const std::vector<std::string> Server::DEFAULT_TEAMS = {"team1", "team2"};
 }; // namespace Zappy

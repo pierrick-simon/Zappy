@@ -11,9 +11,10 @@
 
 namespace Zappy {
     GUI::GUI(std::vector<std::string> args) :
-        _env(Parser::ArgsParser::getArg<int>(args, "-p"),
-            Parser::ArgsParser::getArg<std::string>(args, "-h"), _logFile,
-            _isConnect),
+        _env(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT),
+            Parser::ArgsParser::getArg<std::string>(
+                args, "-h", DEFAULT_HOST.data()), _logFile, _isConnect),
+
         _logFile(std::string(LOG_FILE))
     {
         Shared::Utils::logMsg(_logFile, "Client GUI Open.");

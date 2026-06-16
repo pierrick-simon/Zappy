@@ -23,7 +23,7 @@ namespace Graphics {
         Scene &getScene();
 
         template<typename GameObjectType, typename... Args>
-        std::unique_ptr<GameObject> &addObject(Args &&...args)
+        std::unique_ptr<GameObjectType> &addObject(Args &&...args)
         {
             return this->getScene().addObject(
                 std::move(std::make_unique<GameObjectType>(args...)));

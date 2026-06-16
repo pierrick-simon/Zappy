@@ -35,6 +35,8 @@ namespace Zappy {
         std::ofstream _logFile;
 
         static constexpr std::string_view LOG_FILE = "gui.log";
+        static constexpr std::string_view DEFAULT_HOST = "127.0.0.1";
+        static constexpr int DEFAULT_PORT = 8080;
     };
 } // namespace Zappy
 
