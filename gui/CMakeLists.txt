@@ -21,9 +21,18 @@ set(SRCS
         src/Window.cpp
         src/GUI.cpp
         src/Assets.cpp
+        src/elements/Player.cpp
+        src/elements/Egg.cpp
+        src/elements/Resource.cpp
+        src/elements/Tile.cpp
+        src/elements/Map.cpp
+        src/elements/Elevation.cpp
+        src/elements/Environement.cpp
+        src/elements/Events.cpp
 )
 
 set(HEADERS
+        include/elements/
         include/
         src/
 )

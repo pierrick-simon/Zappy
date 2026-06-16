@@ -17,6 +17,24 @@ namespace Zappy {
         throw ResourceNotFoundException();
     }
 
+    Info::ResourceName Info::getResource(std::size_t nb)
+    {
+        for (const auto &[type, resource] : resources) {
+            if (resource.nb == nb)
+                return type;
+        }
+        throw ResourceNotFoundException();
+    }
+
+    Info::Direction Info::getDirection(std::size_t nb)
+    {
+        for (const auto &[type, direction] : directions) {
+            if (direction.nb == nb)
+                return type;
+        }
+        throw DirectionNotFoundException();
+    }
+
     const std::unordered_map<Info::ResourceName, Info::Resource>
         Info::resources = {
             {ResourceName::Food, {0.5, "food", 0}},
@@ -26,6 +44,16 @@ namespace Zappy {
             {ResourceName::Mendiane, {0.1, "mendiane", 4}},
             {ResourceName::Phiras, {0.08, "phiras", 5}},
             {ResourceName::Thystame, {0.05, "thystame", 6}},
+    };
+
+    const std::map<Info::ResourceName, std::size_t> Info::INIT_RESOUCES = {
+        {ResourceName::Food, 0},
+        {ResourceName::Linemate, 0},
+        {ResourceName::Deraumere, 0},
+        {ResourceName::Sibur, 0},
+        {ResourceName::Mendiane, 0},
+        {ResourceName::Phiras, 0},
+        {ResourceName::Thystame, 0},
     };
 
     const std::map<Info::Direction, Info::Dir> Info::directions = {
