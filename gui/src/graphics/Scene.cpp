@@ -25,6 +25,8 @@ namespace Graphics {
     void Scene::update(float dt)
     {
         this->_camera.update(dt);
+        for (auto &object : this->_objects)
+            object->update(dt);
     }
 
     void Scene::draw() const
