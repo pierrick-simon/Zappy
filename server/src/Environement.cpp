@@ -493,15 +493,24 @@ namespace Zappy {
 
         std::array<std::pair<Shared::Vector2<int>, double>, 9> distances;
         std::size_t index = 0;
+        std::size_t minDist = UINT32_MAX;
+        std::size_t minIndex = 0;
 
         for (std::size_t i = -_width; i < _width; i += _width) {
             for (std::size_t j = -_height; j < _height; j += _height) {
-                distances[index].first.x = (receiver.x + i) - sender.x;
-                distances[index].first.y = (receiver.y + j) - sender.y;
+                distances[index].first.x = sender.x - (receiver.x + i);
+                distances[index].first.y = sender.y - (receiver.y + j);
                 distances[index].second = std::sqrt(std::pow(distances[index].first.x, 2) + std::pow(distances[index].first.y, 2));
                 ++index;
             }
         }
+        for (std::size_t i = index; i < index; ++i) {
+            if (distances[i].second < minDist) {
+                minDist = distances[i].second;
+                minIndex = i;
+            }
+        }
+        return distances[minIndex].first;
     }
 
     void Environement::broadcast(std::size_t id, const std::string &text)
