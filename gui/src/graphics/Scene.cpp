@@ -7,6 +7,8 @@
 
 #include "Scene.hpp"
 
+#include "graphics/IDrawable2D.hpp"
+
 namespace Graphics {
 
     raylib::Camera &Scene::getCamera()
@@ -35,7 +37,7 @@ namespace Graphics {
     {
         for (auto &object : this->_objects) {
             try {
-                auto &uiObject = dynamic_cast<UiObject &>(object.get());
+                auto &uiObject = dynamic_cast<IDrawable2D &>(object.get());
                 uiObject.draw();
             } catch (std::bad_cast &) {
             }
@@ -46,7 +48,7 @@ namespace Graphics {
     {
         for (auto &object : this->_objects) {
             try {
-                auto &gameObjecte = dynamic_cast<GameObject &>(object.get());
+                auto &gameObjecte = dynamic_cast<IDrawable3D &>(object.get());
                 gameObjecte.draw();
             } catch (std::bad_cast &) {
             }

@@ -12,7 +12,7 @@
 namespace Assets {
     static const std::filesystem::path RESOURCES_ROOT = "gui/resources";
 
-    std::string GetResource(const std::string &file);
+    std::string getResource(const std::string &file);
 } // namespace Assets
 
 #endif

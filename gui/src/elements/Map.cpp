@@ -7,6 +7,8 @@
 
 #include "Map.hpp"
 
+#include <iostream>
+
 namespace Zappy {
     bool Map::updateSize(std::size_t x, std::size_t y)
     {
@@ -18,6 +20,7 @@ namespace Zappy {
             _height = y;
             _tiles.clear();
             _tiles.resize(_width * _height);
+            this->setTilesPosition();
         }
         return value;
     }
@@ -27,7 +30,30 @@ namespace Zappy {
     {
         x %= _width;
         y %= _height;
-        auto tile = y * _width + x;
-        _tiles[tile].updateTile(resources);
+        auto tileIndex = y * _width + x;
+        auto &tile = _tiles[tileIndex];
+        tile.updateTile(resources);
+    }
+
+    void Map::setTilesPosition()
+    {
+        float totalMapHeight =
+            static_cast<float>(this->_height * TILE_HEIGHT) / 2.0f;
+        float totalMapWidth =
+            static_cast<float>(this->_width * TILE_WIDTH) / 2.0f;
+
+        for (size_t i = 0; i < this->_tiles.size(); ++i) {
+            size_t x = i / this->_width;
+            size_t y = i % this->_width;
+            this->_tiles[i].setPosition(
+                {static_cast<float>(x * TILE_WIDTH) - totalMapWidth,
+                    TILE_Y_POS,
+                    static_cast<float>(y * TILE_HEIGHT) - totalMapHeight});
+        }
+    }
+    void Map::draw() const
+    {
+        for (const auto &tile : this->_tiles)
+            tile.draw();
     }
 } // namespace Zappy

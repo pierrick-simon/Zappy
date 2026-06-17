@@ -20,11 +20,11 @@
     #include "GUIException.hpp"
     #include "Map.hpp"
     #include "Player.hpp"
-    #include "graphics/IDrawable.hpp"
+    #include "graphics/IDrawable3D.hpp"
     #include "graphics/IUpdatable.hpp"
 
 namespace Zappy {
-    class Environement : public Graphics::IDrawable,
+    class Environement : public Graphics::IDrawable3D,
                          public Graphics::IUpdatable,
                          public Graphics::IObject {
     public:

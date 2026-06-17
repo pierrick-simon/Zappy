@@ -5,15 +5,13 @@
 ** DESCRIPTION
 */
 
-#ifndef DRAWABLE_HPP
-    #define DRAWABLE_HPP
-
+#ifndef IDRAWABLE3D_HPP
+    #define IDRAWABLE3D_HPP
 namespace Graphics {
-    class IDrawable {
+    class IDrawable3D {
     public:
-        virtual ~IDrawable() = default;
+        virtual ~IDrawable3D() = default;
         virtual void draw() const = 0;
     };
 } // namespace Graphics
-
 #endif

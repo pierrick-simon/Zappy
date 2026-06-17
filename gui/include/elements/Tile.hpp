@@ -10,11 +10,14 @@
 
     #include <map>
     #include <queue>
-    #include "Info.hpp"
+
+#include "Assets.hpp"
+#include "Info.hpp"
     #include "Resource.hpp"
+    #include "graphics/primitives/Model.hpp"
 
 namespace Zappy {
-    class Tile {
+    class Tile : public Graphics::Model {
     public:
         Tile();
 
@@ -26,6 +29,7 @@ namespace Zappy {
         std::map<Info::ResourceName, std::queue<Resource>> _resources;
         static const std::map<Info::ResourceName, std::queue<Resource>>
             INIT_RESOURCES;
+        static const std::string TILE_MODEL_PATH;
     };
 } // namespace Zappy
 

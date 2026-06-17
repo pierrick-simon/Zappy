@@ -7,6 +7,7 @@
 
 #include "Environement.hpp"
 #include <chrono>
+#include <iostream>
 #include <thread>
 #include "GUICommunication.hpp"
 #include "Utils.hpp"
@@ -47,6 +48,7 @@ namespace Zappy {
 
     void Environement::draw() const
     {
+        this->_map.draw();
     }
 
     bool Environement::connect()

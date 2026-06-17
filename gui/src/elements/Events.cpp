@@ -6,6 +6,8 @@
 */
 
 #include <algorithm>
+#include <iostream>
+
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
 #include "GUIEvents.hpp"

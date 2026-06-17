@@ -25,6 +25,21 @@ namespace Graphics {
         return this->_scale;
     }
 
+    void Transformable3D::setPosition(raylib::Vector3 position)
+    {
+        this->_position = position;
+    }
+
+    void Transformable3D::setRotation(raylib::Quaternion rotation)
+    {
+        this->_rotation = rotation;
+    }
+
+    void Transformable3D::setScale(raylib::Vector3 scale)
+    {
+        this->_scale = scale;
+    }
+
     const raylib::Vector3 &Transformable3D::getPosition() const
     {
         return this->_position;

@@ -8,7 +8,7 @@
 #include "Assets.hpp"
 
 namespace Assets {
-    std::string GetResource(const std::string &file)
+    std::string getResource(const std::string &file)
     {
         return (RESOURCES_ROOT / file).string();
     }

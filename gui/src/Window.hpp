@@ -42,6 +42,7 @@ namespace Graphics {
         static constexpr auto TARGET_FPS = 60;
         static constexpr auto WINDOW_TITLE = "Zappy GUI";
         static constexpr auto FOV = 60.0;
+        static constexpr raylib::Vector3 DEFAULT_CAMERA_POS = {50, 50, 50};
     };
 } // namespace Graphics
 

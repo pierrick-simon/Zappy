@@ -17,6 +17,7 @@ namespace Graphics {
             WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
     {
         this->SetTargetFPS(TARGET_FPS);
+        this->_scene.getCamera().SetPosition(DEFAULT_CAMERA_POS);
     }
 
     void Window::update()

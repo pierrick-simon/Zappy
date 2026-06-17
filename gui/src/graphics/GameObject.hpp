@@ -8,14 +8,14 @@
 #ifndef GAMEOBJECT_HPP
     #define GAMEOBJECT_HPP
 
-    #include "../../include/graphics/IObject.hpp"
     #include "Transformable3D.hpp"
-    #include "graphics/IDrawable.hpp"
+    #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IObject.hpp"
     #include "graphics/IUpdatable.hpp"
 
 namespace Graphics {
     class GameObject : public Transformable3D,
-                       public IDrawable,
+                       public IDrawable3D,
                        public IUpdatable,
                        public IObject {
     public:
