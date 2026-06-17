@@ -49,6 +49,7 @@ namespace Zappy {
         };
 
         static const std::unordered_map<ResourceName, Resource> resources;
+        static const std::map<ResourceName, std::size_t> INIT_RESOUCES;
         static const std::map<Direction, Dir> directions;
         static const std::unordered_map<std::size_t, Elevation> elevations;
 
@@ -58,11 +59,19 @@ namespace Zappy {
         }
 
         static ResourceName getResource(const std::string &name);
+        static ResourceName getResource(std::size_t nb);
+        static Direction getDirection(std::size_t nb);
 
         class ResourceNotFoundException : public Shared::SharedException {
         public:
             ResourceNotFoundException() :
                 Shared::SharedException("Resource not found.") {};
+        };
+
+        class DirectionNotFoundException : public Shared::SharedException {
+        public:
+            DirectionNotFoundException() :
+                Shared::SharedException("Direction not found.") {};
         };
     };
 } // namespace Zappy

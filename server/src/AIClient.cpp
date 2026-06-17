@@ -29,13 +29,8 @@ namespace Zappy {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(id) + "] joined the " + _team +
                 " team.");
-        _inventory.emplace(Info::ResourceName::Food, START_FOOD);
-        _inventory.emplace(Info::ResourceName::Linemate, 0);
-        _inventory.emplace(Info::ResourceName::Deraumere, 0);
-        _inventory.emplace(Info::ResourceName::Sibur, 0);
-        _inventory.emplace(Info::ResourceName::Mendiane, 0);
-        _inventory.emplace(Info::ResourceName::Phiras, 0);
-        _inventory.emplace(Info::ResourceName::Thystame, 0);
+        _inventory = Info::INIT_RESOUCES;
+        _inventory[Info::ResourceName::Food] = START_FOOD;
         Shared::Connect::send(
             _fd, std::to_string(_env.getConnectNbr(_id)) + "\n");
         Shared::Connect::send(_fd,
@@ -59,7 +54,8 @@ namespace Zappy {
         }
     }
 
-    std::chrono::nanoseconds AIClient::update(std::chrono::nanoseconds elapsed)
+    std::chrono::milliseconds AIClient::update(
+        std::chrono::milliseconds elapsed)
     {
         if (_sleep.count() > 0)
             _sleep -= elapsed;
@@ -266,7 +262,7 @@ namespace Zappy {
             {ClientCmd::IVT.getStr(),
                 Command {&AIClient::inventory, std::chrono::seconds(1)}},
             {ClientCmd::CNT.getStr(),
-                Command {&AIClient::connectNbr, std::chrono::nanoseconds(1)}},
+                Command {&AIClient::connectNbr, std::chrono::milliseconds(1)}},
             {ClientCmd::FRK.getStr(),
                 Command {&AIClient::fork, std::chrono::seconds(42)}},
             {ClientCmd::EJT.getStr(),
