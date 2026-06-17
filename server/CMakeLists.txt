@@ -65,7 +65,7 @@ add_executable(server_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS})
 
 target_compile_options(server_tests_run_bin PRIVATE --coverage)
 target_link_options(server_tests_run_bin PRIVATE --coverage)
-target_link_libraries(server_tests_run_bin criterion shared)
+target_link_libraries(server_tests_run_bin criterion shared sfml-graphics sfml-window sfml-system)
 
 add_custom_target(server_tests_run
         COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete
