@@ -7,9 +7,11 @@
 
 #include "Window.hpp"
 
+#include <iostream>
+#include <raylib-cpp.hpp>
+
 #include "Assets.hpp"
 #include "graphics/primitives/Model.hpp"
-#include "raylib.hpp"
 
 namespace Graphics {
     Window::Window() :
@@ -22,6 +24,7 @@ namespace Graphics {
     void Window::update()
     {
         this->handleEvents();
+        this->_scene.update(GetFrameTime());
         this->BeginDrawing();
         this->ClearBackground(raylib::Color::RayWhite());
         this->getScene().getCamera().BeginMode();
@@ -42,9 +45,13 @@ namespace Graphics {
 
     void Window::handleEvents()
     {
-        for (const auto &[key, method] : KEY_METHODS) {
-            if (IsKeyPressed(key))
-                method(*this);
+        for (auto key =
+                 static_cast<KeyboardKey>(raylib::Keyboard::GetKeyPressed());
+            key != 0;
+            key = static_cast<KeyboardKey>(raylib::Keyboard::GetKeyPressed())) {
+            auto it = KEY_METHODS.find(key);
+            if (it != KEY_METHODS.end())
+                it->second(*this);
         }
     }
 

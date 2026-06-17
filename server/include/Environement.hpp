@@ -9,27 +9,20 @@
     #define ENVIRONEMENT_HPP
 
     #include <chrono>
+    #include <concepts>
     #include <map>
+    #include <ranges>
     #include <string>
     #include <unordered_map>
     #include <vector>
+    #include "Client.hpp"
+    #include "GUIEvent.hpp"
+    #include "Info.hpp"
 
 namespace Zappy {
-    enum class Direction { North, East, South, West };
-
     enum class Movement { Forward, Backward };
 
     enum class Rotate { Left, Right };
-
-    enum class ResourceName {
-        Food,
-        Linemate,
-        Deraumere,
-        Sibur,
-        Mendiane,
-        Phiras,
-        Thystame
-    };
 
     struct Team {
         std::size_t id;
@@ -37,12 +30,20 @@ namespace Zappy {
     };
 
     struct TileInfo {
-        std::map<ResourceName, std::size_t> resources;
+        std::map<Info::ResourceName, std::size_t> resources;
         std::vector<Team> eggs;
         std::vector<Team> players;
     };
 
-    struct Clients;
+    struct PlayerInfo {
+        std::size_t x = 0;
+        std::size_t y = 0;
+        std::size_t dir = 0;
+        std::size_t level = 0;
+        std::string team;
+        std::map<Info::ResourceName, std::size_t> inventory = {};
+    };
+
     class AIClient;
     class GUIClient;
 
@@ -55,6 +56,9 @@ namespace Zappy {
         std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
 
+        std::string formatTile(std::size_t width, std::size_t height) const;
+        std::string lookAround(std::size_t id);
+        void newGuiInfo(int fd);
         void addPlayer(std::size_t id, const std::string &team,
             std::size_t _remainingPlace);
         void removePlayer(std::unordered_map<int, AIClient>::iterator);
@@ -62,13 +66,14 @@ namespace Zappy {
         void rotatePlayer(std::size_t id, Rotate);
         void spawnEgg(std::size_t id);
         void spawnEgg(const std::string &team);
-        static Direction getOpositeDir(Direction);
-        bool takeResource(std::size_t id, ResourceName);
-        void setResource(std::size_t id, ResourceName);
+        void eggLaying(std::size_t id);
+        bool takeResource(std::size_t id, Info::ResourceName);
+        void setResource(std::size_t id, Info::ResourceName);
         bool eject(std::size_t id);
         bool startElevation(std::size_t id);
         void endElevation(std::size_t x, std::size_t y, std::size_t level,
             std::vector<std::size_t>);
+        void broadcast(std::size_t id, const std::string &text);
 
         [[nodiscard]] std::size_t getHeight() const
         {
@@ -78,31 +83,27 @@ namespace Zappy {
         {
             return _width;
         }
-        static std::string getResourceName(ResourceName name)
+        [[nodiscard]] bool getEnd() const
         {
-            return _resources.at(name).str;
+            return _end;
         }
         [[nodiscard]] std::size_t getConnectNbr(std::size_t) const;
-
-        static ResourceName getResource(const std::string &name);
+        [[nodiscard]] std::vector<std::string> getTeamsName() const;
+        [[nodiscard]] PlayerInfo getPlayerInfo(std::size_t id) const;
 
     private:
-        using Tile = std::map<ResourceName, std::size_t>;
-
-        struct Resource {
-            float density;
-            std::string str;
-        };
-
         struct Egg {
             std::string team;
             std::size_t x;
             std::size_t y;
         };
 
+        using EggIter =
+            std::unordered_map<std::size_t, Zappy::Environement::Egg>::iterator;
+
         struct Player {
             std::string team;
-            Direction dir;
+            Info::Direction dir;
             std::size_t level;
             bool elevation;
             std::size_t x;
@@ -111,17 +112,6 @@ namespace Zappy {
 
         using PlayerIter = std::unordered_map<std::size_t,
             Zappy::Environement::Player>::iterator;
-
-        struct Dir {
-            int x;
-            int y;
-            std::string str;
-        };
-
-        struct Elevation {
-            std::size_t nbPlayer;
-            Tile resources;
-        };
 
         struct Elevate {
             std::chrono::nanoseconds sleep;
@@ -135,20 +125,35 @@ namespace Zappy {
             std::size_t pos, int delta, std::size_t size);
         std::vector<std::size_t> checkElevation(
             std::size_t x, std::size_t y, std::size_t level, bool elevated);
-        void successElevation(std::size_t x, std::size_t y, const Elevation &,
-            const std::vector<size_t> &players);
+        void successElevation(std::size_t x, std::size_t y,
+            const Info::Elevation &, const std::vector<size_t> &players,
+            std::size_t level);
         void failElevation(const std::vector<size_t> &players);
-        void setResource(std::size_t tile, ResourceName name, std::size_t nb);
+        void setResource(
+            std::size_t tile, Info::ResourceName name, std::size_t nb);
         int getPlayerFd(std::size_t id);
         void setPlayerElevate(std::size_t id, bool value);
-        void handleEjectPlayer(PlayerIter, Direction);
+        void handleEjectPlayer(PlayerIter, Info::Direction);
+        void handleDestroyEgg(EggIter);
+        void checkEnd();
+        std::vector<std::size_t> getTileValue(std::size_t tile);
+
+        template<std::derived_from<Shared::GUIEvent> EventType,
+            typename... Args>
+        void sendToGUI(Args &&...args)
+        {
+            EventType event(std::forward<Args>(args)...);
+            event.send(std::vector<int>(std::views::keys(_clients.gui).begin(),
+                std::views::keys(_clients.gui).end()));
+        }
 
         std::size_t _width;
         std::size_t _height;
         std::size_t _eggId = 0;
         std::chrono::nanoseconds _sleep;
+        bool _end = false;
 
-        std::vector<Tile> _tiles;
+        std::vector<Info::Tile> _tiles;
         std::unordered_map<std::size_t, Egg> _eggs;
         std::unordered_map<std::size_t, Player> _players;
         std::vector<Elevate> _elevates;
@@ -157,14 +162,12 @@ namespace Zappy {
         Clients &_clients;
         std::unordered_map<std::string, std::size_t> &_teams;
 
-        static const std::unordered_map<ResourceName, Resource> _resources;
-        static const std::map<Direction, Dir> _directions;
-        static const std::unordered_map<std::size_t, Elevation> _elevations;
-
         static constexpr std::chrono::nanoseconds SLEEP =
             std::chrono::seconds(20);
         static constexpr std::chrono::nanoseconds ELEVATE =
             std::chrono::seconds(300);
+        static constexpr std::size_t MAX_LEVEL = 8;
+        static constexpr std::size_t WIN = 6;
     };
 } // namespace Zappy
 

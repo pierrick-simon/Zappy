@@ -12,7 +12,10 @@
     #include "graphics/Drawable.hpp"
 
 namespace Graphics {
-    class GameObject : public Transformable3D, public Drawable {};
+    class GameObject : public Transformable3D, public Drawable {
+    public:
+        virtual void update(float dt) = 0;
+    };
 } // namespace Graphics
 
 #endif

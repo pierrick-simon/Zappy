@@ -6,13 +6,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(SHARED_SRCS
-        Connect.cpp
-        Utils.cpp
-        Help.cpp
-        ArgsParser.cpp
-)
-
 list(TRANSFORM SHARED_SRCS PREPEND ${CMAKE_SOURCE_DIR}/shared/src/)
 
 set(MAIN
@@ -23,13 +16,23 @@ set(SRCS
         src/graphics/GameObject.cpp
         src/graphics/Transformable3D.cpp
         src/graphics/Scene.cpp
+        src/graphics/Camera.cpp
         src/graphics/primitives/Model.cpp
         src/Window.cpp
         src/GUI.cpp
         src/Assets.cpp
+        src/elements/Player.cpp
+        src/elements/Egg.cpp
+        src/elements/Resource.cpp
+        src/elements/Tile.cpp
+        src/elements/Map.cpp
+        src/elements/Elevation.cpp
+        src/elements/Environement.cpp
+        src/elements/Events.cpp
 )
 
 set(HEADERS
+        include/elements/
         include/
         src/
 )
@@ -87,8 +90,8 @@ if (NOT criterion_FOUND)
     FetchContent_MakeAvailable(criterion)
 endif ()
 
-add_executable(zappy_gui ${MAIN} ${SRCS} ${SHARED_SRCS})
-target_link_libraries(zappy_gui raylib raylib_cpp)
+add_executable(zappy_gui ${MAIN} ${SRCS})
+target_link_libraries(zappy_gui raylib raylib_cpp shared)
 
 target_compile_options(zappy_gui PRIVATE)
 
@@ -101,11 +104,11 @@ set(SRCS_TESTS
         tests/tests_init.cpp
 )
 
-add_executable(gui_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS} ${SHARED_SRCS})
+add_executable(gui_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS})
 
 target_compile_options(gui_tests_run_bin PRIVATE --coverage)
 target_link_options(gui_tests_run_bin PRIVATE --coverage)
-target_link_libraries(gui_tests_run_bin criterion raylib raylib_cpp)
+target_link_libraries(gui_tests_run_bin criterion raylib raylib_cpp shared)
 
 add_custom_target(remove_coverage
         COMMAND find ${CMAKE_BINARY_DIR} -name "*.gc*" -delete

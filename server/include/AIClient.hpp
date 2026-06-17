@@ -16,9 +16,12 @@
     #include <optional>
     #include <queue>
     #include <unordered_map>
-    #include "Environement.hpp"
+    #include "Info.hpp"
 
 namespace Zappy {
+
+    class Environement;
+
     class AIClient {
     public:
         AIClient(int fd, std::size_t id, std::string team,
@@ -36,7 +39,8 @@ namespace Zappy {
             return _alive;
         }
 
-        [[nodiscard]] std::map<ResourceName, std::size_t> getInventory() const
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getInventory() const
         {
             return _inventory;
         }
@@ -66,17 +70,19 @@ namespace Zappy {
         void checkAlive();
         void executeCommand();
         bool startCheckIncantation(const std::string &name);
+        void eggLaying(const std::string &name);
 
         void forward(std::istringstream &);
         void right(std::istringstream &);
         void left(std::istringstream &);
+        void look(std::istringstream &);
         void inventory(std::istringstream &);
         void connectNbr(std::istringstream &);
         void fork(std::istringstream &);
         void eject(std::istringstream &);
         void set(std::istringstream &);
         void take(std::istringstream &);
-        void incantation(std::istringstream &);
+        void broadcast(std::istringstream &);
 
         int _fd;
         bool _alive = true;
@@ -90,7 +96,7 @@ namespace Zappy {
         std::optional<SelectCommand> _command;
         bool _elevate = false;
 
-        std::map<ResourceName, std::size_t> _inventory;
+        std::map<Info::ResourceName, std::size_t> _inventory;
         std::vector<std::size_t> _elevationPlayers;
         Environement &_env;
 
