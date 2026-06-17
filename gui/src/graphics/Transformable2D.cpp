@@ -13,7 +13,7 @@ namespace Graphics {
         return this->_position;
     }
 
-    raylib::Quaternion &Transformable2D::getRotation()
+    float &Transformable2D::getRotation()
     {
         return this->_rotation;
     }
@@ -28,7 +28,7 @@ namespace Graphics {
         return this->_position;
     }
 
-    const raylib::Quaternion &Transformable2D::getRotation() const
+    const float &Transformable2D::getRotation() const
     {
         return this->_rotation;
     }
