@@ -34,8 +34,8 @@ namespace Zappy {
 
         void infoToRead();
         bool update();
-        void updateEnv(std::chrono::nanoseconds elapsed);
-        void updateAi(std::chrono::nanoseconds elapsed);
+        void updateEnv(std::chrono::milliseconds elapsed);
+        void updateAi(std::chrono::milliseconds elapsed);
         void updateGui();
         void addClient();
         void handleClient(const std::vector<int> &);
@@ -56,7 +56,6 @@ namespace Zappy {
         int _timeout = -1;
 
         std::size_t _f;
-        std::chrono::nanoseconds _fn;
         Environement _env;
 
         static bool RECEIVED_SIG_INT;
@@ -65,7 +64,6 @@ namespace Zappy {
 
         static constexpr std::string_view LOG_FILE = "server.log";
         static constexpr std::string_view GRAPHIC = "GRAPHIC";
-        static constexpr std::size_t SECOND_IN_NANO = 1000000;
         static const std::vector<std::string> DEFAULT_TEAMS;
         static constexpr int DEFAULT_PORT = 8080;
         static constexpr std::size_t DEFAULT_FREQ = 100;
