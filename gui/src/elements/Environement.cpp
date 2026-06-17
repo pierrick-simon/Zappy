@@ -17,15 +17,15 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace Zappy {
     Environement::Environement(int port, const std::string &ip,
         std::ofstream &logFile, bool &isConnect) :
+        _timeUnit(0),
         _connect(port, ip),
-        _logFile(logFile),
         _isConnect(isConnect),
-        _timeUnit(0)
+        _logFile(logFile)
     {
         _isConnect = false;
     }
 
-    bool Environement::update()
+    bool Environement::updateFromServer()
     {
         bool connected = true;
         auto info = _connect.infoToRead(0);
@@ -40,6 +40,13 @@ namespace Zappy {
                 handleEvents();
         }
         return connected;
+    }
+    void Environement::update(float dt)
+    {
+    }
+
+    void Environement::draw() const
+    {
     }
 
     bool Environement::connect()

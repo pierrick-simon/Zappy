@@ -5,14 +5,13 @@
 ** DESCRIPTION
 */
 
-#ifndef DRAWABLE_HPP
-    #define DRAWABLE_HPP
+#ifndef OBJECT_HPP
+    #define OBJECT_HPP
 
 namespace Graphics {
-    class Drawable {
+    class IObject {
     public:
-        virtual ~Drawable() = default;
-        virtual void draw() const = 0;
+        virtual ~IObject() = default;
     };
 } // namespace Graphics
 

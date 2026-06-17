@@ -8,13 +8,18 @@
 #ifndef GAMEOBJECT_HPP
     #define GAMEOBJECT_HPP
 
+    #include "../../include/graphics/IObject.hpp"
     #include "Transformable3D.hpp"
-    #include "graphics/Drawable.hpp"
+    #include "graphics/IDrawable.hpp"
+    #include "graphics/IUpdatable.hpp"
 
 namespace Graphics {
-    class GameObject : public Transformable3D, public Drawable {
+    class GameObject : public Transformable3D,
+                       public IDrawable,
+                       public IUpdatable,
+                       public IObject {
     public:
-        virtual void update(float dt) = 0;
+        void update(float dt) override;
     };
 } // namespace Graphics
 

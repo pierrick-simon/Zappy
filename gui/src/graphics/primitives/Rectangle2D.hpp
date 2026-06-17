@@ -13,7 +13,7 @@
 
 namespace Graphics {
 
-    class Rectangle2D : public raylib::Rectangle, public UIObject {
+    class Rectangle2D : public raylib::Rectangle, public UiObject {
     public:
         using Rectangle::Rectangle;
         void draw() const override;

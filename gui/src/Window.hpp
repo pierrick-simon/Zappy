@@ -16,24 +16,16 @@
 namespace Graphics {
     class Window : public raylib::Window {
     public:
-        Window(const Zappy::Environement &environment);
+        Window();
         void update();
         [[nodiscard]] static bool isRunning();
 
         Scene &getScene();
 
-        template<std::derived_from<GameObject> GameObjectType, typename... Args>
-        std::unique_ptr<GameObjectType> &addObject(Args &&...args)
+        template<std::derived_from<IObject> GameObjectType>
+        void addObject(GameObjectType &gameObject)
         {
-            return this->getScene().addObject(
-                std::move(std::make_unique<GameObjectType>(args...)));
-        }
-
-        template<std::derived_from<UIObject> UiObjectType, typename... Args>
-        std::unique_ptr<UiObjectType> &addObject(Args &&...args)
-        {
-            return this->getScene().addObject(
-                std::move(std::make_unique<UiObjectType>(args...)));
+            return this->getScene().addObject(gameObject);
         }
 
     private:

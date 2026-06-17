@@ -12,10 +12,9 @@
 #include "Assets.hpp"
 
 namespace Graphics {
-    Window::Window(const Zappy::Environement &environment) :
+    Window::Window() :
         raylib::Window(
-            WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING),
-        _scene(environment)
+            WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
     {
         this->SetTargetFPS(TARGET_FPS);
     }

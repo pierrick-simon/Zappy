@@ -9,10 +9,6 @@
 
 namespace Graphics {
 
-    Scene::Scene(const Zappy::Environement &environment) :
-        _environment(environment)
-    {
-    }
     raylib::Camera &Scene::getCamera()
     {
         return this->_camera;
@@ -26,21 +22,34 @@ namespace Graphics {
     void Scene::update(float dt)
     {
         this->_camera.update(dt);
-        for (auto &object : this->_gameObjects)
-            object->update(dt);
-        for (auto &object : this->_uiObjects)
-            object->update(dt);
+        for (auto &object : this->_objects) {
+            try {
+                auto &updatable = dynamic_cast<IUpdatable &>(object.get());
+                updatable.update(dt);
+            } catch (std::bad_cast &) {
+            }
+        }
     }
 
     void Scene::drawUiObjects() const
     {
-        for (auto &object : this->_uiObjects)
-            object->draw();
+        for (auto &object : this->_objects) {
+            try {
+                auto &uiObject = dynamic_cast<UiObject &>(object.get());
+                uiObject.draw();
+            } catch (std::bad_cast &) {
+            }
+        }
     }
 
     void Scene::drawGameObjects() const
     {
-        for (auto &object : this->_gameObjects)
-            object->draw();
+        for (auto &object : this->_objects) {
+            try {
+                auto &gameObjecte = dynamic_cast<GameObject &>(object.get());
+                gameObjecte.draw();
+            } catch (std::bad_cast &) {
+            }
+        }
     }
 } // namespace Graphics

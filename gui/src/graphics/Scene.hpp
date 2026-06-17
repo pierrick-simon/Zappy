@@ -23,27 +23,17 @@ namespace Zappy {
 namespace Graphics {
     class Scene {
     public:
-        Scene(const Zappy::Environement &environment);
+        Scene() = default;
 
         raylib::Camera &getCamera();
         [[nodiscard]] const raylib::Camera &getCamera() const;
         void update(float dt);
         void drawUiObjects() const;
 
-        template<std::derived_from<GameObject> GameObjectType>
-        std::unique_ptr<GameObjectType> &addObject(
-            std::unique_ptr<GameObjectType> gameObject)
+        template<std::derived_from<IObject> GameObjectType>
+        void addObject(GameObjectType &gameObject)
         {
-            return reinterpret_cast<std::unique_ptr<GameObjectType> &>(
-                this->_gameObjects.emplace_back(std::move(gameObject)));
-        }
-
-        template<std::derived_from<UIObject> UiObjectType>
-        std::unique_ptr<UiObjectType> &addObject(
-            std::unique_ptr<UiObjectType> gameObject)
-        {
-            return reinterpret_cast<std::unique_ptr<UiObjectType> &>(
-                this->_uiObjects.emplace_back(std::move(gameObject)));
+            this->_objects.emplace_back(gameObject);
         }
 
         void drawGameObjects() const;
@@ -51,10 +41,10 @@ namespace Graphics {
     private:
         static constexpr raylib::Vector3 CAMERA_POS = {200, 200, 0};
         static constexpr raylib::Vector3 CAMERA_TARGET = Vector3::ZERO;
-        std::vector<std::unique_ptr<GameObject>> _gameObjects {};
-        std::vector<std::unique_ptr<UIObject>> _uiObjects {};
+        [[deprecated]] std::vector<std::unique_ptr<GameObject>> _gameObjects {};
+        [[deprecated]] std::vector<std::unique_ptr<UiObject>> _uiObjects {};
+        std::vector<std::reference_wrapper<IObject>> _objects;
         Camera _camera {CAMERA_POS};
-        const Zappy::Environement &_environment;
     };
 } // namespace Graphics
 
