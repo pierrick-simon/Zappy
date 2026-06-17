@@ -10,8 +10,6 @@
 #include <raylib-cpp.hpp>
 
 #include "Assets.hpp"
-#include "graphics/primitives/Rectangle2D.hpp"
-#include "graphics/primitives/Sprite2D.hpp"
 
 namespace Graphics {
     Window::Window() :
