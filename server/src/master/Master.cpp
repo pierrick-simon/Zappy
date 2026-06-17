@@ -20,13 +20,14 @@ namespace Zappy {
         _font(SfmlUtils::SfmlUtils::loadFromFile(FONT.data())),
         _process(port, clients),
         _toolBar(_font, port, _process, clients),
+        _aiDescription(_font, _ais),
         _clients(clients),
         _teams(teams)
     {
         _window.setFramerateLimit(Init::FPS);
         _window.setView(_view);
         _rec.setSize({Init::WINDOW_SIZE_X, Init::WINDOW_SIZE_Y});
-        _rec.setFillColor(Init::BACKGROUND_COLOR);
+        _rec.setFillColor(Init::PALEGREY);
         _window.setFramerateLimit(Init::FPS);
     }
 
@@ -38,6 +39,7 @@ namespace Zappy {
             _window.clear(sf::Color::Black);
             _window.setView(_view);
             _window.draw(_rec);
+            _aiDescription.draw(_window);
             _toolBar.draw(_window);
             _window.display();
             value = true;
@@ -53,6 +55,7 @@ namespace Zappy {
         while (_window.pollEvent(event)) {
             handleResize(event);
             _toolBar.event(event, mousePos);
+            _aiDescription.event(event, mousePos);
             if (event.type == sf::Event::Closed ||
                 (event.type == sf::Event::KeyPressed &&
                     event.key.code == sf::Keyboard::Escape))
@@ -82,4 +85,8 @@ namespace Zappy {
         _view.setViewport(sf::FloatRect(pos.x, pos.y, size.x, size.y));
         _window.setView(_view);
     }
+
+    const std::unordered_map<std::string, std::string> Master::_ais = {
+        {"Survivor", "Take food on his pass."},
+    };
 } // namespace Zappy

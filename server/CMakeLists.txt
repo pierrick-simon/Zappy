@@ -18,6 +18,8 @@ set(SRCS
         src/master/Master.cpp
         src/master/ToolBar.cpp
         src/master/AddProcess.cpp
+        src/master/AiDescription.cpp
+        src/master/DescriptionBox.cpp
 )
 
 set(HEADERS

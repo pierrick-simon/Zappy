@@ -11,6 +11,7 @@
     #include <SFML/Graphics.hpp>
     #include <string_view>
     #include "AddProcess.hpp"
+    #include "AiDescription.hpp"
     #include "Client.hpp"
     #include "ToolBar.hpp"
 
@@ -38,12 +39,14 @@ namespace Zappy {
 
         AddProcess _process;
         ToolBar _toolBar;
+        AiDescription _aiDescription;
 
         Clients &_clients;
         std::unordered_map<std::string, std::size_t> &_teams;
 
-        static constexpr std::string_view FONT = "public/Font.ttf";
+        static const std::unordered_map<std::string, std::string> _ais;
 
+        static constexpr std::string_view FONT = "public/Font.ttf";
         static constexpr std::string_view TITLE = "Zappy Master Server";
     };
 } // namespace Zappy

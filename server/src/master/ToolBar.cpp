@@ -17,8 +17,8 @@ namespace Zappy {
         _showTexture(SfmlUtils::SfmlUtils::loadTextureFromFile(SHOW.data())),
         _play({{Pause, _playTexture, sf::Color::Red},
             {Play, _pauseTexture, sf::Color::Green}}),
-        _show({{None, _showTexture, sf::Color::Red},
-            {Show, _showTexture, sf::Color::Green}}),
+        _show({{None, _showTexture, sf::Color::Green},
+            {Show, _showTexture, sf::Color::Red}}),
         _port(port),
         _clients(clients),
         _process(process)
