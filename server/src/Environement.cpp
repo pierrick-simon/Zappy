@@ -120,7 +120,8 @@ namespace Zappy {
                 continue;
             }
             auto item = Info::directions.begin();
-            std::advance(item, std::rand() % Info::directions.size());
+            // std::advance(item, std::rand() % Info::directions.size());
+            std::advance(item, 0);
             _players.emplace(
                 id, Player {team, item->first, 1, false, egg.x, egg.y});
             Shared::Utils::logMsg(_logFile,
@@ -488,29 +489,45 @@ namespace Zappy {
         return status;
     }
 
-    Shared::Vector2<int> Environement::getBroadCastVector(Player &sender, Player &receiver)
+    Shared::Vector2<int> Environement::getBroadCastVector(const Player &sender, const Player &receiver)
     {
 
-        std::array<std::pair<Shared::Vector2<int>, double>, 9> distances;
+        std::array<Shared::Vector2<int>, 9> vectors;
         std::size_t index = 0;
         std::size_t minDist = UINT32_MAX;
         std::size_t minIndex = 0;
 
         for (std::size_t i = -_width; i < _width; i += _width) {
             for (std::size_t j = -_height; j < _height; j += _height) {
-                distances[index].first.x = sender.x - (receiver.x + i);
-                distances[index].first.y = sender.y - (receiver.y + j);
-                distances[index].second = std::sqrt(std::pow(distances[index].first.x, 2) + std::pow(distances[index].first.y, 2));
+                vectors[index].x = sender.x - (receiver.x + i);
+                vectors[index].y = sender.y - (receiver.y + j);
                 ++index;
             }
         }
         for (std::size_t i = index; i < index; ++i) {
-            if (distances[i].second < minDist) {
-                minDist = distances[i].second;
+            auto norm = vectors[i].norm();
+            if (norm < minDist) {
+                minDist = norm;
                 minIndex = i;
             }
         }
-        return distances[minIndex].first;
+        return vectors[minIndex];
+    }
+
+    std::size_t Environement::getTileNb(const Player &receiver, const Shared::Vector2<int> &v)
+    {
+        if (v.x == 0 && v.y == 0)
+            return 0;
+        auto dir = Info::directions.at(receiver.dir);
+        Shared::Vector2<int> dirV(dir.x, dir.y);
+        auto angle = v.angle(dirV);
+        for (auto chunk: _broadcastChunks) {
+            auto lowerAngle = dirV.angle(chunk.second.first);
+            auto hightAngle = dirV.angle(chunk.second.second);
+            if (angle <= std::max(lowerAngle, hightAngle) && angle > std::min(lowerAngle, hightAngle))
+                return chunk.first;
+        }
+        throw ServerException("Error getTileNb");
     }
 
     void Environement::broadcast(std::size_t id, const std::string &text)
@@ -519,8 +536,12 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
-        for (auto &p: _players)
+        for (auto &p: _players) {
+            if (p.first == id)
+                continue;
             auto v = getBroadCastVector(find->second, p.second);
+            auto i = getTileNb(p.second, v);
+        }
     }
 
     std::size_t Environement::getConnectNbr(std::size_t id) const
@@ -588,4 +609,17 @@ namespace Zappy {
         std::ranges::copy(std::views::values(_tiles[tile]), value.begin());
         return value;
     }
+
+    const std::unordered_map<std::size_t, std::pair<Shared::Vector2<double>, Shared::Vector2<double>>> Environement::_broadcastChunks = {
+        {1, {{0.0, 1.5}, {-0.5, 1.5}}},
+        {2, {{-0.5, 1.5}, {-1.5, 0.5}}},
+        {3, {{-1.5, 0.5}, {-1.5, -0.5}}},
+        {4, {{-1.5, -0.5}, {-0.5, -1.5}}},
+        {5, {{-0.5, -1.5}, {0.5, -1.5}}},
+        {6, {{0.5, -1.5}, {1.5, -0.5}}},
+        {7, {{1.5, -0.5}, {1.5, 0.5}}},
+        {8, {{1.5, 0.5}, {0.5, 1.5}}},
+        {1, {{0.5, 1.5}, {0.0, 1.5}}}
+    };
+
 }; // namespace Zappy
