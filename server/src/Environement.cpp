@@ -20,6 +20,8 @@
 #include "ServerException.hpp"
 #include "Utils.hpp"
 
+            #include <iostream>
+
 namespace ServerCmd = Shared::AICommunication::Server;
 
 namespace Zappy {
@@ -491,14 +493,14 @@ namespace Zappy {
         std::size_t minDist = UINT32_MAX;
         std::size_t minIndex = 0;
 
-        for (std::size_t i = -_width; i < _width; i += _width) {
-            for (std::size_t j = -_height; j < _height; j += _height) {
-                vectors[index].x = sender.x - (receiver.x + i);
-                vectors[index].y = sender.y - (receiver.y + j);
+        for (std::size_t j = 0; j < 3; ++j) {
+            for (std::size_t i = 0; i < 3; ++i) {
+                vectors[index].x = sender.x - (receiver.x + ((i - 1) * _width));
+                vectors[index].y = sender.y - (receiver.y + ((j - 1) * _height));
                 ++index;
             }
         }
-        for (std::size_t i = index; i < index; ++i) {
+        for (std::size_t i = 0; i < index; ++i) {
             auto norm = vectors[i].norm();
             if (norm < minDist) {
                 minDist = norm;
@@ -514,10 +516,15 @@ namespace Zappy {
             return 0;
         auto dir = Info::directions.at(receiver.dir);
         Shared::Vector2<int> dirV(dir.x, dir.y);
-        auto angle = v.angle(dirV);
+        auto angle = dirV.angle(v);
+        std::cout << "receiver: (" << receiver.x << ";" << receiver.y << ")" << std::endl;
+        std::cout << "vector: (" << v.x << ";" << v.y << ")" << std::endl;
+        std::cout << "angle: " << angle << std::endl;
         for (auto chunk: _broadcastChunks) {
             auto lowerAngle = dirV.angle(chunk.second.first);
             auto hightAngle = dirV.angle(chunk.second.second);
+            std::cout << "lowerV: (" << chunk.second.first.x << ";" << chunk.second.first.y << ")    hightV: (" << chunk.second.second.x << ";" << chunk.second.second.y << ")" << std::endl;
+            std::cout << "lowerAngle: " << lowerAngle << "    hightAngle:" << hightAngle << std::endl;
             if (angle <= std::max(lowerAngle, hightAngle) && angle > std::min(lowerAngle, hightAngle))
                 return chunk.first;
         }
@@ -535,6 +542,7 @@ namespace Zappy {
                 continue;
             auto v = getBroadCastVector(find->second, p.second);
             auto i = getTileNb(p.second, v);
+            std::cout << "Found: " << i << std::endl;
         }
     }
 

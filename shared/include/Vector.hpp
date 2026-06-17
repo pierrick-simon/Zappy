@@ -18,19 +18,32 @@ namespace Shared {
         T x;
         T y;
 
-        Vector2() = default;
+        Vector2() :
+            x(0), y(0) {};
         Vector2(const T &x, const T &y) :
             x(x), y(y) {};
         
-        T norm() const
+        double norm() const
         {
             return std::sqrt(x * x + y * y);
         }
 
         template<typename VT>
-        T angle(const Vector2<VT> &v) const
+        double dot(const Vector2<VT> &v) const
         {
-            return std::acos((*this * v) / (norm() * v.norm()));
+            return x * v.x + y * v.y;
+        };
+
+        template<typename VT>
+        double det(const Vector2<VT> &v) const
+        {
+            return x * v.y - y * v.x;
+        };
+
+        template<typename VT>
+        double angle(const Vector2<VT> &v) const
+        {
+            return std::atan2(det(v), dot(v));
         }
 
         template<typename VT>
@@ -45,12 +58,6 @@ namespace Shared {
         Vector2<T> operator*(const VT &v) const
         {
             return Vector2<T>(x * v, y * v);
-        };
-
-        template<typename VT>
-        T operator*(const Vector2<VT> &v) const
-        {
-            return std::sqrt(x * v.x + y * v.y);
         };
     };
 
