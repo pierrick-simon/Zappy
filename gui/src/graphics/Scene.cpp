@@ -25,13 +25,21 @@ namespace Graphics {
     void Scene::update(float dt)
     {
         this->_camera.update(dt);
-        for (auto &object : this->_objects)
+        for (auto &object : this->_gameObjects)
+            object->update(dt);
+        for (auto &object : this->_uiObjects)
             object->update(dt);
     }
 
-    void Scene::draw() const
+    void Scene::drawUiObjects() const
     {
-        for (auto &object : this->_objects)
+        for (auto &object : this->_uiObjects)
+            object->draw();
+    }
+
+    void Scene::drawGameObjects() const
+    {
+        for (auto &object : this->_gameObjects)
             object->draw();
     }
 } // namespace Graphics
