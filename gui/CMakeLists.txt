@@ -21,6 +21,7 @@ set(SRCS
         src/graphics/Camera.cpp
         src/graphics/primitives/Model.cpp
         src/graphics/primitives/Text2D.cpp
+        src/graphics/primitives/Rectangle2D.cpp
         src/Window.cpp
         src/GUI.cpp
         src/Assets.cpp
