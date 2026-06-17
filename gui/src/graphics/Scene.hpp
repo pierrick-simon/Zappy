@@ -14,12 +14,16 @@
     #include "GameObject.hpp"
     #include "UtilsVector.hpp"
     #include "graphics/Camera.hpp"
-#include "graphics/UiObject.hpp"
+    #include "graphics/UiObject.hpp"
+
+namespace Zappy {
+    class Environement;
+}
 
 namespace Graphics {
     class Scene {
     public:
-        Scene();
+        Scene(const Zappy::Environement &environment);
 
         raylib::Camera &getCamera();
         [[nodiscard]] const raylib::Camera &getCamera() const;
@@ -50,6 +54,7 @@ namespace Graphics {
         std::vector<std::unique_ptr<GameObject>> _gameObjects {};
         std::vector<std::unique_ptr<UIObject>> _uiObjects {};
         Camera _camera {CAMERA_POS};
+        const Zappy::Environement &_environment;
     };
 } // namespace Graphics
 

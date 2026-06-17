@@ -16,7 +16,7 @@
 namespace Graphics {
     class Window : public raylib::Window {
     public:
-        Window();
+        Window(const Zappy::Environement &environment);
         void update();
         [[nodiscard]] static bool isRunning();
 

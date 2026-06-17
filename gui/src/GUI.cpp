@@ -15,7 +15,7 @@ namespace Zappy {
             Parser::ArgsParser::getArg<std::string>(
                 args, "-h", DEFAULT_HOST.data()),
             _logFile, _isConnect),
-
+        _window(_env),
         _logFile(std::string(LOG_FILE))
     {
         Shared::Utils::logMsg(_logFile, "Client GUI Open.");

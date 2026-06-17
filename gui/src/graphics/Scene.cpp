@@ -8,9 +8,10 @@
 #include "Scene.hpp"
 
 namespace Graphics {
-    Scene::Scene()
+
+    Scene::Scene(const Zappy::Environement &environment) :
+        _environment(environment)
     {
-        this->_camera.Update(CAMERA_CUSTOM);
     }
     raylib::Camera &Scene::getCamera()
     {
