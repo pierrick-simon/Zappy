@@ -54,7 +54,8 @@ namespace Zappy {
         }
     }
 
-    std::chrono::nanoseconds AIClient::update(std::chrono::nanoseconds elapsed)
+    std::chrono::milliseconds AIClient::update(
+        std::chrono::milliseconds elapsed)
     {
         if (_sleep.count() > 0)
             _sleep -= elapsed;
@@ -261,7 +262,7 @@ namespace Zappy {
             {ClientCmd::IVT.getStr(),
                 Command {&AIClient::inventory, std::chrono::seconds(1)}},
             {ClientCmd::CNT.getStr(),
-                Command {&AIClient::connectNbr, std::chrono::nanoseconds(1)}},
+                Command {&AIClient::connectNbr, std::chrono::milliseconds(1)}},
             {ClientCmd::FRK.getStr(),
                 Command {&AIClient::fork, std::chrono::seconds(42)}},
             {ClientCmd::EJT.getStr(),

@@ -98,7 +98,7 @@ namespace Zappy {
         for (std::size_t i = 0; i < x; i++) {
             for (std::size_t j = 0; j < y; j++) {
                 std::istringstream tmp(
-                    std::to_string(x) + " " + std::to_string(y));
+                    std::to_string(i) + " " + std::to_string(j));
                 tileInfo(tmp);
             }
         }
