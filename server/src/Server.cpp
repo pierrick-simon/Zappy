@@ -89,8 +89,10 @@ namespace Zappy {
         auto elapsed = std::chrono::nanoseconds((_clock - now) / _fn);
         _clock = now;
         _timeout = -1;
-        updateEnv(elapsed);
-        updateAi(elapsed);
+        if (!_master || _master && _master->getPlaying()) {
+            updateEnv(elapsed);
+            updateAi(elapsed);
+        }
         updateGui();
         return _env.getEnd();
     }

@@ -7,6 +7,7 @@
 
 #include "Connect.hpp"
 #include <arpa/inet.h>
+#include <ifaddrs.h>
 #include <netinet/in.h>
 #include <poll.h>
 #include <sys/socket.h>
@@ -136,5 +137,22 @@ namespace Shared {
         if (n <= 0)
             throw Shared::Connect::CloseException();
         str.append(buf, n);
+    }
+
+    std::string Connect::getIp()
+    {
+        std::string ip;
+        struct ifaddrs *interfaces = {};
+        struct ifaddrs *ifa = {};
+        if (getifaddrs(&interfaces) == -1)
+            throw GetAddrsException();
+        for (ifa = interfaces; ifa != nullptr; ifa = ifa->ifa_next) {
+            if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET) {
+                auto *addr = (struct sockaddr_in *) ifa->ifa_addr;
+                ip = inet_ntoa(addr->sin_addr);
+            }
+        }
+        freeifaddrs(interfaces);
+        return ip;
     }
 } // namespace Shared

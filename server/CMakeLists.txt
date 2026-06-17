@@ -16,6 +16,8 @@ set(SRCS
         src/GUIClient.cpp
         src/Environement.cpp
         src/master/Master.cpp
+        src/master/ToolBar.cpp
+        src/master/AddProcess.cpp
 )
 
 set(HEADERS

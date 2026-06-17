@@ -12,6 +12,7 @@ set(SHARED
 
 set(SFML_SRCS
     SfmlUtils.cpp
+    AButton.cpp
 )
 
 list(TRANSFORM SFML_SRCS PREPEND src/sfml/)

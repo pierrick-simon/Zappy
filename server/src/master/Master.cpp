@@ -6,31 +6,28 @@
 */
 
 #include "Master.hpp"
+#include "Init.hpp"
 #include "SfmlUtils.hpp"
 
 namespace Zappy {
     Master::Master(int port, Clients &clients,
         std::unordered_map<std::string, std::size_t> &teams) :
-        _window(sf::RenderWindow(
-            sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_BITS),
-            "Zappy Server", sf::Style::Close | sf::Style::Resize)),
-        _view(sf::FloatRect(0.0, 0.0, WINDOW_SIZE_X, WINDOW_SIZE_Y)),
+        _window(sf::RenderWindow(sf::VideoMode(Init::WINDOW_SIZE_X,
+                                     Init::WINDOW_SIZE_Y, Init::WINDOW_BITS),
+            TITLE.data(), sf::Style::Close | sf::Style::Resize)),
+        _view(
+            sf::FloatRect(0.0, 0.0, Init::WINDOW_SIZE_X, Init::WINDOW_SIZE_Y)),
         _font(SfmlUtils::SfmlUtils::loadFromFile(FONT.data())),
-        _port(port),
+        _process(port, clients),
+        _toolBar(_font, port, _process, clients),
         _clients(clients),
         _teams(teams)
     {
-        _window.setFramerateLimit(FPS);
+        _window.setFramerateLimit(Init::FPS);
         _window.setView(_view);
-        _rec.setSize({WINDOW_SIZE_X, WINDOW_SIZE_Y});
-        _rec.setFillColor(BACKGROUND_COLOR);
-        _window.setFramerateLimit(FPS);
-    }
-
-    void Master::addGui()
-    {
-        if (_clients.gui.empty())
-            _process.add(GUI_EXEC.data(), {"-p", std::to_string(_port)});
+        _rec.setSize({Init::WINDOW_SIZE_X, Init::WINDOW_SIZE_Y});
+        _rec.setFillColor(Init::BACKGROUND_COLOR);
+        _window.setFramerateLimit(Init::FPS);
     }
 
     bool Master::update()
@@ -41,6 +38,7 @@ namespace Zappy {
             _window.clear(sf::Color::Black);
             _window.setView(_view);
             _window.draw(_rec);
+            _toolBar.draw(_window);
             _window.display();
             value = true;
         }
@@ -50,8 +48,11 @@ namespace Zappy {
     void Master::event()
     {
         sf::Event event;
+        sf::Vector2f mousePos =
+            _window.mapPixelToCoords(sf::Mouse::getPosition(_window));
         while (_window.pollEvent(event)) {
             handleResize(event);
+            _toolBar.event(event, mousePos);
             if (event.type == sf::Event::Closed ||
                 (event.type == sf::Event::KeyPressed &&
                     event.key.code == sf::Keyboard::Escape))
@@ -63,8 +64,8 @@ namespace Zappy {
     {
         if (event.type != sf::Event::Resized)
             return;
-        const auto gameW = static_cast<float>(WINDOW_SIZE_X);
-        const auto gameH = static_cast<float>(WINDOW_SIZE_Y);
+        const auto gameW = static_cast<float>(Init::WINDOW_SIZE_X);
+        const auto gameH = static_cast<float>(Init::WINDOW_SIZE_Y);
         auto windowRatio = static_cast<float>(_window.getSize().x) /
             static_cast<float>(_window.getSize().y);
         float viewRatio = gameW / gameH;
