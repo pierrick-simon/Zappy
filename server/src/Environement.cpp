@@ -5,13 +5,13 @@
 ** Environement
 */
 
-#include "Environement.hpp"
 #include <algorithm>
 #include <array>
 #include <ctime>
 #include <optional>
 #include <random>
 #include <ranges>
+#include "Environement.hpp"
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "GUIClient.hpp"
@@ -19,6 +19,8 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
+
+        #include <iostream>
 
 namespace ServerCmd = Shared::AICommunication::Server;
 
@@ -34,7 +36,7 @@ namespace Zappy {
         _clients(clients),
         _teams(teams)
     {
-        std::srand(std::time(nullptr));
+        std::srand(67);
         for (auto tile : _tiles)
             tile = Info::INIT_RESOUCES;
     }
@@ -81,16 +83,18 @@ namespace Zappy {
     std::string Environement::lookAround(std::size_t id)
     {
         auto p = _players.at(id);
+        auto dir = Info::directions.at(p.dir);
         std::string list = "[";
         Shared::Vector2<long> left(
-            static_cast<long>(p.y), static_cast<long>(-p.x));
+            static_cast<long>(dir.y), static_cast<long>(-dir.x));
         Shared::Vector2<long> right(
-            static_cast<long>(-p.y), static_cast<long>(p.x));
+            static_cast<long>(-dir.y), static_cast<long>(dir.x));
 
         for (std::size_t i = 0; i <= p.level; ++i) {
             Shared::Vector2<std::size_t> pos(p.x, p.y);
-            pos += left * i;
-            for (std::size_t j = 0; j < (p.level * 2) + 1; ++j) {
+            pos.x = circularMove(pos.x, static_cast<int>((left.x + dir.x) * i), _width);
+            pos.y = circularMove(pos.y, static_cast<int>((left.y + dir.y) * i), _height);
+            for (std::size_t j = 0; j < (i * 2) + 1; ++j) {
                 list += formatTile(pos.x, pos.y) + ",";
                 pos.x = circularMove(pos.x, static_cast<int>(right.x), _width);
                 pos.y = circularMove(pos.y, static_cast<int>(right.y), _height);
@@ -194,11 +198,11 @@ namespace Zappy {
         auto tile = _width * height + width;
         info.resources = _tiles[tile];
         for (const auto &egg : _eggs) {
-            if (egg.second.x == width && egg.second.y)
+            if (egg.second.x == width && egg.second.y == height)
                 info.eggs.push_back({egg.first, egg.second.team});
         }
         for (const auto &player : _players) {
-            if (player.second.x == width && player.second.y)
+            if (player.second.x == width && player.second.y == height)
                 info.players.push_back({player.first, player.second.team});
         }
         return info;
