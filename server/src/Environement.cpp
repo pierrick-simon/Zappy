@@ -5,13 +5,13 @@
 ** Environement
 */
 
+#include "Environement.hpp"
 #include <algorithm>
 #include <array>
 #include <ctime>
 #include <optional>
 #include <random>
 #include <ranges>
-#include "Environement.hpp"
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
 #include "GUIClient.hpp"
@@ -83,7 +83,7 @@ namespace Zappy {
     std::string Environement::lookAround(std::size_t id)
     {
         auto p = _players.at(id);
-        auto dir = Info::directions.at(p.dir);
+        const auto &dir = Info::directions.at(p.dir);
         std::string list = "[";
         Shared::Vector2<long> left(
             static_cast<long>(dir.y), static_cast<long>(-dir.x));
@@ -92,8 +92,10 @@ namespace Zappy {
 
         for (std::size_t i = 0; i <= p.level; ++i) {
             Shared::Vector2<std::size_t> pos(p.x, p.y);
-            pos.x = circularMove(pos.x, static_cast<int>((left.x + dir.x) * i), _width);
-            pos.y = circularMove(pos.y, static_cast<int>((left.y + dir.y) * i), _height);
+            pos.x = circularMove(
+                pos.x, static_cast<int>((left.x + dir.x) * i), _width);
+            pos.y = circularMove(
+                pos.y, static_cast<int>((left.y + dir.y) * i), _height);
             for (std::size_t j = 0; j < (i * 2) + 1; ++j) {
                 list += formatTile(pos.x, pos.y) + ",";
                 pos.x = circularMove(pos.x, static_cast<int>(right.x), _width);
