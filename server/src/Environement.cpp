@@ -483,24 +483,28 @@ namespace Zappy {
     }
 
     Shared::Vector2<int> Environement::getBroadCastVector(
-        const Player &sender, const Player &receiver)
+        const Player &sender, const Player &receiver) const
     {
 
         std::array<Shared::Vector2<int>, 9> vectors;
         std::size_t index = 0;
-        std::size_t minDist = UINT32_MAX;
+        double minDist = -1;
         std::size_t minIndex = 0;
 
         for (int j = -1; j <= 1; ++j) {
             for (int i = -1; i <= 1; ++i) {
-                vectors[index].x = sender.x - (receiver.x + (i * _width));
-                vectors[index].y = sender.y - (receiver.y + (j * _height));
+                vectors[index].x = static_cast<int>(sender.x) -
+                    (static_cast<int>(receiver.x) +
+                        (i * static_cast<int>(_width)));
+                vectors[index].y = static_cast<int>(sender.y) -
+                    (static_cast<int>(receiver.y) +
+                        (j * static_cast<int>(_height)));
                 ++index;
             }
         }
         for (std::size_t i = 0; i < index; ++i) {
             auto norm = vectors[i].norm();
-            if (norm < minDist) {
+            if (norm < minDist || minDist == -1) {
                 minDist = norm;
                 minIndex = i;
             }
@@ -513,7 +517,7 @@ namespace Zappy {
     {
         if (v.x == 0 && v.y == 0)
             return 0;
-        auto dir = Info::directions.at(receiver.dir);
+        const auto &dir = Info::directions.at(receiver.dir);
         Shared::Vector2<int> dirV(dir.x, dir.y);
         auto angle = dirV.angle(v);
         for (auto chunk : _broadcastChunks) {

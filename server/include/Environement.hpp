@@ -87,8 +87,8 @@ namespace Zappy {
         void endElevation(std::size_t x, std::size_t y, std::size_t level,
             std::vector<std::size_t>);
         Shared::Vector2<int> getBroadCastVector(
-            const Player &sender, const Player &receiver);
-        std::size_t getTileNb(
+            const Player &sender, const Player &receiver) const;
+        static std::size_t getTileNb(
             const Player &receiver, const Shared::Vector2<int> &v);
         void broadcast(std::size_t id, const std::string &text);
 

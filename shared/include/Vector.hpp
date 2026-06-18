@@ -23,25 +23,25 @@ namespace Shared {
         Vector2(const T &x, const T &y) :
             x(x), y(y) {};
 
-        double norm() const
+        [[nodiscard]] double norm() const
         {
             return std::sqrt(x * x + y * y);
         }
 
         template<typename VT>
-        double dot(const Vector2<VT> &v) const
+        [[nodiscard]] double dot(const Vector2<VT> &v) const
         {
             return x * v.x + y * v.y;
         };
 
         template<typename VT>
-        double det(const Vector2<VT> &v) const
+        [[nodiscard]] double det(const Vector2<VT> &v) const
         {
             return x * v.y - y * v.x;
         };
 
         template<typename VT>
-        double angle(const Vector2<VT> &v) const
+        [[nodiscard]] double angle(const Vector2<VT> &v) const
         {
             return std::atan2(det(v), dot(v));
         }
