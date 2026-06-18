@@ -52,6 +52,8 @@ def main():
         handler.client.disconnect()
     except BaseException as e:
         print(e, file=sys.stderr)
+        import traceback
+        traceback.print_exc()
         return 84
 
 
