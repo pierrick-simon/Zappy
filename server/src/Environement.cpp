@@ -5,7 +5,6 @@
 ** Environement
 */
 
-#include "Environement.hpp"
 #include <algorithm>
 #include <array>
 #include <ctime>
@@ -19,8 +18,7 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
-
-        #include <iostream>
+#include "Environement.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
 
