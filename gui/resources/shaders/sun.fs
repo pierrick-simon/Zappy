@@ -1,45 +1,35 @@
 #version 330
 
 in vec2 fragTexCoord;
-in vec3 fragNormal;
+in vec4 fragColor;
 in vec3 fragPos;
+in vec3 fragNormal;
 
 out vec4 finalColor;
 
-uniform vec3 sunDirection;
-uniform vec4 sunColor;
-uniform vec3 cameraPos; 
 uniform sampler2D texture0;
+uniform vec4 colDiffuse;
+uniform vec3 sunDirection;
+uniform vec3 sunColor;
+uniform vec3 cameraPos;
 
-void main() {
+void main()
+{
+    vec4 tex = texture(texture0, fragTexCoord);
+    vec4 albedo = tex * colDiffuse * fragColor;
 
-	vec4 textureColor;
-	vec4 color;
-	vec3 lightDir;
-	float lightIntensity;
+    vec3 normal = normalize(fragNormal);
+    vec3 direction = normalize(-sunDirection);
 
+    float NdotL = max(dot(normal, direction), 0.0);
+    vec3 ambient = 0.35 * sunColor;
+    vec3 diffuse = NdotL * sunColor;
 
-	// Sample the pixel color from the texture using the sampler at this texture coordinate location.
-	textureColor = texture(texture0, fragTexCoord);
+    vec3 camPosDelta = normalize(cameraPos - fragPos);
+    vec3 reflectionVector = reflect(-direction, normal);
+    float spec = pow(max(dot(camPosDelta, reflectionVector), 0.0), 32.0);
+    vec3 specular = 0.35 * spec * sunColor;
 
-	// Set the default output color to the ambient light value for all pixels.
-	color = vec4(0.1);
-
-	// Invert the light direction for calculations.
-	lightDir = -sunDirection;
-
-	// Calculate the amount of light on this pixel.
-	lightIntensity = clamp(dot(fragNormal, lightDir), 0.0f, 1.0f);
-
-	if(lightIntensity > 0.0f)
-	{
-		// Determine the final diffuse color based on the diffuse color and the amount of light intensity.
-		color += (sunColor * lightIntensity);
-	}
-
-	// Clamp the final light color.
-	color = clamp(color, 0.0f, 1.0f);
-
-	// Multiply the texture pixel and the final diffuse color to get the final pixel color result.
-	finalColor = color * textureColor;
+    vec3 lit = ambient + diffuse + specular;
+    finalColor = vec4(albedo.rgb * lit, albedo.a);
 }

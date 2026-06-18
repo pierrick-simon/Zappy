@@ -38,8 +38,8 @@ namespace Zappy {
         std::size_t _width = 0;
         std::size_t _height = 0;
         std::vector<Tile> _tiles;
-        static constexpr auto TILE_WIDTH = 2;
-        static constexpr auto TILE_HEIGHT = 2;
+        static constexpr auto TILE_WIDTH = 5;
+        static constexpr auto TILE_HEIGHT = 5;
         static constexpr auto TILE_Y_POS = 0;
 
         inline static const std::string TILE_MODEL_PATH =

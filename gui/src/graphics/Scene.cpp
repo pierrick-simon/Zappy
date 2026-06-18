@@ -19,8 +19,8 @@ namespace Graphics {
     {
         this->_shader.setValue("sunDirection",
             static_cast<const ::Vector3>(
-                raylib::Vector3 {-0.6f, -1.0f, -0.2f}.Normalize()));
-        this->_shader.setValue("sunColor", ::Vector4 {1, 1, 0.5, 0.2});
+                raylib::Vector3 {-0.7f, -1.0f, -0.4f}.Normalize()));
+        this->_shader.setValue("sunColor", ::Vector3 {1, 0.95f, 0.85f});
     }
     raylib::Camera &Scene::getCamera()
     {
