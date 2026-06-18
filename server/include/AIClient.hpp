@@ -50,12 +50,12 @@ namespace Zappy {
             _elevate = elevate;
         }
 
-        std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
+        std::chrono::milliseconds update(std::chrono::milliseconds elapsed);
 
     private:
         struct Command {
             std::function<void(AIClient &, std::istringstream &)> _func;
-            std::chrono::nanoseconds _timeLimit;
+            std::chrono::milliseconds _timeLimit;
         };
 
         using CommandIter =
@@ -91,8 +91,8 @@ namespace Zappy {
         std::ofstream &_logFile;
         std::string _buffer;
         std::queue<std::string> _commands;
-        std::chrono::nanoseconds _sleep;
-        std::chrono::nanoseconds _live;
+        std::chrono::milliseconds _sleep;
+        std::chrono::milliseconds _live;
         std::optional<SelectCommand> _command;
         bool _elevate = false;
 
@@ -102,9 +102,9 @@ namespace Zappy {
 
         static constexpr std::size_t MAX_QUEUE = 10;
         static constexpr std::size_t START_FOOD = 10;
-        static constexpr std::chrono::nanoseconds CYCLE_TO_DIE =
+        static constexpr std::chrono::milliseconds CYCLE_TO_DIE =
             std::chrono::seconds(126);
-        static constexpr std::chrono::nanoseconds DEFAULT_SLEEP =
+        static constexpr std::chrono::milliseconds DEFAULT_SLEEP =
             std::chrono::seconds(1);
 
         static const std::unordered_map<std::string, Command> COMMANDS;

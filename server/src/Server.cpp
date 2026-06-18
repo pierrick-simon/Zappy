@@ -22,7 +22,6 @@ namespace Zappy {
             args, "-n", DEFAULT_TEAMS)),
         _connect(_port),
         _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
-        _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
             Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile,
             _clients, _teams)
@@ -86,7 +85,9 @@ namespace Zappy {
     bool Server::update()
     {
         auto now = std::chrono::steady_clock::now();
-        auto elapsed = std::chrono::nanoseconds((_clock - now) / _fn);
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                           now - _clock) *
+            _f;
         _clock = now;
         _timeout = -1;
         if (!_master || _master && _master->getPlaying()) {
@@ -94,28 +95,27 @@ namespace Zappy {
             updateAi(elapsed);
         }
         updateGui();
+        if (_timeout != -1)
+            _timeout /= int(_f);
         return _env.getEnd();
     }
 
-    void Server::updateEnv(std::chrono::nanoseconds elapsed)
+    void Server::updateEnv(std::chrono::milliseconds elapsed)
     {
         auto tmp = _env.update(elapsed);
-        auto timeout = int(
-            std::chrono::duration_cast<std::chrono::microseconds>(tmp).count());
+        auto timeout = tmp.count();
         if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
-            _timeout = timeout;
+            _timeout = int(timeout);
     }
 
-    void Server::updateAi(std::chrono::nanoseconds elapsed)
+    void Server::updateAi(std::chrono::milliseconds elapsed)
     {
         std::vector<int> deads;
         for (auto &[id, ai] : _clients.ai) {
             auto tmp = ai.update(elapsed);
-            auto timeout =
-                int(std::chrono::duration_cast<std::chrono::microseconds>(tmp)
-                        .count());
+            auto timeout = tmp.count();
             if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
-                _timeout = timeout;
+                _timeout = int(timeout);
             if (!ai.isAlive())
                 deads.push_back(id);
         }
@@ -128,7 +128,6 @@ namespace Zappy {
             auto tmp = gui.timeUnitUpdate();
             if (tmp && *tmp != _f) {
                 _f = *tmp;
-                _fn = std::chrono::nanoseconds(SECOND_IN_NANO / _f);
                 gui.timeUnitEvent(_f);
             }
         }

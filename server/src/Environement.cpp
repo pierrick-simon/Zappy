@@ -39,19 +39,20 @@ namespace Zappy {
             tile = Info::INIT_RESOUCES;
     }
 
-    std::chrono::nanoseconds Environement::update(
-        std::chrono::nanoseconds elapsed)
+    std::chrono::milliseconds Environement::update(
+        std::chrono::milliseconds elapsed)
     {
         _sleep -= elapsed;
-        auto min = _sleep;
         if (_sleep.count() <= 0) {
             _sleep = SLEEP;
         }
+        auto min = _sleep;
         for (auto iter = _elevates.begin(); iter != _elevates.end(); iter++) {
             iter->sleep -= elapsed;
             if (iter->sleep.count() <= 0) {
                 endElevation(iter->x, iter->y, iter->level, iter->players);
                 _elevates.erase(iter);
+                continue;
             }
             if (min > iter->sleep)
                 min = iter->sleep;

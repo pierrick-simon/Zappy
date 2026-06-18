@@ -7,11 +7,9 @@
 
 #include "Window.hpp"
 
-#include <iostream>
 #include <raylib-cpp.hpp>
 
 #include "Assets.hpp"
-#include "graphics/primitives/Model.hpp"
 
 namespace Graphics {
     Window::Window() :
@@ -28,8 +26,9 @@ namespace Graphics {
         this->BeginDrawing();
         this->ClearBackground(raylib::Color::RayWhite());
         this->getScene().getCamera().BeginMode();
-        this->_scene.draw();
+        this->_scene.drawGameObjects();
         this->getScene().getCamera().EndMode();
+        this->_scene.drawUiObjects();
         this->EndDrawing();
     }
 

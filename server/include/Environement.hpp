@@ -53,7 +53,7 @@ namespace Zappy {
             std::ofstream &logFile, Clients &clients,
             std::unordered_map<std::string, std::size_t> &teams);
 
-        std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
+        std::chrono::milliseconds update(std::chrono::milliseconds elapsed);
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
 
         std::string formatTile(std::size_t width, std::size_t height) const;
@@ -114,7 +114,7 @@ namespace Zappy {
             Zappy::Environement::Player>::iterator;
 
         struct Elevate {
-            std::chrono::nanoseconds sleep;
+            std::chrono::milliseconds sleep;
             std::size_t x;
             std::size_t y;
             std::size_t level;
@@ -150,7 +150,7 @@ namespace Zappy {
         std::size_t _width;
         std::size_t _height;
         std::size_t _eggId = 0;
-        std::chrono::nanoseconds _sleep;
+        std::chrono::milliseconds _sleep;
         bool _end = false;
 
         std::vector<Info::Tile> _tiles;
@@ -162,9 +162,9 @@ namespace Zappy {
         Clients &_clients;
         std::unordered_map<std::string, std::size_t> &_teams;
 
-        static constexpr std::chrono::nanoseconds SLEEP =
+        static constexpr std::chrono::milliseconds SLEEP =
             std::chrono::seconds(20);
-        static constexpr std::chrono::nanoseconds ELEVATE =
+        static constexpr std::chrono::milliseconds ELEVATE =
             std::chrono::seconds(300);
         static constexpr std::size_t MAX_LEVEL = 8;
         static constexpr std::size_t WIN = 6;
