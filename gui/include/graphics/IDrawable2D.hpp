@@ -11,7 +11,7 @@ namespace Graphics {
     class IDrawable2D {
     public:
         virtual ~IDrawable2D() = default;
-        virtual void draw() const = 0;
+        virtual void draw2D() const = 0;
     };
 } // namespace Graphics
 #endif

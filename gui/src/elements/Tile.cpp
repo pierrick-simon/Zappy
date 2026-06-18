@@ -10,10 +10,9 @@
 #include <iostream>
 
 namespace Zappy {
-    Tile::Tile() :
-        Model(TILE_MODEL_PATH)
+    Tile::Tile()
     {
-        _resources = INIT_RESOURCES;
+        this->_resources = INIT_RESOURCES;
     }
 
     void Tile::updateTile(const std::vector<std::size_t> &resources)
@@ -48,6 +47,4 @@ namespace Zappy {
             {Info::ResourceName::Phiras, {}},
             {Info::ResourceName::Thystame, {}},
     };
-    const std::string Tile::TILE_MODEL_PATH =
-        Assets::getResource("map/cell.glb");
 } // namespace Zappy

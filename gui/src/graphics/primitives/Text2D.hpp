@@ -16,7 +16,7 @@ namespace Graphics {
     class Text2D : public raylib::Text, public UiObject {
     public:
         using Text::Text;
-        void draw() const override;
+        void draw2D() const override;
     };
 
 } // namespace Graphics

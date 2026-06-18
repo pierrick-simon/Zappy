@@ -11,6 +11,8 @@
 #include <thread>
 #include "GUICommunication.hpp"
 #include "Utils.hpp"
+#include "UtilsVector.hpp"
+#include "graphics/primitives/Text2D.hpp"
 
 namespace ClientCmd = Shared::GUICommunication::Client;
 namespace ServerCmd = Shared::GUICommunication::Server;
@@ -42,13 +44,23 @@ namespace Zappy {
         }
         return connected;
     }
+
     void Environement::update(float dt)
     {
     }
-
-    void Environement::draw() const
+    void Environement::setShader(Graphics::Shader &shader)
     {
-        this->_map.draw();
+        AShadered::setShader(shader);
+        this->_map.setShader(shader);
+    }
+
+    void Environement::draw3D() const
+    {
+        this->_map.draw3D();
+    }
+
+    void Environement::draw2D() const
+    {
     }
 
     bool Environement::connect()

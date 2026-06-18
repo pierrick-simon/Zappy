@@ -7,10 +7,21 @@
 
 #include "Scene.hpp"
 
+#include "Assets.hpp"
+#include "Tile.hpp"
 #include "graphics/IDrawable2D.hpp"
+#include "graphics/primitives/Model.hpp"
 
 namespace Graphics {
 
+    Scene::Scene() :
+        _shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
+    {
+        this->_shader.setValue("sunDirection",
+            static_cast<const ::Vector3>(
+                raylib::Vector3 {-0.6f, -1.0f, -0.2f}.Normalize()));
+        this->_shader.setValue("sunColor", ::Vector4 {1, 1, 0.5, 0.2});
+    }
     raylib::Camera &Scene::getCamera()
     {
         return this->_camera;
@@ -31,6 +42,7 @@ namespace Graphics {
             } catch (std::bad_cast &) {
             }
         }
+        this->_shader.setValue("cameraPos", this->getCamera().GetPosition());
     }
 
     void Scene::drawUiObjects() const
@@ -38,7 +50,7 @@ namespace Graphics {
         for (auto &object : this->_objects) {
             try {
                 auto &uiObject = dynamic_cast<IDrawable2D &>(object.get());
-                uiObject.draw();
+                uiObject.draw2D();
             } catch (std::bad_cast &) {
             }
         }
@@ -49,9 +61,35 @@ namespace Graphics {
         for (auto &object : this->_objects) {
             try {
                 auto &gameObjecte = dynamic_cast<IDrawable3D &>(object.get());
-                gameObjecte.draw();
+                gameObjecte.draw3D();
             } catch (std::bad_cast &) {
             }
         }
     }
+
+    void Scene::setShaderForModels() const
+    {
+        for (auto &object : this->_objects) {
+            try {
+                auto &gameObject = dynamic_cast<Model &>(object.get());
+                this->setShaderForModel(gameObject);
+            } catch (std::bad_cast &) {
+            }
+        }
+    }
+
+    void Scene::setShaderForModel(const Model &model) const
+    {
+        model.materials[0].shader = static_cast<::Shader>(this->_shader);
+    }
+
+    Shader &Scene::getShader()
+    {
+        return this->_shader;
+    }
+
+    const std::string Scene::FRAGMENT_SHADER_PATH =
+        Assets::getResource("shaders/sun.fs");
+    const std::string Scene::VERTEX_SHADER_PATH =
+        Assets::getResource("shaders/sun.vs");
 } // namespace Graphics

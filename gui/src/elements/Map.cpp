@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include "UtilsVector.hpp"
+
 namespace Zappy {
     bool Map::updateSize(std::size_t x, std::size_t y)
     {
@@ -51,9 +53,18 @@ namespace Zappy {
                     static_cast<float>(y * TILE_HEIGHT) - totalMapHeight});
         }
     }
-    void Map::draw() const
+    void Map::setShader(Graphics::Shader &shader)
     {
-        for (const auto &tile : this->_tiles)
-            tile.draw();
+        AShadered::setShader(shader);
+        this->_model.materials[1].shader =
+            static_cast<Shader>(this->getShader());
+    }
+
+    void Map::draw3D() const
+    {
+        for (const auto &tile : this->_tiles) {
+            auto [axis, angle] = tile.getRotation().ToAxisAngle();
+            this->_model.Draw(tile.getPosition(), axis, angle, tile.getScale());
+        }
     }
 } // namespace Zappy

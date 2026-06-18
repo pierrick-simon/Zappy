@@ -8,7 +8,7 @@
 #include "Rectangle2D.hpp"
 
 namespace Graphics {
-    void Rectangle2D::draw() const
+    void Rectangle2D::draw2D() const
     {
         auto rect(*this);
         rect.SetSize(rect.GetSize() * this->getScale());

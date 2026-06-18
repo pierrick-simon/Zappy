@@ -13,20 +13,24 @@
     #include <string_view>
     #include <unordered_map>
     #include <vector>
-#include "../graphics/IObject.hpp"
     #include "Connect.hpp"
     #include "Egg.hpp"
     #include "Elevation.hpp"
     #include "GUIException.hpp"
     #include "Map.hpp"
     #include "Player.hpp"
+    #include "graphics/AShadered.hpp"
+#include "graphics/IDrawable2D.hpp"
     #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IObject.hpp"
     #include "graphics/IUpdatable.hpp"
 
 namespace Zappy {
     class Environement : public Graphics::IDrawable3D,
                          public Graphics::IUpdatable,
-                         public Graphics::IObject {
+                         public Graphics::IDrawable2D,
+                         public Graphics::IObject,
+                         public Graphics::AShadered {
     public:
         Environement(int port, const std::string &ip, std::ofstream &logFile,
             bool &isConnect);
@@ -35,7 +39,11 @@ namespace Zappy {
 
         void update(float dt) override;
 
-        void draw() const override;
+        void setShader(Graphics::Shader &shader) override;
+
+        void draw3D() const override;
+
+        void draw2D() const override;
 
     private:
         using Event = std::function<void(Environement &, std::istringstream &)>;

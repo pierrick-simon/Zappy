@@ -8,7 +8,7 @@
 #include "Sprite2D.hpp"
 
 namespace Graphics {
-    void Sprite2D::draw() const
+    void Sprite2D::draw2D() const
     {
         this->Draw(this->getPosition(),
             this->getRotation(),

@@ -15,7 +15,7 @@ namespace Graphics {
     {
     }
 
-    void Model::draw() const
+    void Model::draw3D() const
     {
         auto [axis, angle] = this->getRotation().ToAxisAngle();
         this->Draw(this->getPosition(), axis, angle, this->getScale());

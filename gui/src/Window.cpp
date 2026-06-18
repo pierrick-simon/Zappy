@@ -24,11 +24,16 @@ namespace Graphics {
     {
         this->handleEvents();
         this->_scene.update(GetFrameTime());
+
         this->BeginDrawing();
         this->ClearBackground(raylib::Color::RayWhite());
+
         this->getScene().getCamera().BeginMode();
+        this->getScene().getShader().BeginMode();
         this->_scene.drawGameObjects();
+        this->getScene().getShader().EndMode();
         this->getScene().getCamera().EndMode();
+
         this->_scene.drawUiObjects();
         this->EndDrawing();
     }

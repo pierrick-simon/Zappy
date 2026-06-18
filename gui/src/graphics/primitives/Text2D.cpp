@@ -8,7 +8,7 @@
 #include "Text2D.hpp"
 
 namespace Graphics {
-    void Text2D::draw() const
+    void Text2D::draw2D() const
     {
         this->Draw(this->getPosition(), this->getRotation());
     }

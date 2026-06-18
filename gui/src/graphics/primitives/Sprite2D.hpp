@@ -16,7 +16,7 @@ namespace Graphics {
     class Sprite2D : public raylib::Texture, public UiObject {
     public:
         using Texture::Texture;
-        void draw() const override;
+        void draw2D() const override;
     };
 } // namespace Graphics
 

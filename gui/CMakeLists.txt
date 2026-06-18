@@ -19,6 +19,8 @@ set(SRCS
         src/graphics/Transformable2D.cpp
         src/graphics/Scene.cpp
         src/graphics/Camera.cpp
+        src/graphics/Shader.cpp
+        src/graphics/AShadered.cpp
         src/graphics/primitives/Model.cpp
         src/graphics/primitives/Text2D.cpp
         src/graphics/primitives/Rectangle2D.cpp
