@@ -20,8 +20,6 @@
 #include "ServerException.hpp"
 #include "Utils.hpp"
 
-            #include <iostream>
-
 namespace ServerCmd = Shared::AICommunication::Server;
 
 namespace Zappy {
@@ -536,6 +534,8 @@ namespace Zappy {
                 continue;
             auto v = getBroadCastVector(find->second, p.second);
             auto i = getTileNb(p.second, v);
+            Shared::Connect::send(getPlayerFd(p.first),
+                ServerCmd::MSG.getStr() + " " + std::to_string(i) + ", " + text +"\n");
         }
     }
 
