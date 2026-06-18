@@ -35,8 +35,9 @@ namespace Zappy {
         _teams(teams)
     {
         std::srand(std::time(nullptr));
-        for (auto tile : _tiles)
+        for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
+        refillRessources();
     }
 
     std::chrono::milliseconds Environement::update(
@@ -60,6 +61,32 @@ namespace Zappy {
         return min;
     }
 
+    void Environement::refillRessource(Info::ResourceName type, std::size_t count)
+    {
+        std::size_t nbResource = static_cast<std::size_t>(Info::resources.at(type).density * _width * _height);
+
+        if (count >= nbResource)
+            return;
+        for (std::size_t i = 0; i < nbResource - count; ++i)
+            _tiles[rand() % (_width * _height)].at(type)++;
+    }
+
+    void Environement::refillRessources()
+    {
+        Info::Tile totalTile(Info::INIT_RESOUCES);
+
+        for (std::size_t i = 0; i < _width * _height; ++i) {
+            for (std::size_t j = 0; j < Info::resources.size(); ++j) {
+                auto type = static_cast<Info::ResourceName>(j);
+                totalTile.at(type) += _tiles[i].at(type);
+            }
+        }
+        for (std::size_t i = 0; i < Info::resources.size(); ++i) {
+            auto type = static_cast<Info::ResourceName>(i);
+            refillRessource(type, totalTile.at(type));
+        }
+    }
+
     std::string Environement::formatTile(
         std::size_t width, std::size_t height) const
     {
@@ -70,8 +97,10 @@ namespace Zappy {
             formatedTile += "player ";
         for (auto e : info.eggs)
             formatedTile += "egg ";
-        for (auto r : info.resources)
-            formatedTile += Info::resources.at(r.first).str + " ";
+        for (auto r : info.resources) {
+            for (std::size_t i = 0; i < r.second; ++i)
+                formatedTile += Info::resources.at(r.first).str + " ";
+        }
         if (!info.players.empty() || !info.eggs.empty() ||
             !info.resources.empty())
             formatedTile += "\b";
