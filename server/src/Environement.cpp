@@ -35,7 +35,7 @@ namespace Zappy {
         _teams(teams)
     {
         std::srand(std::time(nullptr));
-        for (auto tile : _tiles)
+        for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
     }
 
@@ -47,15 +47,17 @@ namespace Zappy {
             _sleep = SLEEP;
         }
         auto min = _sleep;
-        for (auto iter = _elevates.begin(); iter != _elevates.end(); iter++) {
+        for (auto iter = _elevates.begin(); iter != _elevates.end();) {
             iter->sleep -= elapsed;
             if (iter->sleep.count() <= 0) {
                 endElevation(iter->x, iter->y, iter->level, iter->players);
-                _elevates.erase(iter);
+                iter = _elevates.erase(iter);
                 continue;
+            } else {
+                if (min > iter->sleep)
+                    min = iter->sleep;
+                iter++;
             }
-            if (min > iter->sleep)
-                min = iter->sleep;
         }
         return min;
     }
@@ -237,12 +239,12 @@ namespace Zappy {
             if (dir == Info::directions.begin())
                 player.dir = Info::directions.rbegin()->first;
             else
-                player.dir = (dir--)->first;
+                player.dir = (--dir)->first;
         } else {
-            if (dir == Info::directions.end()--)
+            if (dir == --Info::directions.end())
                 player.dir = Info::directions.begin()->first;
             else
-                player.dir = (dir++)->first;
+                player.dir = (++dir)->first;
         }
         sendToGUI<Shared::PlayerPositionEvent>(
             id, player.x, player.y, Info::directions.at(player.dir).nb);
@@ -450,11 +452,11 @@ namespace Zappy {
         sendToGUI<Shared::PlayerExpulsionEvent>(iter->first);
     }
 
-    void Environement::handleDestroyEgg(EggIter iter)
+    Environement::EggIter Environement::handleDestroyEgg(EggIter iter)
     {
         _teams.at(iter->second.team)--;
         sendToGUI<Shared::EggDestroyEvent>(iter->first);
-        _eggs.erase(iter);
+        return _eggs.erase(iter);
     }
 
     bool Environement::eject(std::size_t id)
@@ -472,11 +474,13 @@ namespace Zappy {
                 status = true;
             }
         }
-        for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
+        for (auto iter = _eggs.begin(); iter != _eggs.end();) {
             if (iter->second.x == find->second.x &&
                 iter->second.y == find->second.y) {
-                handleDestroyEgg(iter);
+                iter = handleDestroyEgg(iter);
                 status = true;
+            } else {
+                ++iter;
             }
         }
         return status;
@@ -512,6 +516,7 @@ namespace Zappy {
         for (auto &[fd, client] : _clients.ai) {
             if (client.getId() == id) {
                 client.setElevate(value);
+                return;
             }
         }
         throw PlayerNotFoundException(id);

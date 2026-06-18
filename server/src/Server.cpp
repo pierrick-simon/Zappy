@@ -83,6 +83,10 @@ namespace Zappy {
         _timeout = -1;
         updateEnv(elapsed);
         updateAi(elapsed);
+        if (!_master || (_master && _master->getPlaying())) {
+            updateEnv(elapsed);
+            updateAi(elapsed);
+        }
         updateGui();
         if (_timeout != -1)
             _timeout /= int(_f);
@@ -93,7 +97,7 @@ namespace Zappy {
     {
         auto tmp = _env.update(elapsed);
         auto timeout = tmp.count();
-        if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
+        if (tmp.count() > 0 && (_timeout == -1 || timeout < _timeout))
             _timeout = int(timeout);
     }
 
@@ -103,7 +107,7 @@ namespace Zappy {
         for (auto &[id, ai] : _clients.ai) {
             auto tmp = ai.update(elapsed);
             auto timeout = tmp.count();
-            if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
+            if (tmp.count() > 0 && (_timeout == -1 || timeout < _timeout))
                 _timeout = int(timeout);
             if (!ai.isAlive())
                 deads.push_back(id);
