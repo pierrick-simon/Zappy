@@ -114,7 +114,10 @@ class HumanAI:
         )
         self.stdscr.addstr(y, x, text)
 
-    def display_inventory(self, inventory: dict[str, int]):            
+    def display_inventory(self, inventory: dict[str, int]):
+        self.stdscr.addstr(
+            self.INVENTORY_BOX_TOP_Y - 1, self.INVENTORY_BOX_LEFT_X + int(self.INVENTORY_BOX_WIDTH /2) - 5, "[Inventory]"
+        )      
         rectangle(
             self.stdscr,
             self.INVENTORY_BOX_TOP_Y,
