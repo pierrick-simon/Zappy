@@ -29,5 +29,8 @@ namespace Shared {
     void StrEvent::retrieve(std::istringstream &stream)
     {
         _str = stream.str();
+        std::getline(stream, _str);
+        _str.erase(0, _str.find_first_not_of(" \n\r\t"));
+        _str.erase(_str.find_last_not_of(" \n\r\t") + 1);
     }
 }; // namespace Shared
