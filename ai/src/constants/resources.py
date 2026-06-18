@@ -5,8 +5,7 @@
 ## resources
 ##
 
-RESOURCES = ["food", "linemate", "deraumere", "sibur",
-             "mendiane", "phiras", "thystame"]
+RESOURCES = ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
 
 COMMAND_TIME = {
     "Forward": 7,

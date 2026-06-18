@@ -5,13 +5,25 @@
 ## Constants
 ##
 
-from src.command import (forward, right, left, look, take, set_down, inventory, broadcast,
-                         fork, eject, incantation, connect_nbr)
+from src.command import (
+    forward,
+    right,
+    left,
+    look,
+    take,
+    set_down,
+    inventory,
+    broadcast,
+    fork,
+    eject,
+    incantation,
+    connect_nbr,
+)
 
 NB_TILES_OBS = 16
 
 
-COMMAND_FACTORY = {
+COMMAND_FACTORY: dict = {
     "Forward": forward,
     "Right": right,
     "Left": left,
