@@ -112,14 +112,12 @@ class ConnectionHandler:
                 print(f"Invalid quantity for {parts[0]}: {parts[1]} must be an int.")
         return inventory
 
-    def handle_response(self, request: str) -> Any:
-        if self.commands[0].command in self.SPECIAL_RESPONSE:
-            return self.SPECIAL_RESPONSE[self.commands[0].command](request)
-        else:
-            return request
+    def handle_response(self, request: str, index: int) -> Any:
+        if self.commands[index].command in self.SPECIAL_RESPONSE:
+            return self.SPECIAL_RESPONSE[self.commands[index].command](request)
+        return request
 
     def start_session(self):
-        self.client.connect()
         if self.client.recv() != "WELCOME":
             raise ConnectionError(
                 "The server did not initiate the connection with the client using WELCOME."
@@ -139,16 +137,22 @@ class ConnectionHandler:
         self.dimension = tuple(self.client.recv().split())
         print(f"Slot: {self.slots}, Map: {self.dimension}")
 
+    def get_pending(self) -> Optional[int]:
+        for i, cmd in enumerate(self.commands):
+            if cmd.response is None:
+                return i
+        return None
+
     def entrypoint(self):
         request: str = self.client.recv()
         key: str = get_key_from_dict(self.COMMON_EVENTS, request)
+        pending = self.get_pending()
 
         print("Raw request: ", request)
         if key:
             self.events.append(self.COMMON_EVENTS[key](request))
-            print(self.events)
-        elif self.commands:
-            self.commands[0].response = self.handle_response(request)
+        elif self.commands and pending is not None:
+            self.commands[pending].response = self.handle_response(request, pending)
 
     def consume_command(self) -> Optional[Command]:
         try:
@@ -168,6 +172,10 @@ class ConnectionHandler:
         if len(self.commands) < self.max_command:
             self.commands.append(new_command)
             self.client.send(str(self.commands[-1]))
+
+    def listen_server(self) -> None:
+        while Event("dead") not in self.events:
+            self.entrypoint()
 
     def display_commands(self):
         print("Commandes: ")

@@ -14,16 +14,30 @@ set(MAIN
 
 set(SRCS
         src/graphics/GameObject.cpp
+        src/graphics/UiObject.cpp
         src/graphics/Transformable3D.cpp
+        src/graphics/Transformable2D.cpp
         src/graphics/Scene.cpp
         src/graphics/Camera.cpp
         src/graphics/primitives/Model.cpp
+        src/graphics/primitives/Text2D.cpp
+        src/graphics/primitives/Rectangle2D.cpp
+        src/graphics/primitives/Sprite2D.cpp
         src/Window.cpp
         src/GUI.cpp
         src/Assets.cpp
+        src/elements/Player.cpp
+        src/elements/Egg.cpp
+        src/elements/Resource.cpp
+        src/elements/Tile.cpp
+        src/elements/Map.cpp
+        src/elements/Elevation.cpp
+        src/elements/Environement.cpp
+        src/elements/Events.cpp
 )
 
 set(HEADERS
+        include/elements/
         include/
         src/
 )

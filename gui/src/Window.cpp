@@ -7,13 +7,14 @@
 
 #include "Window.hpp"
 
+#include <raylib-cpp.hpp>
+
 #include "Assets.hpp"
-#include "graphics/primitives/Model.hpp"
-#include "raylib-cpp.hpp"
 
 namespace Graphics {
     Window::Window() :
-        raylib::Window(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_ALL)
+        raylib::Window(
+            WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
     {
         this->SetTargetFPS(TARGET_FPS);
     }
@@ -21,12 +22,13 @@ namespace Graphics {
     void Window::update()
     {
         this->handleEvents();
-        this->_scene.update(Graphics::Window::GetFrameTime());
+        this->_scene.update(GetFrameTime());
         this->BeginDrawing();
         this->ClearBackground(raylib::Color::RayWhite());
         this->getScene().getCamera().BeginMode();
-        this->_scene.draw();
+        this->_scene.drawGameObjects();
         this->getScene().getCamera().EndMode();
+        this->_scene.drawUiObjects();
         this->EndDrawing();
     }
 

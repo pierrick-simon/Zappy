@@ -22,11 +22,18 @@ namespace Graphics {
 
         Scene &getScene();
 
-        template<typename GameObjectType, typename... Args>
-        std::unique_ptr<GameObject> &addObject(Args &&...args)
+        template<std::derived_from<GameObject> GameObjectType, typename... Args>
+        std::unique_ptr<GameObjectType> &addObject(Args &&...args)
         {
             return this->getScene().addObject(
                 std::move(std::make_unique<GameObjectType>(args...)));
+        }
+
+        template<std::derived_from<UIObject> UiObjectType, typename... Args>
+        std::unique_ptr<UiObjectType> &addObject(Args &&...args)
+        {
+            return this->getScene().addObject(
+                std::move(std::make_unique<UiObjectType>(args...)));
         }
 
     private:

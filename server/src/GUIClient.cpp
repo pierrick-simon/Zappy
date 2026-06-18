@@ -24,6 +24,7 @@ namespace Zappy {
     {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(id) + "] joined the GRAPHIC team.");
+        _env.newGuiInfo(_fd);
     }
 
     void GUIClient::infoToRead()
@@ -97,7 +98,7 @@ namespace Zappy {
         for (std::size_t i = 0; i < x; i++) {
             for (std::size_t j = 0; j < y; j++) {
                 std::istringstream tmp(
-                    std::to_string(x) + " " + std::to_string(y));
+                    std::to_string(i) + " " + std::to_string(j));
                 tileInfo(tmp);
             }
         }
@@ -145,7 +146,8 @@ namespace Zappy {
             std::vector<std::size_t> resources(player.inventory.size());
             std::ranges::copy(
                 std::views::values(player.inventory), resources.begin());
-            send<Shared::PlayerInventoryEvent>(id, resources);
+            send<Shared::PlayerInventoryEvent>(
+                id, player.x, player.y, resources);
         } catch (PlayerNotFoundException &e) {
         }
     }

@@ -17,14 +17,14 @@ namespace Zappy {
 
     Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
+        _port(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT)),
         _teamsNames(Parser::ArgsParser::getArgList<std::string>(
-            args, "-n", {"team1", "team2"})),
-        _connect(Parser::ArgsParser::getArg<int>(args, "-p", 8080)),
-        _f(Parser::ArgsParser::getArgSize(args, "-f", 100)),
-        _fn(std::chrono::nanoseconds(SECOND_IN_NANO / _f)),
-        _env(Parser::ArgsParser::getArgSize(args, "-x", 100),
-            Parser::ArgsParser::getArgSize(args, "-y", 100), _logFile, _clients,
-            _teams)
+            args, "-n", DEFAULT_TEAMS)),
+        _connect(_port),
+        _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
+        _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
+            Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile,
+            _clients, _teams)
     {
         auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c", 10);
         if (_teamsNames.empty())
@@ -42,6 +42,9 @@ namespace Zappy {
         }
         _teamsNames.clear();
 
+        if (Parser::ArgsParser::isArg(args, "-m"))
+            _master.emplace(_port, _clients, _teams);
+
         if (!args.empty())
             throw Parser::Help();
 
@@ -58,7 +61,12 @@ namespace Zappy {
     void Server::run()
     {
         auto end = false;
-        while (!RECEIVED_SIG_INT && !end) {
+        auto masterClose = false;
+        while (!RECEIVED_SIG_INT && !end && !masterClose) {
+            if (_master) {
+                masterClose = !_master->update();
+                _timeout = 0;
+            }
             infoToRead();
             end = update();
         }
@@ -77,34 +85,37 @@ namespace Zappy {
     bool Server::update()
     {
         auto now = std::chrono::steady_clock::now();
-        auto elapsed = std::chrono::nanoseconds((_clock - now) / _fn);
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                           now - _clock) *
+            _f;
         _clock = now;
         _timeout = -1;
-        updateEnv(elapsed);
-        updateAi(elapsed);
+        if (!_master || _master && _master->getPlaying()) {
+            updateEnv(elapsed);
+            updateAi(elapsed);
+        }
         updateGui();
+        if (_timeout != -1)
+            _timeout /= int(_f);
         return _env.getEnd();
     }
 
-    void Server::updateEnv(std::chrono::nanoseconds elapsed)
+    void Server::updateEnv(std::chrono::milliseconds elapsed)
     {
         auto tmp = _env.update(elapsed);
-        auto timeout = int(
-            std::chrono::duration_cast<std::chrono::microseconds>(tmp).count());
+        auto timeout = tmp.count();
         if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
-            _timeout = timeout;
+            _timeout = int(timeout);
     }
 
-    void Server::updateAi(std::chrono::nanoseconds elapsed)
+    void Server::updateAi(std::chrono::milliseconds elapsed)
     {
         std::vector<int> deads;
         for (auto &[id, ai] : _clients.ai) {
             auto tmp = ai.update(elapsed);
-            auto timeout =
-                int(std::chrono::duration_cast<std::chrono::microseconds>(tmp)
-                        .count());
+            auto timeout = tmp.count();
             if (tmp.count() > 0 && (_timeout = -1 || timeout < _timeout))
-                _timeout = timeout;
+                _timeout = int(timeout);
             if (!ai.isAlive())
                 deads.push_back(id);
         }
@@ -117,7 +128,6 @@ namespace Zappy {
             auto tmp = gui.timeUnitUpdate();
             if (tmp && *tmp != _f) {
                 _f = *tmp;
-                _fn = std::chrono::nanoseconds(SECOND_IN_NANO / _f);
                 gui.timeUnitEvent(_f);
             }
         }
@@ -247,4 +257,5 @@ namespace Zappy {
             }
         }
     }
+    const std::vector<std::string> Server::DEFAULT_TEAMS = {"team1", "team2"};
 }; // namespace Zappy

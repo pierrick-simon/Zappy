@@ -11,38 +11,32 @@
 namespace ServerCmd = Shared::GUICommunication::Server;
 
 namespace Shared {
-    NewPlayerEvent::NewPlayerEvent(std::size_t id, std::size_t x, std::size_t y,
-        std::size_t dir, std::string team) :
-        GUIEvent(ServerCmd::PNW),
-        _id(id),
-        _x(x),
-        _y(y),
-        _dir(dir),
-        _level(1),
-        _team(std::move(team))
+    NewPlayerEvent::NewPlayerEvent(NewPlayer player) :
+        GUIEvent(ServerCmd::PNW), _player(std::move(player))
     {
     }
 
     NewPlayerEvent::NewPlayerEvent() :
-        GUIEvent(ServerCmd::PNW), _id(0), _x(0), _y(0), _dir(0), _level(1)
+        GUIEvent(ServerCmd::PNW)
     {
     }
 
     std::string NewPlayerEvent::getMsg() const
     {
         std::ostringstream oss;
-        oss << "#" << _id << " ";
-        oss << _x << " ";
-        oss << _y << " ";
-        oss << _dir << " ";
-        oss << _level << " ";
-        oss << _team;
+        oss << "#" << _player.id << " ";
+        oss << _player.x << " ";
+        oss << _player.y << " ";
+        oss << _player.dir << " ";
+        oss << _player.level << " ";
+        oss << _player.team;
         return oss.str();
     }
 
     void NewPlayerEvent::retrieve(std::istringstream &stream)
     {
         char hash;
-        stream >> hash >> _id >> _x >> _y >> _dir >> _level >> _team;
+        stream >> hash >> _player.id >> _player.x >> _player.y;
+        stream >> _player.dir >> _player.level >> _player.team;
     }
 }; // namespace Shared

@@ -16,6 +16,7 @@
     #include "Connect.hpp"
     #include "Environement.hpp"
     #include "GUIClient.hpp"
+    #include "Master.hpp"
     #include "Utils.hpp"
 
 namespace Zappy {
@@ -34,8 +35,8 @@ namespace Zappy {
 
         void infoToRead();
         bool update();
-        void updateEnv(std::chrono::nanoseconds elapsed);
-        void updateAi(std::chrono::nanoseconds elapsed);
+        void updateEnv(std::chrono::milliseconds elapsed);
+        void updateAi(std::chrono::milliseconds elapsed);
         void updateGui();
         void addClient();
         void handleClient(const std::vector<int> &);
@@ -46,6 +47,7 @@ namespace Zappy {
         std::optional<std::string> getNewClientLine(
             std::unordered_map<int, NewClient>::iterator &);
 
+        int _port;
         Shared::Connect _connect;
         std::unordered_map<std::string, std::size_t> _teams;
         std::vector<std::string> _teamsNames;
@@ -56,16 +58,21 @@ namespace Zappy {
         int _timeout = -1;
 
         std::size_t _f;
-        std::chrono::nanoseconds _fn;
         Environement _env;
 
         static bool RECEIVED_SIG_INT;
 
         std::ofstream _logFile;
 
+        std::optional<Master> _master;
+
         static constexpr std::string_view LOG_FILE = "server.log";
         static constexpr std::string_view GRAPHIC = "GRAPHIC";
-        static constexpr std::size_t SECOND_IN_NANO = 1000000;
+        static const std::vector<std::string> DEFAULT_TEAMS;
+        static constexpr int DEFAULT_PORT = 8080;
+        static constexpr std::size_t DEFAULT_FREQ = 100;
+        static constexpr std::size_t DEFAULT_X = 100;
+        static constexpr std::size_t DEFAULT_Y = 100;
     };
 } // namespace Zappy
 

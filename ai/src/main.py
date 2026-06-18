@@ -14,10 +14,19 @@ from src.connection_handler import ConnectionHandler
 
 def handle_args():
     args = argparse.ArgumentParser(description="Zappy AI Client", add_help=False)
-    args.add_argument("-p", dest="port", type=int, help="-p port number")
-    args.add_argument("-n", dest="name", type=str, help="-n name of the team")
-    args.add_argument("-a", dest="algo", type=str, help="-n name of the ai/algorithm to use",
-                      default="survivor")
+    args.add_argument(
+        "-p", dest="port", type=int, help="-p port number", default="4242"
+    )
+    args.add_argument(
+        "-n", dest="name", type=str, help="-n name of the team", default="127.0.0.1"
+    )
+    args.add_argument(
+        "-a",
+        dest="algo",
+        type=str,
+        help="-n name of the ai/algorithm to use",
+        default="survivor",
+    )
     args.add_argument(
         "-h",
         dest="machine",
@@ -40,6 +49,7 @@ def main():
         handler.start_session()
         ai = AI_LIST[args.algo.lower()]
         ai(handler).run()
+        handler.client.disconnect()
     except BaseException as e:
         print(e, file=sys.stderr)
         return 84

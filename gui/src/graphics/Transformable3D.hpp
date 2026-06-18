@@ -5,8 +5,8 @@
 ** DESCRIPTION
 */
 
-#ifndef IGAMEOBJECT_HPP
-    #define IGAMEOBJECT_HPP
+#ifndef TRANSFORMABLE_3D_HPP
+    #define TRANSFORMABLE_3D_HPP
     #include <Vector3.hpp>
     #include <Vector4.hpp>
 

@@ -6,8 +6,6 @@
 ##
 
 from src.algorithms.Survivor import SurvivalAI
+from src.algorithms.Human import HumanAI
 
-
-AI_LIST = {
-    "survivor": SurvivalAI
-}
+AI_LIST = {"survivor": SurvivalAI, "human": HumanAI}

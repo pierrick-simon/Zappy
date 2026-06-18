@@ -29,13 +29,8 @@ namespace Zappy {
         Shared::Utils::logMsg(_logFile,
             "Client[" + std::to_string(id) + "] joined the " + _team +
                 " team.");
-        _inventory.emplace(ResourceName::Food, START_FOOD);
-        _inventory.emplace(ResourceName::Linemate, 0);
-        _inventory.emplace(ResourceName::Deraumere, 0);
-        _inventory.emplace(ResourceName::Sibur, 0);
-        _inventory.emplace(ResourceName::Mendiane, 0);
-        _inventory.emplace(ResourceName::Phiras, 0);
-        _inventory.emplace(ResourceName::Thystame, 0);
+        _inventory = Info::INIT_RESOUCES;
+        _inventory[Info::ResourceName::Food] = START_FOOD;
         Shared::Connect::send(
             _fd, std::to_string(_env.getConnectNbr(_id)) + "\n");
         Shared::Connect::send(_fd,
@@ -59,7 +54,8 @@ namespace Zappy {
         }
     }
 
-    std::chrono::nanoseconds AIClient::update(std::chrono::nanoseconds elapsed)
+    std::chrono::milliseconds AIClient::update(
+        std::chrono::milliseconds elapsed)
     {
         if (_sleep.count() > 0)
             _sleep -= elapsed;
@@ -81,18 +77,18 @@ namespace Zappy {
         auto timeout = _sleep;
         if (_live < timeout)
             timeout = _live;
-        return _sleep;
+        return timeout;
     }
 
     void AIClient::checkAlive()
     {
-        if (_inventory.at(ResourceName::Food) == 0) {
+        if (_inventory.at(Info::ResourceName::Food) == 0) {
             Shared::Connect::send(_fd, ServerCmd::DEAD.getStr() + "\n");
             Shared::Utils::logMsg(
                 _logFile, "Client[" + std::to_string(_id) + "] Die.");
             _alive = false;
         } else {
-            _inventory.at(ResourceName::Food)--;
+            _inventory.at(Info::ResourceName::Food)--;
             Shared::Utils::logMsg(
                 _logFile, "Client[" + std::to_string(_id) + "] eat a food.");
             _live = CYCLE_TO_DIE;
@@ -166,6 +162,12 @@ namespace Zappy {
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
+    void AIClient::look(std::istringstream &stream)
+    {
+        auto infos = _env.lookAround(_id);
+        Shared::Connect::send(_fd, infos + "\n");
+    }
+
     void AIClient::inventory(std::istringstream &stream)
     {
         std::string msg = "[";
@@ -173,7 +175,7 @@ namespace Zappy {
         for (auto [name, nb] : _inventory) {
             if (!first)
                 msg += ",";
-            msg += Environement::getResourceName(name);
+            msg += Info::getResourceName(name);
             msg += " " + std::to_string(nb);
             first = false;
         }
@@ -207,9 +209,9 @@ namespace Zappy {
         std::string resource;
         stream >> resource;
         try {
-            auto type = Environement::getResource(resource);
+            auto type = Info::getResource(resource);
             value = _env.takeResource(_id, type);
-        } catch (ResourceNotFoundException &_) {
+        } catch (Info::ResourceNotFoundException &_) {
             value = false;
         }
         if (value)
@@ -224,14 +226,14 @@ namespace Zappy {
         std::string resource;
         stream >> resource;
         try {
-            auto type = Environement::getResource(resource);
+            auto type = Info::getResource(resource);
             auto find = _inventory.find(type);
             if (find != _inventory.end() && find->second != 0) {
                 find->second--;
                 _env.setResource(_id, type);
             } else
                 value = false;
-        } catch (ResourceNotFoundException &_) {
+        } catch (Info::ResourceNotFoundException &_) {
             value = false;
         }
         if (value)
@@ -255,10 +257,12 @@ namespace Zappy {
                 Command {&AIClient::right, std::chrono::seconds(7)}},
             {ClientCmd::LFT.getStr(),
                 Command {&AIClient::left, std::chrono::seconds(7)}},
+            {ClientCmd::LK.getStr(),
+                Command {&AIClient::look, std::chrono::seconds(7)}},
             {ClientCmd::IVT.getStr(),
                 Command {&AIClient::inventory, std::chrono::seconds(1)}},
             {ClientCmd::CNT.getStr(),
-                Command {&AIClient::connectNbr, std::chrono::nanoseconds(1)}},
+                Command {&AIClient::connectNbr, std::chrono::milliseconds(1)}},
             {ClientCmd::FRK.getStr(),
                 Command {&AIClient::fork, std::chrono::seconds(42)}},
             {ClientCmd::EJT.getStr(),
