@@ -17,9 +17,10 @@ namespace Zappy {
 
     Server::Server(std::vector<std::string> args) :
         _logFile(std::string(LOG_FILE)),
+        _port(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT)),
         _teamsNames(Parser::ArgsParser::getArgList<std::string>(
             args, "-n", DEFAULT_TEAMS)),
-        _connect(Parser::ArgsParser::getArg<int>(args, "-p", DEFAULT_PORT)),
+        _connect(_port),
         _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
             Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile,
@@ -41,6 +42,9 @@ namespace Zappy {
         }
         _teamsNames.clear();
 
+        if (Parser::ArgsParser::isArg(args, "-m"))
+            _master.emplace(_port, _clients, _teams);
+
         if (!args.empty())
             throw Parser::Help();
 
@@ -57,7 +61,12 @@ namespace Zappy {
     void Server::run()
     {
         auto end = false;
-        while (!RECEIVED_SIG_INT && !end) {
+        auto masterClose = false;
+        while (!RECEIVED_SIG_INT && !end && !masterClose) {
+            if (_master) {
+                masterClose = !_master->update();
+                _timeout = 0;
+            }
             infoToRead();
             end = update();
         }
@@ -81,8 +90,10 @@ namespace Zappy {
             _f;
         _clock = now;
         _timeout = -1;
-        updateEnv(elapsed);
-        updateAi(elapsed);
+        if (!_master || _master && _master->getPlaying()) {
+            updateEnv(elapsed);
+            updateAi(elapsed);
+        }
         updateGui();
         if (_timeout != -1)
             _timeout /= int(_f);
