@@ -64,6 +64,8 @@ namespace Zappy {
     void Environement::refillRessource(Info::ResourceName type, std::size_t count)
     {
         std::size_t nbResource = static_cast<std::size_t>(Info::resources.at(type).density * _width * _height);
+        if (nbResource == 0)
+            nbResource = 1;
 
         if (count >= nbResource)
             return;
