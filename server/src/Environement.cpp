@@ -494,8 +494,7 @@ namespace Zappy {
         for (int j = -1; j <= 1; ++j) {
             for (int i = -1; i <= 1; ++i) {
                 vectors[index].x = sender.x - (receiver.x + (i * _width));
-                vectors[index].y =
-                    sender.y - (receiver.y + (j * _height));
+                vectors[index].y = sender.y - (receiver.y + (j * _height));
                 ++index;
             }
         }
@@ -536,8 +535,6 @@ namespace Zappy {
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
         for (auto &p : _players) {
-            if (p.first == id)
-                continue;
             auto v = getBroadCastVector(find->second, p.second);
             auto i = getTileNb(p.second, v);
             Shared::Connect::send(getPlayerFd(p.first),
