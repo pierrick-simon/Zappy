@@ -491,11 +491,11 @@ namespace Zappy {
         std::size_t minDist = UINT32_MAX;
         std::size_t minIndex = 0;
 
-        for (std::size_t j = 0; j < 3; ++j) {
-            for (std::size_t i = 0; i < 3; ++i) {
-                vectors[index].x = sender.x - (receiver.x + ((i - 1) * _width));
+        for (int j = -1; j <= 1; ++j) {
+            for (int i = -1; i <= 1; ++i) {
+                vectors[index].x = sender.x - (receiver.x + (i * _width));
                 vectors[index].y =
-                    sender.y - (receiver.y + ((j - 1) * _height));
+                    sender.y - (receiver.y + (j * _height));
                 ++index;
             }
         }
