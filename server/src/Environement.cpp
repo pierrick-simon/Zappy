@@ -116,8 +116,7 @@ namespace Zappy {
                 continue;
             }
             auto item = Info::directions.begin();
-            // std::advance(item, std::rand() % Info::directions.size());
-            std::advance(item, 0);
+            std::advance(item, std::rand() % Info::directions.size());
             _players.emplace(
                 id, Player {team, item->first, 1, false, egg.x, egg.y});
             Shared::Utils::logMsg(_logFile,
@@ -517,14 +516,9 @@ namespace Zappy {
         auto dir = Info::directions.at(receiver.dir);
         Shared::Vector2<int> dirV(dir.x, dir.y);
         auto angle = dirV.angle(v);
-        std::cout << "receiver: (" << receiver.x << ";" << receiver.y << ")" << std::endl;
-        std::cout << "vector: (" << v.x << ";" << v.y << ")" << std::endl;
-        std::cout << "angle: " << angle << std::endl;
         for (auto chunk: _broadcastChunks) {
-            auto lowerAngle = dirV.angle(chunk.second.first);
-            auto hightAngle = dirV.angle(chunk.second.second);
-            std::cout << "lowerV: (" << chunk.second.first.x << ";" << chunk.second.first.y << ")    hightV: (" << chunk.second.second.x << ";" << chunk.second.second.y << ")" << std::endl;
-            std::cout << "lowerAngle: " << lowerAngle << "    hightAngle:" << hightAngle << std::endl;
+            auto lowerAngle = dirV.angle(chunk.second.first[static_cast<std::size_t>(receiver.dir)]);
+            auto hightAngle = dirV.angle(chunk.second.second[static_cast<std::size_t>(receiver.dir)]);
             if (angle <= std::max(lowerAngle, hightAngle) && angle > std::min(lowerAngle, hightAngle))
                 return chunk.first;
         }
@@ -542,7 +536,6 @@ namespace Zappy {
                 continue;
             auto v = getBroadCastVector(find->second, p.second);
             auto i = getTileNb(p.second, v);
-            std::cout << "Found: " << i << std::endl;
         }
     }
 

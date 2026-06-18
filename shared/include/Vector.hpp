@@ -59,6 +59,16 @@ namespace Shared {
         {
             return Vector2<T>(x * v, y * v);
         };
+
+        Vector2<T> operator[](std::size_t nbQuarters) const
+        {
+            Shared::Vector2<T> r(x, y);
+
+            for (std::size_t i = 0; i < nbQuarters; ++i)
+                r = Shared::Vector2<T>(-r.y, r.x);
+            return r;
+        };
+        
     };
 
 } // namespace Shared
