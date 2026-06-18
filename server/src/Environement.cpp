@@ -235,14 +235,14 @@ namespace Zappy {
         auto dir = Info::directions.find(player.dir);
         if (rotate == Rotate::Left) {
             if (dir == Info::directions.begin())
-                player.dir = Info::directions.end()--->first;
+                player.dir = Info::directions.rbegin()->first;
             else
-                player.dir = dir--->first;
+                player.dir = (dir--)->first;
         } else {
             if (dir == Info::directions.end()--)
                 player.dir = Info::directions.begin()->first;
             else
-                player.dir = dir++->first;
+                player.dir = (dir++)->first;
         }
         sendToGUI<Shared::PlayerPositionEvent>(
             id, player.x, player.y, Info::directions.at(player.dir).nb);
