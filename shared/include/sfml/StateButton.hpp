@@ -39,6 +39,7 @@ namespace SfmlUtils {
         {
             _pos = pos;
             _sprite.setPosition(_pos);
+            setBound(_sprite.getGlobalBounds());
         }
 
         void setSize(sf::Vector2f size)
@@ -91,7 +92,7 @@ namespace SfmlUtils {
             _sprite.setScale(_size.x / float(size.x), _size.y / float(size.y));
         }
 
-        T getState()
+        [[nodiscard]] T getState() const
         {
             return _textures[_id].type;
         }

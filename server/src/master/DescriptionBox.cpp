@@ -16,8 +16,13 @@ namespace Zappy {
         _pos.x = Init::BOX_GAP * 2.0f;
         _text.setFont(font);
         _text.setFillColor(sf::Color::Black);
+        _text.setCharacterSize(TEXT_SIZE);
+        _text.setStyle(sf::Text::Style::Regular);
+        _text.setString(_description);
+        sf::FloatRect rc = _text.getLocalBounds();
+        _height = START_HEIGHT + rc.height + Init::BOX_GAP;
         _rec.setFillColor(Init::PALEGREY);
-        _rec.setSize({Init::DESC_BOX_X, Init::DESC_BOX_Y});
+        _rec.setSize({Init::DESC_BOX_X, _height});
     }
 
     void DescriptionBox::draw(sf::RenderWindow &win)
@@ -34,8 +39,9 @@ namespace Zappy {
         _text.setStyle(sf::Text::Style::Bold);
         _text.setString(_name);
         sf::FloatRect rc = _text.getLocalBounds();
-        _text.setOrigin(rc.left, rc.top);
-        _text.setPosition({_pos.x + Init::BOX_GAP, _pos.y + Init::BOX_GAP});
+        _text.setOrigin(rc.left, rc.top + rc.height / 2.f);
+        _text.setPosition(
+            {_pos.x + Init::BOX_GAP, _pos.y + Init::BOX_GAP + TITLE / 2.f});
         win.draw(_text);
     }
 
@@ -45,10 +51,8 @@ namespace Zappy {
         _text.setStyle(sf::Text::Style::Regular);
         _text.setString(_description);
         sf::FloatRect rc = _text.getLocalBounds();
-        _text.setOrigin(rc.left, rc.top + rc.height / 2.0f);
-        _text.setPosition({_pos.x + Init::BOX_GAP,
-            _pos.y + (Init::DESC_BOX_Y - NAME_SIZE * 2.f) / 2.f +
-                (NAME_SIZE - Init::BOX_GAP) * 2.f});
+        _text.setOrigin(rc.left, rc.top);
+        _text.setPosition({_pos.x + Init::BOX_GAP, _pos.y + START_HEIGHT});
         win.draw(_text);
     }
 }; // namespace Zappy

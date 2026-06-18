@@ -104,11 +104,9 @@ namespace Shared {
                 return info;
             throw PollException();
         }
-        for (auto &_fd : _fds) {
-            if (_fd.revents & POLLIN)
-                info.push_back(_fd.fd);
-            if (_fd.revents & (POLLHUP | POLLERR))
-                info.push_back(_fd.fd);
+        for (auto &pfd : _fds) {
+            if (pfd.revents & (POLLIN | POLLHUP | POLLERR))
+                info.push_back(pfd.fd);
         }
         return info;
     }

@@ -16,8 +16,8 @@
 namespace Zappy {
     class AiDescription {
     public:
-        AiDescription(sf::Font &font,
-            const std::unordered_map<std::string, std::string> &ais);
+        AiDescription(
+            sf::Font &font, const std::map<std::string, std::string> &ais);
 
         void draw(sf::RenderWindow &win);
         void event(sf::Event &event, sf::Vector2f mousePos);
@@ -26,6 +26,7 @@ namespace Zappy {
         sf::RectangleShape _rec;
         std::vector<DescriptionBox> _descriptions;
         float _scroll = 0.f;
+        float _totalHeight;
     };
 } // namespace Zappy
 

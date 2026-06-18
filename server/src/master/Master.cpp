@@ -21,6 +21,7 @@ namespace Zappy {
         _process(port, clients),
         _toolBar(_font, port, _process, clients),
         _aiDescription(_font, _ais),
+        _teamsInfo(_font, _ais, _process, teams),
         _clients(clients),
         _teams(teams)
     {
@@ -39,6 +40,7 @@ namespace Zappy {
             _window.clear(sf::Color::Black);
             _window.setView(_view);
             _window.draw(_rec);
+            _teamsInfo.draw(_window);
             _aiDescription.draw(_window);
             _toolBar.draw(_window);
             _window.display();
@@ -56,6 +58,7 @@ namespace Zappy {
             handleResize(event);
             _toolBar.event(event, mousePos);
             _aiDescription.event(event, mousePos);
+            _teamsInfo.event(event, mousePos);
             if (event.type == sf::Event::Closed ||
                 (event.type == sf::Event::KeyPressed &&
                     event.key.code == sf::Keyboard::Escape))
@@ -86,7 +89,7 @@ namespace Zappy {
         _window.setView(_view);
     }
 
-    const std::unordered_map<std::string, std::string> Master::_ais = {
-        {"Survivor", "Take food on his pass."},
+    const std::map<std::string, std::string> Master::_ais = {
+        {"survivor", "Take food on his pass."},
     };
 } // namespace Zappy

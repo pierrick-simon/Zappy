@@ -9,10 +9,12 @@
     #define MASTER_HPP_
 
     #include <SFML/Graphics.hpp>
+    #include <map>
     #include <string_view>
     #include "AddProcess.hpp"
     #include "AiDescription.hpp"
     #include "Client.hpp"
+    #include "TeamsInfo.hpp"
     #include "ToolBar.hpp"
 
 namespace Zappy {
@@ -40,11 +42,12 @@ namespace Zappy {
         AddProcess _process;
         ToolBar _toolBar;
         AiDescription _aiDescription;
+        TeamsInfo _teamsInfo;
 
         Clients &_clients;
         std::unordered_map<std::string, std::size_t> &_teams;
 
-        static const std::unordered_map<std::string, std::string> _ais;
+        static const std::map<std::string, std::string> _ais;
 
         static constexpr std::string_view FONT = "public/Font.ttf";
         static constexpr std::string_view TITLE = "Zappy Master Server";

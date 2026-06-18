@@ -12,7 +12,7 @@
 
 namespace SfmlUtils {
 
-    enum class ButtonType { State };
+    enum class ButtonType { State, Presse };
 
     class AButton {
     public:

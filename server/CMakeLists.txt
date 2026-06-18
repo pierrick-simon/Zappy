@@ -20,6 +20,9 @@ set(SRCS
         src/master/AddProcess.cpp
         src/master/AiDescription.cpp
         src/master/DescriptionBox.cpp
+        src/master/TeamsInfo.cpp
+        src/master/TeamBox.cpp
+        src/master/SelectAi.cpp
 )
 
 set(HEADERS
