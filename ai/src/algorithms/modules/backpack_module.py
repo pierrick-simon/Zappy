@@ -25,11 +25,12 @@ from src.connection_handler import ConnectionHandler
 from src.constants.resources import COMMAND_TIME, FOOD_DECAY_TIME_UNITS
 from src.constants.constants import COMMAND_FACTORY
 
+
 class BackpackModule:
     def __init__(self, handler: ConnectionHandler) -> None:
         """! Initialisation of the backpack module.
 
-        @return  An instance of the backpack module.
+        @return An instance of the backpack module.
         """
         self._handler = handler
         self.inventory = {
@@ -44,56 +45,65 @@ class BackpackModule:
         self.food_decay = 0
 
     def tick(self, action: str) -> None:
-        """! Function to call at each action in the AI when it has the backpack.
+        """! Advance the food decay counter by the time cost of action.
 
-        @param action: The action took as string (example: "Forward")
+        IMPORTANT: this method only tracks TIME (food decay).
+        Inventory changes (Take/Set) are handled exclusively by
+        add_to_inventory() / del_from_inventory(), called by the AI
+        after confirming the server accepted the command.
+
+        @param action: Command string (e.g. "Forward", "Take food")
         @return None
         """
         print(action)
+
         if action.startswith("Take"):
             self.food_decay += COMMAND_TIME["Take"]
-            self.inventory[action.split(' ')[1]] += 1
         elif action.startswith("Set"):
             self.food_decay += COMMAND_TIME["Set"]
-            self.inventory[action.split(' ')[1]] += 1
         elif action.startswith("Broadcast"):
             self.food_decay += COMMAND_TIME["Broadcast"]
-        else:
+        elif action in COMMAND_TIME:
             self.food_decay += COMMAND_TIME[action]
+
         self._update()
 
     def _update(self) -> None:
-        """! Function to update the backpack module.
+        """! Consume one food unit per FOOD_DECAY_TIME_UNITS elapsed.
 
         @return None
         """
-        if self.food_decay >= FOOD_DECAY_TIME_UNITS:
-            self.inventory["food"] -= 1
+        while self.food_decay >= FOOD_DECAY_TIME_UNITS:
+            if self.inventory["food"] > 0:
+                self.inventory["food"] -= 1
             self.food_decay -= FOOD_DECAY_TIME_UNITS
 
     def add_to_inventory(self, objects: list) -> None:
-        """! Function to add the objects to the inventory.
+        """! Add objects to the tracked inventory (call after a successful Take).
 
-        @param objects: The list of objects to add to the inventory.
+        @param objects: List of resource name strings.
         @return None
         """
         for o in objects:
             self.inventory[o] += 1
 
     def del_from_inventory(self, objects: list) -> None:
-        """! Function to remove the objects to the inventory.
+        """! Remove objects from the tracked inventory (call after a successful Set).
 
-        @param objects: The list of objects to remove from the inventory.
+        @param objects: List of resource name strings.
         @return None
         """
         for o in objects:
-            self.inventory[o] -= 1
+            if self.inventory[o] > 0:
+                self.inventory[o] -= 1
 
     def refresh_inventory(self) -> None:
-        """! Function to refresh the inventory with real informations from server.
+        """! Overwrite the tracked inventory with a real server Inventory response.
+
+        Use this when the tracked state may have drifted (e.g. after an
+        incantation strips stones from the tile, or after being ejected).
 
         @return None
         """
         self.inventory = COMMAND_FACTORY["Inventory"](self._handler)
         self.food_decay += COMMAND_TIME["Inventory"]
-        pass

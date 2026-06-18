@@ -2,7 +2,7 @@
 ## EPITECH PROJECT, 2026
 ## Zappy
 ## File description:
-## BackpackModule
+## auto_gather_module
 ##
 
 """@package docstring
