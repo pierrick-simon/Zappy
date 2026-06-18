@@ -44,21 +44,21 @@ class HumanAI:
     EVENT_RECTANGLE_TOP_Y = INPUT_RECTANGLE_TOP_Y
     EVENT_RECTANGLE_LEFT_X = INPUT_RECTANGLE_RIGHT_X + 5
     EVENT_RECTANGLE_BOTTOM_Y = EVENT_RECTANGLE_TOP_Y + 20
-    EVENT_RECTANGLE_RIGHT_X = EVENT_RECTANGLE_LEFT_X + 20
+    EVENT_RECTANGLE_RIGHT_X = EVENT_RECTANGLE_LEFT_X + 30
+    EVENT_BOX_WIDTH = EVENT_RECTANGLE_RIGHT_X - EVENT_RECTANGLE_LEFT_X
 
     CMD_BOX_TOP_Y = INPUT_RECTANGLE_TOP_Y
     CMD_BOX_LEFT_X = INPUT_RECTANGLE_LEFT_X - 35
     CMD_BOX_BOTTOM_Y = CMD_BOX_TOP_Y + 11
     CMD_BOX_RIGHT_X = CMD_BOX_LEFT_X + 30
     CMD_BOX_WIDTH = CMD_BOX_RIGHT_X - CMD_BOX_LEFT_X
-    SEPARATOR = int(CMD_BOX_LEFT_X + (CMD_BOX_WIDTH / 2))
+    SEPARATOR = int(CMD_BOX_LEFT_X + (CMD_BOX_WIDTH / 2)) + 4
 
     INVENTORY_BOX_TOP_Y = INPUT_RECTANGLE_BOTTOM_Y + 3
     INVENTORY_BOX_LEFT_X = INPUT_RECTANGLE_LEFT_X - 35
     INVENTORY_BOX_BOTTOM_Y = INPUT_RECTANGLE_BOTTOM_Y + 9
     INVENTORY_BOX_RIGHT_X = INPUT_RECTANGLE_RIGHT_X
     INVENTORY_BOX_WIDTH = INVENTORY_BOX_RIGHT_X - INVENTORY_BOX_LEFT_X
-    MIDDLE = int(INVENTORY_BOX_LEFT_X + (INVENTORY_BOX_WIDTH / 2))
     CELL_WIDTH = 27
 
     def __init__(self, handler: ConnectionHandler) -> None:
@@ -73,7 +73,7 @@ class HumanAI:
             "phiras": 0,
             "thystame": 0,
         }
-        self.SPECIAL_RESPONSE: dict[str, Callable[["HumanAI"], None]] = {
+        self.SPECIAL_RESPONSE: dict[str, Callable[["HumanAI", Any], None]] = {
             "Look": self.display_look,
             "Inventory": self.display_inventory,
         }
@@ -87,7 +87,7 @@ class HumanAI:
             curses.start_color()
             curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
             curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
-            curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
+            curses.init_pair(3, curses.COLOR_CYAN, curses.COLOR_BLACK)
         self.stdscr.refresh()
 
     def get_user_input(self, textbox: Textbox) -> str:
@@ -114,7 +114,7 @@ class HumanAI:
         )
         self.stdscr.addstr(y, x, text)
 
-    def display_inventory(self):
+    def display_inventory(self, inventory: dict[str, int]):            
         rectangle(
             self.stdscr,
             self.INVENTORY_BOX_TOP_Y,
@@ -122,15 +122,16 @@ class HumanAI:
             self.INVENTORY_BOX_BOTTOM_Y,
             self.INVENTORY_BOX_RIGHT_X,
         )
+        if (inventory is None):
+            return
+        self.inventory = inventory
         x1 = self.INVENTORY_BOX_LEFT_X + 3
         x2 = x1 + self.CELL_WIDTH
         x3 = x2 + self.CELL_WIDTH
         self.display_line("food", self.INVENTORY_BOX_TOP_Y + 1, x2)
-
         self.display_line("linemate",  self.INVENTORY_BOX_TOP_Y + 3, x1)
         self.display_line("deraumere", self.INVENTORY_BOX_TOP_Y + 3, x2)
         self.display_line("sibur",     self.INVENTORY_BOX_TOP_Y + 3, x3)
-
         self.display_line("mendiane",  self.INVENTORY_BOX_TOP_Y + 5, x1)
         self.display_line("phiras",    self.INVENTORY_BOX_TOP_Y + 5, x2)
         self.display_line("thystame",  self.INVENTORY_BOX_TOP_Y + 5, x3)
@@ -138,7 +139,7 @@ class HumanAI:
 
     def display_events(self):
         self.stdscr.addstr(
-            self.EVENT_RECTANGLE_TOP_Y - 1, self.EVENT_RECTANGLE_LEFT_X + 6, "[Events]"
+            self.EVENT_RECTANGLE_TOP_Y - 1, (self.EVENT_RECTANGLE_LEFT_X + int(self.EVENT_BOX_WIDTH / 2) - 4), "[Events]"
         )
         rectangle(
             self.stdscr,
@@ -152,8 +153,8 @@ class HumanAI:
             self.stdscr.addstr(
                 self.EVENT_RECTANGLE_TOP_Y + (offset),
                 self.EVENT_RECTANGLE_LEFT_X + 2,
-                str(event),
-                curses.color_pair(),
+                f"{str(event):<{18}}",
+                curses.color_pair(3),
             )
             offset += 1
         self.stdscr.refresh()
@@ -184,8 +185,8 @@ class HumanAI:
                 color = self.get_color(cmd.response)
                 self.stdscr.addstr(
                     self.CMD_BOX_TOP_Y + offset,
-                    self.CMD_BOX_LEFT_X + 3,
-                    str(cmd),
+                    self.CMD_BOX_LEFT_X + 2,
+                    f"{str(cmd)}",
                     curses.color_pair(color),
                 )
                 self.stdscr.addstr(
@@ -222,7 +223,7 @@ class HumanAI:
         self.display_text_box()
         self.display_events()
         self.display_commands()
-        self.display_inventory()
+        self.display_inventory(self.inventory)
 
     def run(self) -> None:
         call_function_in_thread(self.handler.listen_server).start()
