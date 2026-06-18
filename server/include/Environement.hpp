@@ -49,16 +49,6 @@ namespace Zappy {
     class GUIClient;
 
     class Environement {
-    private:
-        struct Player {
-            std::string team;
-            Info::Direction dir;
-            std::size_t level;
-            bool elevation;
-            std::size_t x;
-            std::size_t y;
-        };
-
     public:
         Environement(std::size_t width, std::size_t height,
             std::ofstream &logFile, Clients &clients,
@@ -86,10 +76,6 @@ namespace Zappy {
         bool startElevation(std::size_t id);
         void endElevation(std::size_t x, std::size_t y, std::size_t level,
             std::vector<std::size_t>);
-        Shared::Vector2<int> getBroadCastVector(
-            const Player &sender, const Player &receiver) const;
-        static std::size_t getTileNb(
-            const Player &receiver, const Shared::Vector2<int> &v);
         void broadcast(std::size_t id, const std::string &text);
 
         static const std::unordered_map<std::size_t,
@@ -122,6 +108,15 @@ namespace Zappy {
         using EggIter =
             std::unordered_map<std::size_t, Zappy::Environement::Egg>::iterator;
 
+        struct Player {
+            std::string team;
+            Info::Direction dir;
+            std::size_t level;
+            bool elevation;
+            std::size_t x;
+            std::size_t y;
+        };
+
         using PlayerIter = std::unordered_map<std::size_t,
             Zappy::Environement::Player>::iterator;
 
@@ -149,6 +144,11 @@ namespace Zappy {
         void handleDestroyEgg(EggIter);
         void checkEnd();
         std::vector<std::size_t> getTileValue(std::size_t tile);
+
+        Shared::Vector2<int> getBroadCastVector(
+            const Player &sender, const Player &receiver) const;
+        static std::size_t getTileNb(
+            const Player &receiver, const Shared::Vector2<int> &v);
 
         template<std::derived_from<Shared::GUIEvent> EventType,
             typename... Args>
