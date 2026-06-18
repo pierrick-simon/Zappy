@@ -21,7 +21,7 @@ namespace Zappy {
         _text.setFillColor(sf::Color::Black);
         _rec.setFillColor(Init::PALEGREY);
         _height = START_HEIGHT +
-            HEIGHT * (float(ais.size()) / Init::NB_BUTTON) +
+            HEIGHT * (float(ais.size() + 1) / Init::NB_BUTTON) +
             Init::BOX_GAP * 2.f;
         _rec.setSize({Init::INFO_BOX_X, _height});
         _play.setSize({SIZE_PLAY_BUTTON, SIZE_PLAY_BUTTON});
