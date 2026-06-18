@@ -7,6 +7,7 @@
 
 #include "Environement.hpp"
 #include <algorithm>
+#include <array>
 #include <ctime>
 #include <optional>
 #include <random>
@@ -18,7 +19,6 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
-#include "Vector.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
 
@@ -486,12 +486,69 @@ namespace Zappy {
         return status;
     }
 
+    Shared::Vector2<int> Environement::getBroadCastVector(
+        const Player &sender, const Player &receiver) const
+    {
+
+        std::array<Shared::Vector2<int>, 9> vectors;
+        std::size_t index = 0;
+        double minDist = -1;
+        std::size_t minIndex = 0;
+
+        for (int j = -1; j <= 1; ++j) {
+            for (int i = -1; i <= 1; ++i) {
+                vectors[index].x = static_cast<int>(sender.x) -
+                    (static_cast<int>(receiver.x) +
+                        (i * static_cast<int>(_width)));
+                vectors[index].y = static_cast<int>(sender.y) -
+                    (static_cast<int>(receiver.y) +
+                        (j * static_cast<int>(_height)));
+                ++index;
+            }
+        }
+        for (std::size_t i = 0; i < index; ++i) {
+            auto norm = vectors[i].norm();
+            if (norm < minDist || minDist == -1) {
+                minDist = norm;
+                minIndex = i;
+            }
+        }
+        return vectors[minIndex];
+    }
+
+    std::size_t Environement::getTileNb(
+        const Player &receiver, const Shared::Vector2<int> &v)
+    {
+        if (v.x == 0 && v.y == 0)
+            return 0;
+        const auto &dir = Info::directions.at(receiver.dir);
+        Shared::Vector2<int> dirV(dir.x, dir.y);
+        auto angle = dirV.angle(v);
+        for (auto chunk : _broadcastChunks) {
+            auto lowerAngle = dirV.angle(
+                chunk.second.first[static_cast<std::size_t>(receiver.dir)]);
+            auto hightAngle = dirV.angle(
+                chunk.second.second[static_cast<std::size_t>(receiver.dir)]);
+            if (angle <= std::max(lowerAngle, hightAngle) &&
+                angle > std::min(lowerAngle, hightAngle))
+                return chunk.first;
+        }
+        throw ServerException("Error getTileNb");
+    }
+
     void Environement::broadcast(std::size_t id, const std::string &text)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
+        for (auto &p : _players) {
+            auto v = getBroadCastVector(find->second, p.second);
+            auto i = getTileNb(p.second, v);
+            Shared::Connect::send(getPlayerFd(p.first),
+                ServerCmd::MSG.getStr() + " " + std::to_string(i) + ", " +
+                    text + "\n");
+        }
     }
 
     std::size_t Environement::getConnectNbr(std::size_t id) const
@@ -560,4 +617,17 @@ namespace Zappy {
         std::ranges::copy(std::views::values(_tiles[tile]), value.begin());
         return value;
     }
+
+    const std::unordered_map<std::size_t,
+        std::pair<Shared::Vector2<double>, Shared::Vector2<double>>>
+        Environement::_broadcastChunks = {{1, {{0.0, 1.5}, {-0.5, 1.5}}},
+            {2, {{-0.5, 1.5}, {-1.5, 0.5}}},
+            {3, {{-1.5, 0.5}, {-1.5, -0.5}}},
+            {4, {{-1.5, -0.5}, {-0.5, -1.5}}},
+            {5, {{-0.5, -1.5}, {0.5, -1.5}}},
+            {6, {{0.5, -1.5}, {1.5, -0.5}}},
+            {7, {{1.5, -0.5}, {1.5, 0.5}}},
+            {8, {{1.5, 0.5}, {0.5, 1.5}}},
+            {1, {{0.5, 1.5}, {0.0, 1.5}}}};
+
 }; // namespace Zappy

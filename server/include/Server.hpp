@@ -16,6 +16,7 @@
     #include "Connect.hpp"
     #include "Environement.hpp"
     #include "GUIClient.hpp"
+    #include "Master.hpp"
     #include "Utils.hpp"
 
 namespace Zappy {
@@ -46,6 +47,7 @@ namespace Zappy {
         std::optional<std::string> getNewClientLine(
             std::unordered_map<int, NewClient>::iterator &);
 
+        int _port;
         Shared::Connect _connect;
         std::unordered_map<std::string, std::size_t> _teams;
         std::vector<std::string> _teamsNames;
@@ -61,6 +63,8 @@ namespace Zappy {
         static bool RECEIVED_SIG_INT;
 
         std::ofstream _logFile;
+
+        std::optional<Master> _master;
 
         static constexpr std::string_view LOG_FILE = "server.log";
         static constexpr std::string_view GRAPHIC = "GRAPHIC";

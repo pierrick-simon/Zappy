@@ -23,6 +23,7 @@ while AI.alive:
 
 from src.constants.resources import COMMAND_TIME, FOOD_DECAY_TIME_UNITS, TIME_UNIT
 
+
 class BackpackModule:
     def __init__(self) -> None:
         """! Initialisation of the backpack module.
