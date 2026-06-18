@@ -107,7 +107,7 @@ namespace Zappy {
         auto iter = COMMANDS.find(command);
         if (iter != COMMANDS.end()) {
             _sleep = iter->second._timeLimit;
-            _command.emplace(SelectCommand {iter, stream});
+            _command.emplace(SelectCommand {iter, std::move(stream)});
         } else {
             _sleep = DEFAULT_SLEEP;
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
@@ -244,8 +244,12 @@ namespace Zappy {
 
     void AIClient::broadcast(std::istringstream &stream)
     {
-        std::string text = stream.str();
-        _env.broadcast(_id, text);
+        std::string text;
+        std::getline(stream, text);
+        text.erase(0, text.find_first_not_of(" \n\r\t"));
+        text.erase(text.find_last_not_of(" \n\r\t") + 1);
+        if (!text.empty())
+            _env.broadcast(_id, text);
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
