@@ -17,7 +17,7 @@ namespace Shared {
             const std::vector<std::size_t> &resources);
         TileInfoEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getX() const
         {

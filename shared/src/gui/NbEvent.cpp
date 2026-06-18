@@ -28,7 +28,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void NbEvent::retrieve(std::istringstream &stream)
+    void NbEvent::retrieve(std::istringstream stream)
     {
         stream >> _nb;
     }

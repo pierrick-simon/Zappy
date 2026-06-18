@@ -543,6 +543,8 @@ namespace Zappy {
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
         for (auto &p : _players) {
+            if (p.first == find->first)
+                continue;
             auto v = getBroadCastVector(find->second, p.second);
             auto i = getTileNb(p.second, v);
             Shared::Connect::send(getPlayerFd(p.first),

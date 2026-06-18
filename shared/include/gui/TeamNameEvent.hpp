@@ -17,7 +17,7 @@ namespace Shared {
         TeamNameEvent(std::string team);
         TeamNameEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::string getTeam() const
         {

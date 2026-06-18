@@ -29,7 +29,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void MapSizeEvent::retrieve(std::istringstream &stream)
+    void MapSizeEvent::retrieve(std::istringstream stream)
     {
         stream >> _x >> _y;
     }

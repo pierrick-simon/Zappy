@@ -30,7 +30,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void ResourceEvent::retrieve(std::istringstream &stream)
+    void ResourceEvent::retrieve(std::istringstream stream)
     {
         char hash;
         stream >> hash >> _id >> _nb;
