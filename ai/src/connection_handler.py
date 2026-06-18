@@ -21,6 +21,7 @@ def get_key_from_dict(dictionary: dict, string: str) -> Optional[str]:
             return key
     return None
 
+
 class ConnectionHandler:
     client: Client
     commands: deque[Command]
@@ -111,11 +112,10 @@ class ConnectionHandler:
                 print(f"Invalid quantity for {parts[0]}: {parts[1]} must be an int.")
         return inventory
 
-    def handle_response(self, request: str) -> Any:
-        if self.commands[0].command in self.SPECIAL_RESPONSE:
-            return self.SPECIAL_RESPONSE[self.commands[0].command](request)
-        else:
-            return request
+    def handle_response(self, request: str, index: int) -> Any:
+        if self.commands[index].command in self.SPECIAL_RESPONSE:
+            return self.SPECIAL_RESPONSE[self.commands[index].command](request)
+        return request
 
     def start_session(self):
         if self.client.recv() != "WELCOME":
@@ -136,7 +136,7 @@ class ConnectionHandler:
             )
         self.dimension = tuple(self.client.recv().split())
         print(f"Slot: {self.slots}, Map: {self.dimension}")
-    
+
     def get_pending(self) -> Optional[int]:
         for i, cmd in enumerate(self.commands):
             if cmd.response is None:
@@ -150,8 +150,8 @@ class ConnectionHandler:
 
         if key:
             self.events.append(self.COMMON_EVENTS[key](request))
-        elif self.commands and pending:
-          self.commands[pending].response = self.handle_response(request)
+        elif self.commands and pending is not None:
+            self.commands[pending].response = self.handle_response(request, pending)
 
     def consume_command(self) -> Optional[Command]:
         try:
