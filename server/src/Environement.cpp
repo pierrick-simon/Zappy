@@ -5,6 +5,7 @@
 ** Environement
 */
 
+#include "Environement.hpp"
 #include <algorithm>
 #include <array>
 #include <ctime>
@@ -18,7 +19,6 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
-#include "Environement.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
 
@@ -61,9 +61,12 @@ namespace Zappy {
         return min;
     }
 
-    void Environement::refillRessource(Info::ResourceName type, std::size_t count)
+    void Environement::refillRessource(
+        Info::ResourceName type, std::size_t count)
     {
-        std::size_t nbResource = static_cast<std::size_t>(Info::resources.at(type).density * _width * _height);
+        auto nbResource =
+            static_cast<std::size_t>(Info::resources.at(type).density *
+                static_cast<float>(_width) * static_cast<float>(_height));
         if (nbResource == 0)
             nbResource = 1;
 
