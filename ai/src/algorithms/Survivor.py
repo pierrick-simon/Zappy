@@ -66,9 +66,7 @@ class SurvivalAI:
 
         auto_gather = ag.AutoGatherModule()
         plan = auto_gather.auto_gather(
-            obs=tiles,
-            aimed_materials={"food": food_count},
-            max_time=1000
+            obs=tiles, aimed_materials={"food": food_count}, max_time=1000
         )
 
         for action in plan:

@@ -90,10 +90,7 @@ class AutoGatherModule:
                 cur_x, cur_y, cur_orient, tx, ty
             )
 
-            length = (
-                    sum(COMMAND_TIME[m] for m in moves)
-                    + COMMAND_TIME["Take"]
-            )
+            length = sum(COMMAND_TIME[m] for m in moves) + COMMAND_TIME["Take"]
 
             if best_length is None or length < best_length:
                 best_length = length
