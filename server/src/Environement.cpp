@@ -7,10 +7,10 @@
 
 #include "Environement.hpp"
 #include <algorithm>
+#include <array>
 #include <ctime>
 #include <optional>
 #include <random>
-#include <array>
 #include <ranges>
 #include "AIClient.hpp"
 #include "AICommunication.hpp"
@@ -482,7 +482,8 @@ namespace Zappy {
         return status;
     }
 
-    Shared::Vector2<int> Environement::getBroadCastVector(const Player &sender, const Player &receiver)
+    Shared::Vector2<int> Environement::getBroadCastVector(
+        const Player &sender, const Player &receiver)
     {
 
         std::array<Shared::Vector2<int>, 9> vectors;
@@ -493,7 +494,8 @@ namespace Zappy {
         for (std::size_t j = 0; j < 3; ++j) {
             for (std::size_t i = 0; i < 3; ++i) {
                 vectors[index].x = sender.x - (receiver.x + ((i - 1) * _width));
-                vectors[index].y = sender.y - (receiver.y + ((j - 1) * _height));
+                vectors[index].y =
+                    sender.y - (receiver.y + ((j - 1) * _height));
                 ++index;
             }
         }
@@ -507,17 +509,21 @@ namespace Zappy {
         return vectors[minIndex];
     }
 
-    std::size_t Environement::getTileNb(const Player &receiver, const Shared::Vector2<int> &v)
+    std::size_t Environement::getTileNb(
+        const Player &receiver, const Shared::Vector2<int> &v)
     {
         if (v.x == 0 && v.y == 0)
             return 0;
         auto dir = Info::directions.at(receiver.dir);
         Shared::Vector2<int> dirV(dir.x, dir.y);
         auto angle = dirV.angle(v);
-        for (auto chunk: _broadcastChunks) {
-            auto lowerAngle = dirV.angle(chunk.second.first[static_cast<std::size_t>(receiver.dir)]);
-            auto hightAngle = dirV.angle(chunk.second.second[static_cast<std::size_t>(receiver.dir)]);
-            if (angle <= std::max(lowerAngle, hightAngle) && angle > std::min(lowerAngle, hightAngle))
+        for (auto chunk : _broadcastChunks) {
+            auto lowerAngle = dirV.angle(
+                chunk.second.first[static_cast<std::size_t>(receiver.dir)]);
+            auto hightAngle = dirV.angle(
+                chunk.second.second[static_cast<std::size_t>(receiver.dir)]);
+            if (angle <= std::max(lowerAngle, hightAngle) &&
+                angle > std::min(lowerAngle, hightAngle))
                 return chunk.first;
         }
         throw ServerException("Error getTileNb");
@@ -529,13 +535,14 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
-        for (auto &p: _players) {
+        for (auto &p : _players) {
             if (p.first == id)
                 continue;
             auto v = getBroadCastVector(find->second, p.second);
             auto i = getTileNb(p.second, v);
             Shared::Connect::send(getPlayerFd(p.first),
-                ServerCmd::MSG.getStr() + " " + std::to_string(i) + ", " + text +"\n");
+                ServerCmd::MSG.getStr() + " " + std::to_string(i) + ", " +
+                    text + "\n");
         }
     }
 
@@ -605,16 +612,16 @@ namespace Zappy {
         return value;
     }
 
-    const std::unordered_map<std::size_t, std::pair<Shared::Vector2<double>, Shared::Vector2<double>>> Environement::_broadcastChunks = {
-        {1, {{0.0, 1.5}, {-0.5, 1.5}}},
-        {2, {{-0.5, 1.5}, {-1.5, 0.5}}},
-        {3, {{-1.5, 0.5}, {-1.5, -0.5}}},
-        {4, {{-1.5, -0.5}, {-0.5, -1.5}}},
-        {5, {{-0.5, -1.5}, {0.5, -1.5}}},
-        {6, {{0.5, -1.5}, {1.5, -0.5}}},
-        {7, {{1.5, -0.5}, {1.5, 0.5}}},
-        {8, {{1.5, 0.5}, {0.5, 1.5}}},
-        {1, {{0.5, 1.5}, {0.0, 1.5}}}
-    };
+    const std::unordered_map<std::size_t,
+        std::pair<Shared::Vector2<double>, Shared::Vector2<double>>>
+        Environement::_broadcastChunks = {{1, {{0.0, 1.5}, {-0.5, 1.5}}},
+            {2, {{-0.5, 1.5}, {-1.5, 0.5}}},
+            {3, {{-1.5, 0.5}, {-1.5, -0.5}}},
+            {4, {{-1.5, -0.5}, {-0.5, -1.5}}},
+            {5, {{-0.5, -1.5}, {0.5, -1.5}}},
+            {6, {{0.5, -1.5}, {1.5, -0.5}}},
+            {7, {{1.5, -0.5}, {1.5, 0.5}}},
+            {8, {{1.5, 0.5}, {0.5, 1.5}}},
+            {1, {{0.5, 1.5}, {0.0, 1.5}}}};
 
 }; // namespace Zappy

@@ -11,7 +11,6 @@
     #include <chrono>
     #include <concepts>
     #include <map>
-    #include <unordered_map>
     #include <ranges>
     #include <string>
     #include <unordered_map>
@@ -64,7 +63,7 @@ namespace Zappy {
         Environement(std::size_t width, std::size_t height,
             std::ofstream &logFile, Clients &clients,
             std::unordered_map<std::string, std::size_t> &teams);
-        
+
         Environement(Environement &) = delete;
 
         std::chrono::milliseconds update(std::chrono::milliseconds elapsed);
@@ -87,11 +86,15 @@ namespace Zappy {
         bool startElevation(std::size_t id);
         void endElevation(std::size_t x, std::size_t y, std::size_t level,
             std::vector<std::size_t>);
-        Shared::Vector2<int> getBroadCastVector(const Player &sender, const Player &receiver);
-        std::size_t getTileNb(const Player &receiver, const Shared::Vector2<int> &v);
+        Shared::Vector2<int> getBroadCastVector(
+            const Player &sender, const Player &receiver);
+        std::size_t getTileNb(
+            const Player &receiver, const Shared::Vector2<int> &v);
         void broadcast(std::size_t id, const std::string &text);
 
-        static const std::unordered_map<std::size_t, std::pair<Shared::Vector2<double>, Shared::Vector2<double>>> _broadcastChunks;
+        static const std::unordered_map<std::size_t,
+            std::pair<Shared::Vector2<double>, Shared::Vector2<double>>>
+            _broadcastChunks;
 
         [[nodiscard]] std::size_t getHeight() const
         {

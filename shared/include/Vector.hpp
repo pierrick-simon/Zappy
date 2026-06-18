@@ -22,7 +22,7 @@ namespace Shared {
             x(0), y(0) {};
         Vector2(const T &x, const T &y) :
             x(x), y(y) {};
-        
+
         double norm() const
         {
             return std::sqrt(x * x + y * y);
@@ -68,7 +68,6 @@ namespace Shared {
                 r = Shared::Vector2<T>(-r.y, r.x);
             return r;
         };
-        
     };
 
 } // namespace Shared

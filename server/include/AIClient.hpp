@@ -63,7 +63,7 @@ namespace Zappy {
 
         struct SelectCommand {
             CommandIter iter;
-            std::istringstream &stream;
+            std::istringstream stream;
         };
 
         void addCommand();
