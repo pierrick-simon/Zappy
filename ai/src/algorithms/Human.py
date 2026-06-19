@@ -63,7 +63,6 @@ class HumanAI:
 
     def __init__(self, handler: ConnectionHandler) -> None:
         self.handler = handler
-        self.backpack = BackpackModule()
         self.inventory = {
             "food": 10,
             "linemate": 0,

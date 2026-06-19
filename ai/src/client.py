@@ -25,11 +25,14 @@ class Client:
 
     def send(self, message: str) -> None:
         self.socket_client.send(bytes(message + "\n", "utf-8"))
-
+    
     def recv(self) -> str:
         data = b""
         while not data.endswith(b"\n"):
-            data += self.socket_client.recv(1)
+            token = self.socket_client.recv(1)
+            if not token:
+                raise ConnectionError("Server closed the connection.")
+            data += token
         return data.decode().strip()
 
     def disconnect(self) -> None:

@@ -148,7 +148,6 @@ class ConnectionHandler:
         key: str = get_key_from_dict(self.COMMON_EVENTS, request)
         pending = self.get_pending()
 
-        print("Raw request: ", request)
         if key:
             self.events.append(self.COMMON_EVENTS[key](request))
         elif self.commands and pending is not None:
