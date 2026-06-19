@@ -45,6 +45,7 @@ namespace Zappy {
     {
         _sleep -= elapsed;
         if (_sleep.count() <= 0) {
+            refillRessources();
             _sleep = SLEEP;
         }
         auto min = _sleep;
