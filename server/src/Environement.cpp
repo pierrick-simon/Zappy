@@ -37,7 +37,7 @@ namespace Zappy {
         std::srand(std::time(nullptr));
         for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
-        refillRessources();
+        refillRessources(false);
     }
 
     std::chrono::milliseconds Environement::update(
@@ -62,7 +62,7 @@ namespace Zappy {
         return min;
     }
 
-    void Environement::refillRessource(
+    bool Environement::refillRessource(
         Info::ResourceName type, std::size_t count)
     {
         auto nbResource =
@@ -72,14 +72,16 @@ namespace Zappy {
             nbResource = 1;
 
         if (count >= nbResource)
-            return;
+            return false;
         for (std::size_t i = 0; i < nbResource - count; ++i)
             _tiles[rand() % (_width * _height)].at(type)++;
+        return true;
     }
 
-    void Environement::refillRessources()
+    void Environement::refillRessources(const bool log)
     {
         Info::Tile totalTile(Info::INIT_RESOUCES);
+        bool asChanged = false;
 
         for (std::size_t i = 0; i < _width * _height; ++i) {
             for (std::size_t j = 0; j < Info::resources.size(); ++j) {
@@ -89,8 +91,10 @@ namespace Zappy {
         }
         for (std::size_t i = 0; i < Info::resources.size(); ++i) {
             auto type = static_cast<Info::ResourceName>(i);
-            refillRessource(type, totalTile.at(type));
+            asChanged |= refillRessource(type, totalTile.at(type));
         }
+        if (log && asChanged)
+            Shared::Utils::logMsg(_logFile, "Map was given new ressources.");
     }
 
     std::string Environement::formatTile(
