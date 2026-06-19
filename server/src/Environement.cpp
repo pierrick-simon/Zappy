@@ -37,6 +37,7 @@ namespace Zappy {
         std::srand(std::time(nullptr));
         for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
+        refillRessources(false);
     }
 
     std::chrono::milliseconds Environement::update(
@@ -44,6 +45,7 @@ namespace Zappy {
     {
         _sleep -= elapsed;
         if (_sleep.count() <= 0) {
+            refillRessources();
             _sleep = SLEEP;
         }
         auto min = _sleep;
@@ -62,6 +64,36 @@ namespace Zappy {
         return min;
     }
 
+    bool Environement::refillRessource(
+        Info::ResourceName type, std::size_t count)
+    {
+        auto nbResource =
+            static_cast<std::size_t>(Info::resources.at(type).density *
+                static_cast<float>(_width) * static_cast<float>(_height));
+        if (nbResource == 0)
+            nbResource = 1;
+
+        if (count >= nbResource)
+            return false;
+        for (std::size_t i = 0; i < nbResource - count; ++i)
+            _tiles[rand() % (_width * _height)].at(type)++;
+        return true;
+    }
+
+    void Environement::refillRessources(const bool &log)
+    {
+        Info::Tile totalTile(Info::INIT_RESOUCES);
+        bool asChanged = false;
+
+        for (std::size_t i = 0; i < _width * _height; ++i)
+            for (const auto &[name, nb] : _tiles[i])
+                totalTile[name] += nb;
+        for (const auto &[name, nb] : totalTile)
+            asChanged |= refillRessource(name, nb);
+        if (log && asChanged)
+            Shared::Utils::logMsg(_logFile, "Map was given new ressources.");
+    }
+
     std::string Environement::formatTile(
         std::size_t width, std::size_t height) const
     {
@@ -72,8 +104,10 @@ namespace Zappy {
             formatedTile += "player ";
         for (auto e : info.eggs)
             formatedTile += "egg ";
-        for (auto r : info.resources)
-            formatedTile += Info::resources.at(r.first).str + " ";
+        for (auto r : info.resources) {
+            for (std::size_t i = 0; i < r.second; ++i)
+                formatedTile += Info::resources.at(r.first).str + " ";
+        }
         if (!info.players.empty() || !info.eggs.empty() ||
             !info.resources.empty())
             formatedTile += "\b";
