@@ -87,9 +87,9 @@ namespace Zappy {
 
         for (std::size_t i = 0; i < _width * _height; ++i)
             for (const auto &[name, nb] : _tiles[i])
-                totalTile.at(name) += nb;
+                totalTile[name] += nb;
         for (const auto &[name, nb] : totalTile)
-            asChanged |= refillRessource(name, totalTile.at(name));
+            asChanged |= refillRessource(name, nb);
         if (log && asChanged)
             Shared::Utils::logMsg(_logFile, "Map was given new ressources.");
     }
