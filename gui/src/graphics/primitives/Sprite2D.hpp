@@ -17,6 +17,12 @@ namespace Graphics {
     public:
         using Texture::Texture;
         void draw2D() const override;
+        Color &getColor();
+        [[nodiscard]] const Color &getColor() const;
+        void setColor(Color color);
+
+    private:
+        Color _color = WHITE;
     };
 } // namespace Graphics
 

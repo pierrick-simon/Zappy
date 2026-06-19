@@ -163,7 +163,7 @@ namespace Zappy {
             {ServerCmd::PFK.getStr(), &Environement::eggLaying},
             {ServerCmd::PDR.getStr(), &Environement::setResource},
             {ServerCmd::PGT.getStr(), &Environement::takeResource},
-            {ServerCmd::PDI.getStr(), &Environement::deadEgg},
+            {ServerCmd::PDI.getStr(), &Environement::deadPlayer},
             {ServerCmd::ENW.getStr(), &Environement::eggLaid},
             {ServerCmd::EBO.getStr(), &Environement::eggHatched},
             {ServerCmd::EDI.getStr(), &Environement::deadEgg},

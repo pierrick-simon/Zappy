@@ -313,11 +313,7 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto tile = _width * find->second.y + find->second.x;
-        auto resource = _tiles[tile].find(name);
-        if (resource != _tiles[tile].end())
-            resource->second++;
-        else
-            _tiles[tile].emplace(name, 1);
+        _tiles[tile][name] += 1;
         sendToGUI<Shared::SetResourceEvent>(id, Info::resources.at(name).nb);
         sendToGUI<Shared::TileInfoEvent>(
             find->second.x, find->second.y, getTileValue(tile));
@@ -327,10 +323,7 @@ namespace Zappy {
         std::size_t tile, Info::ResourceName name, std::size_t nb)
     {
         auto resource = _tiles[tile].find(name);
-        if (resource != _tiles[tile].end())
-            resource->second += nb;
-        else
-            _tiles[tile].emplace(name, nb);
+        _tiles[tile][name] += nb;
         sendToGUI<Shared::TileInfoEvent>(
             tile % _width, tile / _width, getTileValue(tile));
     }

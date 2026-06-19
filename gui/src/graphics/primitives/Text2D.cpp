@@ -14,7 +14,7 @@ namespace Graphics {
         if (_font)
             DrawTextPro((*_font).get(),
                 _str.c_str(),
-                _pos,
+                _position,
                 _origin,
                 _rotation,
                 _fontSize,
@@ -23,7 +23,7 @@ namespace Graphics {
         else
             DrawTextPro(GetFontDefault(),
                 _str.c_str(),
-                _pos,
+                _position,
                 _origin,
                 _rotation,
                 _fontSize,
@@ -41,19 +41,9 @@ namespace Graphics {
         _str = std::move(str);
     }
 
-    void Text2D::setPos(Vector2 pos)
-    {
-        _pos = pos;
-    }
-
     void Text2D::setOrigin(Vector2 origin)
     {
         _origin = origin;
-    }
-
-    void Text2D::setRotation(float rotation)
-    {
-        _rotation = rotation;
     }
 
     void Text2D::setFontSize(float fontSize)

@@ -22,9 +22,7 @@ namespace Graphics {
 
         void setFont(Font &font);
         void setStr(std::string str);
-        void setPos(Vector2 pos);
         void setOrigin(Vector2 origin);
-        void setRotation(float rotation);
         void setFontSize(float fontSize);
         void setSpacing(float spacing);
         void setColor(Color color);
@@ -34,9 +32,7 @@ namespace Graphics {
     private:
         std::optional<std::reference_wrapper<Font>> _font;
         std::string _str;
-        Vector2 _pos = {0, 0};
         Vector2 _origin = {0, 0};
-        float _rotation = 0;
         float _fontSize = 0;
         float _spacing = 0;
         Color _color = BLACK;

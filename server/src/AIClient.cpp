@@ -212,12 +212,14 @@ namespace Zappy {
         try {
             auto type = Info::getResource(resource);
             value = _env.takeResource(_id, type);
+            if (value)
+                _inventory[type]++;
         } catch (Info::ResourceNotFoundException &_) {
             value = false;
         }
-        if (value)
+        if (value) {
             Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
-        else
+        } else
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 

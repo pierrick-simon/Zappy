@@ -15,12 +15,13 @@ namespace Zappy {
     Resources::Resources(Font &font)
     {
         float i = 0;
-        for (auto resource : INIT) {
+        for (auto &[resource, texture] : INIT) {
             _resources.emplace(resource,
                 ResourceInfo {font,
                     {i * (Init::RESOURCE_SIZE.x + Init::RESOURCE_GAP) +
                             Init::RESOURCE_GAP,
-                        Init::RESOURCE_GAP}});
+                        Init::RESOURCE_GAP},
+                    texture});
             i++;
         }
     }
@@ -47,13 +48,18 @@ namespace Zappy {
             resource.draw2D();
     }
 
-    const std::vector<Info::ResourceName> Resources::INIT = {
-        Info::ResourceName::Food,
-        Info::ResourceName::Linemate,
-        Info::ResourceName::Deraumere,
-        Info::ResourceName::Sibur,
-        Info::ResourceName::Mendiane,
-        Info::ResourceName::Phiras,
-        Info::ResourceName::Thystame,
+    const std::map<Info::ResourceName, ResourceInfo::TextureSize>
+        Resources::INIT = {
+            {Info::ResourceName::Food, {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::Linemate,
+                {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::Deraumere,
+                {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::Sibur, {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::Mendiane,
+                {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::Phiras, {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::Thystame,
+                {"public/houseIcon.png", {500, 400}}},
     };
 }; // namespace Zappy

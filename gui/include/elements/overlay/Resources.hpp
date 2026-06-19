@@ -8,10 +8,13 @@
 #ifndef RESOURCES_HPP_
     #define RESOURCES_HPP_
 
+    #include <string_view>
     #include <vector>
     #include "Info.hpp"
+    #include "Init.hpp"
     #include "ResourceInfo.hpp"
     #include "graphics/IDrawable2D.hpp"
+    #include "graphics/primitives/Sprite2D.hpp"
 
 namespace Zappy {
     class Resources : public Graphics::IDrawable2D {
@@ -24,8 +27,11 @@ namespace Zappy {
 
     private:
         std::map<Info::ResourceName, ResourceInfo> _resources;
+        Graphics::Sprite2D _houseIcon;
+        Graphics::Sprite2D _golemIcon;
 
-        static const std::vector<Info::ResourceName> INIT;
+        static const std::map<Info::ResourceName, ResourceInfo::TextureSize>
+            INIT;
     };
 } // namespace Zappy
 

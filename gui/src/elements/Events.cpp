@@ -244,7 +244,7 @@ namespace Zappy {
             auto before = player.getResources();
             player.died();
             incantateDeadPlayer(event.getId());
-            _players.updateTotalResources(before, Info::INIT_RESOUCES);
+            _players.updateTotalResources(before, {});
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }

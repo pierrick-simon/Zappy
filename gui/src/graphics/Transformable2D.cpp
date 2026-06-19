@@ -8,19 +8,24 @@
 #include "Transformable2D.hpp"
 
 namespace Graphics {
-    raylib::Vector2 &Transformable2D::getPosition()
+    void Transformable2D::setPosition(raylib::Vector2 pos)
     {
-        return this->_position;
+        _position = pos;
     }
 
-    float &Transformable2D::getRotation()
+    void Transformable2D::setRotation(float rotation)
     {
-        return this->_rotation;
+        _rotation = rotation;
     }
 
-    raylib::Vector2 &Transformable2D::getScale()
+    void Transformable2D::setScale(raylib::Vector2 scale)
     {
-        return this->_scale;
+        _scale = scale;
+    }
+
+    void Transformable2D::setOrigin(raylib::Vector2 origin)
+    {
+        _origin = origin;
     }
 
     const raylib::Vector2 &Transformable2D::getPosition() const
@@ -36,5 +41,10 @@ namespace Graphics {
     const raylib::Vector2 &Transformable2D::getScale() const
     {
         return this->_scale;
+    }
+
+    const raylib::Vector2 &Transformable2D::getOrigin() const
+    {
+        return this->_origin;
     }
 } // namespace Graphics
