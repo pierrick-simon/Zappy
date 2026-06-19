@@ -33,7 +33,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void StartIncantationEvent::retrieve(std::istringstream &stream)
+    void StartIncantationEvent::retrieve(std::istringstream stream)
     {
         _ids.clear();
         stream >> _x >> _y >> _level;

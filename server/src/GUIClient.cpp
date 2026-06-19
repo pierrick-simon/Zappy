@@ -55,7 +55,7 @@ namespace Zappy {
             return Shared::Connect::send(_fd, ServerCmd::SUC.getStr());
         auto iter = COMMANDS.find(command);
         if (iter != COMMANDS.end()) {
-            iter->second(*this, stream);
+            iter->second(*this, std::move(stream));
             Shared::Utils::logMsg(_logFile,
                 "Executed command " + iter->first + " for client[" +
                     std::to_string(_id) + "].");
@@ -74,12 +74,12 @@ namespace Zappy {
         return tmp;
     }
 
-    void GUIClient::mapSize(std::istringstream &stream)
+    void GUIClient::mapSize(std::istringstream stream)
     {
         send<Shared::MapSizeEvent>(_env.getWidth(), _env.getHeight());
     }
 
-    void GUIClient::tileInfo(std::istringstream &stream)
+    void GUIClient::tileInfo(std::istringstream stream)
     {
         std::size_t x;
         std::size_t y;
@@ -91,7 +91,7 @@ namespace Zappy {
         send<Shared::TileInfoEvent>(x, y, resources);
     }
 
-    void GUIClient::tilesInfo(std::istringstream &stream)
+    void GUIClient::tilesInfo(std::istringstream stream)
     {
         auto x = _env.getWidth();
         auto y = _env.getHeight();
@@ -99,19 +99,19 @@ namespace Zappy {
             for (std::size_t j = 0; j < y; j++) {
                 std::istringstream tmp(
                     std::to_string(i) + " " + std::to_string(j));
-                tileInfo(tmp);
+                tileInfo(std::move(tmp));
             }
         }
     }
 
-    void GUIClient::teamsName(std::istringstream &stream)
+    void GUIClient::teamsName(std::istringstream stream)
     {
         auto names = _env.getTeamsName();
         for (const auto &name : names)
             send<Shared::TeamNameEvent>(name);
     }
 
-    void GUIClient::playerPosition(std::istringstream &stream)
+    void GUIClient::playerPosition(std::istringstream stream)
     {
         std::size_t id;
         char hash;
@@ -124,7 +124,7 @@ namespace Zappy {
         }
     }
 
-    void GUIClient::playerLevel(std::istringstream &stream)
+    void GUIClient::playerLevel(std::istringstream stream)
     {
         std::size_t id;
         char hash;
@@ -136,7 +136,7 @@ namespace Zappy {
         }
     }
 
-    void GUIClient::playerInventory(std::istringstream &stream)
+    void GUIClient::playerInventory(std::istringstream stream)
     {
         std::size_t id;
         char hash;
@@ -152,12 +152,12 @@ namespace Zappy {
         }
     }
 
-    void GUIClient::getTimeUnit(std::istringstream &stream)
+    void GUIClient::getTimeUnit(std::istringstream stream)
     {
         send<Shared::GetTimeUnit>(_f);
     }
 
-    void GUIClient::setTimeUnit(std::istringstream &stream)
+    void GUIClient::setTimeUnit(std::istringstream stream)
     {
         std::size_t id = 0;
         stream >> id;

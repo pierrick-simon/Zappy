@@ -32,7 +32,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void TileInfoEvent::retrieve(std::istringstream &stream)
+    void TileInfoEvent::retrieve(std::istringstream stream)
     {
         stream >> _x >> _y;
         for (auto &resource : _resources)

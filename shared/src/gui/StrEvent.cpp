@@ -26,7 +26,7 @@ namespace Shared {
         return _str;
     }
 
-    void StrEvent::retrieve(std::istringstream &stream)
+    void StrEvent::retrieve(std::istringstream stream)
     {
         _str = stream.str();
         std::getline(stream, _str);

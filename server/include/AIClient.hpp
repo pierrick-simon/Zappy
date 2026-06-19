@@ -54,7 +54,7 @@ namespace Zappy {
 
     private:
         struct Command {
-            std::function<void(AIClient &, std::istringstream &)> _func;
+            std::function<void(AIClient &, std::istringstream)> _func;
             std::chrono::milliseconds _timeLimit;
         };
 
@@ -72,17 +72,17 @@ namespace Zappy {
         bool startCheckIncantation(const std::string &name);
         void eggLaying(const std::string &name);
 
-        void forward(std::istringstream &);
-        void right(std::istringstream &);
-        void left(std::istringstream &);
-        void look(std::istringstream &);
-        void inventory(std::istringstream &);
-        void connectNbr(std::istringstream &);
-        void fork(std::istringstream &);
-        void eject(std::istringstream &);
-        void set(std::istringstream &);
-        void take(std::istringstream &);
-        void broadcast(std::istringstream &);
+        void forward(std::istringstream);
+        void right(std::istringstream);
+        void left(std::istringstream);
+        void look(std::istringstream);
+        void inventory(std::istringstream);
+        void connectNbr(std::istringstream);
+        void fork(std::istringstream);
+        void eject(std::istringstream);
+        void set(std::istringstream);
+        void take(std::istringstream);
+        void broadcast(std::istringstream);
 
         int _fd;
         bool _alive = true;

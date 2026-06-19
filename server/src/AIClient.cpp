@@ -62,7 +62,7 @@ namespace Zappy {
         if (_sleep.count() <= 0) {
             if (_command) {
                 _command.value().iter->second._func(
-                    *this, _command.value().stream);
+                    *this, std::move(_command.value().stream));
                 Shared::Utils::logMsg(_logFile,
                     "Executed command " + _command.value().iter->first +
                         " for client[" + std::to_string(_id) + "].");
@@ -144,31 +144,31 @@ namespace Zappy {
         _env.eggLaying(_id);
     }
 
-    void AIClient::forward(std::istringstream &stream)
+    void AIClient::forward(std::istringstream stream)
     {
         _env.movePlayer(_id);
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::right(std::istringstream &stream)
+    void AIClient::right(std::istringstream stream)
     {
         _env.rotatePlayer(_id, Rotate::Right);
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::left(std::istringstream &stream)
+    void AIClient::left(std::istringstream stream)
     {
         _env.rotatePlayer(_id, Rotate::Left);
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::look(std::istringstream &stream)
+    void AIClient::look(std::istringstream stream)
     {
         auto infos = _env.lookAround(_id);
         Shared::Connect::send(_fd, infos + "\n");
     }
 
-    void AIClient::inventory(std::istringstream &stream)
+    void AIClient::inventory(std::istringstream stream)
     {
         std::string msg = "[";
         bool first = true;
@@ -183,19 +183,19 @@ namespace Zappy {
         Shared::Connect::send(_fd, msg);
     }
 
-    void AIClient::connectNbr(std::istringstream &stream)
+    void AIClient::connectNbr(std::istringstream stream)
     {
         Shared::Connect::send(
             _fd, std::to_string(_env.getConnectNbr(_id)) + "\n");
     }
 
-    void AIClient::fork(std::istringstream &stream)
+    void AIClient::fork(std::istringstream stream)
     {
         _env.spawnEgg(_id);
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
-    void AIClient::eject(std::istringstream &stream)
+    void AIClient::eject(std::istringstream stream)
     {
         if (_env.eject(_id))
             Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
@@ -203,7 +203,7 @@ namespace Zappy {
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
-    void AIClient::set(std::istringstream &stream)
+    void AIClient::take(std::istringstream stream)
     {
         bool value = true;
         std::string resource;
@@ -220,7 +220,7 @@ namespace Zappy {
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
-    void AIClient::take(std::istringstream &stream)
+    void AIClient::set(std::istringstream stream)
     {
         bool value = true;
         std::string resource;
@@ -242,7 +242,7 @@ namespace Zappy {
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 
-    void AIClient::broadcast(std::istringstream &stream)
+    void AIClient::broadcast(std::istringstream stream)
     {
         std::string text;
         std::getline(stream, text);

@@ -29,7 +29,7 @@ namespace Zappy {
         bool update();
 
     private:
-        using Event = std::function<void(Environement &, std::istringstream &)>;
+        using Event = std::function<void(Environement &, std::istringstream)>;
 
         struct Message {
             std::size_t id;
@@ -43,30 +43,30 @@ namespace Zappy {
 
         Player &getPlayer(std::size_t id);
 
-        void mapSize(std::istringstream &stream);
-        void updateTile(std::istringstream &stream);
-        void teamName(std::istringstream &stream);
-        void newPlayer(std::istringstream &stream);
-        void playerPosition(std::istringstream &stream);
-        void playerLevel(std::istringstream &stream);
-        void playerInventory(std::istringstream &stream);
-        void playerExpulsion(std::istringstream &stream);
-        void playerBroadcast(std::istringstream &stream);
-        void startIncantate(std::istringstream &stream);
-        void endIncantate(std::istringstream &stream);
-        void eggLaying(std::istringstream &stream);
-        void takeResource(std::istringstream &stream);
-        void setResource(std::istringstream &stream);
-        void deadPlayer(std::istringstream &stream);
-        void eggLaid(std::istringstream &stream);
-        void eggHatched(std::istringstream &stream);
-        void deadEgg(std::istringstream &stream);
-        void timeUnitRequest(std::istringstream &stream);
-        void timeUnitModification(std::istringstream &stream);
-        void endOfGame(std::istringstream &stream);
-        void serverMsg(std::istringstream &stream);
-        void unknowCommand(std::istringstream &stream);
-        void badCommandParameter(std::istringstream &stream);
+        void mapSize(std::istringstream stream);
+        void updateTile(std::istringstream stream);
+        void teamName(std::istringstream stream);
+        void newPlayer(std::istringstream stream);
+        void playerPosition(std::istringstream stream);
+        void playerLevel(std::istringstream stream);
+        void playerInventory(std::istringstream stream);
+        void playerExpulsion(std::istringstream stream);
+        void playerBroadcast(std::istringstream stream);
+        void startIncantate(std::istringstream stream);
+        void endIncantate(std::istringstream stream);
+        void eggLaying(std::istringstream stream);
+        void takeResource(std::istringstream stream);
+        void setResource(std::istringstream stream);
+        void deadPlayer(std::istringstream stream);
+        void eggLaid(std::istringstream stream);
+        void eggHatched(std::istringstream stream);
+        void deadEgg(std::istringstream stream);
+        void timeUnitRequest(std::istringstream stream);
+        void timeUnitModification(std::istringstream stream);
+        void endOfGame(std::istringstream stream);
+        void serverMsg(std::istringstream stream);
+        void unknowCommand(std::istringstream stream);
+        void badCommandParameter(std::istringstream stream);
 
         void playersEndIncantate(std::map<std::size_t, bool> &players);
         void incantateDeadPlayer(std::size_t id);
