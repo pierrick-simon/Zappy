@@ -85,16 +85,11 @@ namespace Zappy {
         Info::Tile totalTile(Info::INIT_RESOUCES);
         bool asChanged = false;
 
-        for (std::size_t i = 0; i < _width * _height; ++i) {
-            for (std::size_t j = 0; j < Info::resources.size(); ++j) {
-                auto type = static_cast<Info::ResourceName>(j);
-                totalTile.at(type) += _tiles[i].at(type);
-            }
-        }
-        for (std::size_t i = 0; i < Info::resources.size(); ++i) {
-            auto type = static_cast<Info::ResourceName>(i);
-            asChanged |= refillRessource(type, totalTile.at(type));
-        }
+        for (std::size_t i = 0; i < _width * _height; ++i)
+            for (const auto & [name, nb]: _tiles[i])
+                totalTile.at(name) += nb;
+        for (const auto & [name, nb]: totalTile)
+            asChanged |= refillRessource(name, totalTile.at(name));
         if (log && asChanged)
             Shared::Utils::logMsg(_logFile, "Map was given new ressources.");
     }
