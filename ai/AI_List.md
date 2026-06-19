@@ -22,6 +22,8 @@ Then explore the map and start again.
 
 ---
 
+## Layer
+
 ### Objective
 
 This algorithm focus and surviving and laying eggs around the map.
@@ -36,5 +38,23 @@ Check if its food is low. If it is under 20, seek food till 35 and then step ahe
 and randomly lays an egg. And restart.
 
 ![Image to show the choices made](resources/Layer_algo.png)
+
+---
+
+## Randomizer
+
+### Objective
+
+This algorithm is fully random.
+
+### Type
+
+This AI is an algorithm
+
+### Rules
+
+Randomly choose an event and execute it.
+
+![Image to show the choices made](resources/Randomizer_algo.png)
 
 ---
