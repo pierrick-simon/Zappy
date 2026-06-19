@@ -7,6 +7,7 @@
 
 import sys
 import argparse
+import traceback
 
 from src.constants.ai_list import AI_LIST
 from src.connection_handler import ConnectionHandler
@@ -52,7 +53,6 @@ def main():
         handler.client.disconnect()
     except BaseException as e:
         print(e, file=sys.stderr)
-        import traceback
         traceback.print_exc()
         return 84
 
