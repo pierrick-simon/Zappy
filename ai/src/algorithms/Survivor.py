@@ -54,20 +54,14 @@ class SurvivalAI:
     def _tick(self) -> None:
         tiles = self._exec_func("Look")
 
-        food_count = sum(t.count("food") for t in tiles)
-
-        if food_count == 0:
-            self._explore()
-            self._turn += 1
-            return
-
         auto_gather = ag.AutoGatherModule()
         plan = auto_gather.auto_gather(
-            obs=tiles, aimed_materials={"food": food_count}, max_time=1000
+            obs=tiles, aimed_materials={"food": 100}, max_time=1000
         )
 
         for action in plan:
             self._exec_func(action)
+        self._explore()
 
 
     def _explore(self) -> None:
