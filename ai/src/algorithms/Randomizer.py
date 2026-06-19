@@ -2,7 +2,7 @@
 ## EPITECH PROJECT, 2026
 ## Zappy
 ## File description:
-## Layer AI
+## Randomizer AI
 ##
 
 """@package docstring
