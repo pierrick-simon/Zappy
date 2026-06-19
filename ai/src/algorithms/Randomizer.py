@@ -22,7 +22,6 @@ example:
 
 import random
 import string
-from resource import RLIMIT_RSS
 
 from src.constants.resources import RESOURCES
 from src.command import take, set_down, broadcast
