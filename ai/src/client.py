@@ -25,7 +25,7 @@ class Client:
 
     def send(self, message: str) -> None:
         self.socket_client.send(bytes(message + "\n", "utf-8"))
-    
+
     def recv(self) -> str:
         data = b""
         while not data.endswith(b"\n"):

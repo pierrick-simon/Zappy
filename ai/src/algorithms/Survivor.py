@@ -30,6 +30,7 @@ from src.algorithms.modules.backpack_module import BackpackModule
 from src.command import take, set_down, broadcast
 from src.constants.constants import COMMAND_FACTORY
 
+
 class SurvivalAI:
     def __init__(self, handler: ConnectionHandler) -> None:
         """! Initialisation of the SurvivalAI
@@ -63,7 +64,6 @@ class SurvivalAI:
             self._exec_func(action)
         self._explore()
 
-
     def _explore(self) -> None:
         """! Moves forward and randomly turns to avoid looping
 
@@ -82,16 +82,16 @@ class SurvivalAI:
         """
         self._backpack.tick(command)
         if command.startswith("Take"):
-            result = take(self._handler, command.split(' ')[1])
+            result = take(self._handler, command.split(" ")[1])
             if result:
-                self._backpack.add_to_inventory([command.split(' ')[1]])
+                self._backpack.add_to_inventory([command.split(" ")[1]])
             return result
         elif command.startswith("Set"):
-            result = (set_down(self._handler, command.split(' ')[1]))
+            result = set_down(self._handler, command.split(" ")[1])
             if result:
-                self._backpack.del_from_inventory([command.split(' ')[1]])
+                self._backpack.del_from_inventory([command.split(" ")[1]])
             return result
         elif command.startswith("Broadcast"):
-            return broadcast(self._handler, command.split(' ')[1])
+            return broadcast(self._handler, command.split(" ")[1])
         else:
             return COMMAND_FACTORY[command](self._handler)

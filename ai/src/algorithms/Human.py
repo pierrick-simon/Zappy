@@ -14,7 +14,6 @@ from typing import Callable, Any
 from src.command import Command
 from src.constants.constants import COMMAND_FACTORY
 from src.connection_handler import ConnectionHandler
-from src.algorithms.modules.backpack_module import BackpackModule
 
 
 def call_function_in_thread(callback: Callable, *args) -> Thread:
@@ -24,10 +23,12 @@ def call_function_in_thread(callback: Callable, *args) -> Thread:
         thread = Thread(target=callback, daemon=True)
     return thread
 
+
 def get_longuest_key(dictionary: dict) -> str:
     if not dictionary:
-        return None    
+        return None
     return max(dictionary.keys(), key=len)
+
 
 class HumanAI:
     status: bool = True
@@ -115,8 +116,10 @@ class HumanAI:
 
     def display_inventory(self, inventory: dict[str, int]):
         self.stdscr.addstr(
-            self.INVENTORY_BOX_TOP_Y - 1, self.INVENTORY_BOX_LEFT_X + int(self.INVENTORY_BOX_WIDTH /2) - 5, "[Inventory]"
-        )      
+            self.INVENTORY_BOX_TOP_Y - 1,
+            self.INVENTORY_BOX_LEFT_X + int(self.INVENTORY_BOX_WIDTH / 2) - 5,
+            "[Inventory]",
+        )
         rectangle(
             self.stdscr,
             self.INVENTORY_BOX_TOP_Y,
@@ -124,24 +127,26 @@ class HumanAI:
             self.INVENTORY_BOX_BOTTOM_Y,
             self.INVENTORY_BOX_RIGHT_X,
         )
-        if (inventory is None):
+        if inventory is None:
             return
         self.inventory = inventory
         x1 = self.INVENTORY_BOX_LEFT_X + 3
         x2 = x1 + self.CELL_WIDTH
         x3 = x2 + self.CELL_WIDTH
         self.display_line("food", self.INVENTORY_BOX_TOP_Y + 1, x2)
-        self.display_line("linemate",  self.INVENTORY_BOX_TOP_Y + 3, x1)
+        self.display_line("linemate", self.INVENTORY_BOX_TOP_Y + 3, x1)
         self.display_line("deraumere", self.INVENTORY_BOX_TOP_Y + 3, x2)
-        self.display_line("sibur",     self.INVENTORY_BOX_TOP_Y + 3, x3)
-        self.display_line("mendiane",  self.INVENTORY_BOX_TOP_Y + 5, x1)
-        self.display_line("phiras",    self.INVENTORY_BOX_TOP_Y + 5, x2)
-        self.display_line("thystame",  self.INVENTORY_BOX_TOP_Y + 5, x3)
+        self.display_line("sibur", self.INVENTORY_BOX_TOP_Y + 3, x3)
+        self.display_line("mendiane", self.INVENTORY_BOX_TOP_Y + 5, x1)
+        self.display_line("phiras", self.INVENTORY_BOX_TOP_Y + 5, x2)
+        self.display_line("thystame", self.INVENTORY_BOX_TOP_Y + 5, x3)
         self.stdscr.refresh()
 
     def display_events(self):
         self.stdscr.addstr(
-            self.EVENT_RECTANGLE_TOP_Y - 1, (self.EVENT_RECTANGLE_LEFT_X + int(self.EVENT_BOX_WIDTH / 2) - 4), "[Events]"
+            self.EVENT_RECTANGLE_TOP_Y - 1,
+            (self.EVENT_RECTANGLE_LEFT_X + int(self.EVENT_BOX_WIDTH / 2) - 4),
+            "[Events]",
         )
         rectangle(
             self.stdscr,
