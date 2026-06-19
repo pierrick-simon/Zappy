@@ -16,7 +16,7 @@ namespace Shared {
         PlayerLevelEvent(std::size_t id, std::size_t level);
         PlayerLevelEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getId() const
         {
