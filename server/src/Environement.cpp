@@ -80,7 +80,7 @@ namespace Zappy {
         return true;
     }
 
-    void Environement::refillRessources(const bool log)
+    void Environement::refillRessources(const bool &log)
     {
         Info::Tile totalTile(Info::INIT_RESOUCES);
         bool asChanged = false;

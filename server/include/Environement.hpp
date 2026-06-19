@@ -146,7 +146,7 @@ namespace Zappy {
         std::vector<std::size_t> getTileValue(std::size_t tile);
 
         bool refillRessource(Info::ResourceName type, std::size_t count);
-        void refillRessources(const bool log = true);
+        void refillRessources(const bool &log = true);
 
         Shared::Vector2<int> getBroadCastVector(
             const Player &sender, const Player &receiver) const;
