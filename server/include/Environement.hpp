@@ -141,7 +141,7 @@ namespace Zappy {
         int getPlayerFd(std::size_t id);
         void setPlayerElevate(std::size_t id, bool value);
         void handleEjectPlayer(PlayerIter, Info::Direction);
-        void handleDestroyEgg(EggIter);
+        EggIter handleDestroyEgg(EggIter);
         void checkEnd();
         std::vector<std::size_t> getTileValue(std::size_t tile);
 

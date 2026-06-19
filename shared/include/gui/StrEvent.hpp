@@ -16,7 +16,7 @@ namespace Shared {
         StrEvent(const Command &command, std::string str);
         StrEvent(const Command &command);
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::string getStr() const
         {

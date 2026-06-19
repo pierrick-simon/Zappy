@@ -4,12 +4,13 @@
 ## File description:
 ## AI list
 ##
-from src.algorithms.common import CommonAI
+
+from src.algorithms.Layer import LayerAi
 from src.algorithms.Survivor import SurvivalAI
 from src.algorithms.Human import HumanAI
 
-
 AI_LIST = {
     "survivor": SurvivalAI,
-    "common": CommonAI,
+    "human": HumanAI,
+    "layer": LayerAi
 }

@@ -35,7 +35,7 @@ namespace Zappy {
         _teams(teams)
     {
         std::srand(std::time(nullptr));
-        for (auto tile : _tiles)
+        for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
     }
 
@@ -47,15 +47,17 @@ namespace Zappy {
             _sleep = SLEEP;
         }
         auto min = _sleep;
-        for (auto iter = _elevates.begin(); iter != _elevates.end(); iter++) {
+        for (auto iter = _elevates.begin(); iter != _elevates.end();) {
             iter->sleep -= elapsed;
             if (iter->sleep.count() <= 0) {
                 endElevation(iter->x, iter->y, iter->level, iter->players);
-                _elevates.erase(iter);
+                iter = _elevates.erase(iter);
                 continue;
+            } else {
+                if (min > iter->sleep)
+                    min = iter->sleep;
+                iter++;
             }
-            if (min > iter->sleep)
-                min = iter->sleep;
         }
         return min;
     }
@@ -81,16 +83,20 @@ namespace Zappy {
     std::string Environement::lookAround(std::size_t id)
     {
         auto p = _players.at(id);
+        const auto &dir = Info::directions.at(p.dir);
         std::string list = "[";
         Shared::Vector2<long> left(
-            static_cast<long>(p.y), static_cast<long>(-p.x));
+            static_cast<long>(dir.y), static_cast<long>(-dir.x));
         Shared::Vector2<long> right(
-            static_cast<long>(-p.y), static_cast<long>(p.x));
+            static_cast<long>(-dir.y), static_cast<long>(dir.x));
 
         for (std::size_t i = 0; i <= p.level; ++i) {
             Shared::Vector2<std::size_t> pos(p.x, p.y);
-            pos += left * i;
-            for (std::size_t j = 0; j < (p.level * 2) + 1; ++j) {
+            pos.x = circularMove(
+                pos.x, static_cast<int>((left.x + dir.x) * i), _width);
+            pos.y = circularMove(
+                pos.y, static_cast<int>((left.y + dir.y) * i), _height);
+            for (std::size_t j = 0; j < (i * 2) + 1; ++j) {
                 list += formatTile(pos.x, pos.y) + ",";
                 pos.x = circularMove(pos.x, static_cast<int>(right.x), _width);
                 pos.y = circularMove(pos.y, static_cast<int>(right.y), _height);
@@ -194,11 +200,11 @@ namespace Zappy {
         auto tile = _width * height + width;
         info.resources = _tiles[tile];
         for (const auto &egg : _eggs) {
-            if (egg.second.x == width && egg.second.y)
+            if (egg.second.x == width && egg.second.y == height)
                 info.eggs.push_back({egg.first, egg.second.team});
         }
         for (const auto &player : _players) {
-            if (player.second.x == width && player.second.y)
+            if (player.second.x == width && player.second.y == height)
                 info.players.push_back({player.first, player.second.team});
         }
         return info;
@@ -237,12 +243,12 @@ namespace Zappy {
             if (dir == Info::directions.begin())
                 player.dir = Info::directions.rbegin()->first;
             else
-                player.dir = (dir--)->first;
+                player.dir = (--dir)->first;
         } else {
-            if (dir == Info::directions.end()--)
+            if (dir == --Info::directions.end())
                 player.dir = Info::directions.begin()->first;
             else
-                player.dir = (dir++)->first;
+                player.dir = (++dir)->first;
         }
         sendToGUI<Shared::PlayerPositionEvent>(
             id, player.x, player.y, Info::directions.at(player.dir).nb);
@@ -450,11 +456,11 @@ namespace Zappy {
         sendToGUI<Shared::PlayerExpulsionEvent>(iter->first);
     }
 
-    void Environement::handleDestroyEgg(EggIter iter)
+    Environement::EggIter Environement::handleDestroyEgg(EggIter iter)
     {
         _teams.at(iter->second.team)--;
         sendToGUI<Shared::EggDestroyEvent>(iter->first);
-        _eggs.erase(iter);
+        return _eggs.erase(iter);
     }
 
     bool Environement::eject(std::size_t id)
@@ -472,11 +478,13 @@ namespace Zappy {
                 status = true;
             }
         }
-        for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
+        for (auto iter = _eggs.begin(); iter != _eggs.end();) {
             if (iter->second.x == find->second.x &&
                 iter->second.y == find->second.y) {
-                handleDestroyEgg(iter);
+                iter = handleDestroyEgg(iter);
                 status = true;
+            } else {
+                ++iter;
             }
         }
         return status;
@@ -539,6 +547,8 @@ namespace Zappy {
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
         for (auto &p : _players) {
+            if (p.first == find->first)
+                continue;
             auto v = getBroadCastVector(find->second, p.second);
             auto i = getTileNb(p.second, v);
             Shared::Connect::send(getPlayerFd(p.first),
@@ -569,6 +579,7 @@ namespace Zappy {
         for (auto &[fd, client] : _clients.ai) {
             if (client.getId() == id) {
                 client.setElevate(value);
+                return;
             }
         }
         throw PlayerNotFoundException(id);

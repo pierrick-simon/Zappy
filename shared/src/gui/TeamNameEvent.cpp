@@ -26,7 +26,7 @@ namespace Shared {
         return _team;
     }
 
-    void TeamNameEvent::retrieve(std::istringstream &stream)
+    void TeamNameEvent::retrieve(std::istringstream stream)
     {
         stream >> _team;
     }

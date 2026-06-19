@@ -16,7 +16,7 @@ namespace Shared {
         IdEvent(const Command &command, std::size_t id);
         IdEvent(const Command &command);
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getId() const
         {
