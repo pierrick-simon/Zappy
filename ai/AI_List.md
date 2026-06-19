@@ -58,3 +58,21 @@ Randomly choose an event and execute it.
 ![Image to show the choices made](resources/Randomizer_algo.png)
 
 ---
+
+## Ejector
+
+### Objective
+
+This algorithm survive first and then find and push players he finds
+### Type
+
+This AI is an algorithm
+
+### Rules
+
+Check if its food is low. If it is under 20, seek food till 35 and then step ahead
+and seek and push players. And restart.
+
+![Image to show the choices made](resources/Ejector_algo.png)
+
+---
