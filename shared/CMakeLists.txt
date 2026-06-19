@@ -10,27 +10,41 @@ set(SHARED
     shared
 )
 
+set(SFML_SRCS
+    SfmlUtils.cpp
+    AButton.cpp
+    PressButton.cpp
+)
+
+list(TRANSFORM SFML_SRCS PREPEND src/sfml/)
+
+set(GUI_SRCS
+    GUIEvent.cpp
+    TileInfoEvent.cpp
+    PlayerPositionEvent.cpp
+    MapSizeEvent.cpp
+    TeamNameEvent.cpp
+    NewPlayerEvent.cpp
+    PlayerLevelEvent.cpp
+    PlayerInventoryEvent.cpp
+    IdEvent.cpp
+    StartIncantationEvent.cpp
+    EndIncantationEvent.cpp
+    BroadcastEvent.cpp
+    ResourceEvent.cpp
+    EggLaidEvent.cpp
+    NbEvent.cpp
+    StrEvent.cpp
+)
+
+list(TRANSFORM GUI_SRCS PREPEND src/gui/)
+
 set(SRCS
     src/ArgsParser.cpp
     src/Connect.cpp
     src/Help.cpp
     src/Utils.cpp
-    src/gui/GUIEvent.cpp
-    src/gui/TileInfoEvent.cpp
-    src/gui/PlayerPositionEvent.cpp
-    src/gui/MapSizeEvent.cpp
-    src/gui/TeamNameEvent.cpp
-    src/gui/NewPlayerEvent.cpp
-    src/gui/PlayerLevelEvent.cpp
-    src/gui/PlayerInventoryEvent.cpp
-    src/gui/IdEvent.cpp
-    src/gui/StartIncantationEvent.cpp
-    src/gui/EndIncantationEvent.cpp
-    src/gui/BroadcastEvent.cpp
-    src/gui/ResourceEvent.cpp
-    src/gui/EggLaidEvent.cpp
-    src/gui/NbEvent.cpp
-    src/gui/StrEvent.cpp
+    src/Process.cpp
     src/zappy/Info.cpp
 )
 
@@ -38,6 +52,7 @@ set(HEADERS
     include/
     include/gui/
     include/zappy/
+    include/sfml/
 )
 
 include_directories(${HEADERS})
@@ -65,6 +80,6 @@ if (NOT criterion_FOUND)
     FetchContent_MakeAvailable(criterion)
 endif ()
 
-add_library(${SHARED} ${SRCS})
+add_library(${SHARED} ${SRCS} ${GUI_SRCS} ${SFML_SRCS})
 target_include_directories(${SHARED} PUBLIC ${HEADERS})
 set_target_properties(${SHARED} PROPERTIES PREFIX "")

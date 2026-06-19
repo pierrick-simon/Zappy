@@ -58,6 +58,6 @@ namespace Graphics {
     void Box2D::draw2D() const
     {
         _border.DrawRounded(_round, _segment, _borderColor);
-        _box.DrawRounded(_round, _segment, _borderColor);
+        _box.DrawRounded(_round, _segment, _color);
     }
 } // namespace Graphics

@@ -21,7 +21,7 @@ namespace Shared {
         virtual ~GUIEvent() = default;
 
         void send(const std::vector<int> &fds);
-        virtual void retrieve(std::istringstream &stream) = 0;
+        virtual void retrieve(std::istringstream stream) = 0;
 
         [[nodiscard]] std::string getCommand() const
         {

@@ -32,7 +32,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void PlayerPositionEvent::retrieve(std::istringstream &stream)
+    void PlayerPositionEvent::retrieve(std::istringstream stream)
     {
         char hash;
         stream >> hash >> _id >> _x >> _y >> _dir;

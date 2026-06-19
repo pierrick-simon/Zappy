@@ -17,8 +17,8 @@
 namespace Zappy {
     class Player {
     public:
-        Player(
-            Shared::NewPlayerEvent::NewPlayer player, std::ofstream &logFile);
+        Player(const Shared::NewPlayerEvent::NewPlayer &player,
+            std::ofstream &logFile);
         ~Player();
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);

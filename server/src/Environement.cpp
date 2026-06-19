@@ -7,6 +7,7 @@
 
 #include "Environement.hpp"
 #include <algorithm>
+#include <array>
 #include <ctime>
 #include <optional>
 #include <random>
@@ -18,7 +19,6 @@
 #include "Server.hpp"
 #include "ServerException.hpp"
 #include "Utils.hpp"
-#include "Vector.hpp"
 
 namespace ServerCmd = Shared::AICommunication::Server;
 
@@ -35,28 +35,63 @@ namespace Zappy {
         _teams(teams)
     {
         std::srand(std::time(nullptr));
-        for (auto tile : _tiles)
+        for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
+        refillRessources(false);
     }
 
-    std::chrono::nanoseconds Environement::update(
-        std::chrono::nanoseconds elapsed)
+    std::chrono::milliseconds Environement::update(
+        std::chrono::milliseconds elapsed)
     {
         _sleep -= elapsed;
-        auto min = _sleep;
         if (_sleep.count() <= 0) {
+            refillRessources();
             _sleep = SLEEP;
         }
-        for (auto iter = _elevates.begin(); iter != _elevates.end(); iter++) {
+        auto min = _sleep;
+        for (auto iter = _elevates.begin(); iter != _elevates.end();) {
             iter->sleep -= elapsed;
             if (iter->sleep.count() <= 0) {
                 endElevation(iter->x, iter->y, iter->level, iter->players);
-                _elevates.erase(iter);
+                iter = _elevates.erase(iter);
+                continue;
+            } else {
+                if (min > iter->sleep)
+                    min = iter->sleep;
+                iter++;
             }
-            if (min > iter->sleep)
-                min = iter->sleep;
         }
         return min;
+    }
+
+    bool Environement::refillRessource(
+        Info::ResourceName type, std::size_t count)
+    {
+        auto nbResource =
+            static_cast<std::size_t>(Info::resources.at(type).density *
+                static_cast<float>(_width) * static_cast<float>(_height));
+        if (nbResource == 0)
+            nbResource = 1;
+
+        if (count >= nbResource)
+            return false;
+        for (std::size_t i = 0; i < nbResource - count; ++i)
+            setResource(rand() % (_width * _height), type, 1);
+        return true;
+    }
+
+    void Environement::refillRessources(const bool &log)
+    {
+        Info::Tile totalTile(Info::INIT_RESOUCES);
+        bool asChanged = false;
+
+        for (std::size_t i = 0; i < _width * _height; ++i)
+            for (const auto &[name, nb] : _tiles[i])
+                totalTile[name] += nb;
+        for (const auto &[name, nb] : totalTile)
+            asChanged |= refillRessource(name, nb);
+        if (log && asChanged)
+            Shared::Utils::logMsg(_logFile, "Map was given new ressources.");
     }
 
     std::string Environement::formatTile(
@@ -69,8 +104,10 @@ namespace Zappy {
             formatedTile += "player ";
         for (auto e : info.eggs)
             formatedTile += "egg ";
-        for (auto r : info.resources)
-            formatedTile += Info::resources.at(r.first).str + " ";
+        for (auto r : info.resources) {
+            for (std::size_t i = 0; i < r.second; ++i)
+                formatedTile += Info::resources.at(r.first).str + " ";
+        }
         if (!info.players.empty() || !info.eggs.empty() ||
             !info.resources.empty())
             formatedTile += "\b";
@@ -80,16 +117,20 @@ namespace Zappy {
     std::string Environement::lookAround(std::size_t id)
     {
         auto p = _players.at(id);
+        const auto &dir = Info::directions.at(p.dir);
         std::string list = "[";
         Shared::Vector2<long> left(
-            static_cast<long>(p.y), static_cast<long>(-p.x));
+            static_cast<long>(dir.y), static_cast<long>(-dir.x));
         Shared::Vector2<long> right(
-            static_cast<long>(-p.y), static_cast<long>(p.x));
+            static_cast<long>(-dir.y), static_cast<long>(dir.x));
 
         for (std::size_t i = 0; i <= p.level; ++i) {
             Shared::Vector2<std::size_t> pos(p.x, p.y);
-            pos += left * i;
-            for (std::size_t j = 0; j < (p.level * 2) + 1; ++j) {
+            pos.x = circularMove(
+                pos.x, static_cast<int>((left.x + dir.x) * i), _width);
+            pos.y = circularMove(
+                pos.y, static_cast<int>((left.y + dir.y) * i), _height);
+            for (std::size_t j = 0; j < (i * 2) + 1; ++j) {
                 list += formatTile(pos.x, pos.y) + ",";
                 pos.x = circularMove(pos.x, static_cast<int>(right.x), _width);
                 pos.y = circularMove(pos.y, static_cast<int>(right.y), _height);
@@ -193,11 +234,11 @@ namespace Zappy {
         auto tile = _width * height + width;
         info.resources = _tiles[tile];
         for (const auto &egg : _eggs) {
-            if (egg.second.x == width && egg.second.y)
+            if (egg.second.x == width && egg.second.y == height)
                 info.eggs.push_back({egg.first, egg.second.team});
         }
         for (const auto &player : _players) {
-            if (player.second.x == width && player.second.y)
+            if (player.second.x == width && player.second.y == height)
                 info.players.push_back({player.first, player.second.team});
         }
         return info;
@@ -234,14 +275,14 @@ namespace Zappy {
         auto dir = Info::directions.find(player.dir);
         if (rotate == Rotate::Left) {
             if (dir == Info::directions.begin())
-                player.dir = Info::directions.end()--->first;
+                player.dir = Info::directions.rbegin()->first;
             else
-                player.dir = dir--->first;
+                player.dir = (--dir)->first;
         } else {
-            if (dir == Info::directions.end()--)
+            if (dir == --Info::directions.end())
                 player.dir = Info::directions.begin()->first;
             else
-                player.dir = dir++->first;
+                player.dir = (++dir)->first;
         }
         sendToGUI<Shared::PlayerPositionEvent>(
             id, player.x, player.y, Info::directions.at(player.dir).nb);
@@ -449,11 +490,11 @@ namespace Zappy {
         sendToGUI<Shared::PlayerExpulsionEvent>(iter->first);
     }
 
-    void Environement::handleDestroyEgg(EggIter iter)
+    Environement::EggIter Environement::handleDestroyEgg(EggIter iter)
     {
         _teams.at(iter->second.team)--;
         sendToGUI<Shared::EggDestroyEvent>(iter->first);
-        _eggs.erase(iter);
+        return _eggs.erase(iter);
     }
 
     bool Environement::eject(std::size_t id)
@@ -471,14 +512,66 @@ namespace Zappy {
                 status = true;
             }
         }
-        for (auto iter = _eggs.begin(); iter != _eggs.end(); iter++) {
+        for (auto iter = _eggs.begin(); iter != _eggs.end();) {
             if (iter->second.x == find->second.x &&
                 iter->second.y == find->second.y) {
-                handleDestroyEgg(iter);
+                iter = handleDestroyEgg(iter);
                 status = true;
+            } else {
+                ++iter;
             }
         }
         return status;
+    }
+
+    Shared::Vector2<int> Environement::getBroadCastVector(
+        const Player &sender, const Player &receiver) const
+    {
+
+        std::array<Shared::Vector2<int>, 9> vectors;
+        std::size_t index = 0;
+        double minDist = -1;
+        std::size_t minIndex = 0;
+
+        for (int j = -1; j <= 1; ++j) {
+            for (int i = -1; i <= 1; ++i) {
+                vectors[index].x = static_cast<int>(sender.x) -
+                    (static_cast<int>(receiver.x) +
+                        (i * static_cast<int>(_width)));
+                vectors[index].y = static_cast<int>(sender.y) -
+                    (static_cast<int>(receiver.y) +
+                        (j * static_cast<int>(_height)));
+                ++index;
+            }
+        }
+        for (std::size_t i = 0; i < index; ++i) {
+            auto norm = vectors[i].norm();
+            if (norm < minDist || minDist == -1) {
+                minDist = norm;
+                minIndex = i;
+            }
+        }
+        return vectors[minIndex];
+    }
+
+    std::size_t Environement::getTileNb(
+        const Player &receiver, const Shared::Vector2<int> &v)
+    {
+        if (v.x == 0 && v.y == 0)
+            return 0;
+        const auto &dir = Info::directions.at(receiver.dir);
+        Shared::Vector2<int> dirV(dir.x, dir.y);
+        auto angle = dirV.angle(v);
+        for (auto chunk : _broadcastChunks) {
+            auto lowerAngle = dirV.angle(
+                chunk.second.first[static_cast<std::size_t>(receiver.dir)]);
+            auto hightAngle = dirV.angle(
+                chunk.second.second[static_cast<std::size_t>(receiver.dir)]);
+            if (angle <= std::max(lowerAngle, hightAngle) &&
+                angle > std::min(lowerAngle, hightAngle))
+                return chunk.first;
+        }
+        throw ServerException("Error getTileNb");
     }
 
     void Environement::broadcast(std::size_t id, const std::string &text)
@@ -487,6 +580,15 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
+        for (auto &p : _players) {
+            if (p.first == find->first)
+                continue;
+            auto v = getBroadCastVector(find->second, p.second);
+            auto i = getTileNb(p.second, v);
+            Shared::Connect::send(getPlayerFd(p.first),
+                ServerCmd::MSG.getStr() + " " + std::to_string(i) + ", " +
+                    text + "\n");
+        }
     }
 
     std::size_t Environement::getConnectNbr(std::size_t id) const
@@ -511,6 +613,7 @@ namespace Zappy {
         for (auto &[fd, client] : _clients.ai) {
             if (client.getId() == id) {
                 client.setElevate(value);
+                return;
             }
         }
         throw PlayerNotFoundException(id);
@@ -554,4 +657,29 @@ namespace Zappy {
         std::ranges::copy(std::views::values(_tiles[tile]), value.begin());
         return value;
     }
+
+    void Environement::playerEat(std::size_t id,
+        const std::map<Info::ResourceName, std::size_t> &inventory)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        std::vector<std::size_t> resources(inventory.size());
+        std::ranges::copy(std::views::values(inventory), resources.begin());
+        sendToGUI<Shared::PlayerInventoryEvent>(
+            id, find->second.x, find->second.y, resources);
+    }
+
+    const std::unordered_map<std::size_t,
+        std::pair<Shared::Vector2<double>, Shared::Vector2<double>>>
+        Environement::_broadcastChunks = {{1, {{0.0, 1.5}, {-0.5, 1.5}}},
+            {2, {{-0.5, 1.5}, {-1.5, 0.5}}},
+            {3, {{-1.5, 0.5}, {-1.5, -0.5}}},
+            {4, {{-1.5, -0.5}, {-0.5, -1.5}}},
+            {5, {{-0.5, -1.5}, {0.5, -1.5}}},
+            {6, {{0.5, -1.5}, {1.5, -0.5}}},
+            {7, {{1.5, -0.5}, {1.5, 0.5}}},
+            {8, {{1.5, 0.5}, {0.5, 1.5}}},
+            {1, {{0.5, 1.5}, {0.0, 1.5}}}};
+
 }; // namespace Zappy

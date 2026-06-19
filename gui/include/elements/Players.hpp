@@ -32,7 +32,8 @@ namespace Zappy {
 
     private:
         std::unordered_map<std::size_t, Player> _players;
-        std::map<Info::ResourceName, std::size_t> _totalResources;
+        std::map<Info::ResourceName, std::size_t> _totalResources =
+            Info::INIT_RESOUCES;
 
         std::ofstream &_logFile;
     };

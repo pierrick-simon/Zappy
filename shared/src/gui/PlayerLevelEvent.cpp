@@ -29,7 +29,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void PlayerLevelEvent::retrieve(std::istringstream &stream)
+    void PlayerLevelEvent::retrieve(std::istringstream stream)
     {
         char hash;
         stream >> hash >> _id >> _level;

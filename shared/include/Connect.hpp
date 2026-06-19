@@ -34,6 +34,8 @@ namespace Shared {
         static void send(int fd, const std::string &msg);
         static void receiveChunk(int fd, std::string &str, std::size_t = 4096);
 
+        static std::string getIp();
+
         class ConnectException : public SharedException {
         public:
             ConnectException(const std::string &str) :
@@ -86,6 +88,12 @@ namespace Shared {
         public:
             CloseException() :
                 ConnectException("Close Connection!") {};
+        };
+
+        class GetAddrsException : public ConnectException {
+        public:
+            GetAddrsException() :
+                ConnectException("Getaddrs Failed!") {};
         };
 
     private:

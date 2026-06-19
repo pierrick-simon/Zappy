@@ -9,14 +9,14 @@
 #include "Utils.hpp"
 
 namespace Zappy {
-    Player::Player(
-        Shared::NewPlayerEvent::NewPlayer player, std::ofstream &logFile) :
+    Player::Player(const Shared::NewPlayerEvent::NewPlayer &player,
+        std::ofstream &logFile) :
         _id(player.id),
         _x(player.x),
         _y(player.y),
         _dir(Info::getDirection(player.dir)),
         _level(player.level),
-        _team(std::move(player.team)),
+        _team(player.team),
         _logFile(logFile)
     {
         Shared::Utils::logMsg(_logFile,

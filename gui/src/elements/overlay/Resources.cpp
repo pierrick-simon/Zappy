@@ -30,7 +30,7 @@ namespace Zappy {
     {
         for (auto &[name, resource] : _resources) {
             auto findMap = map.find(name);
-            auto findPlayers = map.find(name);
+            auto findPlayers = players.find(name);
             std::size_t updateMap = 0;
             std::size_t updatePlayers = 0;
             if (findMap != map.end())

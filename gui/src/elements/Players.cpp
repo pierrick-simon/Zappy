@@ -6,6 +6,7 @@
 */
 
 #include "Players.hpp"
+#include <iostream>
 
 namespace Zappy {
     Players::Players(std::ofstream &logFile) :
@@ -16,9 +17,8 @@ namespace Zappy {
     bool Players::addPlayer(const Shared::NewPlayerEvent::NewPlayer &player)
     {
         bool value = false;
-        auto find = _players.find(player.id);
-        if (find == _players.end()) {
-            _players.emplace(player.id, Player {player, _logFile});
+        if (!_players.contains(player.id)) {
+            _players.try_emplace(player.id, player, _logFile);
             value = true;
         }
         return value;

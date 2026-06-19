@@ -32,7 +32,7 @@ namespace Zappy {
         {
             return _finish;
         }
-        [[nodiscard]] std::map<std::size_t, bool> getPlayers() const
+        [[nodiscard]] const std::map<std::size_t, bool> &getPlayers() const
         {
             return _players;
         }
