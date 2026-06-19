@@ -17,7 +17,7 @@ namespace Shared {
             std::size_t id, std::size_t x, std::size_t y, std::size_t dir);
         PlayerPositionEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getX() const
         {

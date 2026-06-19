@@ -100,7 +100,7 @@ namespace Zappy {
                 return;
             auto iter = EVENTS.find(event);
             if (iter != EVENTS.end()) {
-                iter->second(*this, stream);
+                iter->second(*this, std::move(stream));
                 Shared::Utils::logMsg(_logFile,
                     "Recieved event " + iter->first + " from server.");
             } else {

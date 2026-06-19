@@ -29,7 +29,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void BroadcastEvent::retrieve(std::istringstream &stream)
+    void BroadcastEvent::retrieve(std::istringstream stream)
     {
         char hash;
         stream >> hash >> _id;

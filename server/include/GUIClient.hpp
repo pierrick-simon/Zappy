@@ -39,20 +39,20 @@ namespace Zappy {
         void timeUnitEvent(std::size_t f);
 
     private:
-        using Command = std::function<void(GUIClient &, std::istringstream &)>;
+        using Command = std::function<void(GUIClient &, std::istringstream)>;
 
         void addCommand();
         void update();
 
-        void mapSize(std::istringstream &);
-        void tileInfo(std::istringstream &);
-        void tilesInfo(std::istringstream &);
-        void teamsName(std::istringstream &);
-        void playerPosition(std::istringstream &);
-        void playerLevel(std::istringstream &);
-        void playerInventory(std::istringstream &);
-        void getTimeUnit(std::istringstream &);
-        void setTimeUnit(std::istringstream &);
+        void mapSize(std::istringstream);
+        void tileInfo(std::istringstream);
+        void tilesInfo(std::istringstream);
+        void teamsName(std::istringstream);
+        void playerPosition(std::istringstream);
+        void playerLevel(std::istringstream);
+        void playerInventory(std::istringstream);
+        void getTimeUnit(std::istringstream);
+        void setTimeUnit(std::istringstream);
 
         template<std::derived_from<Shared::GUIEvent> EventType,
             typename... Args>

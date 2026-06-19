@@ -17,7 +17,7 @@ namespace Shared {
             std::size_t y);
         EggLaidEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getEggId() const
         {

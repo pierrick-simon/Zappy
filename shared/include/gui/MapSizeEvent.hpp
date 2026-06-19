@@ -16,7 +16,7 @@ namespace Shared {
         MapSizeEvent(std::size_t x, std::size_t y);
         MapSizeEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getX() const
         {

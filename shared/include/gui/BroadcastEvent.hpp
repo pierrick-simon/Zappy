@@ -16,7 +16,7 @@ namespace Shared {
         BroadcastEvent(std::size_t id, std::string msg);
         BroadcastEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getId() const
         {
