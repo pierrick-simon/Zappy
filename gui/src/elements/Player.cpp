@@ -75,4 +75,17 @@ namespace Zappy {
         _fork = false;
         _dead = true;
     }
+
+    void Player::takeResource(Info::ResourceName resource)
+    {
+        _inventory[resource]++;
+    }
+
+    void Player::setResource(Info::ResourceName resource)
+    {
+        auto find = _inventory.find(resource);
+        if (find != _inventory.end() && find->second != 0)
+            find->second--;
+    }
+
 } // namespace Zappy

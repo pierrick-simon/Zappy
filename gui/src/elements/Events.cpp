@@ -49,9 +49,10 @@ namespace Zappy {
         Shared::NewPlayerEvent event;
         event.retrieve(stream);
         auto player = event.getPlayer();
-        auto find = _players.find(player.id);
-        if (find == _players.end())
-            _players.emplace(player.id, Player {player, _logFile});
+        if (_players.addPlayer(player))
+            Shared::Connect::send(_connect.getFd(),
+                ClientCmd::PIN.getStr() + "\n" + ClientCmd::PLV.getStr() +
+                    "\n");
     }
 
     void Environement::playerPosition(std::istringstream &stream)
@@ -59,7 +60,7 @@ namespace Zappy {
         Shared::PlayerPositionEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
             auto dir = Info::getDirection(event.getDir());
             player.move(event.getX(), event.getY(), dir);
         } catch (Info::DirectionNotFoundException &e) {
@@ -74,7 +75,7 @@ namespace Zappy {
         Shared::PlayerLevelEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
             player.setLevel(event.getLevel());
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
@@ -86,8 +87,11 @@ namespace Zappy {
         Shared::PlayerInventoryEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
+            auto before = player.getResources();
             player.setInventory(event.getResources());
+            auto after = player.getResources();
+            _players.updateTotalResources(before, after);
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -98,7 +102,7 @@ namespace Zappy {
         Shared::PlayerExpulsionEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -109,7 +113,7 @@ namespace Zappy {
         Shared::BroadcastEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
             _msg.push(Message {event.getId(), event.getText()});
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
@@ -124,7 +128,7 @@ namespace Zappy {
         std::map<std::size_t, bool> players;
         for (auto id : list) {
             try {
-                auto player = getPlayer(id);
+                auto player = _players.getPlayer(id);
                 players.emplace(id, false);
                 player.setIncantate(true);
             } catch (Player::PlayerException &e) {
@@ -142,7 +146,7 @@ namespace Zappy {
             if (dead)
                 continue;
             try {
-                auto player = getPlayer(id);
+                auto player = _players.getPlayer(id);
                 player.setIncantate(false);
             } catch (Player::PlayerException &e) {
                 dead = true;
@@ -173,7 +177,7 @@ namespace Zappy {
         Shared::EggLayingEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
             player.setFork(true);
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
@@ -185,8 +189,12 @@ namespace Zappy {
         Shared::TakeResourceEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
             auto resource = Info::getResource(event.getNb());
+            auto before = player.getResources();
+            player.takeResource(resource);
+            auto after = player.getResources();
+            _players.updateTotalResources(before, after);
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         } catch (Info::ResourceNotFoundException &e) {
@@ -199,8 +207,12 @@ namespace Zappy {
         Shared::SetResourceEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
             auto resource = Info::getResource(event.getNb());
+            auto before = player.getResources();
+            player.setResource(resource);
+            auto after = player.getResources();
+            _players.updateTotalResources(before, after);
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         } catch (Info::ResourceNotFoundException &e) {
@@ -227,9 +239,11 @@ namespace Zappy {
         Shared::PlayerDeathEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getId());
+            auto player = _players.getPlayer(event.getId());
+            auto before = player.getResources();
             player.died();
             incantateDeadPlayer(event.getId());
+            _players.updateTotalResources(before, Info::INIT_RESOUCES);
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -240,7 +254,7 @@ namespace Zappy {
         Shared::EggLaidEvent event;
         event.retrieve(stream);
         try {
-            auto player = getPlayer(event.getPlayerId());
+            auto player = _players.getPlayer(event.getPlayerId());
             player.setFork(false);
             _eggs.emplace(event.getEggId(),
                 Egg {event.getX(), event.getY(), player.getTeam()});

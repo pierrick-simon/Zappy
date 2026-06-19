@@ -8,9 +8,11 @@
 #ifndef MAP_HPP_
     #define MAP_HPP_
 
+    #include "Info.hpp"
     #include "Tile.hpp"
     #include "graphics/AShadered.hpp"
     #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IUpdatable.hpp"
 
 namespace Zappy {
     class Map : public Graphics::IDrawable3D, public Graphics::AShadered {
@@ -32,12 +34,24 @@ namespace Zappy {
             return _height;
         }
 
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getTotalResources() const
+        {
+            return _totalResources;
+        }
+
         void draw3D() const override;
 
     private:
+        void updateTotalResources(
+            const std::map<Info::ResourceName, std::size_t> &before,
+            std::map<Info::ResourceName, std::size_t> after);
+
         std::size_t _width = 0;
         std::size_t _height = 0;
         std::vector<Tile> _tiles;
+        std::map<Info::ResourceName, std::size_t> _totalResources;
+
         static constexpr auto TILE_WIDTH = 2;
         static constexpr auto TILE_HEIGHT = 2;
         static constexpr auto TILE_Y_POS = 0;

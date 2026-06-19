@@ -18,9 +18,10 @@
     #include "Elevation.hpp"
     #include "GUIException.hpp"
     #include "Map.hpp"
-    #include "Player.hpp"
+    #include "Overlay.hpp"
+    #include "Players.hpp"
     #include "graphics/AShadered.hpp"
-#include "graphics/IDrawable2D.hpp"
+    #include "graphics/IDrawable2D.hpp"
     #include "graphics/IDrawable3D.hpp"
     #include "graphics/IObject.hpp"
     #include "graphics/IUpdatable.hpp"
@@ -58,8 +59,6 @@ namespace Zappy {
         void handleEvents();
         void loading();
 
-        Player &getPlayer(std::size_t id);
-
         void mapSize(std::istringstream &stream);
         void updateTile(std::istringstream &stream);
         void teamName(std::istringstream &stream);
@@ -89,7 +88,7 @@ namespace Zappy {
         void incantateDeadPlayer(std::size_t id);
 
         Map _map;
-        std::unordered_map<std::size_t, Player> _players;
+        Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
         std::vector<Elevation> _elevations;
         std::vector<std::string> _teams;
@@ -102,6 +101,8 @@ namespace Zappy {
         std::string _buffer;
         bool _loading = false;
         std::queue<std::string> _events;
+
+        Overlay _overlay;
 
         bool &_isConnect;
         std::ofstream &_logFile;

@@ -23,8 +23,33 @@ namespace Zappy {
             _tiles.clear();
             _tiles.resize(_width * _height);
             this->setTilesPosition();
+            _totalResources = Info::INIT_RESOUCES;
         }
         return value;
+    }
+
+    void Map::updateTotalResources(
+        const std::map<Info::ResourceName, std::size_t> &before,
+        std::map<Info::ResourceName, std::size_t> after)
+    {
+        for (const auto &[resource, nb] : before) {
+            auto findAfter = after.find(resource);
+            auto findTotal = _totalResources.find(resource);
+            if (findTotal == _totalResources.end())
+                continue;
+            if (findAfter != after.end()) {
+                findTotal->second = findTotal->second - nb + findAfter->second;
+                after.erase(findAfter);
+            } else
+                findTotal->second -= nb;
+        }
+        for (const auto &[resource, nb] : after) {
+            auto findTotal = _totalResources.find(resource);
+            if (findTotal != _totalResources.end())
+                findTotal->second += nb;
+            else
+                _totalResources.emplace(resource, nb);
+        }
     }
 
     void Map::updateTile(
@@ -34,7 +59,10 @@ namespace Zappy {
         y %= _height;
         auto tileIndex = y * _width + x;
         auto &tile = _tiles[tileIndex];
+        auto before = tile.getResources();
         tile.updateTile(resources);
+        auto after = tile.getResources();
+        updateTotalResources(before, std::move(after));
     }
 
     void Map::setTilesPosition()

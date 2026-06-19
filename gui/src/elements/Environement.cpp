@@ -14,16 +14,20 @@
 #include "UtilsVector.hpp"
 #include "graphics/primitives/Text2D.hpp"
 
+#include "Resources.hpp"
+
 namespace ClientCmd = Shared::GUICommunication::Client;
 namespace ServerCmd = Shared::GUICommunication::Server;
 
 namespace Zappy {
     Environement::Environement(int port, const std::string &ip,
         std::ofstream &logFile, bool &isConnect) :
+        _players(logFile),
         _timeUnit(0),
         _connect(port, ip),
         _isConnect(isConnect),
-        _logFile(logFile)
+        _logFile(logFile),
+        _overlay()
     {
         _isConnect = false;
     }
@@ -47,7 +51,10 @@ namespace Zappy {
 
     void Environement::update(float dt)
     {
+        _overlay.resources.update(
+            _map.getTotalResources(), _players.getTotalResources());
     }
+
     void Environement::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
@@ -61,6 +68,7 @@ namespace Zappy {
 
     void Environement::draw2D() const
     {
+        _overlay.resources.draw2D();
     }
 
     bool Environement::connect()
@@ -137,16 +145,6 @@ namespace Zappy {
         _loading = !_map.getHeight() || !_map.getWidth() || _teams.empty() ||
             !_timeUnit;
         _isConnect = !_loading;
-    }
-
-    Player &Environement::getPlayer(std::size_t id)
-    {
-        auto find = _players.find(id);
-        if (find == _players.end())
-            throw Player::PlayerNotFoundException(id);
-        if (find->second.isDead())
-            throw Player::DeadPlayerException(id);
-        return find->second;
     }
 
     const std::unordered_map<std::string, Environement::Event>

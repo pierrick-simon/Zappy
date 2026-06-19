@@ -28,6 +28,8 @@ namespace Zappy {
         void setIncantate(bool incantate);
         void setFork(bool fork);
         void died();
+        void takeResource(Info::ResourceName resource);
+        void setResource(Info::ResourceName resource);
 
         [[nodiscard]] std::size_t getTile(std::size_t width) const;
 
@@ -38,6 +40,12 @@ namespace Zappy {
         [[nodiscard]] std::string getTeam() const
         {
             return _team;
+        }
+
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getResources() const
+        {
+            return _inventory;
         }
 
         class PlayerException : public GUIException {

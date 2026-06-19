@@ -25,6 +25,7 @@ set(SRCS
         src/graphics/primitives/Text2D.cpp
         src/graphics/primitives/Rectangle2D.cpp
         src/graphics/primitives/Sprite2D.cpp
+        src/graphics/primitives/Box2D.cpp
         src/Window.cpp
         src/GUI.cpp
         src/Assets.cpp
@@ -36,9 +37,14 @@ set(SRCS
         src/elements/Elevation.cpp
         src/elements/Environement.cpp
         src/elements/Events.cpp
+        src/elements/Players.cpp
+        src/elements/overlay/Resources.cpp
+        src/elements/overlay/ResourceInfo.cpp
+        src/elements/overlay/Overlay.cpp
 )
 
 set(HEADERS
+        include/elements/overlay/
         include/elements/
         include/
         src/
