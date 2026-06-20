@@ -22,6 +22,7 @@ namespace Zappy {
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
 
+        void addLevel();
         void setLevel(std::size_t level);
         void setInventory(const std::vector<std::size_t> &inventory);
         void setIncantate(bool incantate);

@@ -8,11 +8,14 @@
 #ifndef INIT_HPP_
     #define INIT_HPP_
 
+    #include <string_view>
     #include "graphics/AShadered.hpp"
 
 namespace Zappy {
     class Init {
     public:
+        static constexpr std::string_view FONT_PATH = "public/Font.ttf";
+
         static constexpr Color GOLD_RICH = {212, 160, 23, 255};
         static constexpr Color DARK_PINEWOOD = {28, 52, 32, 255};
         static constexpr Color BLUE_THROUGH = {0, 0, 139, 128};
@@ -26,6 +29,15 @@ namespace Zappy {
         static constexpr float RESOURCE_ICON = 26;
         static constexpr Vector2 RESOURCE_ICON_POS = {18, 18};
         static constexpr float RESOURCE_GAP = GAP;
+
+        static constexpr Vector2 INCANTATION_START_POS = {
+            GAP, RESOURCE_SIZE.y * 3.f + RESOURCE_GAP * 2.f};
+        static constexpr Vector2 INCANTATION_SIZE = {220, 140};
+        static constexpr float INCANTATION_GAP = GAP;
+        static constexpr std::size_t INCANTATION_MAX_DISPLAY = 4;
+
+        static constexpr Vector2 EVENT_START_POS = {
+            GAP, INCANTATION_START_POS.y + (INCANTATION_SIZE.y + GAP) * 4.f};
     };
 } // namespace Zappy
 

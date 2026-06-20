@@ -19,8 +19,7 @@ namespace Zappy {
         EventBox(Font &font, std::unordered_map<std::string, Color> &teams);
 
     private:
-        static constexpr std::size_t MAX_LINE = 10;
-        static constexpr float FONT_SIZE = 20;
+        static constexpr float FONT_SIZE = 22;
         static constexpr float WIDTH = 200;
     };
 } // namespace Zappy

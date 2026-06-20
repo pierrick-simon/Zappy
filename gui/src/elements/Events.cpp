@@ -137,29 +137,26 @@ namespace Zappy {
         Shared::StartIncantationEvent event;
         event.retrieve(std::move(stream));
         auto list = event.getIds();
-        std::map<std::size_t, bool> players;
+        std::vector<std::size_t> players;
         for (auto id : list) {
             try {
                 auto &player = _players.getPlayer(id);
-                players.emplace(id, false);
+                players.push_back(id);
                 player.setIncantate(true);
                 _overlay.eventBox.addMessage(
                     player.getTeam(), id, "Started incantade.");
             } catch (Player::PlayerException &e) {
                 Shared::Utils::logMsg(_logFile, e.what());
-                players.emplace(id, true);
             }
         }
-        _elevations.emplace_back(
+        _elevations.addElevation(
             event.getX(), event.getY(), event.getLevel(), players);
     }
 
     void Environement::playersEndIncantate(
-        std::map<std::size_t, bool> &players, bool success)
+        std::vector<std::size_t> &players, bool success)
     {
-        for (auto &[id, dead] : players) {
-            if (dead)
-                continue;
+        for (auto id : players) {
             try {
                 auto &player = _players.getPlayer(id);
                 player.setIncantate(false);
@@ -167,8 +164,9 @@ namespace Zappy {
                     id,
                     success ? "Succeeded to incantate."
                             : "Failed to incantate.");
+                if (success)
+                    player.addLevel();
             } catch (Player::PlayerException &e) {
-                dead = true;
                 Shared::Utils::logMsg(_logFile, e.what());
             }
         }
@@ -178,17 +176,8 @@ namespace Zappy {
     {
         Shared::EndIncantationEvent event;
         event.retrieve(std::move(stream));
-        for (auto elevation : _elevations) {
-            if (!elevation.getFinish() && elevation.getX() == event.getX() &&
-                elevation.getY() == event.getY()) {
-                elevation.setFinish(true);
-                playersEndIncantate(elevation.getPlayers(), event.getResult());
-                return;
-            }
-        }
-        Shared::Utils::logMsg(_logFile,
-            "Incantation in (" + std::to_string(event.getX()) + "," +
-                std::to_string(event.getY()) + ") Not Found.");
+        auto players = _elevations.endElevation(event.getX(), event.getY());
+        playersEndIncantate(players, event.getResult());
     }
 
     void Environement::eggLaying(std::istringstream stream)
@@ -247,20 +236,6 @@ namespace Zappy {
         }
     }
 
-    void Environement::incantateDeadPlayer(std::size_t id)
-    {
-        for (auto elevation : _elevations) {
-            auto players = elevation.getPlayers();
-            auto find = std::find_if(players.begin(),
-                players.end(),
-                [id](const std::pair<const unsigned long, bool> &p) {
-                    return p.first == id;
-                });
-            if (find != players.end())
-                find->second = true;
-        }
-    }
-
     void Environement::deadPlayer(std::istringstream stream)
     {
         Shared::PlayerDeathEvent event;
@@ -269,7 +244,7 @@ namespace Zappy {
             auto &player = _players.getPlayer(event.getId());
             auto before = player.getResources();
             player.died();
-            incantateDeadPlayer(event.getId());
+            _elevations.removePlayer(event.getId());
             _players.updateTotalResources(before, {});
             _overlay.eventBox.addMessage(
                 player.getTeam(), event.getId(), "Died.");

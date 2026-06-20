@@ -51,8 +51,10 @@ namespace Zappy {
 
     void Environement::update(float dt)
     {
+        auto updateTimeUnit = dt * float(_timeUnit);
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
+        _elevations.update(updateTimeUnit);
     }
 
     void Environement::setShader(Graphics::Shader &shader)
@@ -71,6 +73,7 @@ namespace Zappy {
         _overlay.resources.draw2D();
         _overlay.chatBox.draw2D();
         _overlay.eventBox.draw2D();
+        _elevations.draw2D();
     }
 
     bool Environement::connect()

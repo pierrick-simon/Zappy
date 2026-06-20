@@ -6,22 +6,20 @@
 */
 
 #include "Elevation.hpp"
+#include <algorithm>
 
 namespace Zappy {
     Elevation::Elevation(std::size_t x, std::size_t y, std::size_t level,
-        std::map<std::size_t, bool> players) :
+        std::vector<std::size_t> players) :
         _x(x), _y(y), _level(level), _players(std::move(players))
     {
     }
 
-    void Elevation::end(bool success)
+    void Elevation::removePlayer(std::size_t id)
     {
-        _finish = true;
-        _success = success;
-    }
-
-    void Elevation::setFinish(bool finish)
-    {
-        _finish = finish;
+        _players.erase(std::remove_if(_players.begin(),
+                           _players.end(),
+                           [id](std::size_t i) { return id == i; }),
+            _players.end());
     }
 } // namespace Zappy

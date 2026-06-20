@@ -15,7 +15,7 @@
     #include <vector>
     #include "Connect.hpp"
     #include "Egg.hpp"
-    #include "Elevation.hpp"
+    #include "Elevations.hpp"
     #include "GUIException.hpp"
     #include "Map.hpp"
     #include "Overlay.hpp"
@@ -86,13 +86,11 @@ namespace Zappy {
         void badCommandParameter(std::istringstream stream);
 
         void playersEndIncantate(
-            std::map<std::size_t, bool> &players, bool success);
-        void incantateDeadPlayer(std::size_t id);
+            std::vector<std::size_t> &players, bool success);
 
         Map _map;
         Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
-        std::vector<Elevation> _elevations;
         std::unordered_map<std::string, Color> _teams;
         std::size_t _timeUnit;
         std::string _winingTeam;
@@ -105,6 +103,7 @@ namespace Zappy {
 
         Graphics::ColorGenerator _colorGenerator;
         Overlay _overlay;
+        Elevations _elevations;
 
         bool &_isConnect;
         std::ofstream &_logFile;

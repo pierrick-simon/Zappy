@@ -14,11 +14,12 @@ namespace Zappy {
         TextBox(font, teams, Init::BLUE_THROUGH)
     {
 
-        auto x = float(GetScreenWidth());
         auto y = float(GetScreenHeight());
-        setMaxLine(MAX_LINE);
+        auto maxLine =
+            (y - Init::EVENT_START_POS.y - Init::GAP * 2.f) / FONT_SIZE;
+        setMaxLine(std::size_t(maxLine));
         setFontSize(FONT_SIZE);
         setWidth(WIDTH);
-        setPos({Init::GAP, y - getHeight() - Init::GAP});
+        setPos(Init::EVENT_START_POS);
     }
 } // namespace Zappy

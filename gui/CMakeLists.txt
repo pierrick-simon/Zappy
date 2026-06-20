@@ -36,6 +36,7 @@ set(SRCS
         src/elements/Tile.cpp
         src/elements/Map.cpp
         src/elements/Elevation.cpp
+        src/elements/Elevations.cpp
         src/elements/Environement.cpp
         src/elements/Events.cpp
         src/elements/Players.cpp
@@ -45,6 +46,7 @@ set(SRCS
         src/elements/overlay/TextBox.cpp
         src/elements/overlay/ChatBox.cpp
         src/elements/overlay/EventBox.cpp
+        src/elements/overlay/Elevation2D.cpp
 )
 
 set(HEADERS

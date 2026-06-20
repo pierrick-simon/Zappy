@@ -33,6 +33,11 @@ namespace Zappy {
         _eject = false;
     }
 
+    void Player::addLevel()
+    {
+        _level++;
+    }
+
     void Player::setLevel(std::size_t level)
     {
         _level = level;
