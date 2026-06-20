@@ -52,7 +52,8 @@ namespace Zappy {
         for (auto iter = _elevates.begin(); iter != _elevates.end();) {
             iter->sleep -= elapsed;
             if (iter->sleep.count() <= 0) {
-                endElevation(iter->x, iter->y, iter->level, iter->players);
+                endElevation(
+                    iter->x, iter->y, iter->level, iter->players, iter->id);
                 iter = _elevates.erase(iter);
                 continue;
             } else {
@@ -405,7 +406,8 @@ namespace Zappy {
             checkEnd();
     }
 
-    void Environement::failElevation(const std::vector<size_t> &players)
+    void Environement::failElevation(
+        const std::vector<size_t> &players, std::size_t id)
     {
         for (auto id : players) {
             auto find = _players.find(id);
@@ -415,6 +417,11 @@ namespace Zappy {
                     "Client[" + std::to_string(id) +
                         "]: the elevation ritual fail.");
             }
+        }
+        try {
+            Shared::Connect::send(
+                getPlayerFd(id), ServerCmd::KO.getStr() + "\n");
+        } catch (PlayerNotFoundException &_) {
         }
     }
 
@@ -437,7 +444,8 @@ namespace Zappy {
                 find->second.x,
                 find->second.y,
                 find->second.level,
-                list});
+                list,
+                id});
             sendToGUI<Shared::StartIncantationEvent>(
                 find->second.x, find->second.y, find->second.level, list);
         }
@@ -445,12 +453,12 @@ namespace Zappy {
     }
 
     void Environement::endElevation(std::size_t x, std::size_t y,
-        std::size_t level, std::vector<std::size_t> start)
+        std::size_t level, std::vector<std::size_t> start, std::size_t id)
     {
         bool result = false;
         auto end = checkElevation(x, y, level, true);
         if (end.empty())
-            failElevation(start);
+            failElevation(start, id);
         else {
             start.erase(std::remove_if(start.begin(),
                             start.end(),
@@ -464,7 +472,7 @@ namespace Zappy {
                 successElevation(x, y, elevation, start, level);
                 result = true;
             } else
-                failElevation(start);
+                failElevation(start, id);
         }
         sendToGUI<Shared::EndIncantationEvent>(x, y, result);
     }

@@ -75,7 +75,7 @@ namespace Zappy {
         bool eject(std::size_t id);
         bool startElevation(std::size_t id);
         void endElevation(std::size_t x, std::size_t y, std::size_t level,
-            std::vector<std::size_t>);
+            std::vector<std::size_t>, std::size_t id);
         void broadcast(std::size_t id, const std::string &text);
         void playerEat(std::size_t id,
             const std::map<Info::ResourceName, std::size_t> &inventory);
@@ -128,6 +128,7 @@ namespace Zappy {
             std::size_t y;
             std::size_t level;
             std::vector<std::size_t> players;
+            std::size_t id;
         };
 
         static std::size_t circularMove(
@@ -137,7 +138,7 @@ namespace Zappy {
         void successElevation(std::size_t x, std::size_t y,
             const Info::Elevation &, const std::vector<size_t> &players,
             std::size_t level);
-        void failElevation(const std::vector<size_t> &players);
+        void failElevation(const std::vector<size_t> &players, std::size_t id);
         void setResource(
             std::size_t tile, Info::ResourceName name, std::size_t nb);
         int getPlayerFd(std::size_t id);
