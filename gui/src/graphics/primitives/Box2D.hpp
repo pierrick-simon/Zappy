@@ -34,8 +34,8 @@ namespace Graphics {
         Vector2 _pos = {0, 0};
         Rectangle2D _box;
         Rectangle2D _border;
-        Color _color = BLACK;
-        Color _borderColor = BLACK;
+        Color _color = WHITE;
+        Color _borderColor = WHITE;
         float _round = 0;
         int _segment = 0;
     };

@@ -21,6 +21,7 @@
     #include "Overlay.hpp"
     #include "Players.hpp"
     #include "graphics/AShadered.hpp"
+    #include "graphics/ColorGenerator.hpp"
     #include "graphics/IDrawable2D.hpp"
     #include "graphics/IDrawable3D.hpp"
     #include "graphics/IObject.hpp"
@@ -91,8 +92,7 @@ namespace Zappy {
         Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
         std::vector<Elevation> _elevations;
-        std::vector<std::string> _teams;
-        std::queue<Message> _msg;
+        std::unordered_map<std::string, Color> _teams;
         std::size_t _timeUnit;
         std::string _winingTeam;
 
@@ -102,6 +102,7 @@ namespace Zappy {
         bool _loading = false;
         std::queue<std::string> _events;
 
+        Graphics::ColorGenerator _colorGenerator;
         Overlay _overlay;
 
         bool &_isConnect;

@@ -8,8 +8,10 @@
 #include "Overlay.hpp"
 
 namespace Zappy {
-    Overlay::Overlay() :
-        _font(LoadFont("public/Font.ttf")), resources(_font)
+    Overlay::Overlay(std::unordered_map<std::string, Color> &teams) :
+        _font(LoadFont("public/Font.ttf")),
+        resources(_font),
+        chatBox(_font, teams)
     {
     }
 } // namespace Zappy

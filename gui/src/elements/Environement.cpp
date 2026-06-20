@@ -27,7 +27,7 @@ namespace Zappy {
         _connect(port, ip),
         _isConnect(isConnect),
         _logFile(logFile),
-        _overlay()
+        _overlay(_teams)
     {
         _isConnect = false;
     }
@@ -69,6 +69,7 @@ namespace Zappy {
     void Environement::draw2D() const
     {
         _overlay.resources.draw2D();
+        _overlay.chatBox.draw2D();
     }
 
     bool Environement::connect()

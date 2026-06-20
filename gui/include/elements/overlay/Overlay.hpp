@@ -9,14 +9,16 @@
     #define OVERLAY_HPP_
 
     #include <string_view>
+    #include "ChatBox.hpp"
     #include "Resources.hpp"
 
 namespace Zappy {
     class Overlay {
     public:
-        Overlay();
+        Overlay(std::unordered_map<std::string, Color> &teams);
 
         Resources resources;
+        ChatBox chatBox;
 
     private:
         Font _font;

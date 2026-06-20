@@ -21,6 +21,7 @@ set(SRCS
         src/graphics/Camera.cpp
         src/graphics/Shader.cpp
         src/graphics/AShadered.cpp
+        src/graphics/ColorGenerator.cpp
         src/graphics/primitives/Model.cpp
         src/graphics/primitives/Text2D.cpp
         src/graphics/primitives/Rectangle2D.cpp
@@ -41,6 +42,7 @@ set(SRCS
         src/elements/overlay/Resources.cpp
         src/elements/overlay/ResourceInfo.cpp
         src/elements/overlay/Overlay.cpp
+        src/elements/overlay/ChatBox.cpp
 )
 
 set(HEADERS

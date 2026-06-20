@@ -37,11 +37,9 @@ namespace Zappy {
     {
         Shared::TeamNameEvent event;
         event.retrieve(std::move(stream));
-        for (const auto &team : _teams) {
-            if (team == event.getTeam())
-                return;
-        }
-        _teams.push_back(event.getTeam());
+        if (_teams.contains(event.getTeam()))
+            return;
+        _teams.emplace(event.getTeam(), _colorGenerator.next());
     }
 
     void Environement::newPlayer(std::istringstream stream)
@@ -115,7 +113,8 @@ namespace Zappy {
         event.retrieve(std::move(stream));
         try {
             auto &player = _players.getPlayer(event.getId());
-            _msg.push(Message {event.getId(), event.getText()});
+            _overlay.chatBox.addMessage(
+                player.getTeam(), event.getId(), event.getText());
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }

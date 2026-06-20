@@ -38,7 +38,7 @@ namespace Graphics {
             KEY_METHODS;
 
         static constexpr unsigned int WINDOW_SIZE_X = 1920;
-        static constexpr unsigned int WINDOW_SIZE_Y = 1080;
+        static constexpr unsigned int WINDOW_SIZE_Y = 1000;
         static constexpr auto TARGET_FPS = 60;
         static constexpr auto WINDOW_TITLE = "Zappy GUI";
         static constexpr auto FOV = 60.0;
