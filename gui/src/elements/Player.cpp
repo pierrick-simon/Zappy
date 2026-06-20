@@ -25,17 +25,12 @@ namespace Zappy {
         _inventory = Info::INIT_RESOUCES;
     }
 
-    Player::~Player()
-    {
-        Shared::Utils::logMsg(
-            _logFile, "Player [" + std::to_string(_id) + "] died.");
-    }
-
     void Player::move(std::size_t x, std::size_t y, Info::Direction dir)
     {
         _x = x;
         _y = y;
         _dir = dir;
+        _eject = false;
     }
 
     void Player::setLevel(std::size_t level)
@@ -64,6 +59,11 @@ namespace Zappy {
         _fork = fork;
     }
 
+    void Player::setEject(bool eject)
+    {
+        _eject = eject;
+    }
+
     std::size_t Player::getTile(std::size_t width) const
     {
         return _y * width + _x;
@@ -74,6 +74,8 @@ namespace Zappy {
         _incantate = false;
         _fork = false;
         _dead = true;
+        Shared::Utils::logMsg(
+            _logFile, "Player [" + std::to_string(_id) + "] died.");
     }
 
     void Player::takeResource(Info::ResourceName resource)

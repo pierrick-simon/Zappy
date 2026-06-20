@@ -11,7 +11,8 @@ namespace Zappy {
     Overlay::Overlay(std::unordered_map<std::string, Color> &teams) :
         _font(LoadFont("public/Font.ttf")),
         resources(_font),
-        chatBox(_font, teams)
+        chatBox(_font, teams),
+        eventBox(_font, teams)
     {
     }
 } // namespace Zappy

@@ -2,14 +2,14 @@
 ** EPITECH PROJECT, 2026
 ** gui
 ** File description:
-** ChatBox
+** EventBox
 */
 
-#include "ChatBox.hpp"
+#include "EventBox.hpp"
 #include "Init.hpp"
 
 namespace Zappy {
-    ChatBox::ChatBox(
+    EventBox::EventBox(
         Font &font, std::unordered_map<std::string, Color> &teams) :
         TextBox(font, teams, Init::BLUE_THROUGH)
     {
@@ -19,6 +19,6 @@ namespace Zappy {
         setMaxLine(MAX_LINE);
         setFontSize(FONT_SIZE);
         setWidth(WIDTH);
-        setPos({x - WIDTH - Init::GAP, y - getHeight() - Init::GAP});
+        setPos({Init::GAP, y - getHeight() - Init::GAP});
     }
 } // namespace Zappy

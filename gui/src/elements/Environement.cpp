@@ -70,6 +70,7 @@ namespace Zappy {
     {
         _overlay.resources.draw2D();
         _overlay.chatBox.draw2D();
+        _overlay.eventBox.draw2D();
     }
 
     bool Environement::connect()

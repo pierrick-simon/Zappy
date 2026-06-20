@@ -42,7 +42,9 @@ set(SRCS
         src/elements/overlay/Resources.cpp
         src/elements/overlay/ResourceInfo.cpp
         src/elements/overlay/Overlay.cpp
+        src/elements/overlay/TextBox.cpp
         src/elements/overlay/ChatBox.cpp
+        src/elements/overlay/EventBox.cpp
 )
 
 set(HEADERS

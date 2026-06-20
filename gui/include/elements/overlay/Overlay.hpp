@@ -10,6 +10,7 @@
 
     #include <string_view>
     #include "ChatBox.hpp"
+    #include "EventBox.hpp"
     #include "Resources.hpp"
 
 namespace Zappy {
@@ -19,6 +20,7 @@ namespace Zappy {
 
         Resources resources;
         ChatBox chatBox;
+        EventBox eventBox;
 
     private:
         Font _font;

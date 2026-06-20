@@ -481,6 +481,10 @@ namespace Zappy {
             "Client[" + std::to_string(iter->first) + "] been push to the " +
                 Info::directions.at(dir).str + ".");
         sendToGUI<Shared::PlayerExpulsionEvent>(iter->first);
+        sendToGUI<Shared::PlayerPositionEvent>(iter->first,
+            iter->second.x,
+            iter->second.y,
+            Info::directions.at(iter->second.dir).nb);
     }
 
     Environement::EggIter Environement::handleDestroyEgg(EggIter iter)

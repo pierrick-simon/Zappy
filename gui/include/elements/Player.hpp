@@ -19,7 +19,6 @@ namespace Zappy {
     public:
         Player(const Shared::NewPlayerEvent::NewPlayer &player,
             std::ofstream &logFile);
-        ~Player();
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
 
@@ -27,6 +26,7 @@ namespace Zappy {
         void setInventory(const std::vector<std::size_t> &inventory);
         void setIncantate(bool incantate);
         void setFork(bool fork);
+        void setEject(bool eject);
         void died();
         void takeResource(Info::ResourceName resource);
         void setResource(Info::ResourceName resource);
@@ -78,6 +78,7 @@ namespace Zappy {
         std::map<Info::ResourceName, std::size_t> _inventory;
         bool _incantate = false;
         bool _fork = false;
+        bool _eject = false;
         bool _dead = false;
 
         std::ofstream &_logFile;

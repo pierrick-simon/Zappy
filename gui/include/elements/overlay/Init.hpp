@@ -20,11 +20,12 @@ namespace Zappy {
         static constexpr float BORDER_SIZE = 3.f;
         static constexpr float BORDER_ROUND = 0.1f;
         static constexpr float LETTER_SPACING = 2;
+        static constexpr float GAP = 10.f;
 
         static constexpr Vector2 RESOURCE_SIZE = {125, 40};
         static constexpr float RESOURCE_ICON = 26;
         static constexpr Vector2 RESOURCE_ICON_POS = {18, 18};
-        static constexpr float RESOURCE_GAP = 10.f;
+        static constexpr float RESOURCE_GAP = GAP;
     };
 } // namespace Zappy
 

@@ -85,7 +85,8 @@ namespace Zappy {
         void unknowCommand(std::istringstream stream);
         void badCommandParameter(std::istringstream stream);
 
-        void playersEndIncantate(std::map<std::size_t, bool> &players);
+        void playersEndIncantate(
+            std::map<std::size_t, bool> &players, bool success);
         void incantateDeadPlayer(std::size_t id);
 
         Map _map;
