@@ -25,18 +25,23 @@ example:
 
 import random
 
-from src.constants.resources import INCANTATION_PREREQUISITES, INCANTATION_PLAYERS_NEEDED
+from src.constants.resources import (
+    INCANTATION_PREREQUISITES,
+    INCANTATION_PLAYERS_NEEDED,
+)
 from src.command import take, set_down, broadcast
 from src.constants.constants import COMMAND_FACTORY, MOVE
 from src.algorithms.modules.backpack_module import BackpackModule
 from src.connection_handler import ConnectionHandler
 import src.algorithms.modules.auto_gather_module as ag
 
+
 def fuse_dicts(d1: dict, d2: dict) -> dict:
     result = d1.copy()
     for key, value in d2.items():
         result[key] = result.get(key, 0) + value
     return result
+
 
 def sub_dict(d1, d2):
     result = {}
@@ -45,6 +50,7 @@ def sub_dict(d1, d2):
         if diff > 0:
             result[k] = diff
     return result
+
 
 class CommonAI:
     def __init__(self, handler: ConnectionHandler) -> None:
@@ -70,9 +76,10 @@ class CommonAI:
         while True:
             self._tick()
 
-
     def _tick(self) -> None:
-        needed = sub_dict(INCANTATION_PREREQUISITES[self._level + 1], self._backpack.inventory)
+        needed = sub_dict(
+            INCANTATION_PREREQUISITES[self._level + 1], self._backpack.inventory
+        )
         print(needed)
         if self._backpack.inventory["food"] < 20:
             print("FIND FOOD")
@@ -87,7 +94,6 @@ class CommonAI:
         print("FIND MATS")
         self._seek_objects(fuse_dicts({"food": 20}, needed))
         self._handler.events.clear()
-
 
     def _seek_objects(self, objects: dict) -> None:
         obs = self._exec_func("Look")
@@ -126,12 +132,16 @@ class CommonAI:
         for i in range(2):
             self._exec_func("Look")
         self._handler.entrypoint()
-        calls = [i for i in self._handler.events if str(i.argument) == f"Incantation;{self._level + 1};{self._followed_id}"]
+        calls = [
+            i
+            for i in self._handler.events
+            if str(i.argument) == f"Incantation;{self._level + 1};{self._followed_id}"
+        ]
         if not calls:
             while self._handler.events:
                 event = self._handler.consume_event()
                 if str(event.argument).startswith(f"Incantation;{self._level + 1}"):
-                    self._followed_id = str(event.argument).strip(';')[2]
+                    self._followed_id = str(event.argument).strip(";")[2]
                     if self._followed_id == self._id:
                         self._followed_id = 0
                         continue
@@ -146,8 +156,11 @@ class CommonAI:
         for i in range(2):
             self._exec_func("Look")
         self._handler.entrypoint()
-        calls = [i for i in self._handler.events if
-                 str(i.argument) == f"Incantation;{self._level + 1};{self._followed_id}"]
+        calls = [
+            i
+            for i in self._handler.events
+            if str(i.argument) == f"Incantation;{self._level + 1};{self._followed_id}"
+        ]
         while calls:
             if not calls:
                 return
@@ -159,8 +172,12 @@ class CommonAI:
             for i in range(2):
                 self._exec_func("Look")
             self._handler.entrypoint()
-            calls = [i for i in self._handler.events if
-                     str(i.argument) == f"Incantation;{self._level + 1};{self._followed_id}"]
+            calls = [
+                i
+                for i in self._handler.events
+                if str(i.argument)
+                == f"Incantation;{self._level + 1};{self._followed_id}"
+            ]
 
     def _step_ahead(self):
         self._exec_func("Forward")
@@ -171,16 +188,16 @@ class CommonAI:
     def _exec_func(self, command: str):
         self._backpack.tick(command)
         if command.startswith("Take"):
-            result = take(self._handler, command.split(' ')[1])
+            result = take(self._handler, command.split(" ")[1])
             if result:
-                self._backpack.add_to_inventory([command.split(' ')[1]])
+                self._backpack.add_to_inventory([command.split(" ")[1]])
             return result
         elif command.startswith("Set"):
-            result = set_down(self._handler, command.split(' ')[1])
+            result = set_down(self._handler, command.split(" ")[1])
             if result:
-                self._backpack.del_from_inventory([command.split(' ')[1]])
+                self._backpack.del_from_inventory([command.split(" ")[1]])
             return result
         elif command.startswith("Broadcast"):
-            return broadcast(self._handler, command.split(' ')[1])
+            return broadcast(self._handler, command.split(" ")[1])
         else:
             return COMMAND_FACTORY[command](self._handler)
