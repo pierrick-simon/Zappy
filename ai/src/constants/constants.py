@@ -20,9 +20,6 @@ from src.command import (
     connect_nbr,
 )
 
-NB_TILES_OBS = 16
-
-
 COMMAND_FACTORY: dict = {
     "Forward": forward,
     "Right": right,
