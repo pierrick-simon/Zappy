@@ -33,11 +33,11 @@ namespace Shared {
         return oss.str();
     }
 
-    void StartIncantationEvent::retrieve(std::istringstream &stream)
+    void StartIncantationEvent::retrieve(std::istringstream stream)
     {
         _ids.clear();
         stream >> _x >> _y >> _level;
-        while (stream.eof()) {
+        while (!stream.eof()) {
             char hash;
             std::size_t tmp;
             stream >> hash >> tmp;

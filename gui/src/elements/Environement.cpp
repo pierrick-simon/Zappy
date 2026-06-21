@@ -14,16 +14,20 @@
 #include "UtilsVector.hpp"
 #include "graphics/primitives/Text2D.hpp"
 
+#include "Resources.hpp"
+
 namespace ClientCmd = Shared::GUICommunication::Client;
 namespace ServerCmd = Shared::GUICommunication::Server;
 
 namespace Zappy {
     Environement::Environement(int port, const std::string &ip,
         std::ofstream &logFile, bool &isConnect) :
+        _players(logFile),
         _timeUnit(0),
         _connect(port, ip),
         _isConnect(isConnect),
-        _logFile(logFile)
+        _logFile(logFile),
+        _overlay(_teams)
     {
         _isConnect = false;
     }
@@ -47,7 +51,12 @@ namespace Zappy {
 
     void Environement::update(float dt)
     {
+        auto updateTimeUnit = dt * float(_timeUnit);
+        _overlay.resources.update(
+            _map.getTotalResources(), _players.getTotalResources());
+        _elevations.update(updateTimeUnit);
     }
+
     void Environement::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
@@ -61,6 +70,10 @@ namespace Zappy {
 
     void Environement::draw2D() const
     {
+        _overlay.resources.draw2D();
+        _overlay.chatBox.draw2D();
+        _overlay.eventBox.draw2D();
+        _elevations.draw2D();
     }
 
     bool Environement::connect()
@@ -121,9 +134,9 @@ namespace Zappy {
                 return;
             auto iter = EVENTS.find(event);
             if (iter != EVENTS.end()) {
-                iter->second(*this, stream);
                 Shared::Utils::logMsg(_logFile,
                     "Recieved event " + iter->first + " from server.");
+                iter->second(*this, std::move(stream));
             } else {
                 Shared::Utils::logMsg(
                     _logFile, "Event " + event + " not handle yet.");
@@ -137,16 +150,6 @@ namespace Zappy {
         _loading = !_map.getHeight() || !_map.getWidth() || _teams.empty() ||
             !_timeUnit;
         _isConnect = !_loading;
-    }
-
-    Player &Environement::getPlayer(std::size_t id)
-    {
-        auto find = _players.find(id);
-        if (find == _players.end())
-            throw Player::PlayerNotFoundException(id);
-        if (find->second.isDead())
-            throw Player::DeadPlayerException(id);
-        return find->second;
     }
 
     const std::unordered_map<std::string, Environement::Event>
@@ -165,7 +168,7 @@ namespace Zappy {
             {ServerCmd::PFK.getStr(), &Environement::eggLaying},
             {ServerCmd::PDR.getStr(), &Environement::setResource},
             {ServerCmd::PGT.getStr(), &Environement::takeResource},
-            {ServerCmd::PDI.getStr(), &Environement::deadEgg},
+            {ServerCmd::PDI.getStr(), &Environement::deadPlayer},
             {ServerCmd::ENW.getStr(), &Environement::eggLaid},
             {ServerCmd::EBO.getStr(), &Environement::eggHatched},
             {ServerCmd::EDI.getStr(), &Environement::deadEgg},

@@ -33,7 +33,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void NewPlayerEvent::retrieve(std::istringstream &stream)
+    void NewPlayerEvent::retrieve(std::istringstream stream)
     {
         char hash;
         stream >> hash >> _player.id >> _player.x >> _player.y;

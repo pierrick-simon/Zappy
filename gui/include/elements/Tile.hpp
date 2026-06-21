@@ -24,6 +24,9 @@ namespace Zappy {
 
         void updateTile(const std::vector<std::size_t> &resources);
 
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getResources() const;
+
     private:
         std::map<Info::ResourceName, std::queue<Resource>> _resources;
 

@@ -25,7 +25,7 @@ namespace Shared {
         NewPlayerEvent(NewPlayer);
         NewPlayerEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] NewPlayer getPlayer() const
         {

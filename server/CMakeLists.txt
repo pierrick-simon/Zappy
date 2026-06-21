@@ -15,10 +15,19 @@ set(SRCS
         src/AIClient.cpp
         src/GUIClient.cpp
         src/Environement.cpp
+        src/master/Master.cpp
+        src/master/ToolBar.cpp
+        src/master/AddProcess.cpp
+        src/master/AiDescription.cpp
+        src/master/DescriptionBox.cpp
+        src/master/TeamsInfo.cpp
+        src/master/TeamBox.cpp
+        src/master/SelectAi.cpp
 )
 
 set(HEADERS
         include/
+        include/master/
 )
 
 include_directories(${HEADERS})
@@ -48,7 +57,7 @@ if (NOT criterion_FOUND)
 endif ()
 
 add_executable(zappy_server ${MAIN} ${SRCS})
-target_link_libraries(zappy_server shared)
+target_link_libraries(zappy_server shared sfml-graphics sfml-window sfml-system)
 
 find_library(CRITERION criterion REQUIRED)
 
@@ -61,7 +70,7 @@ add_executable(server_tests_run_bin EXCLUDE_FROM_ALL ${SRCS_TESTS} ${SRCS})
 
 target_compile_options(server_tests_run_bin PRIVATE --coverage)
 target_link_options(server_tests_run_bin PRIVATE --coverage)
-target_link_libraries(server_tests_run_bin criterion shared)
+target_link_libraries(server_tests_run_bin criterion shared sfml-graphics sfml-window sfml-system)
 
 add_custom_target(server_tests_run
         COMMAND find ${CMAKE_BINARY_DIR} -name "*.gcda" -delete

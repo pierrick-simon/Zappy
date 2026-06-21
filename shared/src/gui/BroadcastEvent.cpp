@@ -29,10 +29,12 @@ namespace Shared {
         return oss.str();
     }
 
-    void BroadcastEvent::retrieve(std::istringstream &stream)
+    void BroadcastEvent::retrieve(std::istringstream stream)
     {
         char hash;
         stream >> hash >> _id;
-        _msg = stream.str();
+        std::getline(stream, _msg);
+        _msg.erase(0, _msg.find_first_not_of(" \n\r\t"));
+        _msg.erase(_msg.find_last_not_of(" \n\r\t") + 1);
     }
 }; // namespace Shared

@@ -16,7 +16,7 @@ namespace Shared {
         NbEvent(const Command &command, std::size_t nb);
         NbEvent(const Command &command);
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getNb() const
         {

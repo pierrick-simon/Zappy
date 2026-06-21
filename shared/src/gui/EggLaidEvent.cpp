@@ -36,7 +36,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void EggLaidEvent::retrieve(std::istringstream &stream)
+    void EggLaidEvent::retrieve(std::istringstream stream)
     {
         char hash;
         stream >> hash >> _eggId >> hash >> _playerId >> _x >> _y;

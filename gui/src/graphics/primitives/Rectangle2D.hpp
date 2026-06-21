@@ -21,7 +21,7 @@ namespace Graphics {
         [[nodiscard]] const Color &getColor() const;
 
     private:
-        Color _color;
+        Color _color = BLACK;
     };
 
 } // namespace Graphics

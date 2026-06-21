@@ -18,6 +18,7 @@
     #include "Client.hpp"
     #include "GUIEvent.hpp"
     #include "Info.hpp"
+    #include "Vector.hpp"
 
 namespace Zappy {
     enum class Movement { Forward, Backward };
@@ -53,7 +54,9 @@ namespace Zappy {
             std::ofstream &logFile, Clients &clients,
             std::unordered_map<std::string, std::size_t> &teams);
 
-        std::chrono::nanoseconds update(std::chrono::nanoseconds elapsed);
+        Environement(Environement &) = delete;
+
+        std::chrono::milliseconds update(std::chrono::milliseconds elapsed);
         TileInfo getTileInfo(std::size_t width, std::size_t height) const;
 
         std::string formatTile(std::size_t width, std::size_t height) const;
@@ -72,8 +75,14 @@ namespace Zappy {
         bool eject(std::size_t id);
         bool startElevation(std::size_t id);
         void endElevation(std::size_t x, std::size_t y, std::size_t level,
-            std::vector<std::size_t>);
+            std::vector<std::size_t>, std::size_t id);
         void broadcast(std::size_t id, const std::string &text);
+        void playerEat(std::size_t id,
+            const std::map<Info::ResourceName, std::size_t> &inventory);
+
+        static const std::unordered_map<std::size_t,
+            std::pair<Shared::Vector2<double>, Shared::Vector2<double>>>
+            _broadcastChunks;
 
         [[nodiscard]] std::size_t getHeight() const
         {
@@ -114,11 +123,12 @@ namespace Zappy {
             Zappy::Environement::Player>::iterator;
 
         struct Elevate {
-            std::chrono::nanoseconds sleep;
+            std::chrono::milliseconds sleep;
             std::size_t x;
             std::size_t y;
             std::size_t level;
             std::vector<std::size_t> players;
+            std::size_t id;
         };
 
         static std::size_t circularMove(
@@ -128,15 +138,23 @@ namespace Zappy {
         void successElevation(std::size_t x, std::size_t y,
             const Info::Elevation &, const std::vector<size_t> &players,
             std::size_t level);
-        void failElevation(const std::vector<size_t> &players);
+        void failElevation(const std::vector<size_t> &players, std::size_t id);
         void setResource(
             std::size_t tile, Info::ResourceName name, std::size_t nb);
         int getPlayerFd(std::size_t id);
         void setPlayerElevate(std::size_t id, bool value);
         void handleEjectPlayer(PlayerIter, Info::Direction);
-        void handleDestroyEgg(EggIter);
+        EggIter handleDestroyEgg(EggIter);
         void checkEnd();
         std::vector<std::size_t> getTileValue(std::size_t tile);
+
+        bool refillRessource(Info::ResourceName type, std::size_t count);
+        void refillRessources(const bool &log = true);
+
+        Shared::Vector2<int> getBroadCastVector(
+            const Player &sender, const Player &receiver) const;
+        static std::size_t getTileNb(
+            const Player &receiver, const Shared::Vector2<int> &v);
 
         template<std::derived_from<Shared::GUIEvent> EventType,
             typename... Args>
@@ -150,7 +168,7 @@ namespace Zappy {
         std::size_t _width;
         std::size_t _height;
         std::size_t _eggId = 0;
-        std::chrono::nanoseconds _sleep;
+        std::chrono::milliseconds _sleep;
         bool _end = false;
 
         std::vector<Info::Tile> _tiles;
@@ -162,9 +180,9 @@ namespace Zappy {
         Clients &_clients;
         std::unordered_map<std::string, std::size_t> &_teams;
 
-        static constexpr std::chrono::nanoseconds SLEEP =
+        static constexpr std::chrono::milliseconds SLEEP =
             std::chrono::seconds(20);
-        static constexpr std::chrono::nanoseconds ELEVATE =
+        static constexpr std::chrono::milliseconds ELEVATE =
             std::chrono::seconds(300);
         static constexpr std::size_t MAX_LEVEL = 8;
         static constexpr std::size_t WIN = 6;

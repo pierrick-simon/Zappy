@@ -7,8 +7,6 @@
 
 #include "Tile.hpp"
 
-#include <iostream>
-
 namespace Zappy {
     Tile::Tile()
     {
@@ -35,6 +33,14 @@ namespace Zappy {
             else
                 resource.pop();
         }
+    }
+
+    std::map<Info::ResourceName, std::size_t> Tile::getResources() const
+    {
+        std::map<Info::ResourceName, std::size_t> map;
+        for (const auto &[resource, queue] : _resources)
+            map.emplace(resource, queue.size());
+        return map;
     }
 
     const std::map<Info::ResourceName, std::queue<Resource>>

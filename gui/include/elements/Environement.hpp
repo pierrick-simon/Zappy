@@ -15,12 +15,14 @@
     #include <vector>
     #include "Connect.hpp"
     #include "Egg.hpp"
-    #include "Elevation.hpp"
+    #include "Elevations.hpp"
     #include "GUIException.hpp"
     #include "Map.hpp"
-    #include "Player.hpp"
+    #include "Overlay.hpp"
+    #include "Players.hpp"
     #include "graphics/AShadered.hpp"
-#include "graphics/IDrawable2D.hpp"
+    #include "graphics/ColorGenerator.hpp"
+    #include "graphics/IDrawable2D.hpp"
     #include "graphics/IDrawable3D.hpp"
     #include "graphics/IObject.hpp"
     #include "graphics/IUpdatable.hpp"
@@ -46,7 +48,7 @@ namespace Zappy {
         void draw2D() const override;
 
     private:
-        using Event = std::function<void(Environement &, std::istringstream &)>;
+        using Event = std::function<void(Environement &, std::istringstream)>;
 
         struct Message {
             std::size_t id;
@@ -58,42 +60,38 @@ namespace Zappy {
         void handleEvents();
         void loading();
 
-        Player &getPlayer(std::size_t id);
+        void mapSize(std::istringstream stream);
+        void updateTile(std::istringstream stream);
+        void teamName(std::istringstream stream);
+        void newPlayer(std::istringstream stream);
+        void playerPosition(std::istringstream stream);
+        void playerLevel(std::istringstream stream);
+        void playerInventory(std::istringstream stream);
+        void playerExpulsion(std::istringstream stream);
+        void playerBroadcast(std::istringstream stream);
+        void startIncantate(std::istringstream stream);
+        void endIncantate(std::istringstream stream);
+        void eggLaying(std::istringstream stream);
+        void takeResource(std::istringstream stream);
+        void setResource(std::istringstream stream);
+        void deadPlayer(std::istringstream stream);
+        void eggLaid(std::istringstream stream);
+        void eggHatched(std::istringstream stream);
+        void deadEgg(std::istringstream stream);
+        void timeUnitRequest(std::istringstream stream);
+        void timeUnitModification(std::istringstream stream);
+        void endOfGame(std::istringstream stream);
+        void serverMsg(std::istringstream stream);
+        void unknowCommand(std::istringstream stream);
+        void badCommandParameter(std::istringstream stream);
 
-        void mapSize(std::istringstream &stream);
-        void updateTile(std::istringstream &stream);
-        void teamName(std::istringstream &stream);
-        void newPlayer(std::istringstream &stream);
-        void playerPosition(std::istringstream &stream);
-        void playerLevel(std::istringstream &stream);
-        void playerInventory(std::istringstream &stream);
-        void playerExpulsion(std::istringstream &stream);
-        void playerBroadcast(std::istringstream &stream);
-        void startIncantate(std::istringstream &stream);
-        void endIncantate(std::istringstream &stream);
-        void eggLaying(std::istringstream &stream);
-        void takeResource(std::istringstream &stream);
-        void setResource(std::istringstream &stream);
-        void deadPlayer(std::istringstream &stream);
-        void eggLaid(std::istringstream &stream);
-        void eggHatched(std::istringstream &stream);
-        void deadEgg(std::istringstream &stream);
-        void timeUnitRequest(std::istringstream &stream);
-        void timeUnitModification(std::istringstream &stream);
-        void endOfGame(std::istringstream &stream);
-        void serverMsg(std::istringstream &stream);
-        void unknowCommand(std::istringstream &stream);
-        void badCommandParameter(std::istringstream &stream);
-
-        void playersEndIncantate(std::map<std::size_t, bool> &players);
-        void incantateDeadPlayer(std::size_t id);
+        void playersEndIncantate(
+            std::vector<std::size_t> &players, bool success);
 
         Map _map;
-        std::unordered_map<std::size_t, Player> _players;
+        Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
-        std::vector<Elevation> _elevations;
-        std::vector<std::string> _teams;
-        std::queue<Message> _msg;
+        std::unordered_map<std::string, Color> _teams;
         std::size_t _timeUnit;
         std::string _winingTeam;
 
@@ -102,6 +100,10 @@ namespace Zappy {
         std::string _buffer;
         bool _loading = false;
         std::queue<std::string> _events;
+
+        Graphics::ColorGenerator _colorGenerator;
+        Overlay _overlay;
+        Elevations _elevations;
 
         bool &_isConnect;
         std::ofstream &_logFile;

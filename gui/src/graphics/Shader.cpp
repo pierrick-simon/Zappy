@@ -16,8 +16,7 @@ namespace Graphics {
         this->setValue(name, values, SHADER_UNIFORM_VEC3);
     }
 
-    void Shader::setValue(
-        const std::string &name, const ::Vector4 &vector)
+    void Shader::setValue(const std::string &name, const ::Vector4 &vector)
     {
         float values[4] = {vector.x, vector.y, vector.z, vector.w};
 
@@ -30,4 +29,4 @@ namespace Graphics {
             this->_locations[name] = this->GetLocation(name);
         return this->_locations[name];
     }
-} // Graphics
+} // namespace Graphics

@@ -16,7 +16,7 @@ namespace Shared {
         EndIncantationEvent(std::size_t x, std::size_t y, bool result);
         EndIncantationEvent();
 
-        void retrieve(std::istringstream &stream) override;
+        void retrieve(std::istringstream stream) override;
 
         [[nodiscard]] std::size_t getX() const
         {

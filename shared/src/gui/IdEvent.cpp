@@ -28,7 +28,7 @@ namespace Shared {
         return oss.str();
     }
 
-    void IdEvent::retrieve(std::istringstream &stream)
+    void IdEvent::retrieve(std::istringstream stream)
     {
         char hash;
         stream >> hash >> _id;

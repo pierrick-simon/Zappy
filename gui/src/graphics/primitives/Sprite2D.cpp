@@ -10,8 +10,29 @@
 namespace Graphics {
     void Sprite2D::draw2D() const
     {
-        this->Draw(this->getPosition(),
-            this->getRotation(),
-            this->getScale().Length());
+        const Rectangle src = {0.0f,
+            0.0f,
+            static_cast<float>(this->GetWidth()),
+            static_cast<float>(this->GetHeight())};
+        const Rectangle dst = {this->_position.x,
+            this->_position.y,
+            static_cast<float>(this->GetWidth()) * _scale.x,
+            static_cast<float>(this->GetHeight()) * _scale.y};
+        this->Draw(src, dst, _origin, _rotation, _color);
+    }
+
+    Color &Sprite2D::getColor()
+    {
+        return this->_color;
+    }
+
+    const Color &Sprite2D::getColor() const
+    {
+        return this->_color;
+    }
+
+    void Sprite2D::setColor(Color color)
+    {
+        _color = color;
     }
 } // namespace Graphics

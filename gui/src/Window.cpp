@@ -16,6 +16,7 @@ namespace Graphics {
         raylib::Window(
             WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
     {
+        ToggleFullscreen();
         this->SetTargetFPS(TARGET_FPS);
         this->_scene.getCamera().SetPosition(DEFAULT_CAMERA_POS);
     }
