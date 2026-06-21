@@ -80,7 +80,7 @@ namespace Graphics {
 
     void Scene::setShaderForModel(const Model &model) const
     {
-        model.materials[0].shader = static_cast<::Shader>(this->_shader);
+        model.materials[0].shader = this->_shader.asShader();
     }
 
     Shader &Scene::getShader()

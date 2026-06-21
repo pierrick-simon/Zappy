@@ -28,6 +28,7 @@ namespace Graphics {
         void setValue(const std::string &name, const ::Vector4 &vector);
 
         int getLocation(const std::string &name);
+        ::Shader asShader() const;
 
     private:
         std::unordered_map<std::string, int> _locations;
