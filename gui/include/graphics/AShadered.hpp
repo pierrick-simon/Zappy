@@ -14,7 +14,6 @@
 namespace Graphics {
     class AShadered : public IShadered {
     public:
-        ::Shader asShader() const;
         Shader &getShader() override;
         [[nodiscard]] const Shader &getShader() const override;
         void setShader(Shader &shader) override;
