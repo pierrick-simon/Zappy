@@ -48,19 +48,17 @@ namespace Zappy {
         static constexpr std::size_t MAX = 999999;
         static constexpr float FONTSIZE = 30;
         static constexpr std::string_view HOUSE_ICON = "public/houseIcon.png";
-        static constexpr Vector2 HOUSE_ICON_SIZE = {500, 400};
+        static constexpr raylib::Vector2 HOUSE_ICON_SIZE = {500, 400};
         static constexpr float HOUSE_RATIO =
             Init::RESOURCE_ICON / HOUSE_ICON_SIZE.y;
-        static constexpr Vector2 HOUSE_ICON_ORIGIN = {
-            HOUSE_ICON_SIZE.x * HOUSE_RATIO / 2.f,
-            HOUSE_ICON_SIZE.y *HOUSE_RATIO / 2.f};
+        static const inline raylib::Vector2 HOUSE_ICON_ORIGIN =
+            HOUSE_ICON_SIZE * HOUSE_RATIO / 2.0f;
         static constexpr std::string_view GOLEM_ICON = "public/golemIcon.png";
-        static constexpr Vector2 GOLEM_ICON_SIZE = {700, 500};
+        static constexpr raylib::Vector2 GOLEM_ICON_SIZE = {700, 500};
         static constexpr float GOLEM_RATIO =
             Init::RESOURCE_ICON / GOLEM_ICON_SIZE.y;
-        static constexpr Vector2 GOLEM_ICON_ORIGIN = {
-            GOLEM_ICON_SIZE.x * GOLEM_RATIO / 2.f,
-            GOLEM_ICON_SIZE.y *GOLEM_RATIO / 2.f};
+        static const inline raylib::Vector2 GOLEM_ICON_ORIGIN =
+            GOLEM_ICON_SIZE * GOLEM_RATIO / 2.0f;
     };
 } // namespace Zappy
 
