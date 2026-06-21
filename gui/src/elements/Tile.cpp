@@ -10,7 +10,18 @@
 namespace Zappy {
     Tile::Tile()
     {
-        _resources = INIT_RESOURCES;
+        this->_resources = INIT_RESOURCES;
+    }
+
+    void Tile::updateTile(const std::vector<std::size_t> &resources)
+    {
+        auto iter = _resources.begin();
+        for (auto resource : resources) {
+            if (iter == _resources.end())
+                break;
+            updateResource(iter->second, resource, iter->first);
+            iter++;
+        }
     }
 
     void Tile::updateResource(
@@ -24,15 +35,12 @@ namespace Zappy {
         }
     }
 
-    void Tile::updateTile(const std::vector<std::size_t> &resources)
+    std::map<Info::ResourceName, std::size_t> Tile::getResources() const
     {
-        auto iter = _resources.begin();
-        for (auto resource : resources) {
-            if (iter == _resources.end())
-                break;
-            updateResource(iter->second, resource, iter->first);
-            iter++;
-        }
+        std::map<Info::ResourceName, std::size_t> map;
+        for (const auto &[resource, queue] : _resources)
+            map.emplace(resource, queue.size());
+        return map;
     }
 
     const std::map<Info::ResourceName, std::queue<Resource>>

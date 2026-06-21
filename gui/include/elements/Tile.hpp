@@ -10,20 +10,28 @@
 
     #include <map>
     #include <queue>
+
+    #include "Assets.hpp"
     #include "Info.hpp"
     #include "Resource.hpp"
+    #include "graphics/Shader.hpp"
+    #include "graphics/primitives/Model.hpp"
 
 namespace Zappy {
-    class Tile {
+    class Tile : public Graphics::Transformable3D {
     public:
         Tile();
 
         void updateTile(const std::vector<std::size_t> &resources);
 
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getResources() const;
+
     private:
+        std::map<Info::ResourceName, std::queue<Resource>> _resources;
+
         static void updateResource(std::queue<Resource> &resource,
             std::size_t nb, Info::ResourceName type);
-        std::map<Info::ResourceName, std::queue<Resource>> _resources;
         static const std::map<Info::ResourceName, std::queue<Resource>>
             INIT_RESOURCES;
     };

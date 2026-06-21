@@ -16,18 +16,25 @@ namespace Graphics {
         raylib::Window(
             WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
     {
+        ToggleFullscreen();
         this->SetTargetFPS(TARGET_FPS);
+        this->_scene.getCamera().SetPosition(DEFAULT_CAMERA_POS);
     }
 
     void Window::update()
     {
         this->handleEvents();
         this->_scene.update(GetFrameTime());
+
         this->BeginDrawing();
         this->ClearBackground(raylib::Color::RayWhite());
+
         this->getScene().getCamera().BeginMode();
+        this->getScene().getShader().BeginMode();
         this->_scene.drawGameObjects();
+        this->getScene().getShader().EndMode();
         this->getScene().getCamera().EndMode();
+
         this->_scene.drawUiObjects();
         this->EndDrawing();
     }

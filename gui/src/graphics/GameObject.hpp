@@ -9,12 +9,17 @@
     #define GAMEOBJECT_HPP
 
     #include "Transformable3D.hpp"
-    #include "graphics/Drawable.hpp"
+    #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IObject.hpp"
+    #include "graphics/IUpdatable.hpp"
 
 namespace Graphics {
-    class GameObject : public Transformable3D, public Drawable {
+    class GameObject : public Transformable3D,
+                       public IDrawable3D,
+                       public IUpdatable,
+                       public IObject {
     public:
-        virtual void update(float dt) = 0;
+        void update(float dt) override;
     };
 } // namespace Graphics
 
