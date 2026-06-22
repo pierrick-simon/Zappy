@@ -90,6 +90,6 @@ namespace Zappy {
     }
 
     const std::map<std::string, std::string> Master::_ais = {
-        {"survivor", "Take food on his pass."},
+        {"survivor", "Take food on his path"},
     };
 } // namespace Zappy

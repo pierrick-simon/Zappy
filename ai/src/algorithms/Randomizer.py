@@ -65,8 +65,6 @@ class RandomizerAi:
         @return the returns of the command function
         """
         print(command)
-        if command == "Connect_nbr":
-            return None
         if command.startswith("Take"):
             resource = random.choice([r for r in RESOURCES if r != "player"])
             return take(self._handler, resource)
@@ -75,8 +73,8 @@ class RandomizerAi:
             return set_down(self._handler, resource)
         elif command.startswith("Broadcast"):
             message = ""
-            for i in range(random.randint(0, 500)):
-                message += random.choice(string.printable)
+            for i in range(random.randint(1, 500)):
+                message += random.choice(string.ascii_letters + string.digits + string.punctuation)
             return broadcast(self._handler, message)
         else:
             return COMMAND_FACTORY[command](self._handler)
