@@ -77,6 +77,7 @@ class RandomizerAi:
             message = ""
             for i in range(random.randint(0, 500)):
                 message += random.choice(string.printable)
-            return broadcast(self._handler, message)
+            print(message)
+            return broadcast(self._handler, message.strip(" \n"))
         else:
             return COMMAND_FACTORY[command](self._handler)
