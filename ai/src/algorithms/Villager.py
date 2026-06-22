@@ -15,8 +15,8 @@ from src.connection_handler import ConnectionHandler
 from src.dataclasses_models import Command, Event
 from src.algorithms.modules.backpack_module import BackpackModule
 from src.algorithms.modules.auto_gather_module import AutoGatherModule
-from src.command import send_and_recv, broadcast
-from src.constants.resources import INCANTATION_PREREQUISITES
+from src.command import send_and_recv, broadcast, look, incantation
+from src.constants.resources import INCANTATION_PREREQUISITES, INCANTATION_PLAYERS_NEEDED
 from src.constants.constants import COMMAND_FACTORY, MOVE
 
 
@@ -34,7 +34,6 @@ def get_missing_resources(inventory: dict[str, int], level: int) -> dict[str, in
         if inventory.get(ressource, 0) < quantity
     }
 
-
 def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
     common: set = dict_one.keys() & dict_two.keys()
 
@@ -43,6 +42,15 @@ def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
     else:
         return None
 
+def check_incantations(tile: list[str], level: int) -> bool:
+    players: int =  tile.count("player")
+
+    if (players < INCANTATION_PLAYERS_NEEDED[level]):
+        return False
+    for ressource, quantity in INCANTATION_PREREQUISITES[level].items():
+        if (tile.count(ressource) < quantity):
+            return False
+    return True
 
 class Villager:
     backpack: BackpackModule
@@ -53,12 +61,13 @@ class Villager:
     master: Optional[UUID] = None
     followers: list[str] = []
     mode: MODE = MODE.SURVIVE
-    plan: deque[tuple[MODE, Command]] = []
+    plan: deque[tuple[MODE, Command]]
 
     def __init__(self, handler: ConnectionHandler) -> None:
         self.handler = handler
         self.id = uuid4()
         self.backpack = BackpackModule(self.handler)
+        self.plan = deque()
         self.EVENTS: dict[str, Callable[["Villager", Event], None]] = {
             "dead": self.handle_dead,
             "message": self.handle_message,
@@ -88,7 +97,7 @@ class Villager:
         if str(self.id) not in receivers and "*" not in receivers:
             return
         self.backpack.tick("Broadcast")
-        broadcast(f"{str(self.id)};yes;{self.level};{sender}")
+        broadcast(self.handler, f"{str(self.id)};yes;{self.level};{sender}")
         self.mode = MODE.FOLLOWER
         self.master = sender
         self.plan.clear()
@@ -103,10 +112,8 @@ class Villager:
         self.followers.append(str(sender))
 
     def call_followers(self):
-        self.append_to_plan(["Look"])
-
         receivers: str = json.dumps(self.followers if self.followers else ["*"])
-        broadcast(f"{str(self.id)};incantation;{self.level + 1};{receivers}")
+        broadcast(self.handler, f"{str(self.id)};incantation;{self.level + 1};{receivers}")
         ressource = get_common_key(
             self.backpack.inventory, INCANTATION_PREREQUISITES[self.level + 1]
         )
@@ -115,11 +122,21 @@ class Villager:
             self.backpack.del_from_inventory([f"Set {ressource}"])
 
     def manage_incantations(self):
-
-        self.call_followers()
+        if check_incantations(look(self.handler)[0], self.level + 1) is True:
+            send_and_recv(self.handler, "Incantation")
+            self.mode = MODE.RESEARCH
+        else:
+            self.call_followers()
 
     def handle_message_as_follower(self, event: Event) -> None:
-        pass
+        _, _, _, receiver = event.argument
+        receivers: list[str] = json.loads(receiver)
+
+        if any(mode == self.mode for mode, _ in self.plan):
+            return
+        if str(self.id) not in receivers:
+            return
+        self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
 
     def handle_message(self, event: Event) -> None:
         self.BROADCAST_COMPORTEMENT[self.mode](event)
@@ -146,7 +163,7 @@ class Villager:
             return
         auto_gather: AutoGatherModule = AutoGatherModule()
         self.append_to_plan(
-            auto_gather.auto_gather(COMMAND_FACTORY["Look"], ressources, max_time),
+            auto_gather.auto_gather(COMMAND_FACTORY["Look"](self.handler), ressources, max_time),
             self.mode,
         )
 
@@ -162,7 +179,9 @@ class Villager:
 
     def handle_events(self):
         event: Event = self.handler.consume_event()
-        self.EVENTS[event.name](event)
+    
+        if event is not None:
+            self.EVENTS[event.name](event)
 
     def update_mode(self):
         if self.backpack.inventory["food"] < 10:
@@ -187,12 +206,12 @@ class Villager:
             if missing:
                 self.search_ressources(missing, 300)
         elif self.mode == MODE.MASTER:
-            self.call_followers()
+            self.manage_incantations()
 
     def execute_action(self):
         if self.plan:
-            self.handle_response(self.plan.popleft())
-        self.handle_events(self.handler.consume_event())
+            self.handle_response(self.plan.popleft()[1])
+        self.handle_events()
 
     def run(self):
         while self.status:

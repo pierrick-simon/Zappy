@@ -60,7 +60,6 @@ class AutoGatherModule:
         """
         paths = []
         for tile_idx, tile_str in enumerate(obs):
-            print(f"{tile_str=}")
             for resource in self._parse_tile(tile_str):
                 if resource in self.remaining:
                     paths.append((tile_idx, resource))

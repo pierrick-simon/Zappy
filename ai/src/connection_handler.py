@@ -166,15 +166,13 @@ class ConnectionHandler:
     def consume_command(self) -> Optional[Command]:
         try:
             return self.commands.popleft()
-        except IndexError as e:
-            print(f"{e}")
+        except IndexError:
             return None
 
     def consume_event(self) -> Optional[Event]:
         try:
             return self.events.popleft()
-        except IndexError as e:
-            print(f"{e}")
+        except IndexError:
             return None
 
     def push_to_server(self, new_command: Command) -> None:
