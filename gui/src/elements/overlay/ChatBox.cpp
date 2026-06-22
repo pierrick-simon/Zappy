@@ -9,8 +9,7 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    ChatBox::ChatBox(
-        Font &font, std::unordered_map<std::string, Color> &teams) :
+    ChatBox::ChatBox(Font &font, std::map<std::string, Color> &teams) :
         TextBox(font, teams, Init::BLUE_THROUGH)
     {
 

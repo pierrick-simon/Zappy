@@ -25,20 +25,29 @@ namespace Zappy {
         static constexpr float LETTER_SPACING = 2;
         static constexpr float GAP = 10.f;
 
-        static constexpr Vector2 RESOURCE_SIZE = {125, 40};
+        static constexpr raylib::Vector2 RESOURCE_SIZE = {125, 40};
         static constexpr float RESOURCE_ICON = 26;
         static constexpr float RESOURCE_STONE_ICON = 40;
-        static constexpr Vector2 RESOURCE_ICON_POS = {18, 18};
+        static constexpr raylib::Vector2 RESOURCE_ICON_POS = {18, 18};
         static constexpr float RESOURCE_GAP = GAP;
 
-        static constexpr Vector2 INCANTATION_START_POS = {
+        static constexpr raylib::Vector2 INCANTATION_START_POS = {
             GAP, RESOURCE_SIZE.y * 3.f + RESOURCE_GAP * 2.f};
-        static constexpr Vector2 INCANTATION_SIZE = {220, 140};
+        static constexpr raylib::Vector2 INCANTATION_SIZE = {220, 140};
         static constexpr float INCANTATION_GAP = GAP;
         static constexpr std::size_t INCANTATION_MAX_DISPLAY = 4;
 
-        static constexpr Vector2 EVENT_START_POS = {
+        static constexpr raylib::Vector2 EVENT_START_POS = {
             GAP, INCANTATION_START_POS.y + (INCANTATION_SIZE.y + GAP) * 4.f};
+
+        static constexpr float INFO_TITLE_SIZE = 40;
+        static constexpr float INFO_TEXT_SIZE = 30;
+        static constexpr float INFO_SMALL_GAP = 5;
+        static constexpr float INFO_ICON = 40;
+        static constexpr raylib::Vector2 INFO_ICON_POS = {18, 18};
+        static constexpr float INFO_SIZE_X = 200;
+        static constexpr float INFO_POS_Y = 100;
+        static constexpr std::size_t INFO_MAX = 999999;
     };
 } // namespace Zappy
 

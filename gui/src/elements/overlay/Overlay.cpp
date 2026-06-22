@@ -9,12 +9,13 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    Overlay::Overlay(std::unordered_map<std::string, Color> &teams) :
+    Overlay::Overlay(std::map<std::string, Color> &teams) :
         _font(LoadFont(Init::FONT_PATH.data())),
         resources(_font),
         chatBox(_font, teams),
         eventBox(_font, teams),
-        player(_font, teams)
+        player(_font, teams),
+        team(_font, teams)
     {
     }
 

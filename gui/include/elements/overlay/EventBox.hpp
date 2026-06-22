@@ -8,7 +8,7 @@
 #ifndef EVENTBOX_HPP_
     #define EVENTBOX_HPP_
 
-    #include <unordered_map>
+    #include <map>
     #include <vector>
     #include "Init.hpp"
     #include "TextBox.hpp"
@@ -16,7 +16,7 @@
 namespace Zappy {
     class EventBox : public TextBox {
     public:
-        EventBox(Font &font, std::unordered_map<std::string, Color> &teams);
+        EventBox(Font &font, std::map<std::string, Color> &teams);
 
     private:
         static constexpr float FONT_SIZE = 22;

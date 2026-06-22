@@ -69,4 +69,16 @@ namespace Zappy {
             throw Player::PlayerNotFoundException(0);
         return _players.begin()->first;
     }
+
+    std::array<std::size_t, Team::NB_LEVEL> Players::getTeamPlayers(
+        const std::string &team) const
+    {
+        std::array<std::size_t, Team::NB_LEVEL> levels = {};
+        for (const auto &[_, player] : _players) {
+            if (!player.isDead() && player.getTeam() == team &&
+                player.getLevel() <= Team::NB_LEVEL && player.getLevel() != 0)
+                levels[player.getLevel() - 1]++;
+        }
+        return levels;
+    }
 } // namespace Zappy

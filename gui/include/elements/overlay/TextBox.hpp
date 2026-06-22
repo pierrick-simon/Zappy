@@ -8,7 +8,7 @@
 #ifndef TEXTBOX_HPP_
     #define TEXTBOX_HPP_
 
-    #include <unordered_map>
+    #include <map>
     #include <vector>
     #include "Init.hpp"
     #include "graphics/IDrawable2D.hpp"
@@ -18,8 +18,8 @@
 namespace Zappy {
     class TextBox : public Graphics::IDrawable2D {
     public:
-        TextBox(Font &font, std::unordered_map<std::string, Color> &teams,
-            Color boxColor);
+        TextBox(
+            Font &font, std::map<std::string, Color> &teams, Color boxColor);
 
         void setWidth(float width);
         void setPos(Vector2 pos);
@@ -57,12 +57,12 @@ namespace Zappy {
         Graphics::Box2D _box;
         std::size_t _maxLine = 0;
         float _fontSize = 0.f;
-        Vector2 _pos = {0, 0};
-        Vector2 _size = {0, 0};
-        Vector2 _origin = {0, 0};
+        raylib::Vector2 _pos = {0, 0};
+        raylib::Vector2 _size = {0, 0};
+        raylib::Vector2 _origin = {0, 0};
         Color _color = WHITE;
 
-        std::unordered_map<std::string, Color> &_teams;
+        std::map<std::string, Color> &_teams;
     };
 } // namespace Zappy
 

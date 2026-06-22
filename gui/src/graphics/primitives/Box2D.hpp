@@ -30,8 +30,8 @@ namespace Graphics {
         void update();
 
         float _borderSize = 0;
-        Vector2 _size = {0, 0};
-        Vector2 _pos = {0, 0};
+        raylib::Vector2 _size = {0, 0};
+        raylib::Vector2 _pos = {0, 0};
         Rectangle2D _box;
         Rectangle2D _border;
         Color _color = WHITE;

@@ -13,16 +13,18 @@
     #include "EventBox.hpp"
     #include "Player2D.hpp"
     #include "Resources.hpp"
+    #include "Team.hpp"
 
 namespace Zappy {
     class Overlay {
     public:
-        Overlay(std::unordered_map<std::string, Color> &teams);
+        Overlay(std::map<std::string, Color> &teams);
 
         Resources resources;
         ChatBox chatBox;
         EventBox eventBox;
         Player2D player;
+        Team team;
 
         static const std::map<Info::ResourceName, ResourceInfo::TextureSize>
             RESOURCES;

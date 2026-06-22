@@ -44,6 +44,10 @@ namespace Zappy {
         {
             return _team;
         }
+        [[nodiscard]] std::size_t getLevel() const
+        {
+            return _level;
+        }
 
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
         getResources() const

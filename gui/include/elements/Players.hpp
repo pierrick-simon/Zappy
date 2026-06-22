@@ -11,6 +11,7 @@
     #include "Info.hpp"
     #include "NewPlayerEvent.hpp"
     #include "Player.hpp"
+    #include "Team.hpp"
 
 namespace Zappy {
     class Players {
@@ -32,6 +33,8 @@ namespace Zappy {
 
         [[nodiscard]] std::size_t getNbPlayer();
         [[nodiscard]] std::size_t getFirstPlayerId();
+        [[nodiscard]] std::array<std::size_t, Team::NB_LEVEL> getTeamPlayers(
+            const std::string &team) const;
 
     private:
         std::unordered_map<std::size_t, Player> _players;

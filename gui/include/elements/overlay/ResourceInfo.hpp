@@ -19,11 +19,11 @@ namespace Zappy {
     public:
         struct TextureSize {
             std::string path;
-            Vector2 size;
+            raylib::Vector2 size;
         };
 
         ResourceInfo(
-            Font &font, const Vector2 &pos, const TextureSize &texture);
+            Font &font, const raylib::Vector2 &pos, const TextureSize &texture);
 
         void draw2D() const override;
         void update(std::size_t map, std::size_t players);
@@ -33,7 +33,7 @@ namespace Zappy {
         void initText(Font &font);
         void initRect();
 
-        Vector2 _pos;
+        raylib::Vector2 _pos;
         Graphics::Text2D _text;
         Graphics::Box2D _rec;
 

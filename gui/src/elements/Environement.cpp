@@ -65,6 +65,7 @@ namespace Zappy {
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
         _elevations.update(updateTimeUnit);
+        updateTeamInfo();
     }
 
     void Environement::setShader(Graphics::Shader &shader)
@@ -86,6 +87,8 @@ namespace Zappy {
         _elevations.draw2D();
         if (_selectPlayer)
             _overlay.player.draw2D();
+        else
+            _overlay.team.draw2D();
     }
 
     bool Environement::connect()
@@ -154,6 +157,23 @@ namespace Zappy {
                     _logFile, "Event " + event + " not handle yet.");
             }
         }
+    }
+
+    void Environement::updateTeamInfo()
+    {
+        auto team = _overlay.team.getSelectTeam();
+        if (!team) {
+            if (_teams.empty())
+                return;
+            team = _teams.begin()->first;
+            _overlay.team.setSelectTeam(*team);
+        }
+        std::size_t nbEgg = 0;
+        for (const auto &[_, egg] : _eggs) {
+            if (egg.getTeam() == *team)
+                nbEgg++;
+        }
+        _overlay.team.update({nbEgg, _players.getTeamPlayers(*team)});
     }
 
     void Environement::loading()

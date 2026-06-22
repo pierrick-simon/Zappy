@@ -11,7 +11,7 @@
 
 namespace Zappy {
     ResourceInfo::ResourceInfo(
-        Font &font, const Vector2 &pos, const TextureSize &texture) :
+        Font &font, const raylib::Vector2 &pos, const TextureSize &texture) :
         _pos(pos)
     {
         initRect();
@@ -22,7 +22,7 @@ namespace Zappy {
     void ResourceInfo::initSprite(const TextureSize &texture)
     {
         auto ratio = Init::RESOURCE_STONE_ICON / texture.size.y;
-        Vector2 origin = {
+        raylib::Vector2 origin = {
             texture.size.x * ratio / 2.f, texture.size.y * ratio / 2.f};
         _resourceIcon.Load(texture.path);
         _resourceIcon.setScale({ratio, ratio});

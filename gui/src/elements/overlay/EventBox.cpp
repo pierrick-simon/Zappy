@@ -9,8 +9,7 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    EventBox::EventBox(
-        Font &font, std::unordered_map<std::string, Color> &teams) :
+    EventBox::EventBox(Font &font, std::map<std::string, Color> &teams) :
         TextBox(font, teams, Init::BLUE_THROUGH)
     {
 

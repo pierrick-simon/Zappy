@@ -6,6 +6,7 @@
 */
 
 #include "Text2D.hpp"
+#include <iostream>
 
 namespace Graphics {
     void Text2D::draw2D() const
@@ -61,9 +62,9 @@ namespace Graphics {
         _color = color;
     }
 
-    Vector2 Text2D::getSize() const
+    raylib::Vector2 Text2D::getSize() const
     {
-        Vector2 size;
+        raylib::Vector2 size;
         if (_font)
             size = MeasureTextEx(
                 (*_font).get(), _str.c_str(), _fontSize, _spacing);
@@ -71,5 +72,20 @@ namespace Graphics {
             size = MeasureTextEx(
                 GetFontDefault(), _str.c_str(), _fontSize, _spacing);
         return size;
+    }
+
+    void Text2D::drawMultiColorStrs(
+        Text2D &text, const std::vector<MultiColor> &strs)
+    {
+        auto save = text.getPosition();
+        auto pos = save;
+        for (const auto &[str, color] : strs) {
+            text.setPosition(pos);
+            text.setColor(color);
+            text.setStr(str);
+            text.draw2D();
+            pos.x += text.getSize().x;
+        }
+        text.setPosition(save);
     }
 } // namespace Graphics

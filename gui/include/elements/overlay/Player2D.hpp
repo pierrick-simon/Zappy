@@ -29,15 +29,14 @@ namespace Zappy {
             std::map<Info::ResourceName, std::size_t> inventory;
         };
 
-        Player2D(Font &font, std::unordered_map<std::string, Color> &teams);
+        Player2D(Font &font, std::map<std::string, Color> &teams);
 
         void update(const PlayerInfo &info);
         void draw2D() const override;
 
     private:
-        void initText(Font &font, Vector2 pos);
-        void initInventory(Font &font, Vector2 pos);
-        void initTeamName(Font &font);
+        void initText(Font &font, raylib::Vector2 pos);
+        void initInventory(Font &font, raylib::Vector2 pos);
         void updateInventory(
             const std::map<Info::ResourceName, std::size_t> &inventory);
         void updateTeamName(const std::string &team);
@@ -47,25 +46,24 @@ namespace Zappy {
             Graphics::Text2D text;
         };
 
+        struct TextInfo {
+            mutable Graphics::Text2D text;
+            std::string prefix;
+            std::string value;
+            Color color = WHITE;
+        };
+
         enum Text { Team, Level, Position, Status, Inventory, NbText };
 
         Graphics::Box2D _box;
         Graphics::Text2D _title;
-        std::array<Graphics::Text2D, NbText> _text;
-        Graphics::Text2D _teamName;
+        std::array<TextInfo, NbText> _text;
+
+        Color _teamColor = WHITE;
 
         std::map<Info::ResourceName, Resource> _resources;
 
-        std::unordered_map<std::string, Color> &_teams;
-
-        static constexpr float TITLE_SIZE = 40;
-        static constexpr float TEXT_SIZE = 30;
-        static constexpr float SMALL_GAP = 5;
-        static constexpr float ICON = 40;
-        static constexpr Vector2 ICON_POS = {18, 18};
-        static constexpr float SIZE_X = 200;
-        static constexpr float POS_Y = 100;
-        static constexpr std::size_t MAX = 999999;
+        std::map<std::string, Color> &_teams;
     };
 } // namespace Zappy
 

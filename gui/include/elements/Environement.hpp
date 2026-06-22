@@ -89,10 +89,12 @@ namespace Zappy {
         void playersEndIncantate(
             std::vector<std::size_t> &players, bool success);
 
+        void updateTeamInfo();
+
         Map _map;
         Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
-        std::unordered_map<std::string, Color> _teams;
+        std::map<std::string, Color> _teams;
         std::size_t _timeUnit;
         std::string _winingTeam;
 

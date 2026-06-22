@@ -10,8 +10,8 @@
 
 namespace Zappy {
 
-    TextBox::TextBox(Font &font, std::unordered_map<std::string, Color> &teams,
-        Color boxColor) :
+    TextBox::TextBox(
+        Font &font, std::map<std::string, Color> &teams, Color boxColor) :
         _teams(teams)
     {
         _text.setFont(font);
@@ -68,7 +68,7 @@ namespace Zappy {
 
         std::string test = line.empty() ? word : line + " " + word;
         _text.setStr(test);
-        Vector2 testSize = _text.getSize();
+        raylib::Vector2 testSize = _text.getSize();
         if (!line.empty() && testSize.x > maxWidth) {
             lines.push_back(line);
             line = word;
@@ -93,7 +93,7 @@ namespace Zappy {
     {
         word += c;
         _text.setStr(word);
-        Vector2 wordSize = _text.getSize();
+        raylib::Vector2 wordSize = _text.getSize();
         if (wordSize.x > maxWidth) {
             if (!line.empty()) {
                 lines.push_back(line);
@@ -174,18 +174,9 @@ namespace Zappy {
         if (_lines.size() < _maxLine)
             y += float(_maxLine - _lines.size()) * _fontSize;
         for (const auto &line : _lines) {
-            float x = startX;
-            _text.setPosition({x, y});
-            _text.setColor(line.teamColor);
-            _text.setStr(line.teamPrefix);
-            _text.draw2D();
-            _text.setStr(line.teamPrefix);
-            Vector2 prefixSize = _text.getSize();
-            x += prefixSize.x;
-            _text.setStr(line.body);
-            _text.setPosition({x, y});
-            _text.setColor(_color);
-            _text.draw2D();
+            _text.setPosition({startX, y});
+            Graphics::Text2D::drawMultiColorStrs(_text,
+                {{line.teamPrefix, line.teamColor}, {line.body, _color}});
             y += _fontSize;
         }
     }

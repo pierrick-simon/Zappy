@@ -10,6 +10,7 @@
 
     #include <memory>
     #include <optional>
+    #include <vector>
     #include "Text.hpp"
     #include "graphics/UiObject.hpp"
 
@@ -27,12 +28,20 @@ namespace Graphics {
         void setSpacing(float spacing);
         void setColor(Color color);
 
-        [[nodiscard]] Vector2 getSize() const;
+        struct MultiColor {
+            std::string str;
+            Color color = WHITE;
+        };
+
+        static void drawMultiColorStrs(
+            Text2D &text, const std::vector<MultiColor> &strs);
+
+        [[nodiscard]] raylib::Vector2 getSize() const;
 
     private:
         std::optional<std::reference_wrapper<Font>> _font;
         std::string _str;
-        Vector2 _origin = {0, 0};
+        raylib::Vector2 _origin = {0, 0};
         float _fontSize = 0;
         float _spacing = 0;
         Color _color = BLACK;
