@@ -20,16 +20,13 @@ namespace Zappy {
 
     const std::map<Info::ResourceName, ResourceInfo::TextureSize>
         Overlay::RESOURCES = {
-            {Info::ResourceName::Food, {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Linemate,
-                {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::Food, {"public/heart.png", {1080, 1080}}},
+            {Info::ResourceName::Linemate, {"public/stone1.png", {1080, 1080}}},
             {Info::ResourceName::Deraumere,
-                {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Sibur, {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Mendiane,
-                {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Phiras, {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Thystame,
-                {"public/houseIcon.png", {500, 400}}},
+                {"public/stone2.png", {1080, 1080}}},
+            {Info::ResourceName::Sibur, {"public/stone3.png", {1080, 1080}}},
+            {Info::ResourceName::Mendiane, {"public/stone4.png", {1080, 1080}}},
+            {Info::ResourceName::Phiras, {"public/stone5.png", {1080, 1080}}},
+            {Info::ResourceName::Thystame, {"public/stone6.png", {1080, 1080}}},
     };
 } // namespace Zappy

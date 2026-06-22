@@ -61,7 +61,7 @@ namespace Zappy {
         static constexpr float TITLE_SIZE = 40;
         static constexpr float TEXT_SIZE = 30;
         static constexpr float SMALL_GAP = 5;
-        static constexpr float ICON = 26;
+        static constexpr float ICON = 40;
         static constexpr Vector2 ICON_POS = {18, 18};
         static constexpr float SIZE_X = 200;
         static constexpr float POS_Y = 100;

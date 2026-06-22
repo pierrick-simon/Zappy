@@ -52,7 +52,6 @@ namespace Zappy {
                 info.size.x * ratio / 2.f, info.size.y * ratio / 2.f};
             auto &[_, res] = *_resources.try_emplace(name).first;
             res.sprite.Load(info.path);
-            res.sprite.setColor(Init::GOLD_RICH);
             res.sprite.setScale({ratio, ratio});
             res.sprite.setOrigin(origin);
             res.sprite.setPosition({pos.x + ICON_POS.x, pos.y + ICON_POS.y});

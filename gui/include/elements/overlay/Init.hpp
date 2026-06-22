@@ -27,6 +27,7 @@ namespace Zappy {
 
         static constexpr Vector2 RESOURCE_SIZE = {125, 40};
         static constexpr float RESOURCE_ICON = 26;
+        static constexpr float RESOURCE_STONE_ICON = 40;
         static constexpr Vector2 RESOURCE_ICON_POS = {18, 18};
         static constexpr float RESOURCE_GAP = GAP;
 

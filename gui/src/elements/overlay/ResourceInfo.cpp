@@ -21,11 +21,10 @@ namespace Zappy {
 
     void ResourceInfo::initSprite(const TextureSize &texture)
     {
-        auto ratio = Init::RESOURCE_ICON / texture.size.y;
+        auto ratio = Init::RESOURCE_STONE_ICON / texture.size.y;
         Vector2 origin = {
             texture.size.x * ratio / 2.f, texture.size.y * ratio / 2.f};
         _resourceIcon.Load(texture.path);
-        _resourceIcon.setColor(Init::GOLD_RICH);
         _resourceIcon.setScale({ratio, ratio});
         _resourceIcon.setOrigin(origin);
         _resourceIcon.setPosition({_pos.x + Init::RESOURCE_ICON_POS.x,
