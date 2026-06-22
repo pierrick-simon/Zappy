@@ -42,6 +42,7 @@ namespace Shared {
             static const Command PGT("pgt");
             static const Command PDI("pdi");
             static const Command ENW("enw");
+            static const Command EGG("egg");
             static const Command EBO("ebo");
             static const Command EDI("edi");
             static const Command SGT("sgt");

@@ -35,6 +35,7 @@ set(GUI_SRCS
     EggLaidEvent.cpp
     NbEvent.cpp
     StrEvent.cpp
+    EggEvent.cpp
 )
 
 list(TRANSFORM GUI_SRCS PREPEND src/gui/)

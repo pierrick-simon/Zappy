@@ -85,6 +85,7 @@ namespace Zappy {
         void serverMsg(std::istringstream stream);
         void unknowCommand(std::istringstream stream);
         void badCommandParameter(std::istringstream stream);
+        void eggEvent(std::istringstream stream);
 
         void playersEndIncantate(
             std::vector<std::size_t> &players, bool success);

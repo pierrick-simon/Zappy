@@ -210,5 +210,6 @@ namespace Zappy {
             {ServerCmd::SMG.getStr(), &Environement::serverMsg},
             {ServerCmd::SUC.getStr(), &Environement::unknowCommand},
             {ServerCmd::SBP.getStr(), &Environement::badCommandParameter},
+            {ServerCmd::EGG.getStr(), &Environement::eggEvent},
     };
 } // namespace Zappy

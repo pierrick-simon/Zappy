@@ -330,4 +330,12 @@ namespace Zappy {
         Shared::Utils::logMsg(
             _logFile, "Send a command with bad parameters to the server.");
     }
+
+    void Environement::eggEvent(std::istringstream stream)
+    {
+        Shared::EggEvent event;
+        event.retrieve(std::move(stream));
+        _eggs.emplace(
+            event.getId(), Egg {event.getX(), event.getY(), event.getTeam()});
+    }
 } // namespace Zappy
