@@ -2,11 +2,11 @@
 ## EPITECH PROJECT, 2026
 ## Zappy
 ## File description:
-## Layer AI
+## Ejector AI
 ##
 
 """@package docstring
-Documentation for the Layer AI.
+Documentation for the Ejector AI.
 
 This algorithm focus and surviving and laying eggs around the map.
 
@@ -18,7 +18,7 @@ example:
     handler.client.connect()
     handler.start_session()
 
-    ai = Layer(handler)
+    ai = Ejector(handler)
     ai.run()
 """
 
@@ -30,7 +30,7 @@ from src.algorithms.modules import auto_gather_module as ag
 from src.constants.constants import COMMAND_FACTORY
 
 
-class LayerAi:
+class EjectorAi:
     def __init__(self, handler):
         """! Initialisation of the LayerAi
 
@@ -62,9 +62,7 @@ class LayerAi:
             while self._backpack.inventory["food"] < 35:
                 self._seek_food()
             return
-        self._step_ahead()
-        if self._turn > 0 and self._turn % random.randint(4, 10) == 0:
-            self._exec_func("Fork")
+        self._push_players()
 
     def _seek_food(self) -> None:
         """! Look and take all the food it sees
@@ -73,10 +71,25 @@ class LayerAi:
         """
         obs = self._exec_func("Look")
         auto_gather = ag.AutoGatherModule()
-        plan = auto_gather.auto_gather(
-            obs=obs, aimed_materials={"food": 30}, max_time=300
-        )
+        plan = auto_gather.auto_gather(obs=obs, aimed_materials={"food": 30}, max_time=300)
         for action in plan:
+            self._exec_func(action)
+        self._step_ahead()
+
+    def _push_players(self):
+        """! Look for players and go to their tile and push them if they
+             are still here
+
+        @return None
+        """
+        obs = list(self._exec_func("Look"))
+        obs[0].remove("player")
+        auto_gather = ag.AutoGatherModule()
+        plan = auto_gather.auto_gather(obs=obs, aimed_materials={"player": 30}, max_time=300)
+        for action in plan:
+            if str(action).startswith("Take"):
+                self._exec_func("Eject")
+                continue
             self._exec_func(action)
         self._step_ahead()
 
@@ -99,16 +112,16 @@ class LayerAi:
         """
         self._backpack.tick(command)
         if command.startswith("Take"):
-            result = take(self._handler, command.split(" ")[1])
+            result = take(self._handler, command.split(' ')[1])
             if result:
-                self._backpack.add_to_inventory([command.split(" ")[1]])
+                self._backpack.add_to_inventory([command.split(' ')[1]])
             return result
         elif command.startswith("Set"):
-            result = set_down(self._handler, command.split(" ")[1])
+            result = set_down(self._handler, command.split(' ')[1])
             if result:
-                self._backpack.del_from_inventory([command.split(" ")[1]])
+                self._backpack.del_from_inventory([command.split(' ')[1]])
             return result
         elif command.startswith("Broadcast"):
-            return broadcast(self._handler, command.split(" ")[1])
+            return broadcast(self._handler, command.split(' ')[1])
         else:
             return COMMAND_FACTORY[command](self._handler)

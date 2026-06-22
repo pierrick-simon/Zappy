@@ -29,4 +29,9 @@ namespace Graphics {
             this->_locations[name] = this->GetLocation(name);
         return this->_locations[name];
     }
+
+    ::Shader Shader::asShader() const
+    {
+        return {this->id, this->locs};
+    }
 } // namespace Graphics

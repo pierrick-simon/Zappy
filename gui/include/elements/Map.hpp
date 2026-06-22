@@ -12,7 +12,6 @@
     #include "Tile.hpp"
     #include "graphics/AShadered.hpp"
     #include "graphics/IDrawable3D.hpp"
-    #include "graphics/IUpdatable.hpp"
 
 namespace Zappy {
     class Map : public Graphics::IDrawable3D, public Graphics::AShadered {
@@ -52,8 +51,8 @@ namespace Zappy {
         std::vector<Tile> _tiles;
         std::map<Info::ResourceName, std::size_t> _totalResources;
 
-        static constexpr auto TILE_WIDTH = 2;
-        static constexpr auto TILE_HEIGHT = 2;
+        static constexpr auto TILE_WIDTH = 5;
+        static constexpr auto TILE_HEIGHT = 5;
         static constexpr auto TILE_Y_POS = 0;
 
         inline static const std::string TILE_MODEL_PATH =

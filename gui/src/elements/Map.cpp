@@ -84,8 +84,7 @@ namespace Zappy {
     void Map::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
-        this->_model.materials[1].shader =
-            static_cast<Shader>(this->getShader());
+        this->_model.materials[1].shader = this->getShader().asShader();
     }
 
     void Map::draw3D() const
