@@ -1,0 +1,54 @@
+name: Bug report
+description: Report a bug
+labels:
+  - bug
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Short description of the problem
+      placeholder: The GUI crashes when clicking on this button.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact steps to trigger the bug
+      placeholder: |
+        1. Open the game
+        2. Open the menu for a player
+        3. Click the "x" button
+        4. See the crash
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen
+      placeholder: The GUI shouldn't crash
+    validations:
+      required: true
+
+  - type: dropdown
+    id: project-binary
+    attributes:
+      label: Which binary has caused you troubles ?
+      options:
+        - Server
+        - AI
+        - GUI
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (Optional)
+      description: The logs that has been produced by the binary.
+      placeholder: Some logs
