@@ -31,6 +31,8 @@ namespace Zappy {
             return _players;
         }
 
+        [[nodiscard]] std::size_t getTile(std::size_t width) const;
+
     private:
         std::size_t _x;
         std::size_t _y;

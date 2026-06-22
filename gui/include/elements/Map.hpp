@@ -16,6 +16,8 @@
 namespace Zappy {
     class Map : public Graphics::IDrawable3D, public Graphics::AShadered {
     public:
+        Map(std::size_t &width, std::size_t &height);
+
         bool updateSize(std::size_t x, std::size_t y);
         void updateTile(std::size_t x, std::size_t y,
             const std::vector<std::size_t> &resources);
@@ -39,6 +41,9 @@ namespace Zappy {
             return _totalResources;
         }
 
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getTileResources(std::size_t tile) const;
+
         void draw3D() const override;
 
     private:
@@ -46,8 +51,8 @@ namespace Zappy {
             const std::map<Info::ResourceName, std::size_t> &before,
             std::map<Info::ResourceName, std::size_t> after);
 
-        std::size_t _width = 0;
-        std::size_t _height = 0;
+        std::size_t &_width;
+        std::size_t &_height;
         std::vector<Tile> _tiles;
         std::map<Info::ResourceName, std::size_t> _totalResources;
 

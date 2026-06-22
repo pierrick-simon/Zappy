@@ -15,7 +15,8 @@ namespace Zappy {
         chatBox(_font, teams),
         eventBox(_font, teams),
         player(_font, teams),
-        team(_font, teams)
+        team(_font, teams),
+        tile(_font)
     {
     }
 

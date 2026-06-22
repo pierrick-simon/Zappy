@@ -22,6 +22,7 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace Zappy {
     Environement::Environement(int port, const std::string &ip,
         std::ofstream &logFile, bool &isConnect) :
+        _map(_width, _height),
         _players(logFile),
         _timeUnit(0),
         _connect(port, ip),
@@ -51,21 +52,16 @@ namespace Zappy {
 
     void Environement::update(float dt)
     {
-        if (_players.getNbPlayer() > 0)
-            _selectPlayer = _players.getFirstPlayerId();
-        if (_selectPlayer) {
-            try {
-                auto player = _players.getPlayer(*_selectPlayer);
-                _overlay.player.update(player.getPlayerInfo());
-            } catch (Player::PlayerException &_) {
-                _selectPlayer = std::nullopt;
-            }
-        }
         auto updateTimeUnit = dt * float(_timeUnit);
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
         _elevations.update(updateTimeUnit);
-        updateTeamInfo();
+        if (_selectPlayer)
+            updatePlayerInfo();
+        else if (_selectTile)
+            updateTileInfo();
+        else
+            updateTeamInfo();
     }
 
     void Environement::setShader(Graphics::Shader &shader)
@@ -87,6 +83,8 @@ namespace Zappy {
         _elevations.draw2D();
         if (_selectPlayer)
             _overlay.player.draw2D();
+        else if (_selectTile)
+            _overlay.tile.draw2D();
         else
             _overlay.team.draw2D();
     }
@@ -156,6 +154,43 @@ namespace Zappy {
                 Shared::Utils::logMsg(
                     _logFile, "Event " + event + " not handle yet.");
             }
+        }
+    }
+
+    void Environement::updatePlayerInfo()
+    {
+        if (_selectPlayer) {
+            try {
+                auto player = _players.getPlayer(*_selectPlayer);
+                _overlay.player.update(player.getPlayerInfo());
+            } catch (Player::PlayerException &_) {
+                _selectPlayer = std::nullopt;
+            }
+        }
+    }
+
+    void Environement::updateTileInfo()
+    {
+        if (_selectTile) {
+            if (*_selectTile >= _width * _height) {
+                _selectTile = std::nullopt;
+                return;
+            }
+            auto nbPlayer = _players.getNbTilePlayers(*_selectTile, _width);
+            std::size_t nbEgg = 0;
+            for (const auto &[_, egg] : _eggs) {
+                if (egg.getTile(_width) == *_selectTile)
+                    nbEgg++;
+            }
+            auto nbElevation =
+                _elevations.getNbTileElevations(*_selectPlayer, _width);
+            auto resources = _map.getTileResources(*_selectTile);
+            _overlay.tile.update({*_selectTile % _width,
+                *_selectTile / _width,
+                nbPlayer,
+                nbEgg,
+                nbElevation,
+                resources});
         }
     }
 

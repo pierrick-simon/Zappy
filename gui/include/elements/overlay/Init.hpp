@@ -15,6 +15,7 @@ namespace Zappy {
     class Init {
     public:
         static constexpr std::string_view FONT_PATH = "public/Font.ttf";
+        static constexpr std::string_view IMG_NEXT = "public/next.png";
 
         static constexpr Color GOLD_RICH = {212, 160, 23, 255};
         static constexpr Color DARK_PINEWOOD = {28, 52, 32, 255};
@@ -45,9 +46,16 @@ namespace Zappy {
         static constexpr float INFO_SMALL_GAP = 5;
         static constexpr float INFO_ICON = 40;
         static constexpr raylib::Vector2 INFO_ICON_POS = {18, 18};
-        static constexpr float INFO_SIZE_X = 200;
+        static constexpr float INFO_SIZE_X = 250;
         static constexpr float INFO_POS_Y = 100;
         static constexpr std::size_t INFO_MAX = 999999;
+        static constexpr std::size_t INFO_PREFIX_SIZE = 15;
+
+        static constexpr float INFO_BUTTON_SIZE = 25;
+        static constexpr float INFO_BUTTON_ROTATION = 180;
+        static constexpr float INFO_IMG_SIZE = 166;
+        static constexpr float INFO_BUTTON_SCALE =
+            INFO_BUTTON_SIZE / INFO_IMG_SIZE;
     };
 } // namespace Zappy
 

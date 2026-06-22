@@ -81,4 +81,15 @@ namespace Zappy {
         }
         return levels;
     }
+
+    std::size_t Players::getNbTilePlayers(
+        std::size_t tile, std::size_t width) const
+    {
+        std::size_t nb = 0;
+        for (const auto &[_, player] : _players) {
+            if (!player.isDead() && player.getTile(width) == tile)
+                nb++;
+        }
+        return nb;
+    }
 } // namespace Zappy

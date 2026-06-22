@@ -62,14 +62,6 @@ namespace Zappy {
         std::optional<std::string> _selectTeam;
 
         std::map<std::string, Color> &_teams;
-
-        static constexpr float SIZE_X = 250;
-
-        static constexpr float BUTTON_SIZE = 25;
-        static constexpr float BUTTON_ROTATION = 180;
-        static constexpr float IMG_SIZE = 166;
-        static constexpr float BUTTON_SCALE = BUTTON_SIZE / IMG_SIZE;
-        static constexpr std::string_view IMG_PATH = "public/next.png";
     };
 } // namespace Zappy
 

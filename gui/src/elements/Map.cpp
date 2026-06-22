@@ -12,6 +12,11 @@
 #include "UtilsVector.hpp"
 
 namespace Zappy {
+    Map::Map(std::size_t &width, std::size_t &height) :
+        _width(width), _height(height)
+    {
+    }
+
     bool Map::updateSize(std::size_t x, std::size_t y)
     {
         bool value = true;
@@ -93,5 +98,11 @@ namespace Zappy {
             auto [axis, angle] = tile.getRotation().ToAxisAngle();
             this->_model.Draw(tile.getPosition(), axis, angle, tile.getScale());
         }
+    }
+
+    std::map<Info::ResourceName, std::size_t> Map::getTileResources(
+        std::size_t tile) const
+    {
+        return _tiles[tile].getResources();
     }
 } // namespace Zappy

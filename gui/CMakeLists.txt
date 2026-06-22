@@ -50,6 +50,7 @@ set(SRCS
         src/elements/overlay/Elevation2D.cpp
         src/elements/overlay/Player2D.cpp
         src/elements/overlay/Team.cpp
+        src/elements/overlay/Tile2D.cpp
 )
 
 set(HEADERS

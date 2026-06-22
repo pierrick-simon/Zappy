@@ -90,8 +90,12 @@ namespace Zappy {
         void playersEndIncantate(
             std::vector<std::size_t> &players, bool success);
 
+        void updatePlayerInfo();
+        void updateTileInfo();
         void updateTeamInfo();
 
+        std::size_t _width = 0;
+        std::size_t _height = 0;
         Map _map;
         Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
@@ -106,6 +110,7 @@ namespace Zappy {
         std::queue<std::string> _events;
 
         std::optional<std::size_t> _selectPlayer;
+        std::optional<std::size_t> _selectTile;
 
         Graphics::ColorGenerator _colorGenerator;
         Overlay _overlay;

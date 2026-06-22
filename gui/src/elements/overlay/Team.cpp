@@ -12,7 +12,7 @@ namespace Zappy {
     Team::Team(Font &font, std::map<std::string, Color> &teams) :
         _teams(teams)
     {
-        auto x = float(GetScreenWidth()) - Init::GAP - SIZE_X;
+        auto x = float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X;
         raylib::Vector2 pos(x, Init::INFO_POS_Y);
         initText(font, pos);
         initSprite(pos);
@@ -28,44 +28,54 @@ namespace Zappy {
         pos.y += Init::GAP;
         _title.setFont(font);
         _title.setFontSize(Init::INFO_TITLE_SIZE);
-        _title.setPosition({pos.x + SIZE_X / 2.f, pos.y});
+        _title.setPosition({pos.x + Init::INFO_SIZE_X / 2.f, pos.y});
         pos.x += Init::GAP;
         pos.y += Init::INFO_SMALL_GAP + Init::INFO_TITLE_SIZE;
+        _text[NbPlayer].prefix = "Nb Player:";
+        _text[NbEgg].prefix = "Nb Egg:";
+        _text[Level].prefix = "Members' Level:";
         for (auto &text : _text) {
+            while (text.prefix.size() <= Init::INFO_PREFIX_SIZE)
+                text.prefix += " ";
             text.text.setFont(font);
             text.text.setFontSize(Init::INFO_TEXT_SIZE);
             text.text.setPosition(pos);
             pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
         }
-        _text[NbPlayer].prefix = "Nb Player:        ";
-        _text[NbEgg].prefix = "Nb Egg:        ";
-        _text[Level].prefix = "Members' Level:";
         pos.x += Init::GAP * 2.0;
         for (std::size_t i = 0; i < NB_LEVEL; i++) {
             _levels[i].text.setFont(font);
             _levels[i].text.setFontSize(Init::INFO_TEXT_SIZE);
             _levels[i].text.setPosition(pos);
-            _levels[i].prefix = "Level " + std::to_string(i + 1) + ":        ";
+            _levels[i].prefix = "Level " + std::to_string(i + 1) + ":";
+            while (_levels[i].prefix.size() <= Init::INFO_PREFIX_SIZE)
+                _levels[i].prefix += " ";
             pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
         }
-        _box.setSize({SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
+        _box.setSize({Init::INFO_SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
     }
 
     void Team::initSprite(raylib::Vector2 pos)
     {
         pos.y += Init::GAP + Init::INFO_TITLE_SIZE / 2.f;
-        _prevButton.Load(IMG_PATH.data());
-        _prevButton.setScale({BUTTON_SCALE, BUTTON_SCALE});
-        _prevButton.setOrigin({BUTTON_SIZE / 2.f, BUTTON_SIZE / 2.f});
-        _prevButton.setRotation(BUTTON_ROTATION);
+        _prevButton.Load(Init::IMG_NEXT.data());
+        _prevButton.setScale(
+            {Init::INFO_BUTTON_SCALE, Init::INFO_BUTTON_SCALE});
+        _prevButton.setOrigin(
+            {Init::INFO_BUTTON_SIZE / 2.f, Init::INFO_BUTTON_SIZE / 2.f});
+        _prevButton.setRotation(Init::INFO_BUTTON_ROTATION);
         _prevButton.setColor(Init::GOLD_RICH);
-        _prevButton.setPosition({pos.x + Init::GAP + BUTTON_SIZE / 2.f, pos.y});
-        _nextButton.Load(IMG_PATH.data());
-        _nextButton.setScale({BUTTON_SCALE, BUTTON_SCALE});
-        _nextButton.setOrigin({BUTTON_SIZE / 2.f, BUTTON_SIZE / 2.f});
+        _prevButton.setPosition(
+            {pos.x + Init::GAP + Init::INFO_BUTTON_SIZE / 2.f, pos.y});
+        _nextButton.Load(Init::IMG_NEXT.data());
+        _nextButton.setScale(
+            {Init::INFO_BUTTON_SCALE, Init::INFO_BUTTON_SCALE});
+        _nextButton.setOrigin(
+            {Init::INFO_BUTTON_SIZE / 2.f, Init::INFO_BUTTON_SIZE / 2.f});
         _nextButton.setColor(Init::GOLD_RICH);
-        _nextButton.setPosition(
-            {pos.x + SIZE_X - Init::GAP - BUTTON_SIZE / 2.f, pos.y});
+        _nextButton.setPosition({pos.x + Init::INFO_SIZE_X - Init::GAP -
+                Init::INFO_BUTTON_SIZE / 2.f,
+            pos.y});
     }
 
     void Team::update(const TeamInfo &info)
@@ -83,8 +93,8 @@ namespace Zappy {
         std::string name(team);
         bool first = true;
         auto size_x = _title.getSize().x;
-        auto maxSize_x =
-            SIZE_X - (Init::GAP + Init::INFO_SMALL_GAP + BUTTON_SIZE) * 2.f;
+        auto maxSize_x = Init::INFO_SIZE_X -
+            (Init::GAP + Init::INFO_SMALL_GAP + Init::INFO_BUTTON_SIZE) * 2.f;
         while (size_x > maxSize_x) {
             name.pop_back();
             _title.setStr(name + "...");

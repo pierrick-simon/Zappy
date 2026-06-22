@@ -29,6 +29,9 @@ namespace Zappy {
         void update(float dt) override;
         void draw2D() const override;
 
+        [[nodiscard]] std::size_t getNbTileElevations(
+            std::size_t tile, std::size_t width) const;
+
     private:
         struct Parts {
             Elevation info;
