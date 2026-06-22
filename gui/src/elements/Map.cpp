@@ -20,6 +20,9 @@ namespace Zappy {
         else {
             _width = x;
             _height = y;
+            _renderedMapSize =
+                raylib::Vector2 {static_cast<float>(this->_width),
+                    static_cast<float>(this->_height)};
             _tiles.clear();
             _tiles.resize(_width * _height);
             this->setTilesPosition();
@@ -67,20 +70,23 @@ namespace Zappy {
 
     void Map::setTilesPosition()
     {
-        float totalMapHeight =
-            static_cast<float>(this->_height * TILE_HEIGHT) / 2.0f;
-        float totalMapWidth =
-            static_cast<float>(this->_width * TILE_WIDTH) / 2.0f;
-
         for (size_t i = 0; i < this->_tiles.size(); ++i) {
             size_t x = i / this->_width;
             size_t y = i % this->_width;
             this->_tiles[i].setPosition(
-                {static_cast<float>(x * TILE_WIDTH) - totalMapWidth,
+                {x * TILE_SIZE.x - this->_renderedMapSize.x / 2.0f,
                     TILE_Y_POS,
-                    static_cast<float>(y * TILE_HEIGHT) - totalMapHeight});
+                    y * TILE_SIZE.y - this->_renderedMapSize.y / 2.0f});
         }
     }
+
+    raylib::Vector2 Map::getTilePosition(size_t x, size_t y) const
+    {
+        return raylib::Vector2 {static_cast<float>(x), static_cast<float>(y)} *
+            TILE_SIZE -
+            this->_renderedMapSize / 2.0f;
+    }
+
     void Map::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);

@@ -8,14 +8,15 @@
 #ifndef PLAYER_HPP
     #define PLAYER_HPP
 
-    #include <fstream>
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"
     #include "NewPlayerEvent.hpp"
+    #include "graphics/IDrawable3D.hpp"
+    #include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
-    class Player {
+    class Player : public Graphics::Transformable3D {
     public:
         Player(const Shared::NewPlayerEvent::NewPlayer &player,
             std::ofstream &logFile);

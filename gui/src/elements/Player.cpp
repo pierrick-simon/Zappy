@@ -14,8 +14,8 @@ namespace Zappy {
         _id(player.id),
         _x(player.x),
         _y(player.y),
-        _dir(Info::getDirection(player.dir)),
         _level(player.level),
+        _dir(Info::getDirection(player.dir)),
         _team(player.team),
         _logFile(logFile)
     {

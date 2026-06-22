@@ -8,12 +8,16 @@
 #ifndef PLAYERS_HPP_
     #define PLAYERS_HPP_
 
+    #include <Model.hpp>
+
+    #include "Assets.hpp"
     #include "Info.hpp"
     #include "NewPlayerEvent.hpp"
     #include "Player.hpp"
+    #include "graphics/IDrawable3D.hpp"
 
 namespace Zappy {
-    class Players {
+    class Players : public Graphics::IDrawable3D {
     public:
         Players(std::ofstream &logFile);
 
@@ -30,12 +34,17 @@ namespace Zappy {
             const std::map<Info::ResourceName, std::size_t> &before,
             std::map<Info::ResourceName, std::size_t> after);
 
+        void draw3D() const override;
+
     private:
         std::unordered_map<std::size_t, Player> _players;
         std::map<Info::ResourceName, std::size_t> _totalResources =
             Info::INIT_RESOUCES;
 
         std::ofstream &_logFile;
+        inline static const std::string PLAYER_MODEL_PATH =
+            Assets::getResource("players/player.glb");
+        ::Model _model = LoadModel(PLAYER_MODEL_PATH.c_str());
     };
 } // namespace Zappy
 

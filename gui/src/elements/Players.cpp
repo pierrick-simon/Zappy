@@ -7,6 +7,7 @@
 
 #include "Players.hpp"
 #include <iostream>
+#include <ranges>
 
 namespace Zappy {
     Players::Players(std::ofstream &logFile) :
@@ -45,6 +46,21 @@ namespace Zappy {
                 findTotal->second += nb;
             else
                 _totalResources.emplace(resource, nb);
+        }
+    }
+    void Players::draw3D() const
+    {
+        DrawModel(this->_model, {0, 0, 0}, 1, {255, 255, 255, 255});
+        for (const auto &player : this->_players | std::ranges::views::values) {
+            auto [axis, angle] = player.getRotation().ToAxisAngle();
+            DrawModelEx(this->_model,
+                player.getPosition(),
+                axis,
+                angle,
+                player.getScale(),
+                {255, 255, 255, 255});
+            // this->_model.Draw(player.getPosition(), axis, angle,
+            // player.getScale());
         }
     }
 
