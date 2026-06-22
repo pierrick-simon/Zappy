@@ -13,8 +13,7 @@
 
 namespace Graphics {
     Window::Window() :
-        raylib::Window(
-            WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
+        raylib::Window(WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_ALL)
     {
         ToggleFullscreen();
         this->SetTargetFPS(TARGET_FPS);

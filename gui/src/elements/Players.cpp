@@ -19,7 +19,7 @@ namespace Zappy {
     {
         bool value = false;
         if (!_players.contains(player.id)) {
-            _players.try_emplace(player.id, player, _logFile);
+            _players.try_emplace(player.id, player, _logFile, this->_model);
             value = true;
         }
         return value;
@@ -50,18 +50,8 @@ namespace Zappy {
     }
     void Players::draw3D() const
     {
-        DrawModel(this->_model, {0, 0, 0}, 1, {255, 255, 255, 255});
-        for (const auto &player : this->_players | std::ranges::views::values) {
-            auto [axis, angle] = player.getRotation().ToAxisAngle();
-            DrawModelEx(this->_model,
-                player.getPosition(),
-                axis,
-                angle,
-                player.getScale(),
-                {255, 255, 255, 255});
-            // this->_model.Draw(player.getPosition(), axis, angle,
-            // player.getScale());
-        }
+        for (const auto &player : this->_players | std::ranges::views::values)
+            player.draw3D();
     }
 
     Player &Players::getPlayer(std::size_t id)

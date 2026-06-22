@@ -8,6 +8,7 @@
 #ifndef PLAYER_HPP
     #define PLAYER_HPP
 
+    #include <Model.hpp>
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"
@@ -16,10 +17,11 @@
     #include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
-    class Player : public Graphics::Transformable3D {
+    class Player : public Graphics::Transformable3D,
+                   public Graphics::IDrawable3D {
     public:
         Player(const Shared::NewPlayerEvent::NewPlayer &player,
-            std::ofstream &logFile);
+            std::ofstream &logFile, raylib::Model &model);
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
 
@@ -70,6 +72,8 @@ namespace Zappy {
                     "Event on dead Player[" + std::to_string(id) + "].") {};
         };
 
+        void draw3D() const override;
+
     private:
         std::size_t _id;
         std::size_t _x;
@@ -84,6 +88,7 @@ namespace Zappy {
         bool _dead = false;
 
         std::ofstream &_logFile;
+        raylib::Model &_model;
     };
 } // namespace Zappy
 

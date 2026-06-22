@@ -44,7 +44,7 @@ namespace Zappy {
         std::ofstream &_logFile;
         inline static const std::string PLAYER_MODEL_PATH =
             Assets::getResource("players/player.glb");
-        ::Model _model = LoadModel(PLAYER_MODEL_PATH.c_str());
+        raylib::Model _model {LoadModel(PLAYER_MODEL_PATH.c_str())};
     };
 } // namespace Zappy
 

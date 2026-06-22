@@ -10,14 +10,15 @@
 
 namespace Zappy {
     Player::Player(const Shared::NewPlayerEvent::NewPlayer &player,
-        std::ofstream &logFile) :
+        std::ofstream &logFile, raylib::Model &model) :
         _id(player.id),
         _x(player.x),
         _y(player.y),
         _level(player.level),
         _dir(Info::getDirection(player.dir)),
         _team(player.team),
-        _logFile(logFile)
+        _logFile(logFile),
+        _model(model)
     {
         Shared::Utils::logMsg(_logFile,
             "Player [" + std::to_string(_id) + "] joined the " + _team +
@@ -72,6 +73,12 @@ namespace Zappy {
     std::size_t Player::getTile(std::size_t width) const
     {
         return _y * width + _x;
+    }
+
+    void Player::draw3D() const
+    {
+        auto [axis, angle] = this->getRotation().ToAxisAngle();
+        this->_model.Draw(this->_position, axis, angle, this->_scale);
     }
 
     void Player::died()
