@@ -35,9 +35,11 @@ namespace Zappy {
         _teams(teams)
     {
         if (seed.has_value())
-            std::srand(seed.value());
+            _seed = seed.value();
         else
-            std::srand(std::time(nullptr));
+            _seed = std::time(nullptr);
+        std::srand(_seed);
+            
         for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
         refillRessources(false);

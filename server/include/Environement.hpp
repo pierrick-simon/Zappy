@@ -98,6 +98,10 @@ namespace Zappy {
         {
             return _end;
         }
+        [[nodiscard]] std::size_t getSeed() const
+        {
+            return _seed;
+        }
         [[nodiscard]] std::size_t getConnectNbr(std::size_t) const;
         [[nodiscard]] std::vector<std::string> getTeamsName() const;
         [[nodiscard]] PlayerInfo getPlayerInfo(std::size_t id) const;
@@ -181,6 +185,7 @@ namespace Zappy {
         std::ofstream &_logFile;
         Clients &_clients;
         std::unordered_map<std::string, std::size_t> &_teams;
+        unsigned int _seed = 0;
 
         static constexpr std::chrono::milliseconds SLEEP =
             std::chrono::seconds(20);

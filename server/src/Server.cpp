@@ -48,7 +48,7 @@ namespace Zappy {
         if (!args.empty())
             throw Parser::Help();
 
-        Shared::Utils::logMsg(_logFile, "Server Open.");
+        Shared::Utils::logMsg(_logFile, "Server Open with seed \"" + std::to_string(_env.getSeed()) + "\".");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
         _clock = std::chrono::steady_clock::now();
     }
