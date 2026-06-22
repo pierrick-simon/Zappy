@@ -11,7 +11,6 @@
     #include <chrono>
     #include <concepts>
     #include <map>
-    #include <optional>
     #include <ranges>
     #include <string>
     #include <unordered_map>
@@ -53,8 +52,7 @@ namespace Zappy {
     public:
         Environement(std::size_t width, std::size_t height,
             std::ofstream &logFile, Clients &clients,
-            std::unordered_map<std::string, std::size_t> &teams,
-            std::optional<unsigned int> seed);
+            std::unordered_map<std::string, std::size_t> &teams);
 
         Environement(Environement &) = delete;
 
@@ -97,10 +95,6 @@ namespace Zappy {
         [[nodiscard]] bool getEnd() const
         {
             return _end;
-        }
-        [[nodiscard]] std::size_t getSeed() const
-        {
-            return _seed;
         }
         [[nodiscard]] std::size_t getConnectNbr(std::size_t) const;
         [[nodiscard]] std::vector<std::string> getTeamsName() const;
@@ -185,7 +179,6 @@ namespace Zappy {
         std::ofstream &_logFile;
         Clients &_clients;
         std::unordered_map<std::string, std::size_t> &_teams;
-        unsigned int _seed = 0;
 
         static constexpr std::chrono::milliseconds SLEEP =
             std::chrono::seconds(20);

@@ -24,7 +24,7 @@ namespace Zappy {
         _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
             Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile,
-            _clients, _teams, parseSeed(args))
+            _clients, _teams)
     {
         auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c", 10);
         if (_teamsNames.empty())
@@ -42,6 +42,13 @@ namespace Zappy {
         }
         _teamsNames.clear();
 
+        try {
+            _seed = Parser::ArgsParser::getArgSize(args, "-s");
+        } catch (Parser::Help &) {
+            _seed = std::time(nullptr);
+        }
+        std::srand(_seed);
+
         if (Parser::ArgsParser::isArg(args, "-m"))
             _master.emplace(_port, _clients, _teams);
 
@@ -49,8 +56,7 @@ namespace Zappy {
             throw Parser::Help();
 
         Shared::Utils::logMsg(_logFile,
-            "Server Open with seed \"" + std::to_string(_env.getSeed()) +
-                "\".");
+            "Server Open with seed \"" + std::to_string(_seed) + "\".");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
         _clock = std::chrono::steady_clock::now();
     }
@@ -58,16 +64,6 @@ namespace Zappy {
     Server::~Server()
     {
         Shared::Utils::logMsg(_logFile, "Server Close.");
-    }
-
-    std::optional<unsigned int> Server::parseSeed(
-        std::vector<std::string> &args)
-    {
-        try {
-            return Parser::ArgsParser::getArgSize(args, "-s");
-        } catch (Parser::Help &) {
-            return {};
-        }
     }
 
     void Server::run()

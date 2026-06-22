@@ -25,8 +25,7 @@ namespace ServerCmd = Shared::AICommunication::Server;
 namespace Zappy {
     Environement::Environement(std::size_t width, std::size_t height,
         std::ofstream &logFile, Clients &clients,
-        std::unordered_map<std::string, std::size_t> &teams,
-        std::optional<unsigned int> seed) :
+        std::unordered_map<std::string, std::size_t> &teams) :
         _width(width),
         _height(height),
         _sleep(SLEEP),
@@ -35,12 +34,6 @@ namespace Zappy {
         _clients(clients),
         _teams(teams)
     {
-        if (seed.has_value())
-            _seed = seed.value();
-        else
-            _seed = std::time(nullptr);
-        std::srand(_seed);
-
         for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
         refillRessources(false);
