@@ -37,6 +37,7 @@ namespace Zappy {
         std::srand(std::time(nullptr));
         for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
+        refillRessources(false);
     }
 
     std::chrono::milliseconds Environement::update(
@@ -44,13 +45,15 @@ namespace Zappy {
     {
         _sleep -= elapsed;
         if (_sleep.count() <= 0) {
+            refillRessources();
             _sleep = SLEEP;
         }
         auto min = _sleep;
         for (auto iter = _elevates.begin(); iter != _elevates.end();) {
             iter->sleep -= elapsed;
             if (iter->sleep.count() <= 0) {
-                endElevation(iter->x, iter->y, iter->level, iter->players);
+                endElevation(
+                    iter->x, iter->y, iter->level, iter->players, iter->id);
                 iter = _elevates.erase(iter);
                 continue;
             } else {
@@ -60,6 +63,36 @@ namespace Zappy {
             }
         }
         return min;
+    }
+
+    bool Environement::refillRessource(
+        Info::ResourceName type, std::size_t count)
+    {
+        auto nbResource =
+            static_cast<std::size_t>(Info::resources.at(type).density *
+                static_cast<float>(_width) * static_cast<float>(_height));
+        if (nbResource == 0)
+            nbResource = 1;
+
+        if (count >= nbResource)
+            return false;
+        for (std::size_t i = 0; i < nbResource - count; ++i)
+            setResource(rand() % (_width * _height), type, 1);
+        return true;
+    }
+
+    void Environement::refillRessources(const bool &log)
+    {
+        Info::Tile totalTile(Info::INIT_RESOUCES);
+        bool asChanged = false;
+
+        for (std::size_t i = 0; i < _width * _height; ++i)
+            for (const auto &[name, nb] : _tiles[i])
+                totalTile[name] += nb;
+        for (const auto &[name, nb] : totalTile)
+            asChanged |= refillRessource(name, nb);
+        if (log && asChanged)
+            Shared::Utils::logMsg(_logFile, "Map was given new ressources.");
     }
 
     std::string Environement::formatTile(
@@ -72,8 +105,10 @@ namespace Zappy {
             formatedTile += "player ";
         for (auto e : info.eggs)
             formatedTile += "egg ";
-        for (auto r : info.resources)
-            formatedTile += Info::resources.at(r.first).str + " ";
+        for (auto r : info.resources) {
+            for (std::size_t i = 0; i < r.second; ++i)
+                formatedTile += Info::resources.at(r.first).str + " ";
+        }
         if (!info.players.empty() || !info.eggs.empty() ||
             !info.resources.empty())
             formatedTile += "\b";
@@ -279,11 +314,7 @@ namespace Zappy {
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto tile = _width * find->second.y + find->second.x;
-        auto resource = _tiles[tile].find(name);
-        if (resource != _tiles[tile].end())
-            resource->second++;
-        else
-            _tiles[tile].emplace(name, 1);
+        _tiles[tile][name] += 1;
         sendToGUI<Shared::SetResourceEvent>(id, Info::resources.at(name).nb);
         sendToGUI<Shared::TileInfoEvent>(
             find->second.x, find->second.y, getTileValue(tile));
@@ -293,10 +324,7 @@ namespace Zappy {
         std::size_t tile, Info::ResourceName name, std::size_t nb)
     {
         auto resource = _tiles[tile].find(name);
-        if (resource != _tiles[tile].end())
-            resource->second += nb;
-        else
-            _tiles[tile].emplace(name, nb);
+        _tiles[tile][name] += nb;
         sendToGUI<Shared::TileInfoEvent>(
             tile % _width, tile / _width, getTileValue(tile));
     }
@@ -378,7 +406,8 @@ namespace Zappy {
             checkEnd();
     }
 
-    void Environement::failElevation(const std::vector<size_t> &players)
+    void Environement::failElevation(
+        const std::vector<size_t> &players, std::size_t id)
     {
         for (auto id : players) {
             auto find = _players.find(id);
@@ -388,6 +417,11 @@ namespace Zappy {
                     "Client[" + std::to_string(id) +
                         "]: the elevation ritual fail.");
             }
+        }
+        try {
+            Shared::Connect::send(
+                getPlayerFd(id), ServerCmd::KO.getStr() + "\n");
+        } catch (PlayerNotFoundException &_) {
         }
     }
 
@@ -410,7 +444,8 @@ namespace Zappy {
                 find->second.x,
                 find->second.y,
                 find->second.level,
-                list});
+                list,
+                id});
             sendToGUI<Shared::StartIncantationEvent>(
                 find->second.x, find->second.y, find->second.level, list);
         }
@@ -418,12 +453,12 @@ namespace Zappy {
     }
 
     void Environement::endElevation(std::size_t x, std::size_t y,
-        std::size_t level, std::vector<std::size_t> start)
+        std::size_t level, std::vector<std::size_t> start, std::size_t id)
     {
         bool result = false;
         auto end = checkElevation(x, y, level, true);
         if (end.empty())
-            failElevation(start);
+            failElevation(start, id);
         else {
             start.erase(std::remove_if(start.begin(),
                             start.end(),
@@ -437,7 +472,7 @@ namespace Zappy {
                 successElevation(x, y, elevation, start, level);
                 result = true;
             } else
-                failElevation(start);
+                failElevation(start, id);
         }
         sendToGUI<Shared::EndIncantationEvent>(x, y, result);
     }
@@ -454,6 +489,10 @@ namespace Zappy {
             "Client[" + std::to_string(iter->first) + "] been push to the " +
                 Info::directions.at(dir).str + ".");
         sendToGUI<Shared::PlayerExpulsionEvent>(iter->first);
+        sendToGUI<Shared::PlayerPositionEvent>(iter->first,
+            iter->second.x,
+            iter->second.y,
+            Info::directions.at(iter->second.dir).nb);
     }
 
     Environement::EggIter Environement::handleDestroyEgg(EggIter iter)
@@ -622,6 +661,18 @@ namespace Zappy {
         std::vector<std::size_t> value(_tiles[tile].size());
         std::ranges::copy(std::views::values(_tiles[tile]), value.begin());
         return value;
+    }
+
+    void Environement::playerEat(std::size_t id,
+        const std::map<Info::ResourceName, std::size_t> &inventory)
+    {
+        auto find = _players.find(id);
+        if (find == _players.end())
+            throw PlayerNotFoundException(id);
+        std::vector<std::size_t> resources(inventory.size());
+        std::ranges::copy(std::views::values(inventory), resources.begin());
+        sendToGUI<Shared::PlayerInventoryEvent>(
+            id, find->second.x, find->second.y, resources);
     }
 
     const std::unordered_map<std::size_t,

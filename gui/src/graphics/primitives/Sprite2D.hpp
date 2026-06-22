@@ -13,10 +13,16 @@
 
 namespace Graphics {
 
-    class Sprite2D : public raylib::Texture, public UIObject {
+    class Sprite2D : public raylib::Texture, public UiObject {
     public:
         using Texture::Texture;
-        void draw() const override;
+        void draw2D() const override;
+        Color &getColor();
+        [[nodiscard]] const Color &getColor() const;
+        void setColor(Color color);
+
+    private:
+        Color _color = WHITE;
     };
 } // namespace Graphics
 

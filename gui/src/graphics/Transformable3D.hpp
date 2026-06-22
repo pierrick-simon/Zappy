@@ -17,6 +17,11 @@ namespace Graphics {
         virtual raylib::Vector3 &getPosition();
         virtual raylib::Quaternion &getRotation();
         virtual raylib::Vector3 &getScale();
+
+        virtual void setPosition(raylib::Vector3 position);
+        virtual void setRotation(raylib::Quaternion rotation);
+        virtual void setScale(raylib::Vector3 scale);
+
         [[nodiscard]] virtual const raylib::Vector3 &getPosition() const;
         [[nodiscard]] virtual const raylib::Quaternion &getRotation() const;
         [[nodiscard]] virtual const raylib::Vector3 &getScale() const;

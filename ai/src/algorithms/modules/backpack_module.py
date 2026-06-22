@@ -26,7 +26,6 @@ from src.constants.resources import COMMAND_TIME, FOOD_DECAY_TIME_UNITS
 from src.constants.constants import COMMAND_FACTORY
 
 
-
 class BackpackModule:
     def __init__(self, handler: ConnectionHandler) -> None:
         """! Initialisation of the backpack module.

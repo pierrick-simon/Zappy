@@ -13,15 +13,15 @@
 
 namespace Graphics {
 
-    class Rectangle2D : public raylib::Rectangle, public UIObject {
+    class Rectangle2D : public raylib::Rectangle, public UiObject {
     public:
         using Rectangle::Rectangle;
-        void draw() const override;
+        void draw2D() const override;
         Color &getColor();
         [[nodiscard]] const Color &getColor() const;
 
     private:
-        Color _color;
+        Color _color = BLACK;
     };
 
 } // namespace Graphics

@@ -19,10 +19,14 @@ set(SRCS
         src/graphics/Transformable2D.cpp
         src/graphics/Scene.cpp
         src/graphics/Camera.cpp
+        src/graphics/Shader.cpp
+        src/graphics/AShadered.cpp
+        src/graphics/ColorGenerator.cpp
         src/graphics/primitives/Model.cpp
         src/graphics/primitives/Text2D.cpp
         src/graphics/primitives/Rectangle2D.cpp
         src/graphics/primitives/Sprite2D.cpp
+        src/graphics/primitives/Box2D.cpp
         src/Window.cpp
         src/GUI.cpp
         src/Assets.cpp
@@ -32,11 +36,21 @@ set(SRCS
         src/elements/Tile.cpp
         src/elements/Map.cpp
         src/elements/Elevation.cpp
+        src/elements/Elevations.cpp
         src/elements/Environement.cpp
         src/elements/Events.cpp
+        src/elements/Players.cpp
+        src/elements/overlay/Resources.cpp
+        src/elements/overlay/ResourceInfo.cpp
+        src/elements/overlay/Overlay.cpp
+        src/elements/overlay/TextBox.cpp
+        src/elements/overlay/ChatBox.cpp
+        src/elements/overlay/EventBox.cpp
+        src/elements/overlay/Elevation2D.cpp
 )
 
 set(HEADERS
+        include/elements/overlay/
         include/elements/
         include/
         src/

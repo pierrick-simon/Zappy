@@ -14,7 +14,14 @@
     #include "GameObject.hpp"
     #include "UtilsVector.hpp"
     #include "graphics/Camera.hpp"
-#include "graphics/UiObject.hpp"
+#include "graphics/IShadered.hpp"
+    #include "graphics/Shader.hpp"
+    #include "graphics/UiObject.hpp"
+#include "graphics/primitives/Model.hpp"
+
+namespace Zappy {
+    class Environement;
+}
 
 namespace Graphics {
     class Scene {
@@ -26,30 +33,39 @@ namespace Graphics {
         void update(float dt);
         void drawUiObjects() const;
 
-        template<std::derived_from<GameObject> GameObjectType>
-        std::unique_ptr<GameObjectType> &addObject(
-            std::unique_ptr<GameObjectType> gameObject)
+        template<std::derived_from<IObject> GameObjectType>
+        void addObject(GameObjectType &gameObject)
         {
-            return reinterpret_cast<std::unique_ptr<GameObjectType> &>(
-                this->_gameObjects.emplace_back(std::move(gameObject)));
-        }
-
-        template<std::derived_from<UIObject> UiObjectType>
-        std::unique_ptr<UiObjectType> &addObject(
-            std::unique_ptr<UiObjectType> gameObject)
-        {
-            return reinterpret_cast<std::unique_ptr<UiObjectType> &>(
-                this->_uiObjects.emplace_back(std::move(gameObject)));
+            try {
+                auto &model = dynamic_cast<Model &>(gameObject);
+                this->setShaderForModel(model);
+            } catch (std::bad_cast &) {
+            }
+            try {
+                auto &shadered = dynamic_cast<IShadered &>(gameObject);
+                shadered.setShader(this->_shader);
+            } catch (std::bad_cast &) {
+            }
+            this->_objects.emplace_back(gameObject);
         }
 
         void drawGameObjects() const;
+        void setShaderForModels() const;
+        void setShaderForModel(const Model &model) const;
+        Shader &getShader();
 
     private:
         static constexpr raylib::Vector3 CAMERA_POS = {200, 200, 0};
         static constexpr raylib::Vector3 CAMERA_TARGET = Vector3::ZERO;
-        std::vector<std::unique_ptr<GameObject>> _gameObjects {};
-        std::vector<std::unique_ptr<UIObject>> _uiObjects {};
+        static const std::string FRAGMENT_SHADER_PATH;
+        static const std::string VERTEX_SHADER_PATH;
+
+        [[deprecated]] std::vector<std::unique_ptr<GameObject>> _gameObjects {};
+        [[deprecated]] std::vector<std::unique_ptr<UiObject>> _uiObjects {};
+        std::vector<std::reference_wrapper<IObject>> _objects;
         Camera _camera {CAMERA_POS};
+
+        Shader _shader;
     };
 } // namespace Graphics
 

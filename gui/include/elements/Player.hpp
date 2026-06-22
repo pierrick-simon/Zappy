@@ -17,17 +17,20 @@
 namespace Zappy {
     class Player {
     public:
-        Player(
-            Shared::NewPlayerEvent::NewPlayer player, std::ofstream &logFile);
-        ~Player();
+        Player(const Shared::NewPlayerEvent::NewPlayer &player,
+            std::ofstream &logFile);
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
 
+        void addLevel();
         void setLevel(std::size_t level);
         void setInventory(const std::vector<std::size_t> &inventory);
         void setIncantate(bool incantate);
         void setFork(bool fork);
+        void setEject(bool eject);
         void died();
+        void takeResource(Info::ResourceName resource);
+        void setResource(Info::ResourceName resource);
 
         [[nodiscard]] std::size_t getTile(std::size_t width) const;
 
@@ -38,6 +41,12 @@ namespace Zappy {
         [[nodiscard]] std::string getTeam() const
         {
             return _team;
+        }
+
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getResources() const
+        {
+            return _inventory;
         }
 
         class PlayerException : public GUIException {
@@ -70,6 +79,7 @@ namespace Zappy {
         std::map<Info::ResourceName, std::size_t> _inventory;
         bool _incantate = false;
         bool _fork = false;
+        bool _eject = false;
         bool _dead = false;
 
         std::ofstream &_logFile;
