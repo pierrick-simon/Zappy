@@ -24,7 +24,7 @@ namespace Zappy {
         _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
             Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile,
-            _clients, _teams)
+            _clients, _teams, parseSeed(args))
     {
         auto nbPerTeam = Parser::ArgsParser::getArgSize(args, "-c", 10);
         if (_teamsNames.empty())
@@ -56,6 +56,15 @@ namespace Zappy {
     Server::~Server()
     {
         Shared::Utils::logMsg(_logFile, "Server Close.");
+    }
+
+    std::optional<unsigned int> Server::parseSeed(std::vector<std::string> &args)
+    {
+        try {
+            return Parser::ArgsParser::getArgSize(args, "-s");
+        } catch (Parser::Help &) {
+            return {};
+        }
     }
 
     void Server::run()

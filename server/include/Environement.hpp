@@ -13,6 +13,7 @@
     #include <map>
     #include <ranges>
     #include <string>
+    #include <optional>
     #include <unordered_map>
     #include <vector>
     #include "Client.hpp"
@@ -52,7 +53,8 @@ namespace Zappy {
     public:
         Environement(std::size_t width, std::size_t height,
             std::ofstream &logFile, Clients &clients,
-            std::unordered_map<std::string, std::size_t> &teams);
+            std::unordered_map<std::string, std::size_t> &teams,
+            std::optional<unsigned int> seed);
 
         Environement(Environement &) = delete;
 

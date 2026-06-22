@@ -33,6 +33,8 @@ namespace Zappy {
         using AIIter = std::unordered_map<int, AIClient>::iterator;
         using GUIIter = std::unordered_map<int, GUIClient>::iterator;
 
+        static std::optional<unsigned int> parseSeed(std::vector<std::string> &args);
+
         void infoToRead();
         bool update();
         void updateEnv(std::chrono::milliseconds elapsed);
