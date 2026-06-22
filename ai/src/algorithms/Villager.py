@@ -6,6 +6,7 @@
 ##
 
 import json
+from random import randint
 from uuid import UUID, uuid4
 from enum import Enum
 from collections import deque
@@ -51,6 +52,7 @@ class Villager:
     master: Optional[UUID] = None
     followers: list[str] = []
     mode: MODE = MODE.SURVIVE
+    stones_deposited: bool = False
     plan: deque[tuple[MODE, Command]]
 
     def __init__(self, handler: ConnectionHandler) -> None:
@@ -103,18 +105,18 @@ class Villager:
 
     def call_followers(self):
         receivers: str = json.dumps(self.followers if self.followers else ["*"])
-        broadcast(self.handler, f"{str(self.id)};incantation;{self.level + 1};{receivers}")
-        ressource = get_common_key(
-            self.backpack.inventory, INCANTATION_PREREQUISITES[self.level]
-        )
-        if ressource:
-            self.append_to_plan([f"Set {ressource}"], self.mode)
-            self.backpack.del_from_inventory([f"Set {ressource}"])
+        broadcast(self.handler, f"{str(self.id)};incantation;{self.level};{receivers}")
     
+    def deposit_stones(self):
+        self.plan.clear()
+        for ressource, quantity in INCANTATION_PREREQUISITES[self.level - 1].items():
+            for _ in range(quantity):
+                self.append_to_plan([f"Set {ressource}"], MODE.MASTER)
+
     def check_incantations(self, tile: list[str], level: int) -> bool:
         players: int =  tile.count("player")
-        print(f"{tile=}")
 
+        print(f"{tile=}")
         if (players < INCANTATION_PLAYERS_NEEDED[level]):
             return False
         for ressource, quantity in INCANTATION_PREREQUISITES[level].items():
@@ -123,13 +125,17 @@ class Villager:
         return True
 
     def manage_incantations(self):
-        if self.check_incantations(look(self.handler)[0], self.level) is True:
+        if not self.stones_deposited:
+            self.deposit_stones()
+            self.stones_deposited = True
+            return
+        if self.check_incantations(look(self.handler)[0], (self.level - 1)) is True:
             send_and_recv(self.handler, Command("Incantation"))
+            self.stones_deposited = False
             self.mode = MODE.RESEARCH
-        elif connect_nbr(self.handler) >= INCANTATION_PLAYERS_NEEDED[self.level]:
+        elif connect_nbr(self.handler) >= INCANTATION_PLAYERS_NEEDED[self.level - 1]:
+            print("Call followers")
             self.call_followers()
-        else:
-            MODE.RESEARCH
 
     def handle_message_as_follower(self, event: Event) -> None:
         _, _, _, receiver = event.argument
@@ -142,13 +148,16 @@ class Villager:
         self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
 
     def handle_message(self, event: Event) -> None:
+        print(f"Message: {event}")
         self.BROADCAST_COMPORTEMENT[self.mode](event)
 
     def handle_eject(self, event: Event) -> None:
         pass
 
     def handle_level(self, event: Event) -> None:
-        self.level = event.argument
+        self.level = int(event.direction)
+        self.stones_deposited = False
+        print(f"Level: {self.level}")
         self.plan.clear()
         self.backpack.refresh_inventory()
 
@@ -162,51 +171,56 @@ class Villager:
                 self.plan.append((mode, Command(tokens[0], arg)))
 
     def search_ressources(self, ressources: dict[str, int], max_time: int) -> None:
-        if any(mode == self.mode for mode, _ in self.plan):
-            return
         auto_gather: AutoGatherModule = AutoGatherModule()
         self.append_to_plan(
             auto_gather.auto_gather(COMMAND_FACTORY["Look"](self.handler), ressources, max_time),
             self.mode,
         )
+        if not self.plan:
+            self.append_to_plan(MOVE[randint(1, 8)], self.mode)
 
     def handle_response(self, command: Command):
+        print(f"{command=}")
         send_and_recv(self.handler, command)
         self.backpack.tick(command.command)
         if command.command == "Take" and command.response == "ok":
             self.backpack.add_to_inventory([command.argument])
         if command.command == "Set" and command.response == "ok":
             self.backpack.del_from_inventory([command.argument])
-        if command.command == "Inventory":
-            self.backpack.refresh_inventory(command.response)
+        print(f"{self.backpack.inventory=}")
 
     def handle_events(self):
         event: Event = self.handler.consume_event()
-    
         if event is not None:
             self.EVENTS[event.name](event)
 
     def update_mode(self):
-        if self.backpack.inventory["food"] < 10:
+        previous_mode = self.mode
+
+        if self.backpack.inventory["food"] < 5:
             self.mode = MODE.SURVIVE
             return
-        if self.mode == MODE.SURVIVE:
+        if self.mode == MODE.SURVIVE and self.backpack.inventory["food"] >= 10:
             self.mode = MODE.RESEARCH
         if self.mode == MODE.RESEARCH:
             missing: dict[str, int] = get_missing_resources(
-                self.backpack.inventory, self.level
+                self.backpack.inventory, (self.level - 1)
             )
             if not missing:
                 self.mode = MODE.MASTER
+        if previous_mode != self.mode:
+            self.plan.clear()
 
     def execute_mode(self):
+        print(f"{self.mode=}")
         if self.mode == MODE.SURVIVE:
-            self.search_ressources({"food": 20}, 200)
+            self.search_ressources({"food": 10}, 100)
         elif self.mode == MODE.RESEARCH:
             missing: dict[str, int] = get_missing_resources(
-                self.backpack.inventory, self.level
+                self.backpack.inventory, (self.level - 1)
             )
-            if missing:
+            print(f"{missing=}")
+            if missing and not self.plan:
                 self.search_ressources(missing, 300)
         elif self.mode == MODE.MASTER:
             self.manage_incantations()
