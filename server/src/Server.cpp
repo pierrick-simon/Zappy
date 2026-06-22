@@ -42,13 +42,21 @@ namespace Zappy {
         }
         _teamsNames.clear();
 
+        try {
+            _seed = Parser::ArgsParser::getArgSize(args, "-s");
+        } catch (Parser::Help &) {
+            _seed = std::time(nullptr);
+        }
+        std::srand(_seed);
+
         if (Parser::ArgsParser::isArg(args, "-m"))
             _master.emplace(_port, _clients, _teams);
 
         if (!args.empty())
             throw Parser::Help();
 
-        Shared::Utils::logMsg(_logFile, "Server Open.");
+        Shared::Utils::logMsg(_logFile,
+            "Server Open with seed \"" + std::to_string(_seed) + "\".");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
         _clock = std::chrono::steady_clock::now();
     }

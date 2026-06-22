@@ -34,7 +34,6 @@ namespace Zappy {
         _clients(clients),
         _teams(teams)
     {
-        std::srand(std::time(nullptr));
         for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
         refillRessources(false);
