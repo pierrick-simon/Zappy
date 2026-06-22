@@ -5,14 +5,24 @@
 ## connection handler
 ##
 
-import sys
 import re
-from src.client import Client
+import sys
+from threading import Thread
+from collections import deque
 from typing import Optional, Any
+from collections.abc import Callable
+
+from src.client import Client
 from src.constants.resources import RESOURCES
 from src.dataclasses_models import Command, Event
-from collections import deque
-from collections.abc import Callable
+
+
+def call_function_in_thread(callback: Callable, *args) -> Thread:
+    if args:
+        thread = Thread(target=callback, args=args, daemon=True)
+    else:
+        thread = Thread(target=callback, daemon=True)
+    return thread
 
 
 def get_key_from_dict(dictionary: dict, string: str) -> Optional[str]:

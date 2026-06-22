@@ -5,7 +5,7 @@
 ## resources
 ##
 
-RESOURCES = [
+RESOURCES: list[str] = [
     "player",
     "food",
     "linemate",
@@ -16,7 +16,7 @@ RESOURCES = [
     "thystame",
 ]
 
-COMMAND_TIME = {
+COMMAND_TIME: dict[str, int] = {
     "Forward": 7,
     "Right": 7,
     "Left": 7,
@@ -47,7 +47,7 @@ INCANTATION_PREREQUISITES: dict[int, dict] = {
     },
 }
 
-INCANTATION_PLAYERS_NEEDED = [1, 2, 2, 4, 4, 6, 6]
+INCANTATION_PLAYERS_NEEDED: list[int] = [1, 2, 2, 4, 4, 6, 6]
 
-FOOD_DECAY_TIME_UNITS = 126
-TIME_UNIT = 10
+FOOD_DECAY_TIME_UNITS: int = 126
+TIME_UNIT: int = 10

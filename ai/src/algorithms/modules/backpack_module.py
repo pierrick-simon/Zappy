@@ -32,9 +32,9 @@ class BackpackModule:
 
         @return An instance of the backpack module.
         """
-        self._handler = handler
-        self.inventory = {
-            "food": 9,
+        self._handler: ConnectionHandler = handler
+        self.inventory: dict[str, int] = {
+            "food": 10,
             "linemate": 0,
             "deraumere": 0,
             "sibur": 0,
@@ -42,7 +42,7 @@ class BackpackModule:
             "phiras": 0,
             "thystame": 0,
         }
-        self.food_decay = 0
+        self.food_decay: int = 0
 
     def tick(self, action: str) -> None:
         """! Advance the food decay counter by the time cost of action.
@@ -55,7 +55,6 @@ class BackpackModule:
         @param action: Command string (e.g. "Forward", "Take food")
         @return None
         """
-        print(action)
 
         if action.startswith("Take"):
             self.food_decay += COMMAND_TIME["Take"]
