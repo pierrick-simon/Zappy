@@ -30,6 +30,9 @@ namespace Zappy {
             const std::map<Info::ResourceName, std::size_t> &before,
             std::map<Info::ResourceName, std::size_t> after);
 
+        [[nodiscard]] std::size_t getNbPlayer();
+        [[nodiscard]] std::size_t getFirstPlayerId();
+
     private:
         std::unordered_map<std::size_t, Player> _players;
         std::map<Info::ResourceName, std::size_t> _totalResources =

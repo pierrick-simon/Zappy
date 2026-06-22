@@ -57,4 +57,16 @@ namespace Zappy {
             throw Player::DeadPlayerException(id);
         return find->second;
     }
+
+    std::size_t Players::getNbPlayer()
+    {
+        return _players.size();
+    }
+
+    std::size_t Players::getFirstPlayerId()
+    {
+        if (_players.empty())
+            throw Player::PlayerNotFoundException(0);
+        return _players.begin()->first;
+    }
 } // namespace Zappy

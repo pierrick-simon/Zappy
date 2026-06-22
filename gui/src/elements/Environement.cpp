@@ -51,6 +51,16 @@ namespace Zappy {
 
     void Environement::update(float dt)
     {
+        if (_players.getNbPlayer() > 0)
+            _selectPlayer = _players.getFirstPlayerId();
+        if (_selectPlayer) {
+            try {
+                auto player = _players.getPlayer(*_selectPlayer);
+                _overlay.player.update(player.getPlayerInfo());
+            } catch (Player::PlayerException &_) {
+                _selectPlayer = std::nullopt;
+            }
+        }
         auto updateTimeUnit = dt * float(_timeUnit);
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
@@ -74,6 +84,8 @@ namespace Zappy {
         _overlay.chatBox.draw2D();
         _overlay.eventBox.draw2D();
         _elevations.draw2D();
+        if (_selectPlayer)
+            _overlay.player.draw2D();
     }
 
     bool Environement::connect()

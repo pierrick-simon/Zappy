@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2026
-** Zappy
+** gui
 ** File description:
 ** Resource
 */

@@ -9,6 +9,7 @@
     #define GUI_ENVIRONEMENT_HPP_
 
     #include <functional>
+    #include <optional>
     #include <queue>
     #include <string_view>
     #include <unordered_map>
@@ -100,6 +101,8 @@ namespace Zappy {
         std::string _buffer;
         bool _loading = false;
         std::queue<std::string> _events;
+
+        std::optional<std::size_t> _selectPlayer;
 
         Graphics::ColorGenerator _colorGenerator;
         Overlay _overlay;

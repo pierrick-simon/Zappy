@@ -46,19 +46,16 @@ namespace Zappy {
 
     void ResourceInfo::initText(Font &font)
     {
-        _text.setSpacing(Init::LETTER_SPACING);
         _text.setFontSize(FONTSIZE);
         _text.setPosition(
             {_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP, _pos.y});
         _text.setFont(font);
         _text.setColor(Init::GOLD_RICH);
-        _map.setSpacing(Init::LETTER_SPACING);
         _map.setFontSize(FONTSIZE);
         _map.setPosition({_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
             _pos.y + Init::RESOURCE_SIZE.y});
         _map.setFont(font);
         _map.setColor(WHITE);
-        _player.setSpacing(Init::LETTER_SPACING);
         _player.setFontSize(FONTSIZE);
         _player.setPosition(
             {_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,

@@ -14,7 +14,6 @@ namespace Zappy {
         Color boxColor) :
         _teams(teams)
     {
-        _text.setSpacing(Init::LETTER_SPACING);
         _text.setFont(font);
         _text.setColor(_color);
         _text.setFontSize(_fontSize);

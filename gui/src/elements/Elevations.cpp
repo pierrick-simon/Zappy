@@ -17,8 +17,8 @@ namespace Zappy {
     void Elevations::addElevation(std::size_t x, std::size_t y,
         std::size_t level, std::vector<std::size_t> players)
     {
-        _elevations.emplace_back(
-            Elevation {x, y, level, std::move(players)}, Elevation2D {_font, x, y, level});
+        _elevations.emplace_back(Elevation {x, y, level, std::move(players)},
+            Elevation2D {_font, x, y, level});
     }
 
     std::vector<std::size_t> Elevations::endElevation(

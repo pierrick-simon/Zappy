@@ -13,6 +13,8 @@
     #include "GUIException.hpp"
     #include "Info.hpp"
     #include "NewPlayerEvent.hpp"
+    #include "Player2D.hpp"
+    #include "PlayerStatus.hpp"
 
 namespace Zappy {
     class Player {
@@ -49,6 +51,8 @@ namespace Zappy {
             return _inventory;
         }
 
+        [[nodiscard]] Player2D::PlayerInfo getPlayerInfo() const;
+
         class PlayerException : public GUIException {
         public:
             PlayerException(const std::string &str) :
@@ -81,6 +85,8 @@ namespace Zappy {
         bool _fork = false;
         bool _eject = false;
         bool _dead = false;
+
+        PlayerStatus::Status _status;
 
         std::ofstream &_logFile;
     };

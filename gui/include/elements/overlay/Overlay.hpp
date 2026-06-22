@@ -11,6 +11,7 @@
     #include <string_view>
     #include "ChatBox.hpp"
     #include "EventBox.hpp"
+    #include "Player2D.hpp"
     #include "Resources.hpp"
 
 namespace Zappy {
@@ -21,6 +22,10 @@ namespace Zappy {
         Resources resources;
         ChatBox chatBox;
         EventBox eventBox;
+        Player2D player;
+
+        static const std::map<Info::ResourceName, ResourceInfo::TextureSize>
+            RESOURCES;
 
     private:
         Font _font;

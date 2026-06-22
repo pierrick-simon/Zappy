@@ -29,9 +29,6 @@ namespace Zappy {
         std::map<Info::ResourceName, ResourceInfo> _resources;
         Graphics::Sprite2D _houseIcon;
         Graphics::Sprite2D _golemIcon;
-
-        static const std::map<Info::ResourceName, ResourceInfo::TextureSize>
-            INIT;
     };
 } // namespace Zappy
 
