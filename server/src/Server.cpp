@@ -48,7 +48,9 @@ namespace Zappy {
         if (!args.empty())
             throw Parser::Help();
 
-        Shared::Utils::logMsg(_logFile, "Server Open with seed \"" + std::to_string(_env.getSeed()) + "\".");
+        Shared::Utils::logMsg(_logFile,
+            "Server Open with seed \"" + std::to_string(_env.getSeed()) +
+                "\".");
         signal(SIGINT, [](int) { RECEIVED_SIG_INT = true; });
         _clock = std::chrono::steady_clock::now();
     }
@@ -58,7 +60,8 @@ namespace Zappy {
         Shared::Utils::logMsg(_logFile, "Server Close.");
     }
 
-    std::optional<unsigned int> Server::parseSeed(std::vector<std::string> &args)
+    std::optional<unsigned int> Server::parseSeed(
+        std::vector<std::string> &args)
     {
         try {
             return Parser::ArgsParser::getArgSize(args, "-s");
