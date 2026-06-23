@@ -14,7 +14,7 @@
 namespace Zappy {
     class Init {
     public:
-        static constexpr std::string_view FONT_PATH = "public/Font.ttf";
+        static constexpr std::string_view FONT_PATH = "public/GuiFont.otf";
         static constexpr std::string_view IMG_NEXT = "public/next.png";
 
         static constexpr Color GOLD_RICH = {212, 160, 23, 255};
@@ -41,8 +41,8 @@ namespace Zappy {
         static constexpr raylib::Vector2 EVENT_START_POS = {
             GAP, INCANTATION_START_POS.y + (INCANTATION_SIZE.y + GAP) * 4.f};
 
-        static constexpr float INFO_TITLE_SIZE = 40;
-        static constexpr float INFO_TEXT_SIZE = 30;
+        static constexpr float INFO_TITLE_SIZE = 32;
+        static constexpr float INFO_TEXT_SIZE = 27;
         static constexpr float INFO_SMALL_GAP = 5;
         static constexpr float INFO_ICON = 40;
         static constexpr raylib::Vector2 INFO_ICON_POS = {18, 18};

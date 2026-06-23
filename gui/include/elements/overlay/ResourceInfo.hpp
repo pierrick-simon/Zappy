@@ -46,7 +46,7 @@ namespace Zappy {
         Graphics::Sprite2D _golemIcon;
 
         static constexpr std::size_t MAX = 999999;
-        static constexpr float FONTSIZE = 30;
+        static constexpr float FONTSIZE = 25;
         static constexpr std::string_view HOUSE_ICON = "public/houseIcon.png";
         static constexpr raylib::Vector2 HOUSE_ICON_SIZE = {500, 400};
         static constexpr float HOUSE_RATIO =

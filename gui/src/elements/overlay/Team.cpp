@@ -27,12 +27,10 @@ namespace Zappy {
         _title.setPosition({pos.x + Init::INFO_SIZE_X / 2.f, pos.y});
         pos.x += Init::GAP;
         pos.y += Init::INFO_SMALL_GAP + Init::INFO_TITLE_SIZE;
-        _text[NbPlayer].prefix = "Nb Player:";
-        _text[NbEgg].prefix = "Nb Egg:";
-        _text[Level].prefix = "Members' Level:";
+        _text[NbPlayer].prefix = "Nb Player: ";
+        _text[NbEgg].prefix = "Nb Egg: ";
+        _text[Level].prefix = "Members' Level: ";
         for (auto &text : _text) {
-            while (text.prefix.size() <= Init::INFO_PREFIX_SIZE)
-                text.prefix += " ";
             text.text.setFont(font);
             text.text.setFontSize(Init::INFO_TEXT_SIZE);
             text.text.setPosition(pos);
@@ -43,9 +41,7 @@ namespace Zappy {
             _levels[i].text.setFont(font);
             _levels[i].text.setFontSize(Init::INFO_TEXT_SIZE);
             _levels[i].text.setPosition(pos);
-            _levels[i].prefix = "Level " + std::to_string(i + 1) + ":";
-            while (_levels[i].prefix.size() <= Init::INFO_PREFIX_SIZE)
-                _levels[i].prefix += " ";
+            _levels[i].prefix = "Level " + std::to_string(i + 1) + ": ";
             pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
         }
         setSize({Init::INFO_SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
@@ -53,6 +49,8 @@ namespace Zappy {
 
     void Team::update(const TeamInfo &info)
     {
+        if (!_selectTeam)
+            changeSelected(Direction::Left);
         updateMembers(info.level);
         auto min = std::min(info.nbEgg, Init::INFO_MAX);
         _text[NbEgg].value = std::to_string(min);

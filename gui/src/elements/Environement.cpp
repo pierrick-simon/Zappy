@@ -168,6 +168,7 @@ namespace Zappy {
                 _selectPlayer = _players.getNextPlayer(value, *_selectPlayer);
             } catch (Player::PlayerException &_) {
                 _selectPlayer = std::nullopt;
+                updateTeamInfo();
             }
         }
     }
@@ -177,7 +178,7 @@ namespace Zappy {
         if (_selectTile) {
             if (*_selectTile >= _width * _height) {
                 _selectTile = std::nullopt;
-                return;
+                return updateTeamInfo();
             }
             auto nbPlayer = _players.getNbTilePlayers(*_selectTile, _width);
             std::size_t nbEgg = 0;

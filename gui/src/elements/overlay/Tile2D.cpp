@@ -27,13 +27,11 @@ namespace Zappy {
         _title.setPosition({pos.x + Init::INFO_SIZE_X / 2.f, pos.y});
         pos.x += Init::GAP;
         pos.y += Init::INFO_SMALL_GAP + Init::INFO_TITLE_SIZE;
-        _text[NbPlayer].prefix = "Nb Player:";
-        _text[NbEgg].prefix = "Nb Egg:";
-        _text[NBElevation].prefix = "Nb Elevation:";
-        _text[Resources].prefix = "Resources:";
+        _text[NbPlayer].prefix = "Nb Player: ";
+        _text[NbEgg].prefix = "Nb Egg: ";
+        _text[NBElevation].prefix = "Nb Elevation: ";
+        _text[Resources].prefix = "Resources: ";
         for (auto &text : _text) {
-            while (text.prefix.size() <= Init::INFO_PREFIX_SIZE)
-                text.prefix += " ";
             text.text.setFont(font);
             text.text.setFontSize(Init::INFO_TEXT_SIZE);
             text.text.setPosition(pos);
@@ -59,8 +57,8 @@ namespace Zappy {
             res.text.setFont(font);
             res.text.setColor(Init::GOLD_RICH);
             res.text.setFontSize(Init::INFO_TEXT_SIZE);
-            res.text.setPosition(
-                {pos.x + Init::INFO_SIZE_X - Init::GAP * 7.f, pos.y});
+            res.text.setPosition({pos.x + Init::INFO_SIZE_X - Init::GAP * 7.f,
+                pos.y + Init::INFO_ICON_POS.y});
             pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
         }
         setSize({Init::INFO_SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
@@ -76,7 +74,7 @@ namespace Zappy {
         _text[NbPlayer].value = std::to_string(min);
         min = std::min(info.nbEgg, Init::INFO_MAX);
         _text[NbEgg].value = std::to_string(min);
-        min = std::min(info.nbElevation, Init::INFO_MAX);
+        min = std::min(info.nbElevation, ELEVATION_MAX);
         _text[NBElevation].value = std::to_string(min);
         updateResources(info.resources);
         auto dir = _dir;
@@ -93,7 +91,7 @@ namespace Zappy {
             if (find != _resources.end()) {
                 find->second.text.setStr(std::to_string(quantity));
                 auto tmp = find->second.text.getSize();
-                find->second.text.setOrigin({tmp.x, 0});
+                find->second.text.setOrigin({tmp.x, tmp.y / 2.f});
             }
         }
     }

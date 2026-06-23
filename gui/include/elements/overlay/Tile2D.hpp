@@ -11,6 +11,7 @@
     #include <array>
     #include "Info.hpp"
     #include "InfoBox.hpp"
+    #include "Init.hpp"
     #include "graphics/IDrawable2D.hpp"
     #include "graphics/primitives/Box2D.hpp"
     #include "graphics/primitives/Sprite2D.hpp"
@@ -62,6 +63,8 @@ namespace Zappy {
         std::map<Info::ResourceName, Resource> _resources;
 
         Direction _dir = Direction::None;
+
+        static constexpr std::size_t ELEVATION_MAX = Init::INFO_MAX / 100;
     };
 } // namespace Zappy
 

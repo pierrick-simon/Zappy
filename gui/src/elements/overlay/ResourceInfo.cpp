@@ -46,19 +46,19 @@ namespace Zappy {
     void ResourceInfo::initText(Font &font)
     {
         _text.setFontSize(FONTSIZE);
-        _text.setPosition(
-            {_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP, _pos.y});
+        _text.setPosition({_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
+            _pos.y + Init::RESOURCE_SIZE.y / 2.f});
         _text.setFont(font);
         _text.setColor(Init::GOLD_RICH);
         _map.setFontSize(FONTSIZE);
         _map.setPosition({_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
-            _pos.y + Init::RESOURCE_SIZE.y});
+            _pos.y + Init::RESOURCE_SIZE.y * 1.5f});
         _map.setFont(font);
         _map.setColor(WHITE);
         _player.setFontSize(FONTSIZE);
         _player.setPosition(
             {_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
-                _pos.y + Init::RESOURCE_SIZE.y * 2.f});
+                _pos.y + Init::RESOURCE_SIZE.y * 2.5f});
         _player.setFont(font);
         _player.setColor(WHITE);
     }
@@ -79,18 +79,18 @@ namespace Zappy {
 
     void ResourceInfo::update(std::size_t map, std::size_t players)
     {
-        auto nb = std::clamp(map + players, std::size_t(0), MAX);
+        auto nb = std::min(map + players, MAX);
         _text.setStr(std::to_string(nb));
         auto tmp = _text.getSize();
-        _text.setOrigin({tmp.x, 0});
-        nb = std::clamp(map, std::size_t(0), MAX);
+        _text.setOrigin({tmp.x, tmp.y / 2.f});
+        nb = std::min(map, MAX);
         _map.setStr(std::to_string(nb));
         tmp = _map.getSize();
-        _map.setOrigin({tmp.x, 0});
-        nb = std::clamp(players, std::size_t(0), MAX);
+        _map.setOrigin({tmp.x, tmp.y / 2.f});
+        nb = std::min(players, MAX);
         _player.setStr(std::to_string(nb));
         tmp = _player.getSize();
-        _player.setOrigin({tmp.x, 0});
+        _player.setOrigin({tmp.x, tmp.y / 2.f});
     }
 
     void ResourceInfo::draw2D() const

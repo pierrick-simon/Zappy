@@ -59,8 +59,8 @@ namespace Zappy {
             res.text.setFont(font);
             res.text.setColor(Init::GOLD_RICH);
             res.text.setFontSize(Init::INFO_TEXT_SIZE);
-            res.text.setPosition(
-                {pos.x + Init::INFO_SIZE_X - Init::GAP * 7.f, pos.y});
+            res.text.setPosition({pos.x + Init::INFO_SIZE_X - Init::GAP * 7.f,
+                pos.y + Init::INFO_ICON_POS.y});
             pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
         }
         setSize({Init::INFO_SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
@@ -91,7 +91,7 @@ namespace Zappy {
             if (find != _resources.end()) {
                 find->second.text.setStr(std::to_string(quantity));
                 auto tmp = find->second.text.getSize();
-                find->second.text.setOrigin({tmp.x, 0});
+                find->second.text.setOrigin({tmp.x, tmp.y / 2.f});
             }
         }
     }
