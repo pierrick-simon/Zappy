@@ -103,6 +103,7 @@ def broadcast(handler: ConnectionHandler, text: str) -> bool:
     @param text: Message string to broadcast
     @return True on success
     """
+    print(str(Command("Broadcast", text)))
     return send_and_recv(handler, Command("Broadcast", text)) == "ok"
 
 

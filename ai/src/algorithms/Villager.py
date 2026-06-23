@@ -6,6 +6,7 @@
 ##
 
 import json
+import ast
 from random import randint
 from uuid import UUID, uuid4
 from enum import Enum
@@ -43,13 +44,19 @@ def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
     else:
         return None
 
+def format_receivers(receivers: list[str]) -> str:
+    return json.dumps(receivers if receivers else ["*"]).replace('"', "'")
+
+def parse_receivers(receiver: str) -> list[str]:
+    return receiver.strip("\"")
+
 class Villager:
     backpack: BackpackModule
     orientation: int
     id: UUID
     status: bool = True
     level: int = 1
-    master: Optional[UUID] = None
+    master: str = str()
     followers: list[str] = []
     mode: MODE = MODE.SURVIVE
     stones_deposited: bool = False
@@ -82,30 +89,50 @@ class Villager:
 
     def handle_message_as_researcher(self, event: Event) -> None:
         sender, _, level, receiver = event.argument
-        receivers: list[str] = json.loads(receiver)
+        receivers: list[str] = parse_receivers(receiver)
 
-        if int(level) != self.level:
+        if not receivers or int(level) != self.level:
             return
         if str(self.id) not in receivers and "*" not in receivers:
             return
         self.backpack.tick("Broadcast")
-        broadcast(self.handler, f"{str(self.id)};yes;{self.level};{sender}")
+        sender = format_receivers([sender])
+        broadcast(self.handler, f"{self.id};yes;{self.level};{sender}")
         self.mode = MODE.FOLLOWER
+        print(f"type: {type(sender)}, {sender=}")
         self.master = sender
         self.plan.clear()
+        print(f"{event.direction=}")
+        self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
+    
+    def handle_message_as_follower(self, event: Event) -> None:
+        sender, _, _, receiver = event.argument
+        receivers: list[str] = parse_receivers(receiver)
+
+        print(f"sencer: {sender}, master: {self.master}")
+        print(f"Receiver: {receiver}")
+        if sender != self.master:
+            return
+        if str(self.id) not in receivers:
+            return
+        if any(mode == self.mode for mode, _ in self.plan):
+            return
+        print("message if for me")
         self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
 
     def handle_message_as_master(self, event: Event) -> None:
         sender, type, _, receiver = event.argument
-        receivers: list[str] = json.loads(receiver)
+        receivers: list[str] = parse_receivers(receiver)
 
-        if str(self.id) not in receivers or type != "yes":
+        print(f"{type=} | {receivers=} | {sender=}")
+        if not receivers or str(self.id) not in receivers or type != "yes":
             return
         self.followers.append(str(sender))
 
     def call_followers(self):
-        receivers: str = json.dumps(self.followers if self.followers else ["*"])
-        broadcast(self.handler, f"{str(self.id)};incantation;{self.level};{receivers}")
+        receivers: str = format_receivers(self.followers)
+        print(f"Call followers: {receivers=}")
+        broadcast(self.handler, f"{self.id};incantation;{self.level};{receivers}")
     
     def deposit_stones(self):
         self.plan.clear()
@@ -130,22 +157,12 @@ class Villager:
             self.stones_deposited = True
             return
         if self.check_incantations(look(self.handler)[0], (self.level - 1)) is True:
+            print("Incantation")
             send_and_recv(self.handler, Command("Incantation"))
             self.stones_deposited = False
             self.mode = MODE.RESEARCH
         elif connect_nbr(self.handler) >= INCANTATION_PLAYERS_NEEDED[self.level - 1]:
-            print("Call followers")
             self.call_followers()
-
-    def handle_message_as_follower(self, event: Event) -> None:
-        _, _, _, receiver = event.argument
-        receivers: list[str] = json.loads(receiver)
-
-        if any(mode == self.mode for mode, _ in self.plan):
-            return
-        if str(self.id) not in receivers:
-            return
-        self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
 
     def handle_message(self, event: Event) -> None:
         print(f"Message: {event}")
@@ -157,7 +174,6 @@ class Villager:
     def handle_level(self, event: Event) -> None:
         self.level = int(event.direction)
         self.stones_deposited = False
-        print(f"Level: {self.level}")
         self.plan.clear()
         self.backpack.refresh_inventory()
 
@@ -212,7 +228,6 @@ class Villager:
             self.plan.clear()
 
     def execute_mode(self):
-        print(f"{self.mode=}")
         if self.mode == MODE.SURVIVE:
             self.search_ressources({"food": 10}, 100)
         elif self.mode == MODE.RESEARCH:
