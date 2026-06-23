@@ -7,21 +7,22 @@
 
 #ifndef RECTANGLE_2D_HPP
     #define RECTANGLE_2D_HPP
-    #include <Rectangle.hpp>
 
+    #include <Rectangle.hpp>
+    #include <raylib-cpp.hpp>
     #include "graphics/UiObject.hpp"
 
 namespace Graphics {
 
-    class Rectangle2D : public raylib::Rectangle, public UIObject {
+    class Rectangle2D : public raylib::Rectangle, public UiObject {
     public:
         using Rectangle::Rectangle;
-        void draw() const override;
-        Color &getColor();
-        [[nodiscard]] const Color &getColor() const;
+        void draw2D() const override;
+        raylib::Color &getColor();
+        [[nodiscard]] const raylib::Color &getColor() const;
 
     private:
-        Color _color;
+        raylib::Color _color = raylib::Color::Black();
     };
 
 } // namespace Graphics

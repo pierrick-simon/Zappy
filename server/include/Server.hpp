@@ -56,6 +56,7 @@ namespace Zappy {
 
         Shared::Clock _clock;
         int _timeout = -1;
+        unsigned int _seed = 0;
 
         std::size_t _f;
         Environement _env;

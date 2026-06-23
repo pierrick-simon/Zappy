@@ -7,6 +7,7 @@
 
 from typing import Any
 
+from src.algorithms.Ejector import EjectorAi
 from src.algorithms.Randomizer import RandomizerAi
 from src.algorithms.Layer import LayerAi
 from src.algorithms.Survivor import SurvivalAI
@@ -21,4 +22,5 @@ AI_LIST: dict[str, Any] = {
     "human": HumanAI,
     "layer": LayerAi,
     "randomizer": RandomizerAi,
+    "ejector": EjectorAi
 }

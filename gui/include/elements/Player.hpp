@@ -8,26 +8,40 @@
 #ifndef PLAYER_HPP
     #define PLAYER_HPP
 
-    #include <fstream>
+    #include <Model.hpp>
+#include <ModelAnimation.hpp>
+    #include <array>
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"
+    #include "Maths.hpp"
     #include "NewPlayerEvent.hpp"
+    #include "Player2D.hpp"
+    #include "PlayerStatus.hpp"
+    #include "graphics/IDrawable3D.hpp"
+#include "graphics/IUpdatable.hpp"
+    #include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
-    class Player {
+    class Player : public Graphics::Transformable3D,
+                   public Graphics::IDrawable3D,
+                   public Graphics::IUpdatable {
     public:
-        Player(
-            Shared::NewPlayerEvent::NewPlayer player, std::ofstream &logFile);
-        ~Player();
+        Player(const Shared::NewPlayerEvent::NewPlayer &player,
+            std::ofstream &logFile, raylib::Model &model,
+            std::vector<::ModelAnimation> &modelAnimation);
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
 
+        void addLevel();
         void setLevel(std::size_t level);
         void setInventory(const std::vector<std::size_t> &inventory);
         void setIncantate(bool incantate);
         void setFork(bool fork);
+        void setEject(bool eject);
         void died();
+        void takeResource(Info::ResourceName resource);
+        void setResource(Info::ResourceName resource);
 
         [[nodiscard]] std::size_t getTile(std::size_t width) const;
 
@@ -35,10 +49,24 @@ namespace Zappy {
         {
             return _dead;
         }
+
         [[nodiscard]] std::string getTeam() const
         {
             return _team;
         }
+
+        [[nodiscard]] std::size_t getLevel() const
+        {
+            return _level;
+        }
+
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getResources() const
+        {
+            return _inventory;
+        }
+
+        [[nodiscard]] Player2D::PlayerInfo getPlayerInfo() const;
 
         class PlayerException : public GUIException {
         public:
@@ -60,6 +88,15 @@ namespace Zappy {
                     "Event on dead Player[" + std::to_string(id) + "].") {};
         };
 
+        void draw3D() const override;
+
+        void update(float dt) override;
+
+        void setAnimationIndex(size_t index);
+
+        [[nodiscard]] const ModelAnimation &getCurrentAnimation() const;
+        ModelAnimation &getCurrentAnimation();
+
     private:
         std::size_t _id;
         std::size_t _x;
@@ -70,9 +107,27 @@ namespace Zappy {
         std::map<Info::ResourceName, std::size_t> _inventory;
         bool _incantate = false;
         bool _fork = false;
+        bool _eject = false;
         bool _dead = false;
 
+        PlayerStatus::Status _status;
+
         std::ofstream &_logFile;
+
+        raylib::Model &_model;
+        std::vector<::ModelAnimation> &_modelAnimation;
+        size_t _currentAnimationIndex {0};
+        std::size_t _animationFrame {0};
+        float _frameTime {0.0f};
+        float _animationDuration {0};
+
+        static constexpr auto ANIMATIONS_FPS = 30.0f;
+
+        static inline const std::array<Quaternion, 4> DIRECTION_TO_QUATERNION =
+            {raylib::Quaternion::FromEuler(0, Maths::DegToRad(180.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(90.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(0.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(270.0f), 0)};
     };
 } // namespace Zappy
 

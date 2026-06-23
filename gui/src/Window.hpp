@@ -22,18 +22,10 @@ namespace Graphics {
 
         Scene &getScene();
 
-        template<std::derived_from<GameObject> GameObjectType, typename... Args>
-        std::unique_ptr<GameObjectType> &addObject(Args &&...args)
+        template<std::derived_from<IObject> GameObjectType>
+        void addObject(GameObjectType &gameObject)
         {
-            return this->getScene().addObject(
-                std::move(std::make_unique<GameObjectType>(args...)));
-        }
-
-        template<std::derived_from<UIObject> UiObjectType, typename... Args>
-        std::unique_ptr<UiObjectType> &addObject(Args &&...args)
-        {
-            return this->getScene().addObject(
-                std::move(std::make_unique<UiObjectType>(args...)));
+            return this->getScene().addObject(gameObject);
         }
 
     private:
@@ -45,11 +37,14 @@ namespace Graphics {
             std::function<void(Window &)>>
             KEY_METHODS;
 
+        RenderTexture2D _renderTarget = {};
+
         static constexpr unsigned int WINDOW_SIZE_X = 1920;
         static constexpr unsigned int WINDOW_SIZE_Y = 1080;
         static constexpr auto TARGET_FPS = 60;
         static constexpr auto WINDOW_TITLE = "Zappy GUI";
         static constexpr auto FOV = 60.0;
+        static constexpr raylib::Vector3 DEFAULT_CAMERA_POS = {50, 50, 50};
     };
 } // namespace Graphics
 

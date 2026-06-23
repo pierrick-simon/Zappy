@@ -29,8 +29,8 @@ namespace Zappy {
 
         bool _isConnect = false;
 
-        Environement _env;
         Graphics::Window _window;
+        Environement _env;
 
         std::ofstream _logFile;
 

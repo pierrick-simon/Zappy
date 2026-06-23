@@ -30,7 +30,7 @@ namespace Zappy {
             "Client[" + std::to_string(id) + "] joined the " + _team +
                 " team.");
         _inventory = Info::INIT_RESOUCES;
-        _inventory[Info::ResourceName::Food] = START_FOOD;
+        _inventory[Info::ResourceName::FOOD] = START_FOOD;
         Shared::Connect::send(
             _fd, std::to_string(_env.getConnectNbr(_id)) + "\n");
         Shared::Connect::send(_fd,
@@ -82,13 +82,14 @@ namespace Zappy {
 
     void AIClient::checkAlive()
     {
-        if (_inventory.at(Info::ResourceName::Food) == 0) {
+        if (_inventory.at(Info::ResourceName::FOOD) == 0) {
             Shared::Connect::send(_fd, ServerCmd::DEAD.getStr() + "\n");
             Shared::Utils::logMsg(
                 _logFile, "Client[" + std::to_string(_id) + "] Die.");
             _alive = false;
         } else {
-            _inventory.at(Info::ResourceName::Food)--;
+            _inventory.at(Info::ResourceName::FOOD)--;
+            _env.playerEat(_id, _inventory);
             Shared::Utils::logMsg(
                 _logFile, "Client[" + std::to_string(_id) + "] eat a food.");
             _live = CYCLE_TO_DIE;
@@ -152,13 +153,13 @@ namespace Zappy {
 
     void AIClient::right(std::istringstream stream)
     {
-        _env.rotatePlayer(_id, Rotate::Right);
+        _env.rotatePlayer(_id, Rotate::RIGHT);
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
     void AIClient::left(std::istringstream stream)
     {
-        _env.rotatePlayer(_id, Rotate::Left);
+        _env.rotatePlayer(_id, Rotate::LEFT);
         Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
     }
 
@@ -211,12 +212,14 @@ namespace Zappy {
         try {
             auto type = Info::getResource(resource);
             value = _env.takeResource(_id, type);
+            if (value)
+                _inventory[type]++;
         } catch (Info::ResourceNotFoundException &_) {
             value = false;
         }
-        if (value)
+        if (value) {
             Shared::Connect::send(_fd, ServerCmd::OK.getStr() + "\n");
-        else
+        } else
             Shared::Connect::send(_fd, ServerCmd::KO.getStr() + "\n");
     }
 

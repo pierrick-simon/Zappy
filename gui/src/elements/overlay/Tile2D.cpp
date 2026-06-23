@@ -1,0 +1,119 @@
+/*
+** EPITECH PROJECT, 2026
+** gui
+** File description:
+** Tile2D
+*/
+
+#include "Tile2D.hpp"
+#include "Overlay.hpp"
+
+namespace Zappy {
+    Tile2D::Tile2D(raylib::Font &font) :
+        InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
+                    Init::INFO_POS_Y},
+            true)
+    {
+        auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X;
+        raylib::Vector2 pos(x, Init::INFO_POS_Y);
+        initText(font, pos);
+    }
+
+    void Tile2D::initText(raylib::Font &font, raylib::Vector2 pos)
+    {
+        pos.y += Init::GAP;
+        _title.setFont(font);
+        _title.setColor(Init::GOLD_RICH);
+        _title.setFontSize(Init::INFO_TITLE_SIZE);
+        _title.setPosition({pos.x + Init::INFO_SIZE_X / 2.f, pos.y});
+        pos.x += Init::GAP;
+        pos.y += Init::INFO_SMALL_GAP + Init::INFO_TITLE_SIZE;
+        _text[NBPLAYER].prefix = "Nb Player: ";
+        _text[NBEGG].prefix = "Nb Egg: ";
+        _text[NBELVATION].prefix = "Nb Elevation: ";
+        _text[RESOURCES].prefix = "Resources: ";
+        for (auto &text : _text) {
+            text.text.setFont(font);
+            text.text.setFontSize(Init::INFO_TEXT_SIZE);
+            text.text.setPosition(pos);
+            text.color = Init::GOLD_RICH;
+            pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
+        }
+        initResources(font, pos);
+    }
+
+    void Tile2D::initResources(raylib::Font &font, raylib::Vector2 pos)
+    {
+        pos.x += Init::GAP * 2.f;
+        for (const auto &[name, info] : Overlay::RESOURCES) {
+            auto ratio = Init::INFO_ICON / info.size.y;
+            raylib::Vector2 origin = {
+                info.size.x * ratio / 2.f, info.size.y * ratio / 2.f};
+            auto &[_, res] = *_resources.try_emplace(name).first;
+            res.sprite.Load(info.path);
+            res.sprite.setScale({ratio, ratio});
+            res.sprite.setOrigin(origin);
+            res.sprite.setPosition(
+                {pos.x + Init::INFO_ICON_POS.x, pos.y + Init::INFO_ICON_POS.y});
+            res.text.setFont(font);
+            res.text.setColor(Init::GOLD_RICH);
+            res.text.setFontSize(Init::INFO_TEXT_SIZE);
+            res.text.setPosition({pos.x + Init::INFO_SIZE_X - Init::GAP * 7.f,
+                pos.y + Init::INFO_ICON_POS.y});
+            pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
+        }
+        setSize({Init::INFO_SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
+    }
+
+    InfoBox::Action Tile2D::update(const TileInfo &info)
+    {
+        _title.setStr("Tile (" + std::to_string(info.x) + "," +
+            std::to_string(info.y) + ")");
+        raylib::Vector2 size = _title.getSize();
+        _title.setOrigin({size.x / 2.f, 0});
+        auto min = std::min(info.nbPlayer, Init::INFO_MAX);
+        _text[NBPLAYER].value = std::to_string(min);
+        min = std::min(info.nbEgg, Init::INFO_MAX);
+        _text[NBEGG].value = std::to_string(min);
+        min = std::min(info.nbElevation, ELEVATION_MAX);
+        _text[NBELVATION].value = std::to_string(min);
+        updateResources(info.resources);
+        auto dir = _dir;
+        _dir = Action::NONE;
+        return dir;
+    }
+
+    void Tile2D::updateResources(
+        const std::map<Info::ResourceName, std::size_t> &resources)
+    {
+        for (const auto &[name, nb] : resources) {
+            auto quantity = std::min(nb, Init::INFO_MAX);
+            auto find = _resources.find(name);
+            if (find != _resources.end()) {
+                find->second.text.setStr(std::to_string(quantity));
+                auto tmp = find->second.text.getSize();
+                find->second.text.setOrigin({tmp.x, tmp.y / 2.f});
+            }
+        }
+    }
+
+    void Tile2D::draw2D() const
+    {
+        _box.draw2D();
+        _title.draw2D();
+        for (auto &text : _text)
+            Graphics::Text2D::drawMultiColorStrs(
+                text.text, {{text.prefix}, {text.value, text.color}});
+        for (const auto &[_, info] : _resources) {
+            info.sprite.draw2D();
+            info.text.draw2D();
+        }
+        for (const auto &[_, button] : _buttons)
+            button.draw2D();
+    }
+
+    void Tile2D::changeSelected(Action dir)
+    {
+        _dir = dir;
+    }
+} // namespace Zappy

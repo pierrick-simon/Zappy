@@ -10,9 +10,12 @@
     #include <filesystem>
 
 namespace Assets {
-    static const std::filesystem::path RESOURCES_ROOT = "gui/resources";
+    static constexpr std::string RESOURCES_ROOT = "gui/resources";
 
-    std::string GetResource(const std::string &file);
+    constexpr auto getResource(const std::string &file)
+    {
+        return RESOURCES_ROOT + "/" + file;
+    }
 } // namespace Assets
 
 #endif

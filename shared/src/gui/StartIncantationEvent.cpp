@@ -37,7 +37,7 @@ namespace Shared {
     {
         _ids.clear();
         stream >> _x >> _y >> _level;
-        while (stream.eof()) {
+        while (!stream.eof()) {
             char hash;
             std::size_t tmp;
             stream >> hash >> tmp;
