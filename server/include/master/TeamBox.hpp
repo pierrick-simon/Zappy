@@ -29,7 +29,7 @@ namespace Zappy {
 
         [[nodiscard]] bool getFill() const
         {
-            return _play.getState() == Init::Play;
+            return _play.getState() == Init::PLAY;
         }
 
         [[nodiscard]] std::vector<std::string> getSelected() const;

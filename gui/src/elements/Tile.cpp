@@ -45,12 +45,12 @@ namespace Zappy {
 
     const std::map<Info::ResourceName, std::queue<Resource>>
         Tile::INIT_RESOURCES = {
-            {Info::ResourceName::Food, {}},
-            {Info::ResourceName::Linemate, {}},
-            {Info::ResourceName::Deraumere, {}},
-            {Info::ResourceName::Sibur, {}},
-            {Info::ResourceName::Mendiane, {}},
-            {Info::ResourceName::Phiras, {}},
-            {Info::ResourceName::Thystame, {}},
+            {Info::ResourceName::FOOD, {}},
+            {Info::ResourceName::LINEMATE, {}},
+            {Info::ResourceName::DERAUMERE, {}},
+            {Info::ResourceName::SIBUR, {}},
+            {Info::ResourceName::MENDIANE, {}},
+            {Info::ResourceName::PHIRAS, {}},
+            {Info::ResourceName::THYSTAME, {}},
     };
 } // namespace Zappy
