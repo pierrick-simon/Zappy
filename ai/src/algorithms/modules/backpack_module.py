@@ -33,15 +33,7 @@ class BackpackModule:
         @return An instance of the backpack module.
         """
         self._handler: ConnectionHandler = handler
-        self.inventory: dict[str, int] = {
-            "food": 10,
-            "linemate": 0,
-            "deraumere": 0,
-            "sibur": 0,
-            "mendiane": 0,
-            "phiras": 0,
-            "thystame": 0,
-        }
+        self.inventory: dict[str, int] = self.get_default_inventory()
         self.food_decay: int = 0
 
     def tick(self, action: str) -> None:
@@ -76,6 +68,17 @@ class BackpackModule:
             if self.inventory["food"] > 0:
                 self.inventory["food"] -= 1
             self.food_decay -= FOOD_DECAY_TIME_UNITS
+    
+    def get_default_inventory(self) -> dict[str, int]:
+        return {
+            "food": 10,
+            "linemate": 0,
+            "deraumere": 0,
+            "sibur": 0,
+            "mendiane": 0,
+            "phiras": 0,
+            "thystame": 0,
+        }
 
     def add_to_inventory(self, objects: list) -> None:
         """! Add objects to the tracked inventory (call after a successful Take).
@@ -104,5 +107,9 @@ class BackpackModule:
 
         @return None
         """
-        self.inventory = COMMAND_FACTORY["Inventory"](self._handler)
+        new_inventory: dict[str, int] = COMMAND_FACTORY["Inventory"](self._handler)
+        self.inventory = self.get_default_inventory()
+        for ressource, quantity in new_inventory.items():
+            if ressource in self.inventory:
+                self.inventory[ressource] = quantity
         self.food_decay += COMMAND_TIME["Inventory"]

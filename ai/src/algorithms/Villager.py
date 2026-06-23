@@ -57,7 +57,7 @@ class Villager:
     status: bool = True
     level: int = 1
     master: str = str()
-    followers: list[str] = []
+    followers: set[str] = set()
     mode: MODE = MODE.SURVIVE
     stones_deposited: bool = False
     plan: deque[tuple[MODE, Command]]
@@ -95,44 +95,42 @@ class Villager:
             return
         if str(self.id) not in receivers and "*" not in receivers:
             return
+        master_id: str = sender
+        broadcast(self.handler, f"{self.id};yes;{self.level};{format_receivers([master_id])}")
         self.backpack.tick("Broadcast")
-        sender = format_receivers([sender])
-        broadcast(self.handler, f"{self.id};yes;{self.level};{sender}")
         self.mode = MODE.FOLLOWER
-        print(f"type: {type(sender)}, {sender=}")
-        self.master = sender
+        self.master = master_id
         self.plan.clear()
-        print(f"{event.direction=}")
         self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
     
     def handle_message_as_follower(self, event: Event) -> None:
-        sender, _, _, receiver = event.argument
-        receivers: list[str] = parse_receivers(receiver)
+        sender, _, _, _ = event.argument
 
-        print(f"sencer: {sender}, master: {self.master}")
-        print(f"Receiver: {receiver}")
+        print(f"sender: {sender}, master: {self.master}")
         if sender != self.master:
             return
-        if str(self.id) not in receivers:
-            return
-        if any(mode == self.mode for mode, _ in self.plan):
-            return
-        print("message if for me")
+        print(f"{self.plan=}")
         self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
 
     def handle_message_as_master(self, event: Event) -> None:
         sender, type, _, receiver = event.argument
         receivers: list[str] = parse_receivers(receiver)
 
+        if type == "incantation":
+            if sender < str(self.id):
+                self.mode = MODE.FOLLOWER
+                self.master = sender
+                self.followers.clear()
+                return
         print(f"{type=} | {receivers=} | {sender=}")
         if not receivers or str(self.id) not in receivers or type != "yes":
             return
-        self.followers.append(str(sender))
+        self.followers.add(str(sender))
 
     def call_followers(self):
-        receivers: str = format_receivers(self.followers)
-        print(f"Call followers: {receivers=}")
+        receivers: str = format_receivers(list(self.followers))
         broadcast(self.handler, f"{self.id};incantation;{self.level};{receivers}")
+        self.backpack.tick("Broadcast")
     
     def deposit_stones(self):
         self.plan.clear()
@@ -143,7 +141,7 @@ class Villager:
     def check_incantations(self, tile: list[str], level: int) -> bool:
         players: int =  tile.count("player")
 
-        print(f"{tile=}")
+        print(f"Looking for an incantations {tile=}, {players=}")
         if (players < INCANTATION_PLAYERS_NEEDED[level]):
             return False
         for ressource, quantity in INCANTATION_PREREQUISITES[level].items():
@@ -165,7 +163,7 @@ class Villager:
             self.call_followers()
 
     def handle_message(self, event: Event) -> None:
-        print(f"Message: {event}")
+        print(f"message={event}")
         self.BROADCAST_COMPORTEMENT[self.mode](event)
 
     def handle_eject(self, event: Event) -> None:
@@ -195,20 +193,21 @@ class Villager:
         if not self.plan:
             self.append_to_plan(MOVE[randint(1, 8)], self.mode)
 
-    def handle_response(self, command: Command):
+    def handle_response(self, command: tuple[MODE, Command]):
         print(f"{command=}")
-        send_and_recv(self.handler, command)
-        self.backpack.tick(command.command)
-        if command.command == "Take" and command.response == "ok":
-            self.backpack.add_to_inventory([command.argument])
-        if command.command == "Set" and command.response == "ok":
-            self.backpack.del_from_inventory([command.argument])
-        print(f"{self.backpack.inventory=}")
+        send_and_recv(self.handler, command[1])
+        self.backpack.tick(command[1].command)
+        if command[1].command == "Take" and command[1].response == "ok":
+            self.backpack.add_to_inventory([command[1].argument])
+        if command[1].command == "Set" and command[1].response == "ok":
+            self.backpack.del_from_inventory([command[1].argument])
 
     def handle_events(self):
-        event: Event = self.handler.consume_event()
-        if event is not None:
-            self.EVENTS[event.name](event)
+            while True:
+                event = self.handler.consume_event()
+                if event is None:
+                    break
+                self.EVENTS[event.name](event)
 
     def update_mode(self):
         previous_mode = self.mode
@@ -234,7 +233,6 @@ class Villager:
             missing: dict[str, int] = get_missing_resources(
                 self.backpack.inventory, (self.level - 1)
             )
-            print(f"{missing=}")
             if missing and not self.plan:
                 self.search_ressources(missing, 300)
         elif self.mode == MODE.MASTER:
@@ -242,7 +240,7 @@ class Villager:
 
     def execute_action(self):
         if self.plan:
-            self.handle_response(self.plan.popleft()[1])
+            self.handle_response(self.plan.popleft())
         self.handle_events()
 
     def run(self):
