@@ -14,7 +14,7 @@
 namespace Zappy {
     Player::Player(const Shared::NewPlayerEvent::NewPlayer &player,
         std::ofstream &logFile, raylib::Model &model,
-        std::vector<raylib::ModelAnimation> &modelAnimation) :
+        std::vector<::ModelAnimation> &modelAnimation) :
         _id(player.id),
         _x(player.x),
         _y(player.y),
@@ -96,7 +96,7 @@ namespace Zappy {
     {
         this->_frameTime += dt;
         float normalized =
-            std::fmodf(this->_frameTime, this->_animationDuration);
+            std::fmod(this->_frameTime, this->_animationDuration);
         this->_animationFrame =
             static_cast<std::size_t>(normalized * ANIMATIONS_FPS);
     }
@@ -108,12 +108,13 @@ namespace Zappy {
             static_cast<float>(this->getCurrentAnimation().keyframeCount) /
             ANIMATIONS_FPS;
     }
-    const raylib::ModelAnimation &Player::getCurrentAnimation() const
+
+    const ModelAnimation &Player::getCurrentAnimation() const
     {
         return this->_modelAnimation[this->_currentAnimationIndex];
     }
 
-    raylib::ModelAnimation &Player::getCurrentAnimation()
+    ModelAnimation &Player::getCurrentAnimation()
     {
         return this->_modelAnimation[this->_currentAnimationIndex];
     }

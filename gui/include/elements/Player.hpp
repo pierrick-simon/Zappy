@@ -27,7 +27,7 @@ namespace Zappy {
     public:
         Player(const Shared::NewPlayerEvent::NewPlayer &player,
             std::ofstream &logFile, raylib::Model &model,
-            std::vector<raylib::ModelAnimation> &modelAnimation);
+            std::vector<::ModelAnimation> &modelAnimation);
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
 
@@ -84,8 +84,8 @@ namespace Zappy {
 
         void setAnimationIndex(size_t index);
 
-        const raylib::ModelAnimation &getCurrentAnimation() const;
-        raylib::ModelAnimation &getCurrentAnimation();
+        [[nodiscard]] const ModelAnimation &getCurrentAnimation() const;
+        ModelAnimation &getCurrentAnimation();
 
     private:
         std::size_t _id;
@@ -103,7 +103,7 @@ namespace Zappy {
         std::ofstream &_logFile;
 
         raylib::Model &_model;
-        std::vector<raylib::ModelAnimation> &_modelAnimation;
+        std::vector<::ModelAnimation> &_modelAnimation;
         size_t _currentAnimationIndex {0};
         std::size_t _animationFrame {0};
         float _frameTime {0.0f};

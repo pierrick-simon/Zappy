@@ -15,6 +15,7 @@ namespace Zappy {
     Players::Players(std::ofstream &logFile) :
         _logFile(logFile)
     {
+        this->loadAnimations();
     }
 
     bool Players::addPlayer(const Shared::NewPlayerEvent::NewPlayer &player)
@@ -70,8 +71,18 @@ namespace Zappy {
     void Players::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
-        this->_model.materials[1].shader = this->getShader().asShader();
-        this->_model.materials[2].shader = this->getShader().asShader();
+        this->_model.materials[STONE_MAT].shader = this->getShader().asShader();
+        this->_model.materials[GLOWING_MAT].shader =
+            this->getShader().asShader();
+    }
+
+    void Players::loadAnimations()
+    {
+        int count = 0;
+        ::ModelAnimation *modelAnimations =
+            ::LoadModelAnimations(PLAYER_MODEL_PATH.c_str(), &count);
+
+        this->_modelAnimation = {modelAnimations, modelAnimations + count};
     }
 
     Player &Players::getPlayer(std::size_t id)

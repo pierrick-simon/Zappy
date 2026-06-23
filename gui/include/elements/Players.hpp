@@ -44,6 +44,8 @@ namespace Zappy {
 
         void setShader(Graphics::Shader &shader) override;
 
+        void loadAnimations();
+
     private:
         std::unordered_map<std::size_t, Player> _players;
         std::map<Info::ResourceName, std::size_t> _totalResources =
@@ -54,8 +56,10 @@ namespace Zappy {
             Assets::getResource("players/player.glb");
         raylib::Model _model {LoadModel(PLAYER_MODEL_PATH.c_str())};
 
-        std::vector<raylib::ModelAnimation> _modelAnimation =
-            raylib::ModelAnimation::Load(PLAYER_MODEL_PATH);
+        std::vector<::ModelAnimation> _modelAnimation;
+
+        static constexpr auto STONE_MAT = 1;
+        static constexpr auto GLOWING_MAT = 2;
     };
 } // namespace Zappy
 
