@@ -9,6 +9,7 @@
 #include <chrono>
 #include <iomanip>
 #include <iostream>
+#include <random>
 
 namespace Shared {
     std::optional<std::string> Utils::parseLine(std::string &str)
@@ -33,5 +34,10 @@ namespace Shared {
         file << msg << std::endl;
         std::cout << "[" << std::put_time(std::localtime(&t), "%H:%M:%S");
         std::cout << "] " << msg << std::endl;
+    }
+
+    float Utils::fRandRange(float min, float max)
+    {
+        return min + (float)std::rand() / (float)RAND_MAX * (max - min);
     }
 } // namespace Shared

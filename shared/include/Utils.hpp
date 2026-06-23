@@ -25,6 +25,7 @@ namespace Shared {
     public:
         static std::optional<std::string> parseLine(std::string &str);
         static void logMsg(std::ofstream &file, const std::string &msg);
+        static float fRandRange(float min, float max);
     };
 } // namespace Shared
 
