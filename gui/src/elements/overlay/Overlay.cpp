@@ -16,7 +16,8 @@ namespace Zappy {
         eventBox(_font, teams),
         player(_font, teams),
         team(_font, teams),
-        tile(_font)
+        tile(_font),
+        timeUnit(_font)
     {
     }
 

@@ -52,16 +52,17 @@ namespace Zappy {
 
     void Environement::update(float dt)
     {
-        auto updateTimeUnit = dt * float(_timeUnit);
+        auto deltaTimeUnit = dt * float(_timeUnit);
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
-        _elevations.update(updateTimeUnit);
+        _elevations.update(deltaTimeUnit);
         if (_selectPlayer)
             updatePlayerInfo();
         else if (_selectTile)
             updateTileInfo();
         else
             updateTeamInfo();
+        updateTimeUnit();
     }
 
     void Environement::setShader(Graphics::Shader &shader)
@@ -81,6 +82,7 @@ namespace Zappy {
         _overlay.chatBox.draw2D();
         _overlay.eventBox.draw2D();
         _elevations.draw2D();
+        _overlay.timeUnit.draw2D();
         if (_selectPlayer)
             _overlay.player.draw2D();
         else if (_selectTile)
@@ -219,6 +221,16 @@ namespace Zappy {
         _loading = !_map.getHeight() || !_map.getWidth() || _teams.empty() ||
             !_timeUnit;
         _isConnect = !_loading;
+    }
+
+    void Environement::updateTimeUnit()
+    {
+        if (_timeUnit == 0)
+            return;
+        auto tmp = _overlay.timeUnit.update(_timeUnit);
+        if (tmp != _timeUnit)
+            Shared::Connect::send(_connect.getFd(),
+                ClientCmd::SST.getStr() + " " + std::to_string(tmp) + "\n");
     }
 
     const std::unordered_map<std::string, Environement::Event>

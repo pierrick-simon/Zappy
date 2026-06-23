@@ -93,6 +93,7 @@ namespace Zappy {
         void updatePlayerInfo();
         void updateTileInfo();
         void updateTeamInfo();
+        void updateTimeUnit();
 
         std::size_t _width = 0;
         std::size_t _height = 0;

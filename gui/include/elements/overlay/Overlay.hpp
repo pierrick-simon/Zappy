@@ -15,6 +15,7 @@
     #include "Resources.hpp"
     #include "Team.hpp"
     #include "Tile2D.hpp"
+    #include "TimeUnit.hpp"
 
 namespace Zappy {
     class Overlay {
@@ -27,6 +28,7 @@ namespace Zappy {
         Player2D player;
         Team team;
         Tile2D tile;
+        TimeUnit timeUnit;
 
         static const std::map<Info::ResourceName, ResourceInfo::TextureSize>
             RESOURCES;

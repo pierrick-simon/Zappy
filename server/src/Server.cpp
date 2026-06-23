@@ -124,13 +124,18 @@ namespace Zappy {
 
     void Server::updateGui()
     {
+        bool send = false;
         for (auto &[_, gui] : _clients.gui) {
             auto tmp = gui.timeUnitUpdate();
             if (tmp && *tmp != _f) {
                 _f = *tmp;
-                gui.timeUnitEvent(_f);
+                send = true;
             }
         }
+        if (!send)
+            return;
+        for (auto &[_, gui] : _clients.gui)
+            gui.timeUnitEvent(_f);
     }
 
     void Server::handleDeadClient(const std::vector<int> &deads)
