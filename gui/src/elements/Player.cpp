@@ -29,6 +29,7 @@ namespace Zappy {
             "Player [" + std::to_string(_id) + "] joined the " + _team +
                 " team.");
         _inventory = Info::INIT_RESOUCES;
+        this->setAnimationIndex(0);
     }
 
     void Player::move(std::size_t x, std::size_t y, Info::Direction dir)
@@ -84,8 +85,8 @@ namespace Zappy {
 
     void Player::draw3D() const
     {
-        this->_model.UpdateAnimation(
-            this->getCurrentAnimation(), this->_animationFrame);
+        this->_model.UpdateAnimation(this->getCurrentAnimation(),
+            static_cast<float>(this->_animationFrame));
         auto [axis, angle] = this->getRotation().ToAxisAngle();
         this->_model.Draw(
             this->_position, axis, Maths::RadToDeg(angle), this->_scale);
@@ -94,13 +95,18 @@ namespace Zappy {
     void Player::update(float dt)
     {
         this->_frameTime += dt;
-        this->_animationFrame = (this->_animationFrame + 1) %
-            this->getCurrentAnimation().keyframeCount;
+        float normalized =
+            std::fmodf(this->_frameTime, this->_animationDuration);
+        this->_animationFrame =
+            static_cast<std::size_t>(normalized * ANIMATIONS_FPS);
     }
 
     void Player::setAnimationIndex(size_t index)
     {
         this->_currentAnimationIndex = index;
+        this->_animationDuration =
+            static_cast<float>(this->getCurrentAnimation().keyframeCount) /
+            ANIMATIONS_FPS;
     }
     const raylib::ModelAnimation &Player::getCurrentAnimation() const
     {
