@@ -17,6 +17,9 @@ namespace Zappy {
         static constexpr std::string_view FONT_PATH = "public/GuiFont.otf";
         static constexpr std::string_view IMG_NEXT = "public/next.png";
 
+        static constexpr unsigned int WINDOW_SIZE_X = 1920;
+        static constexpr unsigned int WINDOW_SIZE_Y = 1080;
+
         static constexpr Color GOLD_RICH = {212, 160, 23, 255};
         static constexpr Color DARK_PINEWOOD = {28, 52, 32, 255};
         static constexpr Color BLUE_THROUGH = {0, 0, 139, 128};

@@ -37,6 +37,8 @@ namespace Graphics {
             std::function<void(Window &)>>
             KEY_METHODS;
 
+        RenderTexture2D _renderTarget = {};
+
         static constexpr unsigned int WINDOW_SIZE_X = 1920;
         static constexpr unsigned int WINDOW_SIZE_Y = 1080;
         static constexpr auto TARGET_FPS = 60;

@@ -10,12 +10,12 @@
 
 namespace Zappy {
     Team::Team(Font &font, std::map<std::string, Color> &teams) :
-        InfoBox({float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X,
+        InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
             false),
         _teams(teams)
     {
-        auto x = float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X;
+        auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X;
         raylib::Vector2 pos(x, Init::INFO_POS_Y);
         initText(font, pos);
     }

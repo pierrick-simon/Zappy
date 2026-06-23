@@ -10,12 +10,12 @@
 
 namespace Zappy {
     Player2D::Player2D(Font &font, std::map<std::string, Color> &teams) :
-        InfoBox({float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X,
+        InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
             true),
         _teams(teams)
     {
-        auto x = float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X;
+        auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X;
         raylib::Vector2 pos(x, Init::INFO_POS_Y);
         initText(font, pos);
     }
@@ -103,7 +103,7 @@ namespace Zappy {
         if (_teams.contains(team))
             _text[Team].color = _teams.at(team);
         bool first = true;
-        auto maxSize_x = float(GetScreenWidth()) - Init::GAP -
+        auto maxSize_x = float(Init::WINDOW_SIZE_X) - Init::GAP -
             _text[Team].text.getPosition().x;
         _text[Team].text.setStr(_text[Team].prefix + _text[Team].value);
         auto size_x = _text[Team].text.getSize().x;

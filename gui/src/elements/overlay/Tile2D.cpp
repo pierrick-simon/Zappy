@@ -10,11 +10,11 @@
 
 namespace Zappy {
     Tile2D::Tile2D(Font &font) :
-        InfoBox({float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X,
+        InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
             true)
     {
-        auto x = float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X;
+        auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X;
         raylib::Vector2 pos(x, Init::INFO_POS_Y);
         initText(font, pos);
     }

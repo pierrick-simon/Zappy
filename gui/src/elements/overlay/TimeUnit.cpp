@@ -12,7 +12,7 @@
 namespace Zappy {
     TimeUnit::TimeUnit(Font &font)
     {
-        auto x = float(GetScreenWidth()) - Init::GAP - SIZE.x;
+        auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - SIZE.x;
         raylib::Vector2 pos(x, Init::GAP);
         _text.setFont(font);
         _text.setColor(Init::GOLD_RICH);
