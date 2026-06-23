@@ -11,24 +11,14 @@
 namespace Graphics {
     void Text2D::draw2D() const
     {
-        if (_font)
-            ::DrawTextPro((*_font).get(),
-                _str.c_str(),
-                _position,
-                _origin,
-                _rotation,
-                _fontSize,
-                _spacing,
-                _color);
-        else
-            ::DrawTextPro(GetFontDefault(),
-                _str.c_str(),
-                _position,
-                _origin,
-                _rotation,
-                _fontSize,
-                _spacing,
-                _color);
+        ::DrawTextPro(_font ? (*_font).get() : GetFontDefault(),
+            _str.c_str(),
+            _position,
+            _origin,
+            _rotation,
+            _fontSize,
+            _spacing,
+            _color);
     }
 
     void Text2D::setFont(raylib::Font &font)

@@ -20,7 +20,7 @@ namespace Zappy {
             return _team;
         }
 
-        [[nodiscard]] std::size_t getTile(std::size_t width) const;
+        [[nodiscard]] std::size_t getTile(std::size_t mapWidth) const;
 
     private:
         std::size_t _x;

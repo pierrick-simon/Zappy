@@ -30,7 +30,7 @@ namespace Zappy {
         void draw2D() const override;
 
         [[nodiscard]] std::size_t getNbTileElevations(
-            std::size_t tile, std::size_t width) const;
+            std::size_t tile, std::size_t mapWidth) const;
 
     private:
         struct Parts {

@@ -49,10 +49,12 @@ namespace Zappy {
         {
             return _dead;
         }
+
         [[nodiscard]] std::string getTeam() const
         {
             return _team;
         }
+
         [[nodiscard]] std::size_t getLevel() const
         {
             return _level;

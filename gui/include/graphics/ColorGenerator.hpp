@@ -8,6 +8,7 @@
 #ifndef COLORGENERATOR_HPP_
     #define COLORGENERATOR_HPP_
 
+    #include <raylib-cpp.hpp>
     #include "graphics/AShadered.hpp"
 
 namespace Graphics {
@@ -16,10 +17,6 @@ namespace Graphics {
         raylib::Color next();
 
     private:
-        static raylib::Color hsvToColor(
-            float current, float saturation, float value);
-        static raylib::Color makeColor(float r, float g, float b);
-
         float _current = 0.0f;
 
         static constexpr float GOLDEN_RATIO = 1.618033988749895f;

@@ -65,11 +65,11 @@ namespace Zappy {
     }
 
     std::size_t Elevations::getNbTileElevations(
-        std::size_t tile, std::size_t width) const
+        std::size_t tile, std::size_t mapWidth) const
     {
         std::size_t nb = 0;
         for (const auto &[elevation, _] : _elevations) {
-            if (elevation.getTile(width) == tile)
+            if (elevation.getTile(mapWidth) == tile)
                 nb++;
         }
         return nb;
