@@ -26,6 +26,7 @@ namespace Zappy {
 
     protected:
         void initSprite(raylib::Vector2 pos);
+        void initSpriteInfo(raylib::Vector2 pos);
 
         Graphics::Box2D _box;
         std::map<Action, Graphics::Sprite2D> _buttons;

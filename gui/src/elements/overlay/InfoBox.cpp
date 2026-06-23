@@ -40,6 +40,17 @@ namespace Zappy {
                 pos.y - Init::INFO_SMALL_GAP});
         }
         pos.y += Init::GAP + Init::INFO_TITLE_SIZE / 2.f;
+        initSpriteInfo(pos);
+        _buttons[Action::Left].setRotation(Init::INFO_BUTTON_ROTATION);
+        _buttons[Action::Left].setPosition(
+            {pos.x + Init::GAP + Init::INFO_BUTTON_SIZE / 2.f, pos.y});
+        _buttons[Action::Right].setPosition({pos.x + Init::INFO_SIZE_X -
+                Init::GAP - Init::INFO_BUTTON_SIZE / 2.f,
+            pos.y});
+    }
+
+    void InfoBox::initSpriteInfo(raylib::Vector2 pos)
+    {
         for (auto &[name, button] : _buttons) {
             if (name == Action::Close) {
                 button.Load(IMG_CLOSE.data());
@@ -54,11 +65,5 @@ namespace Zappy {
             button.setOrigin(
                 {Init::INFO_BUTTON_SIZE / 2.f, Init::INFO_BUTTON_SIZE / 2.f});
         }
-        _buttons[Action::Left].setRotation(Init::INFO_BUTTON_ROTATION);
-        _buttons[Action::Left].setPosition(
-            {pos.x + Init::GAP + Init::INFO_BUTTON_SIZE / 2.f, pos.y});
-        _buttons[Action::Right].setPosition({pos.x + Init::INFO_SIZE_X -
-                Init::GAP - Init::INFO_BUTTON_SIZE / 2.f,
-            pos.y});
     }
 } // namespace Zappy
