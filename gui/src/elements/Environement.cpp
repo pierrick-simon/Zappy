@@ -162,7 +162,8 @@ namespace Zappy {
         if (_selectPlayer) {
             try {
                 auto player = _players.getPlayer(*_selectPlayer);
-                _overlay.player.update(player.getPlayerInfo());
+                auto value = _overlay.player.update(player.getPlayerInfo());
+                _selectPlayer = _players.getNextPlayer(value, *_selectPlayer);
             } catch (Player::PlayerException &_) {
                 _selectPlayer = std::nullopt;
             }
@@ -185,12 +186,13 @@ namespace Zappy {
             auto nbElevation =
                 _elevations.getNbTileElevations(*_selectPlayer, _width);
             auto resources = _map.getTileResources(*_selectTile);
-            _overlay.tile.update({*_selectTile % _width,
+            auto value = _overlay.tile.update({*_selectTile % _width,
                 *_selectTile / _width,
                 nbPlayer,
                 nbEgg,
                 nbElevation,
                 resources});
+            _selectTile = _map.getNextTile(value, *_selectTile);
         }
     }
 

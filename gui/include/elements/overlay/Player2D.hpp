@@ -10,6 +10,7 @@
 
     #include <array>
     #include "Info.hpp"
+    #include "InfoBox.hpp"
     #include "PlayerStatus.hpp"
     #include "graphics/IDrawable2D.hpp"
     #include "graphics/primitives/Box2D.hpp"
@@ -17,7 +18,7 @@
     #include "graphics/primitives/Text2D.hpp"
 
 namespace Zappy {
-    class Player2D : public Graphics::IDrawable2D {
+    class Player2D : public InfoBox, public Graphics::IDrawable2D {
     public:
         struct PlayerInfo {
             std::size_t id;
@@ -31,8 +32,9 @@ namespace Zappy {
 
         Player2D(Font &font, std::map<std::string, Color> &teams);
 
-        void update(const PlayerInfo &info);
+        Direction update(const PlayerInfo &info);
         void draw2D() const override;
+        void changeSelected(Direction dir) override;
 
     private:
         void initText(Font &font, raylib::Vector2 pos);
@@ -55,7 +57,6 @@ namespace Zappy {
 
         enum Text { Team, Level, Position, Status, Inventory, NbText };
 
-        Graphics::Box2D _box;
         Graphics::Text2D _title;
         std::array<TextInfo, NbText> _text;
 
@@ -64,6 +65,8 @@ namespace Zappy {
         std::map<Info::ResourceName, Resource> _resources;
 
         std::map<std::string, Color> &_teams;
+
+        Direction _dir = Direction::None;
     };
 } // namespace Zappy
 

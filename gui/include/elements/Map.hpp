@@ -9,6 +9,7 @@
     #define MAP_HPP_
 
     #include "Info.hpp"
+    #include "InfoBox.hpp"
     #include "Tile.hpp"
     #include "graphics/AShadered.hpp"
     #include "graphics/IDrawable3D.hpp"
@@ -43,6 +44,9 @@ namespace Zappy {
 
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
         getTileResources(std::size_t tile) const;
+
+        [[nodiscard]] std::size_t getNextTile(
+            InfoBox::Direction dir, std::size_t tile) const;
 
         void draw3D() const override;
 

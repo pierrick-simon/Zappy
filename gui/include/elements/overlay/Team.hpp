@@ -12,13 +12,12 @@
     #include <map>
     #include <optional>
     #include <string_view>
+    #include "InfoBox.hpp"
     #include "graphics/IDrawable2D.hpp"
-    #include "graphics/primitives/Box2D.hpp"
-    #include "graphics/primitives/Sprite2D.hpp"
     #include "graphics/primitives/Text2D.hpp"
 
 namespace Zappy {
-    class Team : public Graphics::IDrawable2D {
+    class Team : public InfoBox, public Graphics::IDrawable2D {
     public:
         static constexpr std::size_t NB_LEVEL = 8;
 
@@ -30,6 +29,7 @@ namespace Zappy {
         Team(Font &font, std::map<std::string, Color> &teams);
         void update(const TeamInfo &info);
         void draw2D() const override;
+        void changeSelected(Direction dir) override;
 
         void setSelectTeam(const std::string &team);
         [[nodiscard]] std::optional<std::string> getSelectTeam()
@@ -39,10 +39,8 @@ namespace Zappy {
 
     private:
         void initText(Font &font, raylib::Vector2 pos);
-        void initSprite(raylib::Vector2 pos);
         void updateTitle(const std::string &team);
         void updateMembers(const std::array<std::size_t, NB_LEVEL> &levels);
-        void changeSelectTeam(int value);
 
         enum Text { NbPlayer, NbEgg, Level, NbText };
 
@@ -52,12 +50,9 @@ namespace Zappy {
             std::string value;
         };
 
-        Graphics::Box2D _box;
         Graphics::Text2D _title;
         std::array<TextInfo, NbText> _text;
         std::array<TextInfo, NB_LEVEL> _levels;
-        Graphics::Sprite2D _prevButton;
-        Graphics::Sprite2D _nextButton;
 
         std::optional<std::string> _selectTeam;
 

@@ -10,13 +10,14 @@
 
     #include <array>
     #include "Info.hpp"
+    #include "InfoBox.hpp"
     #include "graphics/IDrawable2D.hpp"
     #include "graphics/primitives/Box2D.hpp"
     #include "graphics/primitives/Sprite2D.hpp"
     #include "graphics/primitives/Text2D.hpp"
 
 namespace Zappy {
-    class Tile2D : public Graphics::IDrawable2D {
+    class Tile2D : public InfoBox, public Graphics::IDrawable2D {
     public:
         struct TileInfo {
             std::size_t x;
@@ -29,8 +30,9 @@ namespace Zappy {
 
         Tile2D(Font &font);
 
-        void update(const TileInfo &info);
+        Direction update(const TileInfo &info);
         void draw2D() const override;
+        void changeSelected(Direction dir) override;
 
     private:
         void initText(Font &font, raylib::Vector2 pos);
@@ -52,13 +54,14 @@ namespace Zappy {
 
         enum Text { NbPlayer, NbEgg, NBElevation, Resources, NbText };
 
-        Graphics::Box2D _box;
         Graphics::Text2D _title;
         std::array<TextInfo, NbText> _text;
 
         Color _teamColor = WHITE;
 
         std::map<Info::ResourceName, Resource> _resources;
+
+        Direction _dir = Direction::None;
     };
 } // namespace Zappy
 

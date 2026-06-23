@@ -9,16 +9,13 @@
 #include "Overlay.hpp"
 
 namespace Zappy {
-    Tile2D::Tile2D(Font &font)
+    Tile2D::Tile2D(Font &font) :
+        InfoBox({float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X,
+            Init::INFO_POS_Y})
     {
         auto x = float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X;
         raylib::Vector2 pos(x, Init::INFO_POS_Y);
         initText(font, pos);
-        _box.setPos(pos);
-        _box.setBorderSize(Init::BORDER_SIZE);
-        _box.setRound(Init::BORDER_ROUND);
-        _box.setBorderColor(Init::GOLD_RICH);
-        _box.setColor(Init::DARK_PINEWOOD);
     }
 
     void Tile2D::initText(Font &font, raylib::Vector2 pos)
@@ -66,10 +63,10 @@ namespace Zappy {
                 {pos.x + Init::INFO_SIZE_X - Init::GAP * 7.f, pos.y});
             pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
         }
-        _box.setSize({Init::INFO_SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
+        setSize({Init::INFO_SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
     }
 
-    void Tile2D::update(const TileInfo &info)
+    InfoBox::Direction Tile2D::update(const TileInfo &info)
     {
         _title.setStr("Tile (" + std::to_string(info.x) + "," +
             std::to_string(info.y) + ")");
@@ -82,6 +79,9 @@ namespace Zappy {
         min = std::min(info.nbElevation, Init::INFO_MAX);
         _text[NBElevation].value = std::to_string(min);
         updateResources(info.resources);
+        auto dir = _dir;
+        _dir = Direction::None;
+        return dir;
     }
 
     void Tile2D::updateResources(
@@ -109,5 +109,12 @@ namespace Zappy {
             info.sprite.draw2D();
             info.text.draw2D();
         }
+        _prevButton.draw2D();
+        _nextButton.draw2D();
+    }
+
+    void Tile2D::changeSelected(Direction dir)
+    {
+        _dir = dir;
     }
 } // namespace Zappy

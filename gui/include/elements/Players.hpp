@@ -37,9 +37,11 @@ namespace Zappy {
             const std::string &team) const;
         [[nodiscard]] std::size_t getNbTilePlayers(
             std::size_t tile, std::size_t width) const;
+        [[nodiscard]] std::optional<std::size_t> getNextPlayer(
+            InfoBox::Direction dir, std::size_t player) const;
 
     private:
-        std::unordered_map<std::size_t, Player> _players;
+        std::map<std::size_t, Player> _players;
         std::map<Info::ResourceName, std::size_t> _totalResources =
             Info::INIT_RESOUCES;
 

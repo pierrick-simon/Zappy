@@ -51,6 +51,7 @@ set(SRCS
         src/elements/overlay/Player2D.cpp
         src/elements/overlay/Team.cpp
         src/elements/overlay/Tile2D.cpp
+        src/elements/overlay/InfoBox.cpp
 )
 
 set(HEADERS

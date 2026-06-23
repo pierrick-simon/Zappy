@@ -92,4 +92,29 @@ namespace Zappy {
         }
         return nb;
     }
+
+    std::optional<std::size_t> Players::getNextPlayer(
+        InfoBox::Direction dir, std::size_t player) const
+    {
+        std::optional<std::size_t> value;
+        auto find = _players.find(player);
+
+        if (find == _players.end() || dir == InfoBox::Direction::None) {
+            if (!_players.empty() && dir == InfoBox::Direction::None)
+                value = player;
+            if (!_players.empty() && dir != InfoBox::Direction::None)
+                value = _players.begin()->first;
+        } else if (dir == InfoBox::Direction::Left) {
+            if (find == _players.begin())
+                value = _players.rbegin()->first;
+            else
+                value = (--find)->first;
+        } else {
+            if (find == --_players.end())
+                value = _players.begin()->first;
+            else
+                value = (++find)->first;
+        }
+        return value;
+    }
 } // namespace Zappy
