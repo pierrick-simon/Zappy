@@ -16,8 +16,8 @@ namespace Zappy {
         _width(width), _height(height)
     {
         for (const auto &[type, infos] : Info::resources)
-            _ressources_models[type] =
-                Assets::getResource("rocks/" + infos.str + ".glb");
+            _ressources_models.try_emplace(
+                type, Assets::getResource("rocks/" + infos.str + ".glb"));
     }
 
     bool Map::updateSize(std::size_t x, std::size_t y)
