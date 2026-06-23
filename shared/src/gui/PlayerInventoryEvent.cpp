@@ -26,8 +26,8 @@ namespace Shared {
     {
         std::ostringstream oss;
         oss << "#" << _id << " ";
-        oss << "#" << _x << " ";
-        oss << "#" << _y;
+        oss << _x << " ";
+        oss << _y;
         for (auto resource : _resources)
             oss << " " << resource;
         return oss.str();

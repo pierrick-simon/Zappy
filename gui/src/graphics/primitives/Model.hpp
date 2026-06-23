@@ -18,7 +18,7 @@ namespace Graphics {
     public:
         explicit Model(const std::string &path);
 
-        void draw() const override;
+        void draw3D() const override;
         void loadAnimations(const std::optional<std::string> &path = {});
         void playAnimation(size_t index);
         void update(float dt) override;

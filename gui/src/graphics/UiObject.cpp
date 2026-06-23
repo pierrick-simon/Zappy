@@ -8,7 +8,7 @@
 #include "UiObject.hpp"
 
 namespace Graphics {
-    void UIObject::update(float dt)
+    void UiObject::update(float dt)
     {
     }
 } // namespace Graphics

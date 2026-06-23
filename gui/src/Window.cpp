@@ -16,19 +16,48 @@ namespace Graphics {
         raylib::Window(
             WINDOW_SIZE_X, WINDOW_SIZE_Y, WINDOW_TITLE, 0, LOG_WARNING)
     {
+        int monitor = GetCurrentMonitor();
+        int W = GetMonitorWidth(monitor);
+        int H = GetMonitorHeight(monitor);
+        SetWindowSize(W, H);
+        SetWindowPosition(0, 0);
+        ToggleFullscreen();
         this->SetTargetFPS(TARGET_FPS);
+        this->_scene.getCamera().SetPosition(DEFAULT_CAMERA_POS);
+        _renderTarget = LoadRenderTexture(WINDOW_SIZE_X, WINDOW_SIZE_Y);
+        SetTextureFilter(_renderTarget.texture, TEXTURE_FILTER_BILINEAR);
     }
 
     void Window::update()
     {
         this->handleEvents();
         this->_scene.update(GetFrameTime());
-        this->BeginDrawing();
-        this->ClearBackground(raylib::Color::RayWhite());
+        BeginTextureMode(_renderTarget);
+        ClearBackground(RAYWHITE);
         this->getScene().getCamera().BeginMode();
+        this->getScene().getShader().BeginMode();
         this->_scene.drawGameObjects();
+        this->getScene().getShader().EndMode();
         this->getScene().getCamera().EndMode();
         this->_scene.drawUiObjects();
+        EndTextureMode();
+        this->BeginDrawing();
+        ClearBackground(raylib::Color::Black());
+        auto scaleX = float(GetScreenWidth()) / WINDOW_SIZE_X;
+        auto scaleY = float(GetScreenHeight()) / WINDOW_SIZE_Y;
+        auto scale = std::min(scaleX, scaleY);
+        Rectangle src = {0, 0, float(WINDOW_SIZE_X), -float(WINDOW_SIZE_Y)};
+        Rectangle dst = {
+            (float(GetScreenWidth()) - WINDOW_SIZE_X * scale) / 2.0f,
+            (float(GetScreenHeight()) - WINDOW_SIZE_Y * scale) / 2.0f,
+            WINDOW_SIZE_X * scale,
+            WINDOW_SIZE_Y * scale};
+        DrawTexturePro(_renderTarget.texture,
+            src,
+            dst,
+            {0, 0},
+            0.0f,
+            raylib::Color::White());
         this->EndDrawing();
     }
 

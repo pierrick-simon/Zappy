@@ -6,6 +6,8 @@
 */
 
 #include <algorithm>
+#include <iostream>
+
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
 #include "GUIEvents.hpp"
@@ -35,11 +37,9 @@ namespace Zappy {
     {
         Shared::TeamNameEvent event;
         event.retrieve(std::move(stream));
-        for (const auto &team : _teams) {
-            if (team == event.getTeam())
-                return;
-        }
-        _teams.push_back(event.getTeam());
+        if (_teams.contains(event.getTeam()))
+            return;
+        _teams.emplace(event.getTeam(), _colorGenerator.next());
     }
 
     void Environement::newPlayer(std::istringstream stream)
@@ -47,9 +47,14 @@ namespace Zappy {
         Shared::NewPlayerEvent event;
         event.retrieve(std::move(stream));
         auto player = event.getPlayer();
-        auto find = _players.find(player.id);
-        if (find == _players.end())
-            _players.emplace(player.id, Player {player, _logFile});
+        if (_players.addPlayer(player)) {
+            _overlay.eventBox.addMessage(
+                player.team, player.id, "Joined the game.");
+            Shared::Connect::send(_connect.getFd(),
+                ClientCmd::PIN.getStr() + " #" + std::to_string(player.id) +
+                    "\n" + ClientCmd::PLV.getStr() + " #" +
+                    std::to_string(player.id) + "\n");
+        }
     }
 
     void Environement::playerPosition(std::istringstream stream)
@@ -57,9 +62,16 @@ namespace Zappy {
         Shared::PlayerPositionEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
+            auto &player = _players.getPlayer(event.getId());
             auto dir = Info::getDirection(event.getDir());
+            auto mapPos =
+                this->_map.getTilePosition(event.getX(), event.getY());
+            player.setPosition({mapPos.x, 0, mapPos.y});
             player.move(event.getX(), event.getY(), dir);
+            _overlay.eventBox.addMessage(player.getTeam(),
+                event.getId(),
+                "Moved to (" + std::to_string(event.getX()) + "," +
+                    std::to_string(event.getY()) + ").");
         } catch (Info::DirectionNotFoundException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         } catch (Player::PlayerException &e) {
@@ -72,7 +84,7 @@ namespace Zappy {
         Shared::PlayerLevelEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
+            auto &player = _players.getPlayer(event.getId());
             player.setLevel(event.getLevel());
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
@@ -84,8 +96,11 @@ namespace Zappy {
         Shared::PlayerInventoryEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
+            auto &player = _players.getPlayer(event.getId());
+            auto before = player.getResources();
             player.setInventory(event.getResources());
+            auto after = player.getResources();
+            _players.updateTotalResources(before, after);
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -96,7 +111,10 @@ namespace Zappy {
         Shared::PlayerExpulsionEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
+            auto &player = _players.getPlayer(event.getId());
+            player.setEject(true);
+            _overlay.eventBox.addMessage(
+                player.getTeam(), event.getId(), "Been push.");
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -107,8 +125,11 @@ namespace Zappy {
         Shared::BroadcastEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
-            _msg.push(Message {event.getId(), event.getText()});
+            auto &player = _players.getPlayer(event.getId());
+            _overlay.chatBox.addMessage(
+                player.getTeam(), event.getId(), event.getText());
+            _overlay.eventBox.addMessage(
+                player.getTeam(), event.getId(), "Started talking.");
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -119,31 +140,36 @@ namespace Zappy {
         Shared::StartIncantationEvent event;
         event.retrieve(std::move(stream));
         auto list = event.getIds();
-        std::map<std::size_t, bool> players;
+        std::vector<std::size_t> players;
         for (auto id : list) {
             try {
-                auto player = getPlayer(id);
-                players.emplace(id, false);
+                auto &player = _players.getPlayer(id);
+                players.push_back(id);
                 player.setIncantate(true);
+                _overlay.eventBox.addMessage(
+                    player.getTeam(), id, "Started incantade.");
             } catch (Player::PlayerException &e) {
                 Shared::Utils::logMsg(_logFile, e.what());
-                players.emplace(id, true);
             }
         }
-        _elevations.emplace_back(
+        _elevations.addElevation(
             event.getX(), event.getY(), event.getLevel(), players);
     }
 
-    void Environement::playersEndIncantate(std::map<std::size_t, bool> &players)
+    void Environement::playersEndIncantate(
+        std::vector<std::size_t> &players, bool success)
     {
-        for (auto &[id, dead] : players) {
-            if (dead)
-                continue;
+        for (auto id : players) {
             try {
-                auto player = getPlayer(id);
+                auto &player = _players.getPlayer(id);
                 player.setIncantate(false);
+                _overlay.eventBox.addMessage(player.getTeam(),
+                    id,
+                    success ? "Succeeded to incantate."
+                            : "Failed to incantate.");
+                if (success)
+                    player.addLevel();
             } catch (Player::PlayerException &e) {
-                dead = true;
                 Shared::Utils::logMsg(_logFile, e.what());
             }
         }
@@ -153,17 +179,8 @@ namespace Zappy {
     {
         Shared::EndIncantationEvent event;
         event.retrieve(std::move(stream));
-        for (auto elevation : _elevations) {
-            if (!elevation.getFinish() && elevation.getX() == event.getX() &&
-                elevation.getY() == event.getY()) {
-                elevation.setFinish(true);
-                playersEndIncantate(elevation.getPlayers());
-                return;
-            }
-        }
-        Shared::Utils::logMsg(_logFile,
-            "Incantation in (" + std::to_string(event.getX()) + "," +
-                std::to_string(event.getY()) + ") Not Found.");
+        auto players = _elevations.endElevation(event.getX(), event.getY());
+        playersEndIncantate(players, event.getResult());
     }
 
     void Environement::eggLaying(std::istringstream stream)
@@ -171,8 +188,10 @@ namespace Zappy {
         Shared::EggLayingEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
+            auto &player = _players.getPlayer(event.getId());
             player.setFork(true);
+            _overlay.eventBox.addMessage(
+                player.getTeam(), event.getId(), "Laying an egg.");
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -183,8 +202,15 @@ namespace Zappy {
         Shared::TakeResourceEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
+            auto &player = _players.getPlayer(event.getId());
             auto resource = Info::getResource(event.getNb());
+            auto before = player.getResources();
+            player.takeResource(resource);
+            auto after = player.getResources();
+            _players.updateTotalResources(before, after);
+            _overlay.eventBox.addMessage(player.getTeam(),
+                event.getId(),
+                "Take " + Info::getResourceName(resource) + ".");
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         } catch (Info::ResourceNotFoundException &e) {
@@ -197,26 +223,19 @@ namespace Zappy {
         Shared::SetResourceEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
+            auto &player = _players.getPlayer(event.getId());
             auto resource = Info::getResource(event.getNb());
+            auto before = player.getResources();
+            player.setResource(resource);
+            auto after = player.getResources();
+            _players.updateTotalResources(before, after);
+            _overlay.eventBox.addMessage(player.getTeam(),
+                event.getId(),
+                "Set " + Info::getResourceName(resource) + ".");
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         } catch (Info::ResourceNotFoundException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
-        }
-    }
-
-    void Environement::incantateDeadPlayer(std::size_t id)
-    {
-        for (auto elevation : _elevations) {
-            auto players = elevation.getPlayers();
-            auto find = std::find_if(players.begin(),
-                players.end(),
-                [id](const std::pair<const unsigned long, bool> &p) {
-                    return p.first == id;
-                });
-            if (find != players.end())
-                find->second = true;
         }
     }
 
@@ -225,9 +244,13 @@ namespace Zappy {
         Shared::PlayerDeathEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getId());
+            auto &player = _players.getPlayer(event.getId());
+            auto before = player.getResources();
             player.died();
-            incantateDeadPlayer(event.getId());
+            _elevations.removePlayer(event.getId());
+            _players.updateTotalResources(before, {});
+            _overlay.eventBox.addMessage(
+                player.getTeam(), event.getId(), "Died.");
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -238,10 +261,12 @@ namespace Zappy {
         Shared::EggLaidEvent event;
         event.retrieve(std::move(stream));
         try {
-            auto player = getPlayer(event.getPlayerId());
+            auto &player = _players.getPlayer(event.getPlayerId());
             player.setFork(false);
             _eggs.emplace(event.getEggId(),
                 Egg {event.getX(), event.getY(), player.getTeam()});
+            _overlay.eventBox.addMessage(
+                player.getTeam(), event.getPlayerId(), "Laid an egg.");
         } catch (Player::PlayerException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         }
@@ -307,5 +332,13 @@ namespace Zappy {
     {
         Shared::Utils::logMsg(
             _logFile, "Send a command with bad parameters to the server.");
+    }
+
+    void Environement::eggEvent(std::istringstream stream)
+    {
+        Shared::EggEvent event;
+        event.retrieve(std::move(stream));
+        _eggs.emplace(
+            event.getId(), Egg {event.getX(), event.getY(), event.getTeam()});
     }
 } // namespace Zappy

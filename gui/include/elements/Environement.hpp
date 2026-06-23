@@ -9,24 +9,44 @@
     #define GUI_ENVIRONEMENT_HPP_
 
     #include <functional>
+    #include <optional>
     #include <queue>
     #include <string_view>
     #include <unordered_map>
     #include <vector>
     #include "Connect.hpp"
     #include "Egg.hpp"
-    #include "Elevation.hpp"
+    #include "Elevations.hpp"
     #include "GUIException.hpp"
     #include "Map.hpp"
-    #include "Player.hpp"
+    #include "Overlay.hpp"
+    #include "Players.hpp"
+    #include "graphics/AShadered.hpp"
+    #include "graphics/ColorGenerator.hpp"
+    #include "graphics/IDrawable2D.hpp"
+    #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IObject.hpp"
+    #include "graphics/IUpdatable.hpp"
 
 namespace Zappy {
-    class Environement {
+    class Environement : public Graphics::IDrawable3D,
+                         public Graphics::IUpdatable,
+                         public Graphics::IDrawable2D,
+                         public Graphics::IObject,
+                         public Graphics::AShadered {
     public:
         Environement(int port, const std::string &ip, std::ofstream &logFile,
             bool &isConnect);
 
-        bool update();
+        bool updateFromServer();
+
+        void update(float dt) override;
+
+        void setShader(Graphics::Shader &shader) override;
+
+        void draw3D() const override;
+
+        void draw2D() const override;
 
     private:
         using Event = std::function<void(Environement &, std::istringstream)>;
@@ -40,8 +60,6 @@ namespace Zappy {
         bool infoToRead();
         void handleEvents();
         void loading();
-
-        Player &getPlayer(std::size_t id);
 
         void mapSize(std::istringstream stream);
         void updateTile(std::istringstream stream);
@@ -67,16 +85,22 @@ namespace Zappy {
         void serverMsg(std::istringstream stream);
         void unknowCommand(std::istringstream stream);
         void badCommandParameter(std::istringstream stream);
+        void eggEvent(std::istringstream stream);
 
-        void playersEndIncantate(std::map<std::size_t, bool> &players);
-        void incantateDeadPlayer(std::size_t id);
+        void playersEndIncantate(
+            std::vector<std::size_t> &players, bool success);
 
+        void updatePlayerInfo();
+        void updateTileInfo();
+        void updateTeamInfo();
+        void updateTimeUnit();
+
+        std::size_t _width = 0;
+        std::size_t _height = 0;
         Map _map;
-        std::unordered_map<std::size_t, Player> _players;
+        Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
-        std::vector<Elevation> _elevations;
-        std::vector<std::string> _teams;
-        std::queue<Message> _msg;
+        std::map<std::string, raylib::Color> _teams;
         std::size_t _timeUnit;
         std::string _winingTeam;
 
@@ -85,6 +109,13 @@ namespace Zappy {
         std::string _buffer;
         bool _loading = false;
         std::queue<std::string> _events;
+
+        std::optional<std::size_t> _selectPlayer;
+        std::optional<std::size_t> _selectTile;
+
+        Graphics::ColorGenerator _colorGenerator;
+        Overlay _overlay;
+        Elevations _elevations;
 
         bool &_isConnect;
         std::ofstream &_logFile;
@@ -96,4 +127,4 @@ namespace Zappy {
     };
 } // namespace Zappy
 
-#endif /* !ENVIRONEMENT_HPP_ */
+#endif /* GUI_ENVIRONEMENT_HPP_ */

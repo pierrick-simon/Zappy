@@ -7,14 +7,17 @@
 
 #ifndef UIOBJECT_HPP
     #define UIOBJECT_HPP
-    #include "graphics/Drawable.hpp"
+    #include "graphics/IDrawable2D.hpp"
+    #include "graphics/IUpdatable.hpp"
     #include "graphics/Transformable2D.hpp"
 
 namespace Graphics {
 
-    class UIObject : public Drawable, public Transformable2D {
+    class UiObject : public IDrawable2D,
+                     public IUpdatable,
+                     public Transformable2D {
     public:
-        virtual void update(float dt);
+        void update(float dt) override;
     };
 
 } // namespace Graphics

@@ -12,4 +12,9 @@ namespace Zappy {
         _x(x), _y(y), _team(std::move(team))
     {
     }
+
+    std::size_t Egg::getTile(std::size_t mapWidth) const
+    {
+        return _y * mapWidth + _x;
+    }
 } // namespace Zappy

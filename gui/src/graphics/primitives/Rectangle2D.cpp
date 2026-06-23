@@ -8,19 +8,19 @@
 #include "Rectangle2D.hpp"
 
 namespace Graphics {
-    void Rectangle2D::draw() const
+    void Rectangle2D::draw2D() const
     {
         auto rect(*this);
         rect.SetSize(rect.GetSize() * this->getScale());
         rect.Draw(this->getPosition(), this->getRotation(), this->getColor());
     }
 
-    Color &Rectangle2D::getColor()
+    raylib::Color &Rectangle2D::getColor()
     {
         return this->_color;
     }
 
-    const Color &Rectangle2D::getColor() const
+    const raylib::Color &Rectangle2D::getColor() const
     {
         return this->_color;
     }

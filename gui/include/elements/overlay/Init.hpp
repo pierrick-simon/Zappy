@@ -1,0 +1,66 @@
+/*
+** EPITECH PROJECT, 2026
+** gui
+** File description:
+** Info
+*/
+
+#ifndef INIT_HPP_
+    #define INIT_HPP_
+
+    #include <raylib-cpp.hpp>
+    #include <string_view>
+    #include "graphics/AShadered.hpp"
+
+namespace Zappy {
+    class Init {
+    public:
+        static constexpr std::string_view FONT_PATH = "public/GuiFont.otf";
+        static constexpr std::string_view IMG_NEXT = "public/next.png";
+
+        static constexpr unsigned int WINDOW_SIZE_X = 1920;
+        static constexpr unsigned int WINDOW_SIZE_Y = 1080;
+
+        static constexpr raylib::Color GOLD_RICH = {212, 160, 23, 255};
+        static constexpr raylib::Color DARK_PINEWOOD = {28, 52, 32, 255};
+        static constexpr raylib::Color BLUE_THROUGH = {0, 0, 139, 128};
+
+        static constexpr float BORDER_SIZE = 3.f;
+        static constexpr float BORDER_ROUND = 0.1f;
+        static constexpr float LETTER_SPACING = 2;
+        static constexpr float GAP = 10.f;
+
+        static constexpr raylib::Vector2 RESOURCE_SIZE = {125, 40};
+        static constexpr float RESOURCE_ICON = 26;
+        static constexpr float RESOURCE_STONE_ICON = 40;
+        static constexpr raylib::Vector2 RESOURCE_ICON_POS = {18, 18};
+        static constexpr float RESOURCE_GAP = GAP;
+
+        static constexpr raylib::Vector2 INCANTATION_START_POS = {
+            GAP, RESOURCE_SIZE.y * 3.f + RESOURCE_GAP * 2.f};
+        static constexpr raylib::Vector2 INCANTATION_SIZE = {220, 140};
+        static constexpr float INCANTATION_GAP = GAP;
+        static constexpr std::size_t INCANTATION_MAX_DISPLAY = 4;
+
+        static constexpr raylib::Vector2 EVENT_START_POS = {
+            GAP, INCANTATION_START_POS.y + (INCANTATION_SIZE.y + GAP) * 4.f};
+
+        static constexpr float INFO_TITLE_SIZE = 32;
+        static constexpr float INFO_TEXT_SIZE = 27;
+        static constexpr float INFO_SMALL_GAP = 5;
+        static constexpr float INFO_ICON = 40;
+        static constexpr raylib::Vector2 INFO_ICON_POS = {18, 18};
+        static constexpr float INFO_SIZE_X = 250;
+        static constexpr float INFO_POS_Y = 100;
+        static constexpr std::size_t INFO_MAX = 999999;
+        static constexpr std::size_t INFO_PREFIX_SIZE = 15;
+
+        static constexpr float INFO_BUTTON_SIZE = 25;
+        static constexpr float INFO_BUTTON_ROTATION = 180;
+        static constexpr float INFO_IMG_SIZE = 166;
+        static constexpr float INFO_BUTTON_SCALE =
+            INFO_BUTTON_SIZE / INFO_IMG_SIZE;
+    };
+} // namespace Zappy
+
+#endif /* !INFO_HPP_ */
