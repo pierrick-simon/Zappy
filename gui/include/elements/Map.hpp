@@ -21,7 +21,7 @@ namespace Zappy {
             const std::vector<std::size_t> &resources);
         void setTilesPosition();
 
-        raylib::Vector2 getTilePosition(size_t x, size_t y) const;
+        [[nodiscard]] raylib::Vector2 getTilePosition(size_t x, size_t y) const;
 
         [[nodiscard]] std::size_t getWidth() const
         {
