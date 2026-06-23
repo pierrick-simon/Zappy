@@ -8,6 +8,7 @@
 #ifndef MAP_HPP_
     #define MAP_HPP_
 
+    #include <unordered_map>
     #include "Info.hpp"
     #include "Tile.hpp"
     #include "graphics/AShadered.hpp"
@@ -16,6 +17,8 @@
 namespace Zappy {
     class Map : public Graphics::IDrawable3D, public Graphics::AShadered {
     public:
+        Map();
+
         bool updateSize(std::size_t x, std::size_t y);
         void updateTile(std::size_t x, std::size_t y,
             const std::vector<std::size_t> &resources);
@@ -41,10 +44,10 @@ namespace Zappy {
             return _totalResources;
         }
 
+        void drawRessources(const Zappy::Tile &tile) const;
         void draw3D() const override;
 
         static constexpr raylib::Vector2 TILE_SIZE = {5, 5};
-        static constexpr auto TILE_Y_POS = 0;
 
     private:
         void updateTotalResources(
@@ -56,6 +59,12 @@ namespace Zappy {
         raylib::Vector2 _renderedMapSize;
         std::vector<Tile> _tiles;
         std::map<Info::ResourceName, std::size_t> _totalResources;
+        std::unordered_map<Info::ResourceName, raylib::Model>
+            _ressources_models;
+
+        static constexpr auto TILE_WIDTH = 5;
+        static constexpr auto TILE_HEIGHT = 5;
+        static constexpr auto TILE_Y_POS = 0;
 
         inline static const std::string TILE_MODEL_PATH =
             Assets::getResource("map/cell.glb");
