@@ -15,10 +15,10 @@ namespace Zappy {
         _playTexture(SfmlUtils::SfmlUtils::loadTextureFromFile(PLAY.data())),
         _pauseTexture(SfmlUtils::SfmlUtils::loadTextureFromFile(PAUSE.data())),
         _showTexture(SfmlUtils::SfmlUtils::loadTextureFromFile(SHOW.data())),
-        _play({{Pause, _playTexture, sf::Color::Red},
-            {Play, _pauseTexture, sf::Color::Green}}),
-        _show({{None, _showTexture, sf::Color::Green},
-            {Show, _showTexture, sf::Color::Red}}),
+        _play({{PAUSE, _playTexture, sf::Color::Red},
+            {PLAY, _pauseTexture, sf::Color::Green}}),
+        _show({{NONE, _showTexture, sf::Color::Green},
+            {SHOW, _showTexture, sf::Color::Red}}),
         _port(port),
         _clients(clients),
         _process(process)
@@ -56,9 +56,9 @@ namespace Zappy {
         win.draw(_text);
         _play.draw(win);
         if (_clients.gui.empty())
-            _show.setState(None);
+            _show.setState(NONE);
         else
-            _show.setState(Show);
+            _show.setState(SHOW);
         _show.draw(win);
     }
 
@@ -69,13 +69,13 @@ namespace Zappy {
         _show.click(mousePos, event);
         if (event.type == sf::Event::KeyPressed &&
             event.key.code == sf::Keyboard::Space) {
-            if (_play.getState() == Play)
-                _play.setState(Pause);
+            if (_play.getState() == PLAY)
+                _play.setState(PAUSE);
             else
-                _play.setState(Play);
+                _play.setState(PLAY);
         }
-        if (before == None && _show.getState() == Show)
+        if (before == NONE && _show.getState() == SHOW)
             _process.addGui();
-        _playing = _play.getState() == Play;
+        _playing = _play.getState() == PLAY;
     }
 } // namespace Zappy

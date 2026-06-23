@@ -15,7 +15,7 @@
 namespace Zappy {
     class Init {
     public:
-        enum TeamState { Play, Pause, Empty, Check };
+        enum TeamState { PLAY, PAUSE, EMPTY, CHECK };
 
         static constexpr unsigned int WINDOW_SIZE_X = 800;
         static constexpr unsigned int WINDOW_SIZE_Y = 600;

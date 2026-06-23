@@ -18,7 +18,7 @@
 namespace Zappy {
     class ToolBar {
     public:
-        enum PlaySate { Play, Pause, Show, None };
+        enum PlaySate { PLAY, PAUSE, SHOW, NONE };
 
         ToolBar(
             sf::Font &font, int port, AddProcess &process, Clients &clients);
