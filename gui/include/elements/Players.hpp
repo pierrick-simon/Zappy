@@ -9,15 +9,19 @@
     #define PLAYERS_HPP_
 
     #include <Model.hpp>
+    #include <ModelAnimation.hpp>
 
     #include "Assets.hpp"
     #include "Info.hpp"
     #include "NewPlayerEvent.hpp"
     #include "Player.hpp"
+    #include "graphics/AShadered.hpp"
     #include "graphics/IDrawable3D.hpp"
 
 namespace Zappy {
-    class Players : public Graphics::IDrawable3D {
+    class Players : public Graphics::IDrawable3D,
+                    public Graphics::IUpdatable,
+                    public Graphics::AShadered {
     public:
         Players(std::ofstream &logFile);
 
@@ -36,6 +40,12 @@ namespace Zappy {
 
         void draw3D() const override;
 
+        void update(float dt) override;
+
+        void setShader(Graphics::Shader &shader) override;
+
+        void loadAnimations();
+
     private:
         std::unordered_map<std::size_t, Player> _players;
         std::map<Info::ResourceName, std::size_t> _totalResources =
@@ -45,6 +55,11 @@ namespace Zappy {
         inline static const std::string PLAYER_MODEL_PATH =
             Assets::getResource("players/player.glb");
         raylib::Model _model {LoadModel(PLAYER_MODEL_PATH.c_str())};
+
+        std::vector<::ModelAnimation> _modelAnimation;
+
+        static constexpr auto STONE_MAT = 1;
+        static constexpr auto GLOWING_MAT = 2;
     };
 } // namespace Zappy
 
