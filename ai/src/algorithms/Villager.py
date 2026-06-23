@@ -107,10 +107,14 @@ class Villager:
         sender, _, _, _ = event.argument
 
         print(f"sender: {sender}, master: {self.master}")
+
         if sender != self.master:
             return
-        print(f"{self.plan=}")
-        self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
+        
+        print(f"Before: {self.plan=}")
+        if not self.plan:
+            self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
+        print(f"After: {self.plan=}")
 
     def handle_message_as_master(self, event: Event) -> None:
         sender, type, _, receiver = event.argument
@@ -215,7 +219,7 @@ class Villager:
         if self.backpack.inventory["food"] < 5:
             self.mode = MODE.SURVIVE
             return
-        if self.mode == MODE.SURVIVE and self.backpack.inventory["food"] >= 10:
+        if self.mode == MODE.SURVIVE and self.backpack.inventory["food"] >= 15:
             self.mode = MODE.RESEARCH
         if self.mode == MODE.RESEARCH:
             missing: dict[str, int] = get_missing_resources(
@@ -228,7 +232,7 @@ class Villager:
 
     def execute_mode(self):
         if self.mode == MODE.SURVIVE:
-            self.search_ressources({"food": 10}, 100)
+            self.search_ressources({"food": 20}, 100)
         elif self.mode == MODE.RESEARCH:
             missing: dict[str, int] = get_missing_resources(
                 self.backpack.inventory, (self.level - 1)
@@ -241,6 +245,8 @@ class Villager:
     def execute_action(self):
         if self.plan:
             self.handle_response(self.plan.popleft())
+        else:
+            self.backpack.refresh_inventory()
         self.handle_events()
 
     def run(self):
