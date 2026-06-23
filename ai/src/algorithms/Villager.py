@@ -6,7 +6,6 @@
 ##
 
 import json
-import ast
 from random import randint
 from uuid import UUID, uuid4
 from enum import Enum
@@ -17,8 +16,11 @@ from src.connection_handler import ConnectionHandler
 from src.dataclasses_models import Command, Event
 from src.algorithms.modules.backpack_module import BackpackModule
 from src.algorithms.modules.auto_gather_module import AutoGatherModule
-from src.command import send_and_recv, broadcast, look, incantation, connect_nbr
-from src.constants.resources import INCANTATION_PREREQUISITES, INCANTATION_PLAYERS_NEEDED
+from src.command import send_and_recv, broadcast, look, connect_nbr
+from src.constants.resources import (
+    INCANTATION_PREREQUISITES,
+    INCANTATION_PLAYERS_NEEDED,
+)
 from src.constants.constants import COMMAND_FACTORY, MOVE
 
 
@@ -36,6 +38,7 @@ def get_missing_resources(inventory: dict[str, int], level: int) -> dict[str, in
         if inventory.get(ressource, 0) < quantity
     }
 
+
 def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
     common: set = dict_one.keys() & dict_two.keys()
 
@@ -44,11 +47,14 @@ def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
     else:
         return None
 
+
 def format_receivers(receivers: list[str]) -> str:
     return json.dumps(receivers if receivers else ["*"]).replace('"', "'")
 
+
 def parse_receivers(receiver: str) -> list[str]:
-    return receiver.strip("\"")
+    return receiver.strip('"')
+
 
 class Villager:
     backpack: BackpackModule
@@ -96,13 +102,15 @@ class Villager:
         if str(self.id) not in receivers and "*" not in receivers:
             return
         master_id: str = sender
-        broadcast(self.handler, f"{self.id};yes;{self.level};{format_receivers([master_id])}")
+        broadcast(
+            self.handler, f"{self.id};yes;{self.level};{format_receivers([master_id])}"
+        )
         self.backpack.tick("Broadcast")
         self.mode = MODE.FOLLOWER
         self.master = master_id
         self.plan.clear()
         self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
-    
+
     def handle_message_as_follower(self, event: Event) -> None:
         sender, _, _, _ = event.argument
 
@@ -110,7 +118,7 @@ class Villager:
 
         if sender != self.master:
             return
-        
+
         print(f"Before: {self.plan=}")
         if not self.plan:
             self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
@@ -135,7 +143,7 @@ class Villager:
         receivers: str = format_receivers(list(self.followers))
         broadcast(self.handler, f"{self.id};incantation;{self.level};{receivers}")
         self.backpack.tick("Broadcast")
-    
+
     def deposit_stones(self):
         self.plan.clear()
         for ressource, quantity in INCANTATION_PREREQUISITES[self.level - 1].items():
@@ -143,13 +151,13 @@ class Villager:
                 self.append_to_plan([f"Set {ressource}"], MODE.MASTER)
 
     def check_incantations(self, tile: list[str], level: int) -> bool:
-        players: int =  tile.count("player")
+        players: int = tile.count("player")
 
         print(f"Looking for an incantations {tile=}, {players=}")
-        if (players < INCANTATION_PLAYERS_NEEDED[level]):
+        if players < INCANTATION_PLAYERS_NEEDED[level]:
             return False
         for ressource, quantity in INCANTATION_PREREQUISITES[level].items():
-            if (tile.count(ressource) < quantity):
+            if tile.count(ressource) < quantity:
                 return False
         return True
 
@@ -191,7 +199,9 @@ class Villager:
     def search_ressources(self, ressources: dict[str, int], max_time: int) -> None:
         auto_gather: AutoGatherModule = AutoGatherModule()
         self.append_to_plan(
-            auto_gather.auto_gather(COMMAND_FACTORY["Look"](self.handler), ressources, max_time),
+            auto_gather.auto_gather(
+                COMMAND_FACTORY["Look"](self.handler), ressources, max_time
+            ),
             self.mode,
         )
         if not self.plan:
@@ -207,11 +217,11 @@ class Villager:
             self.backpack.del_from_inventory([command[1].argument])
 
     def handle_events(self):
-            while True:
-                event = self.handler.consume_event()
-                if event is None:
-                    break
-                self.EVENTS[event.name](event)
+        while True:
+            event = self.handler.consume_event()
+            if event is None:
+                break
+            self.EVENTS[event.name](event)
 
     def update_mode(self):
         previous_mode = self.mode

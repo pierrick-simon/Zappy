@@ -6,15 +6,12 @@
 ##
 
 import sys
-import json
 import argparse
 import traceback
-from uuid import UUID, uuid4
 
 from src.constants.ai_list import AI_LIST
-from src.dataclasses_models import Event
 from src.connection_handler import ConnectionHandler
-from src.command import broadcast
+
 
 def handle_args():
     args = argparse.ArgumentParser(description="Zappy AI Client", add_help=False)
@@ -40,6 +37,7 @@ def handle_args():
     )
     args.add_argument("--help", action="help", help="show this help message and exit")
     return args.parse_args()
+
 
 def main():
     args = handle_args()

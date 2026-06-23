@@ -68,7 +68,7 @@ class BackpackModule:
             if self.inventory["food"] > 0:
                 self.inventory["food"] -= 1
             self.food_decay -= FOOD_DECAY_TIME_UNITS
-    
+
     def get_default_inventory(self) -> dict[str, int]:
         return {
             "food": 10,
