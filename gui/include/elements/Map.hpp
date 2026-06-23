@@ -59,8 +59,9 @@ namespace Zappy {
         raylib::Vector2 _renderedMapSize;
         std::vector<Tile> _tiles;
         std::map<Info::ResourceName, std::size_t> _totalResources;
-        std::unordered_map<Info::ResourceName, raylib::Model> _ressources_models;
-        
+        std::unordered_map<Info::ResourceName, raylib::Model>
+            _ressources_models;
+
         static constexpr auto TILE_WIDTH = 5;
         static constexpr auto TILE_HEIGHT = 5;
         static constexpr auto TILE_Y_POS = 0;

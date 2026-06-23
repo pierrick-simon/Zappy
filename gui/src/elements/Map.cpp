@@ -15,8 +15,9 @@ namespace Zappy {
 
     Map::Map()
     {
-        for (auto [type, infos]: Info::resources)
-            _ressources_models[type] = Assets::getResource("rocks/" + infos.str + ".glb");
+        for (const auto &[type, infos] : Info::resources)
+            _ressources_models[type] =
+                Assets::getResource("rocks/" + infos.str + ".glb");
     }
 
     bool Map::updateSize(std::size_t x, std::size_t y)
@@ -109,9 +110,10 @@ namespace Zappy {
         Vector3 vZero(0, 0, 0);
         Vector3 scale(0.05, 0.05, 0.05);
 
-        for (const auto &[type, nb]: infos) {
+        for (const auto &[type, nb] : infos) {
             if (nb > 0)
-                this->_ressources_models.at(type).Draw(tile.getPosition(), vZero, 0, scale);
+                this->_ressources_models.at(type).Draw(
+                    tile.getPosition(), vZero, 0, scale);
         }
     }
 
@@ -122,5 +124,5 @@ namespace Zappy {
             this->_model.Draw(tile.getPosition(), axis, angle, tile.getScale());
             drawRessources(tile);
         }
-    }    
+    }
 } // namespace Zappy
