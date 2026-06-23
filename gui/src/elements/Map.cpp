@@ -75,10 +75,11 @@ namespace Zappy {
         for (size_t i = 0; i < this->_tiles.size(); ++i) {
             size_t x = i / this->_width;
             size_t y = i % this->_width;
-            this->_tiles[i].setPosition(
-                {x * TILE_SIZE.x - this->_renderedMapSize.x / 2.0f,
-                    TILE_Y_POS,
-                    y * TILE_SIZE.y - this->_renderedMapSize.y / 2.0f});
+            this->_tiles[i].setPosition({static_cast<float>(x) * TILE_SIZE.x -
+                    this->_renderedMapSize.x / 2.0f,
+                TILE_Y_POS,
+                static_cast<float>(y) * TILE_SIZE.y -
+                    this->_renderedMapSize.y / 2.0f});
         }
     }
 
