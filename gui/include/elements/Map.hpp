@@ -48,7 +48,6 @@ namespace Zappy {
         void draw3D() const override;
 
         static constexpr raylib::Vector2 TILE_SIZE = {5, 5};
-        static constexpr auto TILE_Y_POS = 0;
 
     private:
         void updateTotalResources(
