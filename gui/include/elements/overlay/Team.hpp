@@ -29,7 +29,7 @@ namespace Zappy {
         Team(Font &font, std::map<std::string, Color> &teams);
         void update(const TeamInfo &info);
         void draw2D() const override;
-        void changeSelected(Direction dir) override;
+        void changeSelected(Action dir) override;
 
         void setSelectTeam(const std::string &team);
         [[nodiscard]] std::optional<std::string> getSelectTeam()

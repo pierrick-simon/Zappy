@@ -46,7 +46,7 @@ namespace Zappy {
         getTileResources(std::size_t tile) const;
 
         [[nodiscard]] std::size_t getNextTile(
-            InfoBox::Direction dir, std::size_t tile) const;
+            InfoBox::Action dir, std::size_t tile) const;
 
         void draw3D() const override;
 

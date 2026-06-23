@@ -8,25 +8,33 @@
 #ifndef INFOBOX_HPP_
     #define INFOBOX_HPP_
 
+    #include <map>
+    #include <string_view>
+    #include "Init.hpp"
     #include "graphics/primitives/Box2D.hpp"
     #include "graphics/primitives/Sprite2D.hpp"
 
 namespace Zappy {
     class InfoBox {
     public:
-        enum class Direction { Left, Right, None };
+        enum class Action { Left, Right, Close, None };
 
-        InfoBox(raylib::Vector2 pos);
+        InfoBox(raylib::Vector2 pos, bool close = false);
 
         void setSize(raylib::Vector2 size);
-        virtual void changeSelected(Direction dir) = 0;
+        virtual void changeSelected(Action dir) = 0;
 
     protected:
         void initSprite(raylib::Vector2 pos);
 
         Graphics::Box2D _box;
-        Graphics::Sprite2D _prevButton;
-        Graphics::Sprite2D _nextButton;
+        std::map<Action, Graphics::Sprite2D> _buttons;
+        bool _close;
+
+        static constexpr std::string_view IMG_CLOSE = "public/close.png";
+        static constexpr float CLOSE_SIZE = 1100;
+        static constexpr float CLOSE_SCALE =
+            Init::INFO_BUTTON_SIZE / CLOSE_SIZE;
     };
 } // namespace Zappy
 

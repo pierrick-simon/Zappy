@@ -94,17 +94,17 @@ namespace Zappy {
     }
 
     std::optional<std::size_t> Players::getNextPlayer(
-        InfoBox::Direction dir, std::size_t player) const
+        InfoBox::Action dir, std::size_t player) const
     {
         std::optional<std::size_t> value;
         auto find = _players.find(player);
 
-        if (find == _players.end() || dir == InfoBox::Direction::None) {
-            if (!_players.empty() && dir == InfoBox::Direction::None)
+        if (find == _players.end() || dir == InfoBox::Action::None) {
+            if (!_players.empty() && dir == InfoBox::Action::None)
                 value = player;
-            if (!_players.empty() && dir != InfoBox::Direction::None)
+            if (!_players.empty() && dir != InfoBox::Action::None)
                 value = _players.begin()->first;
-        } else if (dir == InfoBox::Direction::Left) {
+        } else if (dir == InfoBox::Action::Left) {
             if (find == _players.begin())
                 value = _players.rbegin()->first;
             else

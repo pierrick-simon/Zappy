@@ -32,9 +32,9 @@ namespace Zappy {
 
         Player2D(Font &font, std::map<std::string, Color> &teams);
 
-        Direction update(const PlayerInfo &info);
+        Action update(const PlayerInfo &info);
         void draw2D() const override;
-        void changeSelected(Direction dir) override;
+        void changeSelected(Action dir) override;
 
     private:
         void initText(Font &font, raylib::Vector2 pos);
@@ -66,7 +66,7 @@ namespace Zappy {
 
         std::map<std::string, Color> &_teams;
 
-        Direction _dir = Direction::None;
+        Action _dir = Action::None;
     };
 } // namespace Zappy
 

@@ -161,42 +161,46 @@ namespace Zappy {
 
     void Environement::updatePlayerInfo()
     {
-        if (_selectPlayer) {
-            try {
-                auto player = _players.getPlayer(*_selectPlayer);
-                auto value = _overlay.player.update(player.getPlayerInfo());
-                _selectPlayer = _players.getNextPlayer(value, *_selectPlayer);
-            } catch (Player::PlayerException &_) {
+        try {
+            auto player = _players.getPlayer(*_selectPlayer);
+            auto value = _overlay.player.update(player.getPlayerInfo());
+            if (value == InfoBox::Action::Close) {
                 _selectPlayer = std::nullopt;
                 updateTeamInfo();
-            }
+            } else
+                _selectPlayer = _players.getNextPlayer(value, *_selectPlayer);
+        } catch (Player::PlayerException &_) {
+            _selectPlayer = std::nullopt;
+            updateTeamInfo();
         }
     }
 
     void Environement::updateTileInfo()
     {
-        if (_selectTile) {
-            if (*_selectTile >= _width * _height) {
-                _selectTile = std::nullopt;
-                return updateTeamInfo();
-            }
-            auto nbPlayer = _players.getNbTilePlayers(*_selectTile, _width);
-            std::size_t nbEgg = 0;
-            for (const auto &[_, egg] : _eggs) {
-                if (egg.getTile(_width) == *_selectTile)
-                    nbEgg++;
-            }
-            auto nbElevation =
-                _elevations.getNbTileElevations(*_selectPlayer, _width);
-            auto resources = _map.getTileResources(*_selectTile);
-            auto value = _overlay.tile.update({*_selectTile % _width,
-                *_selectTile / _width,
-                nbPlayer,
-                nbEgg,
-                nbElevation,
-                resources});
-            _selectTile = _map.getNextTile(value, *_selectTile);
+        if (*_selectTile >= _width * _height) {
+            _selectTile = std::nullopt;
+            return updateTeamInfo();
         }
+        auto nbPlayer = _players.getNbTilePlayers(*_selectTile, _width);
+        std::size_t nbEgg = 0;
+        for (const auto &[_, egg] : _eggs) {
+            if (egg.getTile(_width) == *_selectTile)
+                nbEgg++;
+        }
+        auto nbElevation =
+            _elevations.getNbTileElevations(*_selectTile, _width);
+        auto resources = _map.getTileResources(*_selectTile);
+        auto value = _overlay.tile.update({*_selectTile % _width,
+            *_selectTile / _width,
+            nbPlayer,
+            nbEgg,
+            nbElevation,
+            resources});
+        if (value == InfoBox::Action::Close) {
+            _selectTile = std::nullopt;
+            updateTeamInfo();
+        } else
+            _selectTile = _map.getNextTile(value, *_selectTile);
     }
 
     void Environement::updateTeamInfo()

@@ -106,14 +106,14 @@ namespace Zappy {
         return _tiles[tile].getResources();
     }
 
-    std::size_t Map::getNextTile(InfoBox::Direction dir, std::size_t tile) const
+    std::size_t Map::getNextTile(InfoBox::Action dir, std::size_t tile) const
     {
-        if (dir == InfoBox::Direction::Left) {
+        if (dir == InfoBox::Action::Left) {
             if (tile == 0)
                 tile = _width * _height - 1;
             else
                 tile--;
-        } else if (dir == InfoBox::Direction::Right) {
+        } else if (dir == InfoBox::Action::Right) {
             if (tile == _width * _height - 1)
                 tile = 0;
             else

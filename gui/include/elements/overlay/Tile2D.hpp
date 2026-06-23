@@ -31,9 +31,9 @@ namespace Zappy {
 
         Tile2D(Font &font);
 
-        Direction update(const TileInfo &info);
+        Action update(const TileInfo &info);
         void draw2D() const override;
-        void changeSelected(Direction dir) override;
+        void changeSelected(Action dir) override;
 
     private:
         void initText(Font &font, raylib::Vector2 pos);
@@ -62,7 +62,7 @@ namespace Zappy {
 
         std::map<Info::ResourceName, Resource> _resources;
 
-        Direction _dir = Direction::None;
+        Action _dir = Action::None;
 
         static constexpr std::size_t ELEVATION_MAX = Init::INFO_MAX / 100;
     };

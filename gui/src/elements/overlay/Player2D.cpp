@@ -11,7 +11,8 @@
 namespace Zappy {
     Player2D::Player2D(Font &font, std::map<std::string, Color> &teams) :
         InfoBox({float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X,
-            Init::INFO_POS_Y}),
+                    Init::INFO_POS_Y},
+            true),
         _teams(teams)
     {
         auto x = float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X;
@@ -66,7 +67,7 @@ namespace Zappy {
         setSize({Init::INFO_SIZE_X, pos.y - Init::INFO_POS_Y + Init::GAP});
     }
 
-    InfoBox::Direction Player2D::update(const PlayerInfo &info)
+    InfoBox::Action Player2D::update(const PlayerInfo &info)
     {
         _title.setStr("Player " + std::to_string(info.id));
         raylib::Vector2 size = _title.getSize();
@@ -78,7 +79,7 @@ namespace Zappy {
         _text[Status].value = PlayerStatus::getMsg(info.status);
         updateInventory(info.inventory);
         auto dir = _dir;
-        _dir = Direction::None;
+        _dir = Action::None;
         return dir;
     }
 
@@ -129,11 +130,11 @@ namespace Zappy {
             info.sprite.draw2D();
             info.text.draw2D();
         }
-        _prevButton.draw2D();
-        _nextButton.draw2D();
+        for (const auto &[_, button] : _buttons)
+            button.draw2D();
     }
 
-    void Player2D::changeSelected(Direction dir)
+    void Player2D::changeSelected(Action dir)
     {
         _dir = dir;
     }

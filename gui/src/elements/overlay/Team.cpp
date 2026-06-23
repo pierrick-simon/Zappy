@@ -11,7 +11,8 @@
 namespace Zappy {
     Team::Team(Font &font, std::map<std::string, Color> &teams) :
         InfoBox({float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X,
-            Init::INFO_POS_Y}),
+                    Init::INFO_POS_Y},
+            false),
         _teams(teams)
     {
         auto x = float(GetScreenWidth()) - Init::GAP - Init::INFO_SIZE_X;
@@ -50,7 +51,7 @@ namespace Zappy {
     void Team::update(const TeamInfo &info)
     {
         if (!_selectTeam)
-            changeSelected(Direction::Left);
+            changeSelected(Action::Left);
         updateMembers(info.level);
         auto min = std::min(info.nbEgg, Init::INFO_MAX);
         _text[NbEgg].value = std::to_string(min);
@@ -96,8 +97,8 @@ namespace Zappy {
         for (const auto &level : _levels)
             Graphics::Text2D::drawMultiColorStrs(
                 level.text, {{level.prefix}, {level.value, Init::GOLD_RICH}});
-        _prevButton.draw2D();
-        _nextButton.draw2D();
+        for (const auto &[_, button] : _buttons)
+            button.draw2D();
     }
 
     void Team::setSelectTeam(const std::string &team)
@@ -106,7 +107,7 @@ namespace Zappy {
         updateTitle(team);
     }
 
-    void Team::changeSelected(Direction dir)
+    void Team::changeSelected(Action dir)
     {
         auto find = _teams.begin();
         if (_selectTeam)
@@ -116,12 +117,12 @@ namespace Zappy {
                 _selectTeam = _teams.begin()->first;
             return;
         }
-        if (dir == Direction::Left) {
+        if (dir == Action::Left) {
             if (find == _teams.begin())
                 _selectTeam = _teams.rbegin()->first;
             else
                 _selectTeam = (--find)->first;
-        } else if (dir == Direction::Right) {
+        } else if (dir == Action::Right) {
             if (find == --_teams.end())
                 _selectTeam = _teams.begin()->first;
             else

@@ -38,7 +38,7 @@ namespace Zappy {
         [[nodiscard]] std::size_t getNbTilePlayers(
             std::size_t tile, std::size_t width) const;
         [[nodiscard]] std::optional<std::size_t> getNextPlayer(
-            InfoBox::Direction dir, std::size_t player) const;
+            InfoBox::Action dir, std::size_t player) const;
 
     private:
         std::map<std::size_t, Player> _players;
