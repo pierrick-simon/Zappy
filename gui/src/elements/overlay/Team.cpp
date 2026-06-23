@@ -29,9 +29,9 @@ namespace Zappy {
         _title.setPosition({pos.x + Init::INFO_SIZE_X / 2.f, pos.y});
         pos.x += Init::GAP;
         pos.y += Init::INFO_SMALL_GAP + Init::INFO_TITLE_SIZE;
-        _text[NbPlayer].prefix = "Nb Player: ";
-        _text[NbEgg].prefix = "Nb Egg: ";
-        _text[Level].prefix = "Members' Level: ";
+        _text[NBPLAYER].prefix = "Nb Player: ";
+        _text[NBEGG].prefix = "Nb Egg: ";
+        _text[LEVEL].prefix = "Members' Level: ";
         for (auto &text : _text) {
             text.text.setFont(font);
             text.text.setFontSize(Init::INFO_TEXT_SIZE);
@@ -52,10 +52,10 @@ namespace Zappy {
     void Team::update(const TeamInfo &info)
     {
         if (!_selectTeam)
-            changeSelected(Action::Left);
+            changeSelected(Action::LEFT);
         updateMembers(info.level);
         auto min = std::min(info.nbEgg, Init::INFO_MAX);
-        _text[NbEgg].value = std::to_string(min);
+        _text[NBEGG].value = std::to_string(min);
     }
 
     void Team::updateTitle(const std::string &team)
@@ -85,7 +85,7 @@ namespace Zappy {
             nbPlayer += levels[i];
         }
         auto min = std::min(nbPlayer, Init::INFO_MAX);
-        _text[NbPlayer].value = std::to_string(min);
+        _text[NBPLAYER].value = std::to_string(min);
     }
 
     void Team::draw2D() const
@@ -118,12 +118,12 @@ namespace Zappy {
                 _selectTeam = _teams.begin()->first;
             return;
         }
-        if (dir == Action::Left) {
+        if (dir == Action::LEFT) {
             if (find == _teams.begin())
                 _selectTeam = _teams.rbegin()->first;
             else
                 _selectTeam = (--find)->first;
-        } else if (dir == Action::Right) {
+        } else if (dir == Action::RIGHT) {
             if (find == --_teams.end())
                 _selectTeam = _teams.begin()->first;
             else

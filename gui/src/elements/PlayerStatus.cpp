@@ -14,9 +14,9 @@ namespace Zappy {
     }
 
     const std::map<PlayerStatus::Status, std::string> PlayerStatus::_status = {
-        {Status::None, "None"},
-        {Status::Laying, "Laying"},
-        {Status::Elevating, "Elevating"},
-        {Status::Dying, "Dying"},
+        {Status::NONE, "None"},
+        {Status::LAYING, "Laying"},
+        {Status::ELEVATING, "Elevating"},
+        {Status::DYING, "Dying"},
     };
 } // namespace Zappy

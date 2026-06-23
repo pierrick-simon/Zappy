@@ -22,7 +22,7 @@ namespace Zappy {
         _dir(Info::getDirection(player.dir)),
         _team(player.team),
         _logFile(logFile),
-        _status(PlayerStatus::Status::None),
+        _status(PlayerStatus::Status::NONE),
         _model(model),
         _modelAnimation(modelAnimation)
     {
@@ -68,18 +68,18 @@ namespace Zappy {
     {
         _incantate = incantate;
         if (_incantate)
-            _status = PlayerStatus::Status::Elevating;
+            _status = PlayerStatus::Status::ELEVATING;
         else
-            _status = PlayerStatus::Status::None;
+            _status = PlayerStatus::Status::NONE;
     }
 
     void Player::setFork(bool fork)
     {
         _fork = fork;
         if (_fork)
-            _status = PlayerStatus::Status::Laying;
+            _status = PlayerStatus::Status::LAYING;
         else
-            _status = PlayerStatus::Status::None;
+            _status = PlayerStatus::Status::NONE;
     }
 
     void Player::setEject(bool eject)
@@ -135,7 +135,7 @@ namespace Zappy {
         _dead = true;
         Shared::Utils::logMsg(
             _logFile, "Player [" + std::to_string(_id) + "] died.");
-        _status = PlayerStatus::Status::Dying;
+        _status = PlayerStatus::Status::DYING;
     }
 
     void Player::takeResource(Info::ResourceName resource)

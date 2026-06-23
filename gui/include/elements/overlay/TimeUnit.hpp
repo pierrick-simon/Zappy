@@ -23,17 +23,17 @@ namespace Zappy {
         std::size_t update(std::size_t timeUnit);
 
     private:
-        enum Button { FastLeft, Left, FastRight, Right, NbButton, None };
+        enum Button { FASTLEFT, LEFT, FASTRIGHT, RIGHT, NBBUTTON, NONE };
 
         void initSprite(raylib::Vector2 pos);
         std::size_t changeTimeUnit(Button button, std::size_t frequency);
 
         Graphics::Box2D _box;
         Graphics::Text2D _text;
-        std::array<Graphics::Sprite2D, NbButton> _sprites;
-        Button _button = Button::None;
+        std::array<Graphics::Sprite2D, NBBUTTON> _sprites;
+        Button _button = Button::NONE;
 
-        static const std::array<std::string, NbButton> PATH;
+        static const std::array<std::string, NBBUTTON> PATH;
 
         static constexpr raylib::Vector2 SIZE = {200, 40};
         static constexpr float TEXT_SIZE = 30;

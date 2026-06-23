@@ -56,10 +56,10 @@ namespace Zappy {
             raylib::Color color = raylib::Color::White();
         };
 
-        enum Text { Team, Level, Position, Status, Inventory, NbText };
+        enum Text { TEAM, LEVEL, POSITION, STATUS, INVENTORY, NBTEXT };
 
         Graphics::Text2D _title;
-        std::array<TextInfo, NbText> _text;
+        std::array<TextInfo, NBTEXT> _text;
 
         raylib::Color _teamColor = raylib::Color::White();
 
@@ -67,7 +67,7 @@ namespace Zappy {
 
         std::map<std::string, raylib::Color> &_teams;
 
-        Action _dir = Action::None;
+        Action _dir = Action::NONE;
     };
 } // namespace Zappy
 

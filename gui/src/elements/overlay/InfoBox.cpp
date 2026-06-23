@@ -31,20 +31,20 @@ namespace Zappy {
 
     void InfoBox::initSprite(raylib::Vector2 pos)
     {
-        _buttons.emplace(Action::Left, Graphics::Sprite2D());
-        _buttons.emplace(Action::Right, Graphics::Sprite2D());
+        _buttons.emplace(Action::LEFT, Graphics::Sprite2D());
+        _buttons.emplace(Action::RIGHT, Graphics::Sprite2D());
         if (_close) {
-            _buttons.emplace(Action::Close, Graphics::Sprite2D());
-            _buttons[Action::Close].setPosition({pos.x + Init::INFO_SIZE_X -
+            _buttons.emplace(Action::CLOSE, Graphics::Sprite2D());
+            _buttons[Action::CLOSE].setPosition({pos.x + Init::INFO_SIZE_X -
                     Init::GAP - Init::INFO_BUTTON_SIZE / 2.f,
                 pos.y - Init::INFO_SMALL_GAP});
         }
         pos.y += Init::GAP + Init::INFO_TITLE_SIZE / 2.f;
         initSpriteInfo(pos);
-        _buttons[Action::Left].setRotation(Init::INFO_BUTTON_ROTATION);
-        _buttons[Action::Left].setPosition(
+        _buttons[Action::LEFT].setRotation(Init::INFO_BUTTON_ROTATION);
+        _buttons[Action::LEFT].setPosition(
             {pos.x + Init::GAP + Init::INFO_BUTTON_SIZE / 2.f, pos.y});
-        _buttons[Action::Right].setPosition({pos.x + Init::INFO_SIZE_X -
+        _buttons[Action::RIGHT].setPosition({pos.x + Init::INFO_SIZE_X -
                 Init::GAP - Init::INFO_BUTTON_SIZE / 2.f,
             pos.y});
     }
@@ -52,7 +52,7 @@ namespace Zappy {
     void InfoBox::initSpriteInfo(raylib::Vector2 pos)
     {
         for (auto &[name, button] : _buttons) {
-            if (name == Action::Close) {
+            if (name == Action::CLOSE) {
                 button.Load(IMG_CLOSE.data());
                 button.setScale({CLOSE_SCALE, CLOSE_SCALE});
                 button.setColor(raylib::Color::Red());

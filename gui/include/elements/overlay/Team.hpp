@@ -42,7 +42,7 @@ namespace Zappy {
         void updateTitle(const std::string &team);
         void updateMembers(const std::array<std::size_t, NB_LEVEL> &levels);
 
-        enum Text { NbPlayer, NbEgg, Level, NbText };
+        enum Text { NBPLAYER, NBEGG, LEVEL, NBTEXT };
 
         struct TextInfo {
             mutable Graphics::Text2D text;
@@ -51,7 +51,7 @@ namespace Zappy {
         };
 
         Graphics::Text2D _title;
-        std::array<TextInfo, NbText> _text;
+        std::array<TextInfo, NBTEXT> _text;
         std::array<TextInfo, NB_LEVEL> _levels;
 
         std::optional<std::string> _selectTeam;

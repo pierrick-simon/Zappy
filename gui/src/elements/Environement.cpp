@@ -168,7 +168,7 @@ namespace Zappy {
         try {
             auto player = _players.getPlayer(*_selectPlayer);
             auto value = _overlay.player.update(player.getPlayerInfo());
-            if (value == InfoBox::Action::Close) {
+            if (value == InfoBox::Action::CLOSE) {
                 _selectPlayer = std::nullopt;
                 updateTeamInfo();
             } else
@@ -200,7 +200,7 @@ namespace Zappy {
             nbEgg,
             nbElevation,
             resources});
-        if (value == InfoBox::Action::Close) {
+        if (value == InfoBox::Action::CLOSE) {
             _selectTile = std::nullopt;
             updateTeamInfo();
         } else

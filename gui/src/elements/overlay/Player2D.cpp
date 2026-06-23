@@ -37,11 +37,11 @@ namespace Zappy {
             text.color = Init::GOLD_RICH;
             pos.y += Init::INFO_SMALL_GAP + Init::INFO_TEXT_SIZE;
         }
-        _text[Team].prefix = "Team: ";
-        _text[Level].prefix = "Level: ";
-        _text[Position].prefix = "Pos: ";
-        _text[Status].prefix = "Satus: ";
-        _text[Inventory].prefix = "Inventory: ";
+        _text[TEAM].prefix = "Team: ";
+        _text[LEVEL].prefix = "Level: ";
+        _text[POSITION].prefix = "Pos: ";
+        _text[STATUS].prefix = "Satus: ";
+        _text[INVENTORY].prefix = "Inventory: ";
         initInventory(font, pos);
     }
 
@@ -74,13 +74,13 @@ namespace Zappy {
         raylib::Vector2 size = _title.getSize();
         _title.setOrigin({size.x / 2.f, 0});
         updateTeamName(info.team);
-        _text[Level].value = std::to_string(info.level);
-        _text[Position].value =
+        _text[LEVEL].value = std::to_string(info.level);
+        _text[POSITION].value =
             "(" + std::to_string(info.x) + "," + std::to_string(info.y) + ")";
-        _text[Status].value = PlayerStatus::getMsg(info.status);
+        _text[STATUS].value = PlayerStatus::getMsg(info.status);
         updateInventory(info.inventory);
         auto dir = _dir;
-        _dir = Action::None;
+        _dir = Action::NONE;
         return dir;
     }
 
@@ -100,24 +100,24 @@ namespace Zappy {
 
     void Player2D::updateTeamName(const std::string &team)
     {
-        _text[Team].value = team;
+        _text[TEAM].value = team;
         if (_teams.contains(team))
-            _text[Team].color = _teams.at(team);
+            _text[TEAM].color = _teams.at(team);
         bool first = true;
         auto maxSize_x = float(Init::WINDOW_SIZE_X) - Init::GAP -
-            _text[Team].text.getPosition().x;
-        _text[Team].text.setStr(_text[Team].prefix + _text[Team].value);
-        auto size_x = _text[Team].text.getSize().x;
+            _text[TEAM].text.getPosition().x;
+        _text[TEAM].text.setStr(_text[TEAM].prefix + _text[TEAM].value);
+        auto size_x = _text[TEAM].text.getSize().x;
         bool enter = false;
         while (size_x > maxSize_x) {
-            _text[Team].value.pop_back();
-            _text[Team].text.setStr(
-                _text[Team].prefix + _text[Team].value + "...");
-            size_x = _text[Team].text.getSize().x;
+            _text[TEAM].value.pop_back();
+            _text[TEAM].text.setStr(
+                _text[TEAM].prefix + _text[TEAM].value + "...");
+            size_x = _text[TEAM].text.getSize().x;
             enter = true;
         }
         if (enter)
-            _text[Team].value += "...";
+            _text[TEAM].value += "...";
     }
 
     void Player2D::draw2D() const

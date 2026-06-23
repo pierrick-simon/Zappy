@@ -53,16 +53,16 @@ namespace Zappy {
             raylib::Color color = raylib::Color::White();
         };
 
-        enum Text { NbPlayer, NbEgg, NBElevation, Resources, NbText };
+        enum Text { NBPLAYER, NBEGG, NBELVATION, RESOURCES, NBTEXT };
 
         Graphics::Text2D _title;
-        std::array<TextInfo, NbText> _text;
+        std::array<TextInfo, NBTEXT> _text;
 
         raylib::Color _teamColor = raylib::Color::White();
 
         std::map<Info::ResourceName, Resource> _resources;
 
-        Action _dir = Action::None;
+        Action _dir = Action::NONE;
 
         static constexpr std::size_t ELEVATION_MAX = Init::INFO_MAX / 100;
     };

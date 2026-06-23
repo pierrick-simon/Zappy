@@ -136,12 +136,12 @@ namespace Zappy {
         std::optional<std::size_t> value;
         auto find = _players.find(player);
 
-        if (find == _players.end() || dir == InfoBox::Action::None) {
-            if (!_players.empty() && dir == InfoBox::Action::None)
+        if (find == _players.end() || dir == InfoBox::Action::NONE) {
+            if (!_players.empty() && dir == InfoBox::Action::NONE)
                 value = player;
-            if (!_players.empty() && dir != InfoBox::Action::None)
+            if (!_players.empty() && dir != InfoBox::Action::NONE)
                 value = _players.begin()->first;
-        } else if (dir == InfoBox::Action::Left) {
+        } else if (dir == InfoBox::Action::LEFT) {
             if (find == _players.begin())
                 value = _players.rbegin()->first;
             else

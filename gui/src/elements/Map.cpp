@@ -134,12 +134,12 @@ namespace Zappy {
 
     std::size_t Map::getNextTile(InfoBox::Action dir, std::size_t tile) const
     {
-        if (dir == InfoBox::Action::Left) {
+        if (dir == InfoBox::Action::LEFT) {
             if (tile == 0)
                 tile = _width * _height - 1;
             else
                 tile--;
-        } else if (dir == InfoBox::Action::Right) {
+        } else if (dir == InfoBox::Action::RIGHT) {
             if (tile == _width * _height - 1)
                 tile = 0;
             else

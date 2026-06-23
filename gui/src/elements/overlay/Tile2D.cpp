@@ -28,10 +28,10 @@ namespace Zappy {
         _title.setPosition({pos.x + Init::INFO_SIZE_X / 2.f, pos.y});
         pos.x += Init::GAP;
         pos.y += Init::INFO_SMALL_GAP + Init::INFO_TITLE_SIZE;
-        _text[NbPlayer].prefix = "Nb Player: ";
-        _text[NbEgg].prefix = "Nb Egg: ";
-        _text[NBElevation].prefix = "Nb Elevation: ";
-        _text[Resources].prefix = "Resources: ";
+        _text[NBPLAYER].prefix = "Nb Player: ";
+        _text[NBEGG].prefix = "Nb Egg: ";
+        _text[NBELVATION].prefix = "Nb Elevation: ";
+        _text[RESOURCES].prefix = "Resources: ";
         for (auto &text : _text) {
             text.text.setFont(font);
             text.text.setFontSize(Init::INFO_TEXT_SIZE);
@@ -72,14 +72,14 @@ namespace Zappy {
         raylib::Vector2 size = _title.getSize();
         _title.setOrigin({size.x / 2.f, 0});
         auto min = std::min(info.nbPlayer, Init::INFO_MAX);
-        _text[NbPlayer].value = std::to_string(min);
+        _text[NBPLAYER].value = std::to_string(min);
         min = std::min(info.nbEgg, Init::INFO_MAX);
-        _text[NbEgg].value = std::to_string(min);
+        _text[NBEGG].value = std::to_string(min);
         min = std::min(info.nbElevation, ELEVATION_MAX);
-        _text[NBElevation].value = std::to_string(min);
+        _text[NBELVATION].value = std::to_string(min);
         updateResources(info.resources);
         auto dir = _dir;
-        _dir = Action::None;
+        _dir = Action::NONE;
         return dir;
     }
 

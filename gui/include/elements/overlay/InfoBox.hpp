@@ -17,7 +17,7 @@
 namespace Zappy {
     class InfoBox {
     public:
-        enum class Action { Left, Right, Close, None };
+        enum class Action { LEFT, RIGHT, CLOSE, NONE };
 
         InfoBox(raylib::Vector2 pos, bool close = false);
 
