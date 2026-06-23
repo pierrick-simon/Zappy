@@ -55,12 +55,14 @@ namespace Zappy {
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
         _elevations.update(updateTimeUnit);
+        this->_players.update(dt);
     }
 
     void Environement::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
         this->_map.setShader(shader);
+        this->_players.setShader(shader);
     }
 
     void Environement::draw3D() const

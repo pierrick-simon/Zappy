@@ -13,7 +13,8 @@
 
 namespace Zappy {
     Player::Player(const Shared::NewPlayerEvent::NewPlayer &player,
-        std::ofstream &logFile, raylib::Model &model) :
+        std::ofstream &logFile, raylib::Model &model,
+        std::vector<raylib::ModelAnimation> &modelAnimation) :
         _id(player.id),
         _x(player.x),
         _y(player.y),
@@ -21,7 +22,8 @@ namespace Zappy {
         _dir(Info::getDirection(player.dir)),
         _team(player.team),
         _logFile(logFile),
-        _model(model)
+        _model(model),
+        _modelAnimation(modelAnimation)
     {
         Shared::Utils::logMsg(_logFile,
             "Player [" + std::to_string(_id) + "] joined the " + _team +
@@ -82,9 +84,32 @@ namespace Zappy {
 
     void Player::draw3D() const
     {
+        this->_model.UpdateAnimation(
+            this->getCurrentAnimation(), this->_animationFrame);
         auto [axis, angle] = this->getRotation().ToAxisAngle();
         this->_model.Draw(
             this->_position, axis, Maths::RadToDeg(angle), this->_scale);
+    }
+
+    void Player::update(float dt)
+    {
+        this->_frameTime += dt;
+        this->_animationFrame = (this->_animationFrame + 1) %
+            this->getCurrentAnimation().keyframeCount;
+    }
+
+    void Player::setAnimationIndex(size_t index)
+    {
+        this->_currentAnimationIndex = index;
+    }
+    const raylib::ModelAnimation &Player::getCurrentAnimation() const
+    {
+        return this->_modelAnimation[this->_currentAnimationIndex];
+    }
+
+    raylib::ModelAnimation &Player::getCurrentAnimation()
+    {
+        return this->_modelAnimation[this->_currentAnimationIndex];
     }
 
     void Player::died()

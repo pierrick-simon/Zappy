@@ -9,6 +9,8 @@
 #include <iostream>
 #include <ranges>
 
+#include "graphics/AShadered.hpp"
+
 namespace Zappy {
     Players::Players(std::ofstream &logFile) :
         _logFile(logFile)
@@ -19,7 +21,11 @@ namespace Zappy {
     {
         bool value = false;
         if (!_players.contains(player.id)) {
-            _players.try_emplace(player.id, player, _logFile, this->_model);
+            _players.try_emplace(player.id,
+                player,
+                _logFile,
+                this->_model,
+                this->_modelAnimation);
             value = true;
         }
         return value;
@@ -48,10 +54,24 @@ namespace Zappy {
                 _totalResources.emplace(resource, nb);
         }
     }
+
     void Players::draw3D() const
     {
         for (const auto &player : this->_players | std::ranges::views::values)
             player.draw3D();
+    }
+
+    void Players::update(float dt)
+    {
+        for (auto &player : this->_players | std::ranges::views::values)
+            player.update(dt);
+    }
+
+    void Players::setShader(Graphics::Shader &shader)
+    {
+        AShadered::setShader(shader);
+        this->_model.materials[1].shader = this->getShader().asShader();
+        this->_model.materials[2].shader = this->getShader().asShader();
     }
 
     Player &Players::getPlayer(std::size_t id)

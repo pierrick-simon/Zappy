@@ -9,6 +9,7 @@
     #define PLAYER_HPP
 
     #include <Model.hpp>
+#include <ModelAnimation.hpp>
     #include <array>
     #include <string>
     #include "GUIException.hpp"
@@ -16,14 +17,17 @@
 #include "Maths.hpp"
     #include "NewPlayerEvent.hpp"
     #include "graphics/IDrawable3D.hpp"
+#include "graphics/IUpdatable.hpp"
     #include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
     class Player : public Graphics::Transformable3D,
-                   public Graphics::IDrawable3D {
+                   public Graphics::IDrawable3D,
+                   public Graphics::IUpdatable {
     public:
         Player(const Shared::NewPlayerEvent::NewPlayer &player,
-            std::ofstream &logFile, raylib::Model &model);
+            std::ofstream &logFile, raylib::Model &model,
+            std::vector<raylib::ModelAnimation> &modelAnimation);
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
 
@@ -76,6 +80,13 @@ namespace Zappy {
 
         void draw3D() const override;
 
+        void update(float dt) override;
+
+        void setAnimationIndex(size_t index);
+
+        const raylib::ModelAnimation &getCurrentAnimation() const;
+        raylib::ModelAnimation &getCurrentAnimation();
+
     private:
         std::size_t _id;
         std::size_t _x;
@@ -90,12 +101,20 @@ namespace Zappy {
         bool _dead = false;
 
         std::ofstream &_logFile;
+
         raylib::Model &_model;
+        std::vector<raylib::ModelAnimation> &_modelAnimation;
+        size_t _currentAnimationIndex {0};
+        std::size_t _animationFrame {0};
+        float _frameTime {0.0f};
+        float _animationDuration {0};
+
+        static constexpr auto ANIMATIONS_FPS = 30.0f;
 
         static inline const std::array<Quaternion, 4> DIRECTION_TO_QUATERNION =
-            {raylib::Quaternion::FromEuler(0, Maths::DegToRad(0.0f), 0),
+            {raylib::Quaternion::FromEuler(0, Maths::DegToRad(180.0f), 0),
                 raylib::Quaternion::FromEuler(0, Maths::DegToRad(90.0f), 0),
-                raylib::Quaternion::FromEuler(0, Maths::DegToRad(180.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(0.0f), 0),
                 raylib::Quaternion::FromEuler(0, Maths::DegToRad(270.0f), 0)};
     };
 } // namespace Zappy
