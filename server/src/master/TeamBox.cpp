@@ -12,8 +12,8 @@ namespace Zappy {
     TeamBox::TeamBox(sf::Font &font, std::string name,
         const TextureMap &textures,
         const std::map<std::string, std::string> &ais) :
-        _play({{Init::Pause, textures.at(Init::Play), sf::Color::Red},
-            {Init::Play, textures.at(Init::Pause), sf::Color::Green}}),
+        _play({{Init::PAUSE, textures.at(Init::PLAY), sf::Color::Red},
+            {Init::PLAY, textures.at(Init::PAUSE), sf::Color::Green}}),
         _name(std::move(name))
     {
         _pos.x = Init::BOX_GAP * 3.0f + Init::AI_BOX_X;

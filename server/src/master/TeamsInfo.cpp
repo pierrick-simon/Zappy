@@ -23,10 +23,10 @@ namespace Zappy {
         _rec.setPosition(
             {Init::BOX_GAP * 2.f + Init::AI_BOX_X, Init::TOOLBAR_SIZE_Y});
         _rec.setFillColor(Init::BACKGROUND_COLOR);
-        TextureMap map({{Init::Play, _playTexture},
-            {Init::Pause, _pauseTexture},
-            {Init::Empty, _emptyTexture},
-            {Init::Check, _checkTexture}});
+        TextureMap map({{Init::PLAY, _playTexture},
+            {Init::PAUSE, _pauseTexture},
+            {Init::EMPTY, _emptyTexture},
+            {Init::CHECK, _checkTexture}});
         for (const auto &[name, _] : _teams)
             _teamsBox.insert({name, {{font, name, map, ais}, SLEEP}});
         float height = 0;

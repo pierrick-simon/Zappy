@@ -25,7 +25,7 @@ namespace Zappy {
 
         [[nodiscard]] bool getCheck() const
         {
-            return _check.getState() == Init::Check;
+            return _check.getState() == Init::CHECK;
         }
 
     private:

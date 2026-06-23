@@ -50,16 +50,16 @@ namespace Zappy {
 
     const std::map<Info::ResourceName, ResourceInfo::TextureSize>
         Resources::INIT = {
-            {Info::ResourceName::Food, {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Linemate,
+            {Info::ResourceName::FOOD, {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::LINEMATE,
                 {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Deraumere,
+            {Info::ResourceName::DERAUMERE,
                 {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Sibur, {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Mendiane,
+            {Info::ResourceName::SIBUR, {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::MENDIANE,
                 {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Phiras, {"public/houseIcon.png", {500, 400}}},
-            {Info::ResourceName::Thystame,
+            {Info::ResourceName::PHIRAS, {"public/houseIcon.png", {500, 400}}},
+            {Info::ResourceName::THYSTAME,
                 {"public/houseIcon.png", {500, 400}}},
     };
 }; // namespace Zappy

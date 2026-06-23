@@ -275,7 +275,7 @@ namespace Zappy {
             throw PlayerNotFoundException(id);
         auto &player = find->second;
         auto dir = Info::directions.find(player.dir);
-        if (rotate == Rotate::Left) {
+        if (rotate == Rotate::LEFT) {
             if (dir == Info::directions.begin())
                 player.dir = Info::directions.rbegin()->first;
             else

@@ -12,8 +12,8 @@ namespace Zappy {
         const TextureMap &textures, sf::Vector2f pos) :
         _pos(pos),
         _press(font, TEXT_SIZE, std::move(name)),
-        _check({{Init::Empty, textures.at(Init::Empty)},
-            {Init::Check, textures.at(Init::Check)}})
+        _check({{Init::EMPTY, textures.at(Init::EMPTY)},
+            {Init::CHECK, textures.at(Init::CHECK)}})
     {
         _press.setSize({Init::TEAM_BUTTON_SIZE_X, Init::TEAM_BUTTON_SIZE_Y});
         _press.setPos(_pos);

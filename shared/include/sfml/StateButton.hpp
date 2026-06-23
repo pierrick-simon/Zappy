@@ -26,7 +26,7 @@ namespace SfmlUtils {
         };
 
         StateButton(std::vector<Texture> textures) :
-            AButton(ButtonType::State), _textures(std::move(textures))
+            AButton(ButtonType::STATE), _textures(std::move(textures))
         {
             _sprite.setTexture(_textures[_id].texture.get());
             sf::Vector2u tmp = _textures[_id].texture.get().getSize();
