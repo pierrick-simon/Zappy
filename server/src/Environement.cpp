@@ -99,17 +99,19 @@ namespace Zappy {
     {
         auto info = getTileInfo(width, height);
         std::string formatedTile;
+        bool is_ressources = false;
 
         for (auto p : info.players)
             formatedTile += "player ";
         for (auto e : info.eggs)
             formatedTile += "egg ";
         for (auto r : info.resources) {
-            for (std::size_t i = 0; i < r.second; ++i)
+            for (std::size_t i = 0; i < r.second; ++i) {
                 formatedTile += Info::resources.at(r.first).str + " ";
+                is_ressources = true;
+            }
         }
-        if (!info.players.empty() || !info.eggs.empty() ||
-            !info.resources.empty())
+        if (!info.players.empty() || !info.eggs.empty() || is_ressources)
             formatedTile += "\b";
         return formatedTile;
     }
