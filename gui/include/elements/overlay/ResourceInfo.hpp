@@ -22,15 +22,15 @@ namespace Zappy {
             raylib::Vector2 size;
         };
 
-        ResourceInfo(
-            Font &font, const raylib::Vector2 &pos, const TextureSize &texture);
+        ResourceInfo(raylib::Font &font, const raylib::Vector2 &pos,
+            const TextureSize &texture);
 
         void draw2D() const override;
         void update(std::size_t map, std::size_t players);
 
     private:
         void initSprite(const TextureSize &texture);
-        void initText(Font &font);
+        void initText(raylib::Font &font);
         void initRect();
 
         raylib::Vector2 _pos;

@@ -29,15 +29,15 @@ namespace Zappy {
             std::map<Info::ResourceName, std::size_t> resources;
         };
 
-        Tile2D(Font &font);
+        Tile2D(raylib::Font &font);
 
         Action update(const TileInfo &info);
         void draw2D() const override;
         void changeSelected(Action dir) override;
 
     private:
-        void initText(Font &font, raylib::Vector2 pos);
-        void initResources(Font &font, raylib::Vector2 pos);
+        void initText(raylib::Font &font, raylib::Vector2 pos);
+        void initResources(raylib::Font &font, raylib::Vector2 pos);
         void updateResources(
             const std::map<Info::ResourceName, std::size_t> &resources);
 
@@ -50,7 +50,7 @@ namespace Zappy {
             mutable Graphics::Text2D text;
             std::string prefix;
             std::string value;
-            Color color = WHITE;
+            raylib::Color color = raylib::Color::White();
         };
 
         enum Text { NbPlayer, NbEgg, NBElevation, Resources, NbText };
@@ -58,7 +58,7 @@ namespace Zappy {
         Graphics::Text2D _title;
         std::array<TextInfo, NbText> _text;
 
-        Color _teamColor = WHITE;
+        raylib::Color _teamColor = raylib::Color::White();
 
         std::map<Info::ResourceName, Resource> _resources;
 

@@ -9,7 +9,8 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    Team::Team(Font &font, std::map<std::string, Color> &teams) :
+    Team::Team(
+        raylib::Font &font, std::map<std::string, raylib::Color> &teams) :
         InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
             false),
@@ -20,7 +21,7 @@ namespace Zappy {
         initText(font, pos);
     }
 
-    void Team::initText(Font &font, raylib::Vector2 pos)
+    void Team::initText(raylib::Font &font, raylib::Vector2 pos)
     {
         pos.y += Init::GAP;
         _title.setFont(font);

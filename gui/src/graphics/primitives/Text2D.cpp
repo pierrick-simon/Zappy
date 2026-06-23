@@ -11,9 +11,8 @@
 namespace Graphics {
     void Text2D::draw2D() const
     {
-        Font font;
         if (_font)
-            DrawTextPro((*_font).get(),
+            ::DrawTextPro((*_font).get(),
                 _str.c_str(),
                 _position,
                 _origin,
@@ -22,7 +21,7 @@ namespace Graphics {
                 _spacing,
                 _color);
         else
-            DrawTextPro(GetFontDefault(),
+            ::DrawTextPro(GetFontDefault(),
                 _str.c_str(),
                 _position,
                 _origin,
@@ -32,7 +31,7 @@ namespace Graphics {
                 _color);
     }
 
-    void Text2D::setFont(Font &font)
+    void Text2D::setFont(raylib::Font &font)
     {
         _font = font;
     }
@@ -57,7 +56,7 @@ namespace Graphics {
         _spacing = spacing;
     }
 
-    void Text2D::setColor(Color color)
+    void Text2D::setColor(raylib::Color color)
     {
         _color = color;
     }

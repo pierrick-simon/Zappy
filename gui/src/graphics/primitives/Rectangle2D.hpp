@@ -7,8 +7,9 @@
 
 #ifndef RECTANGLE_2D_HPP
     #define RECTANGLE_2D_HPP
-    #include <Rectangle.hpp>
 
+    #include <Rectangle.hpp>
+    #include <raylib-cpp.hpp>
     #include "graphics/UiObject.hpp"
 
 namespace Graphics {
@@ -17,11 +18,11 @@ namespace Graphics {
     public:
         using Rectangle::Rectangle;
         void draw2D() const override;
-        Color &getColor();
-        [[nodiscard]] const Color &getColor() const;
+        raylib::Color &getColor();
+        [[nodiscard]] const raylib::Color &getColor() const;
 
     private:
-        Color _color = BLACK;
+        raylib::Color _color = raylib::Color::Black();
     };
 
 } // namespace Graphics

@@ -16,7 +16,8 @@
 namespace Zappy {
     class EventBox : public TextBox {
     public:
-        EventBox(Font &font, std::map<std::string, Color> &teams);
+        EventBox(
+            raylib::Font &font, std::map<std::string, raylib::Color> &teams);
 
     private:
         static constexpr float FONT_SIZE = 18;

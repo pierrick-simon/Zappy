@@ -10,8 +10,8 @@
 
 namespace Zappy {
 
-    TextBox::TextBox(
-        Font &font, std::map<std::string, Color> &teams, Color boxColor) :
+    TextBox::TextBox(raylib::Font &font,
+        std::map<std::string, raylib::Color> &teams, raylib::Color boxColor) :
         _teams(teams)
     {
         _text.setFont(font);
@@ -50,7 +50,7 @@ namespace Zappy {
         _text.setFontSize(fontSize);
     }
 
-    void TextBox::setTextColor(Color color)
+    void TextBox::setTextColor(raylib::Color color)
     {
         _color = color;
     }

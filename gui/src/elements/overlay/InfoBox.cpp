@@ -44,7 +44,7 @@ namespace Zappy {
             if (name == Action::Close) {
                 button.Load(IMG_CLOSE.data());
                 button.setScale({CLOSE_SCALE, CLOSE_SCALE});
-                button.setColor(RED);
+                button.setColor(raylib::Color::Red());
             } else {
                 button.Load(Init::IMG_NEXT.data());
                 button.setScale(

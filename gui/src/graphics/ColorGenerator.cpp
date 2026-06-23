@@ -8,14 +8,14 @@
 #include "graphics/ColorGenerator.hpp"
 
 namespace Graphics {
-    Color ColorGenerator::next()
+    raylib::Color ColorGenerator::next()
     {
-        Color c = hsvToColor(_current, SATURATION, VALUE);
+        raylib::Color c = hsvToColor(_current, SATURATION, VALUE);
         _current = std::fmod(_current + GOLDEN_RATIO, 1.0f);
         return c;
     }
 
-    Color ColorGenerator::hsvToColor(
+    raylib::Color ColorGenerator::hsvToColor(
         float current, float saturation, float value)
     {
         int i = static_cast<int>(current * 6.0f);
@@ -23,7 +23,7 @@ namespace Graphics {
         float p = value * (1.0f - saturation);
         float q = value * (1.0f - f * saturation);
         float t = value * (1.0f - (1.0f - f) * saturation);
-        auto color = WHITE;
+        auto color = raylib::Color::White();
 
         switch (i % 6) {
             case 0:
@@ -47,9 +47,9 @@ namespace Graphics {
         return color;
     }
 
-    Color ColorGenerator::makeColor(float r, float g, float b)
+    raylib::Color ColorGenerator::makeColor(float r, float g, float b)
     {
-        return Color {static_cast<unsigned char>(r * 255),
+        return raylib::Color {static_cast<unsigned char>(r * 255),
             static_cast<unsigned char>(g * 255),
             static_cast<unsigned char>(b * 255),
             255};

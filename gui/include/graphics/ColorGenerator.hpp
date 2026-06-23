@@ -13,11 +13,12 @@
 namespace Graphics {
     class ColorGenerator {
     public:
-        Color next();
+        raylib::Color next();
 
     private:
-        static Color hsvToColor(float current, float saturation, float value);
-        static Color makeColor(float r, float g, float b);
+        static raylib::Color hsvToColor(
+            float current, float saturation, float value);
+        static raylib::Color makeColor(float r, float g, float b);
 
         float _current = 0.0f;
 

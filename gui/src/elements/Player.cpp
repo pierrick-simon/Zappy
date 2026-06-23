@@ -13,7 +13,8 @@
 
 namespace Zappy {
     Player::Player(const Shared::NewPlayerEvent::NewPlayer &player,
-        std::ofstream &logFile, raylib::Model &model) :
+        std::ofstream &logFile, raylib::Model &model,
+        std::vector<::ModelAnimation> &modelAnimation) :
         _id(player.id),
         _x(player.x),
         _y(player.y),
@@ -22,12 +23,14 @@ namespace Zappy {
         _team(player.team),
         _logFile(logFile),
         _status(PlayerStatus::Status::None),
-        _model(model)
+        _model(model),
+        _modelAnimation(modelAnimation)
     {
         Shared::Utils::logMsg(_logFile,
             "Player [" + std::to_string(_id) + "] joined the " + _team +
                 " team.");
         _inventory = Info::INIT_RESOUCES;
+        this->setAnimationIndex(0);
     }
 
     void Player::move(std::size_t x, std::size_t y, Info::Direction dir)
@@ -91,9 +94,38 @@ namespace Zappy {
 
     void Player::draw3D() const
     {
+        this->_model.UpdateAnimation(this->getCurrentAnimation(),
+            static_cast<float>(this->_animationFrame));
         auto [axis, angle] = this->getRotation().ToAxisAngle();
         this->_model.Draw(
             this->_position, axis, Maths::RadToDeg(angle), this->_scale);
+    }
+
+    void Player::update(float dt)
+    {
+        this->_frameTime += dt;
+        float normalized =
+            std::fmod(this->_frameTime, this->_animationDuration);
+        this->_animationFrame =
+            static_cast<std::size_t>(normalized * ANIMATIONS_FPS);
+    }
+
+    void Player::setAnimationIndex(size_t index)
+    {
+        this->_currentAnimationIndex = index;
+        this->_animationDuration =
+            static_cast<float>(this->getCurrentAnimation().keyframeCount) /
+            ANIMATIONS_FPS;
+    }
+
+    const ModelAnimation &Player::getCurrentAnimation() const
+    {
+        return this->_modelAnimation[this->_currentAnimationIndex];
+    }
+
+    ModelAnimation &Player::getCurrentAnimation()
+    {
+        return this->_modelAnimation[this->_currentAnimationIndex];
     }
 
     void Player::died()

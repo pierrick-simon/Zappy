@@ -19,7 +19,7 @@
 namespace Zappy {
     class Resources : public Graphics::IDrawable2D {
     public:
-        Resources(Font &font);
+        Resources(raylib::Font &font);
 
         void draw2D() const override;
         void update(const std::map<Info::ResourceName, std::size_t> &map,

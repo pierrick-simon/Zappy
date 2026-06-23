@@ -38,7 +38,7 @@ namespace Zappy {
             Elevation2D overlay;
         };
 
-        Font _font;
+        raylib::Font _font;
         std::vector<Parts> _elevations;
     };
 } // namespace Zappy

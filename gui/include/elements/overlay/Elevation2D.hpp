@@ -19,8 +19,8 @@ namespace Zappy {
     class Elevation2D : public Graphics::IDrawable2D,
                         public Graphics::IUpdatable {
     public:
-        Elevation2D(
-            Font &font, std::size_t x, std::size_t y, std::size_t level);
+        Elevation2D(raylib::Font &font, std::size_t x, std::size_t y,
+            std::size_t level);
 
         void update(float dt) override;
         void draw2D() const override;
@@ -28,8 +28,8 @@ namespace Zappy {
         void setPos(Vector2 pos);
 
     private:
-        void initText(
-            Font &font, std::size_t x, std::size_t y, std::size_t level);
+        void initText(raylib::Font &font, std::size_t x, std::size_t y,
+            std::size_t level);
         void initRect();
 
         Graphics::Text2D _titleText;

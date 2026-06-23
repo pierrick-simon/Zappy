@@ -17,7 +17,7 @@
 namespace Zappy {
     class TimeUnit : public Graphics::IDrawable2D {
     public:
-        TimeUnit(Font &font);
+        TimeUnit(raylib::Font &font);
 
         void draw2D() const override;
         std::size_t update(std::size_t timeUnit);

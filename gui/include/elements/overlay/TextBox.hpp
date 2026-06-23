@@ -18,14 +18,14 @@
 namespace Zappy {
     class TextBox : public Graphics::IDrawable2D {
     public:
-        TextBox(
-            Font &font, std::map<std::string, Color> &teams, Color boxColor);
+        TextBox(raylib::Font &font, std::map<std::string, raylib::Color> &teams,
+            raylib::Color boxColor);
 
         void setWidth(float width);
         void setPos(Vector2 pos);
         void setMaxLine(std::size_t maxLine);
         void setFontSize(float fontSize);
-        void setTextColor(Color color);
+        void setTextColor(raylib::Color color);
 
         [[nodiscard]] float getHeight() const;
 
@@ -49,7 +49,7 @@ namespace Zappy {
         struct Line {
             std::string teamPrefix;
             std::string body;
-            Color teamColor;
+            raylib::Color teamColor;
         };
 
         std::vector<Line> _lines;
@@ -60,9 +60,9 @@ namespace Zappy {
         raylib::Vector2 _pos = {0, 0};
         raylib::Vector2 _size = {0, 0};
         raylib::Vector2 _origin = {0, 0};
-        Color _color = WHITE;
+        raylib::Color _color = raylib::Color::White();
 
-        std::map<std::string, Color> &_teams;
+        std::map<std::string, raylib::Color> &_teams;
     };
 } // namespace Zappy
 

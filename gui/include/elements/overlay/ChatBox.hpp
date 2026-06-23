@@ -16,7 +16,8 @@
 namespace Zappy {
     class ChatBox : public TextBox {
     public:
-        ChatBox(Font &font, std::map<std::string, Color> &teams);
+        ChatBox(
+            raylib::Font &font, std::map<std::string, raylib::Color> &teams);
 
     private:
         static constexpr std::size_t MAX_LINE = 24;

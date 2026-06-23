@@ -10,7 +10,7 @@
 
 namespace Zappy {
     Elevations::Elevations() :
-        _font(LoadFont(Init::FONT_PATH.data()))
+        _font(Init::FONT_PATH.data())
     {
     }
 

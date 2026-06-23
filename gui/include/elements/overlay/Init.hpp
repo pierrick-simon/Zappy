@@ -8,6 +8,7 @@
 #ifndef INIT_HPP_
     #define INIT_HPP_
 
+    #include <raylib-cpp.hpp>
     #include <string_view>
     #include "graphics/AShadered.hpp"
 
@@ -20,9 +21,9 @@ namespace Zappy {
         static constexpr unsigned int WINDOW_SIZE_X = 1920;
         static constexpr unsigned int WINDOW_SIZE_Y = 1080;
 
-        static constexpr Color GOLD_RICH = {212, 160, 23, 255};
-        static constexpr Color DARK_PINEWOOD = {28, 52, 32, 255};
-        static constexpr Color BLUE_THROUGH = {0, 0, 139, 128};
+        static constexpr raylib::Color GOLD_RICH = {212, 160, 23, 255};
+        static constexpr raylib::Color DARK_PINEWOOD = {28, 52, 32, 255};
+        static constexpr raylib::Color BLUE_THROUGH = {0, 0, 139, 128};
 
         static constexpr float BORDER_SIZE = 3.f;
         static constexpr float BORDER_ROUND = 0.1f;

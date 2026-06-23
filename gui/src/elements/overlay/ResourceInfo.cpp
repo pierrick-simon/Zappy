@@ -10,8 +10,8 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    ResourceInfo::ResourceInfo(
-        Font &font, const raylib::Vector2 &pos, const TextureSize &texture) :
+    ResourceInfo::ResourceInfo(raylib::Font &font, const raylib::Vector2 &pos,
+        const TextureSize &texture) :
         _pos(pos)
     {
         initRect();
@@ -43,7 +43,7 @@ namespace Zappy {
             _pos.y + Init::RESOURCE_SIZE.y * 2.f + Init::RESOURCE_ICON_POS.y});
     }
 
-    void ResourceInfo::initText(Font &font)
+    void ResourceInfo::initText(raylib::Font &font)
     {
         _text.setFontSize(FONTSIZE);
         _text.setPosition({_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
@@ -54,13 +54,13 @@ namespace Zappy {
         _map.setPosition({_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
             _pos.y + Init::RESOURCE_SIZE.y * 1.5f});
         _map.setFont(font);
-        _map.setColor(WHITE);
+        _map.setColor(raylib::Color::White());
         _player.setFontSize(FONTSIZE);
         _player.setPosition(
             {_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
                 _pos.y + Init::RESOURCE_SIZE.y * 2.5f});
         _player.setFont(font);
-        _player.setColor(WHITE);
+        _player.setColor(raylib::Color::White());
     }
 
     void ResourceInfo::initRect()

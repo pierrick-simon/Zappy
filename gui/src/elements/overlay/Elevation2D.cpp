@@ -11,14 +11,14 @@
 
 namespace Zappy {
     Elevation2D::Elevation2D(
-        Font &font, std::size_t x, std::size_t y, std::size_t level)
+        raylib::Font &font, std::size_t x, std::size_t y, std::size_t level)
     {
         initText(font, x, y, level);
         initRect();
     }
 
     void Elevation2D::initText(
-        Font &font, std::size_t x, std::size_t y, std::size_t level)
+        raylib::Font &font, std::size_t x, std::size_t y, std::size_t level)
     {
         _titleText.setFont(font);
         _titleText.setStr("Elevation");
@@ -26,11 +26,11 @@ namespace Zappy {
         _titleText.setColor(Init::GOLD_RICH);
         _levelText.setFont(font);
         _levelText.setFontSize(TEXT_SIZE);
-        _levelText.setColor(WHITE);
+        _levelText.setColor(raylib::Color::White());
         _levelText.setStr("Level : " + std::to_string(level));
         _posText.setFont(font);
         _posText.setFontSize(TEXT_SIZE);
-        _posText.setColor(WHITE);
+        _posText.setColor(raylib::Color::White());
         _posText.setStr(
             "Position : (" + std::to_string(x) + "," + std::to_string(y) + ")");
     }

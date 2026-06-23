@@ -9,7 +9,8 @@
 #include "Overlay.hpp"
 
 namespace Zappy {
-    Player2D::Player2D(Font &font, std::map<std::string, Color> &teams) :
+    Player2D::Player2D(
+        raylib::Font &font, std::map<std::string, raylib::Color> &teams) :
         InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
             true),
@@ -20,7 +21,7 @@ namespace Zappy {
         initText(font, pos);
     }
 
-    void Player2D::initText(Font &font, raylib::Vector2 pos)
+    void Player2D::initText(raylib::Font &font, raylib::Vector2 pos)
     {
         pos.y += Init::GAP;
         _title.setFont(font);
@@ -44,7 +45,7 @@ namespace Zappy {
         initInventory(font, pos);
     }
 
-    void Player2D::initInventory(Font &font, raylib::Vector2 pos)
+    void Player2D::initInventory(raylib::Font &font, raylib::Vector2 pos)
     {
         pos.x += Init::GAP * 2.f;
         for (const auto &[name, info] : Overlay::RESOURCES) {

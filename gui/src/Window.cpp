@@ -42,7 +42,7 @@ namespace Graphics {
         this->_scene.drawUiObjects();
         EndTextureMode();
         this->BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(raylib::Color::Black());
         auto scaleX = float(GetScreenWidth()) / WINDOW_SIZE_X;
         auto scaleY = float(GetScreenHeight()) / WINDOW_SIZE_Y;
         auto scale = std::min(scaleX, scaleY);
@@ -52,7 +52,12 @@ namespace Graphics {
             (float(GetScreenHeight()) - WINDOW_SIZE_Y * scale) / 2.0f,
             WINDOW_SIZE_X * scale,
             WINDOW_SIZE_Y * scale};
-        DrawTexturePro(_renderTarget.texture, src, dst, {0, 0}, 0.0f, WHITE);
+        DrawTexturePro(_renderTarget.texture,
+            src,
+            dst,
+            {0, 0},
+            0.0f,
+            raylib::Color::White());
         this->EndDrawing();
     }
 

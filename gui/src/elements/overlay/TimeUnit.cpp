@@ -10,7 +10,7 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    TimeUnit::TimeUnit(Font &font)
+    TimeUnit::TimeUnit(raylib::Font &font)
     {
         auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - SIZE.x;
         raylib::Vector2 pos(x, Init::GAP);

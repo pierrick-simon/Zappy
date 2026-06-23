@@ -20,7 +20,7 @@
 namespace Zappy {
     class Overlay {
     public:
-        Overlay(std::map<std::string, Color> &teams);
+        Overlay(std::map<std::string, raylib::Color> &teams);
 
         Resources resources;
         ChatBox chatBox;
@@ -34,7 +34,7 @@ namespace Zappy {
             RESOURCES;
 
     private:
-        Font _font;
+        raylib::Font _font;
     };
 } // namespace Zappy
 

@@ -14,12 +14,12 @@ namespace Graphics {
         update();
     }
 
-    void Box2D::setBorderColor(Color color)
+    void Box2D::setBorderColor(raylib::Color color)
     {
         _borderColor = color;
     }
 
-    void Box2D::setColor(Color color)
+    void Box2D::setColor(raylib::Color color)
     {
         _color = color;
     }

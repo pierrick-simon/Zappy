@@ -11,6 +11,7 @@
     #include <memory>
     #include <optional>
     #include <vector>
+    #include "Init.hpp"
     #include "Text.hpp"
     #include "graphics/UiObject.hpp"
 
@@ -21,16 +22,16 @@ namespace Graphics {
         Text2D() = default;
         void draw2D() const override;
 
-        void setFont(Font &font);
+        void setFont(raylib::Font &font);
         void setStr(std::string str);
         void setOrigin(Vector2 origin);
         void setFontSize(float fontSize);
         void setSpacing(float spacing);
-        void setColor(Color color);
+        void setColor(raylib::Color color);
 
         struct MultiColor {
             std::string str;
-            Color color = WHITE;
+            raylib::Color color = raylib::Color::White();
         };
 
         static void drawMultiColorStrs(
@@ -39,12 +40,12 @@ namespace Graphics {
         [[nodiscard]] raylib::Vector2 getSize() const;
 
     private:
-        std::optional<std::reference_wrapper<Font>> _font;
+        std::optional<std::reference_wrapper<raylib::Font>> _font;
         std::string _str;
         raylib::Vector2 _origin = {0, 0};
         float _fontSize = 0;
         float _spacing = 0;
-        Color _color = BLACK;
+        raylib::Color _color = raylib::Color::Black();
     };
 
 } // namespace Graphics

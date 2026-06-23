@@ -100,7 +100,7 @@ namespace Zappy {
         Map _map;
         Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
-        std::map<std::string, Color> _teams;
+        std::map<std::string, raylib::Color> _teams;
         std::size_t _timeUnit;
         std::string _winingTeam;
 

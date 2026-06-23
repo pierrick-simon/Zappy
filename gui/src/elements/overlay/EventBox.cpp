@@ -9,7 +9,8 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    EventBox::EventBox(Font &font, std::map<std::string, Color> &teams) :
+    EventBox::EventBox(
+        raylib::Font &font, std::map<std::string, raylib::Color> &teams) :
         TextBox(font, teams, Init::BLUE_THROUGH)
     {
 

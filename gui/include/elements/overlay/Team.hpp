@@ -26,7 +26,7 @@ namespace Zappy {
             std::array<std::size_t, NB_LEVEL> level;
         };
 
-        Team(Font &font, std::map<std::string, Color> &teams);
+        Team(raylib::Font &font, std::map<std::string, raylib::Color> &teams);
         void update(const TeamInfo &info);
         void draw2D() const override;
         void changeSelected(Action dir) override;
@@ -38,7 +38,7 @@ namespace Zappy {
         }
 
     private:
-        void initText(Font &font, raylib::Vector2 pos);
+        void initText(raylib::Font &font, raylib::Vector2 pos);
         void updateTitle(const std::string &team);
         void updateMembers(const std::array<std::size_t, NB_LEVEL> &levels);
 
@@ -56,7 +56,7 @@ namespace Zappy {
 
         std::optional<std::string> _selectTeam;
 
-        std::map<std::string, Color> &_teams;
+        std::map<std::string, raylib::Color> &_teams;
     };
 } // namespace Zappy
 

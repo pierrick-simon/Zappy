@@ -9,8 +9,8 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    Overlay::Overlay(std::map<std::string, Color> &teams) :
-        _font(LoadFont(Init::FONT_PATH.data())),
+    Overlay::Overlay(std::map<std::string, raylib::Color> &teams) :
+        _font(Init::FONT_PATH.data()),
         resources(_font),
         chatBox(_font, teams),
         eventBox(_font, teams),

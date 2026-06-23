@@ -13,7 +13,7 @@
 #include "graphics/primitives/Text2D.hpp"
 
 namespace Zappy {
-    Resources::Resources(Font &font)
+    Resources::Resources(raylib::Font &font)
     {
         float i = 0;
         for (auto &[resource, texture] : Overlay::RESOURCES) {

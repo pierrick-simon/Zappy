@@ -21,17 +21,17 @@ namespace Graphics {
         this->Draw(src, dst, _origin, _rotation, _color);
     }
 
-    Color &Sprite2D::getColor()
+    raylib::Color &Sprite2D::getColor()
     {
         return this->_color;
     }
 
-    const Color &Sprite2D::getColor() const
+    const raylib::Color &Sprite2D::getColor() const
     {
         return this->_color;
     }
 
-    void Sprite2D::setColor(Color color)
+    void Sprite2D::setColor(raylib::Color color)
     {
         _color = color;
     }

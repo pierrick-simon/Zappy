@@ -9,7 +9,7 @@
 #include "Overlay.hpp"
 
 namespace Zappy {
-    Tile2D::Tile2D(Font &font) :
+    Tile2D::Tile2D(raylib::Font &font) :
         InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
             true)
@@ -19,7 +19,7 @@ namespace Zappy {
         initText(font, pos);
     }
 
-    void Tile2D::initText(Font &font, raylib::Vector2 pos)
+    void Tile2D::initText(raylib::Font &font, raylib::Vector2 pos)
     {
         pos.y += Init::GAP;
         _title.setFont(font);
@@ -42,7 +42,7 @@ namespace Zappy {
         initResources(font, pos);
     }
 
-    void Tile2D::initResources(Font &font, raylib::Vector2 pos)
+    void Tile2D::initResources(raylib::Font &font, raylib::Vector2 pos)
     {
         pos.x += Init::GAP * 2.f;
         for (const auto &[name, info] : Overlay::RESOURCES) {

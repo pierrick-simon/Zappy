@@ -30,15 +30,16 @@ namespace Zappy {
             std::map<Info::ResourceName, std::size_t> inventory;
         };
 
-        Player2D(Font &font, std::map<std::string, Color> &teams);
+        Player2D(
+            raylib::Font &font, std::map<std::string, raylib::Color> &teams);
 
         Action update(const PlayerInfo &info);
         void draw2D() const override;
         void changeSelected(Action dir) override;
 
     private:
-        void initText(Font &font, raylib::Vector2 pos);
-        void initInventory(Font &font, raylib::Vector2 pos);
+        void initText(raylib::Font &font, raylib::Vector2 pos);
+        void initInventory(raylib::Font &font, raylib::Vector2 pos);
         void updateInventory(
             const std::map<Info::ResourceName, std::size_t> &inventory);
         void updateTeamName(const std::string &team);
@@ -52,7 +53,7 @@ namespace Zappy {
             mutable Graphics::Text2D text;
             std::string prefix;
             std::string value;
-            Color color = WHITE;
+            raylib::Color color = raylib::Color::White();
         };
 
         enum Text { Team, Level, Position, Status, Inventory, NbText };
@@ -60,11 +61,11 @@ namespace Zappy {
         Graphics::Text2D _title;
         std::array<TextInfo, NbText> _text;
 
-        Color _teamColor = WHITE;
+        raylib::Color _teamColor = raylib::Color::White();
 
         std::map<Info::ResourceName, Resource> _resources;
 
-        std::map<std::string, Color> &_teams;
+        std::map<std::string, raylib::Color> &_teams;
 
         Action _dir = Action::None;
     };
