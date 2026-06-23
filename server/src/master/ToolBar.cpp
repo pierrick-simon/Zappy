@@ -12,9 +12,12 @@
 namespace Zappy {
     ToolBar::ToolBar(
         sf::Font &font, int port, AddProcess &process, Clients &clients) :
-        _playTexture(SfmlUtils::SfmlUtils::loadTextureFromFile(PLAY.data())),
-        _pauseTexture(SfmlUtils::SfmlUtils::loadTextureFromFile(PAUSE.data())),
-        _showTexture(SfmlUtils::SfmlUtils::loadTextureFromFile(SHOW.data())),
+        _playTexture(
+            SfmlUtils::SfmlUtils::loadTextureFromFile(PLAY_IMG.data())),
+        _pauseTexture(
+            SfmlUtils::SfmlUtils::loadTextureFromFile(PAUSE_IMG.data())),
+        _showTexture(
+            SfmlUtils::SfmlUtils::loadTextureFromFile(SHOW_IMG.data())),
         _play({{PAUSE, _playTexture, sf::Color::Red},
             {PLAY, _pauseTexture, sf::Color::Green}}),
         _show({{NONE, _showTexture, sf::Color::Green},

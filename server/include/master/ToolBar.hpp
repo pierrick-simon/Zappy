@@ -50,9 +50,9 @@ namespace Zappy {
 
         static constexpr std::string_view PORT = "Port: ";
         static constexpr std::string_view IP = "IP: ";
-        static constexpr std::string_view PLAY = "public/play.png";
-        static constexpr std::string_view PAUSE = "public/pause.png";
-        static constexpr std::string_view SHOW = "public/show.png";
+        static constexpr std::string_view PLAY_IMG = "public/play.png";
+        static constexpr std::string_view PAUSE_IMG = "public/pause.png";
+        static constexpr std::string_view SHOW_IMG = "public/show.png";
         static constexpr float GAP = 2.0f;
         static constexpr float SIZE_PLAY_BUTTON =
             Init::TOOLBAR_SIZE_Y - 2 * GAP;
