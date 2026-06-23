@@ -6,6 +6,9 @@
 */
 
 #include "Player.hpp"
+
+#include <iostream>
+
 #include "Utils.hpp"
 
 namespace Zappy {
@@ -31,6 +34,8 @@ namespace Zappy {
         _x = x;
         _y = y;
         _dir = dir;
+        this->setRotation(
+            DIRECTION_TO_QUATERNION[static_cast<std::size_t>(dir)]);
         _eject = false;
     }
 
@@ -78,7 +83,8 @@ namespace Zappy {
     void Player::draw3D() const
     {
         auto [axis, angle] = this->getRotation().ToAxisAngle();
-        this->_model.Draw(this->_position, axis, angle, this->_scale);
+        this->_model.Draw(
+            this->_position, axis, Maths::RadToDeg(angle), this->_scale);
     }
 
     void Player::died()

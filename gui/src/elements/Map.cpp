@@ -58,6 +58,8 @@ namespace Zappy {
     void Map::updateTile(
         std::size_t x, std::size_t y, const std::vector<std::size_t> &resources)
     {
+        if (this->_width == 0 || this->_height == 0)
+            return;
         x %= _width;
         y %= _height;
         auto tileIndex = y * _width + x;
