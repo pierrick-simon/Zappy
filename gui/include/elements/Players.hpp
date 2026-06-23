@@ -15,6 +15,7 @@
     #include "Info.hpp"
     #include "NewPlayerEvent.hpp"
     #include "Player.hpp"
+    #include "Team.hpp"
     #include "graphics/AShadered.hpp"
     #include "graphics/IDrawable3D.hpp"
 
@@ -38,6 +39,15 @@ namespace Zappy {
             const std::map<Info::ResourceName, std::size_t> &before,
             std::map<Info::ResourceName, std::size_t> after);
 
+        [[nodiscard]] std::size_t getNbPlayer();
+        [[nodiscard]] std::size_t getFirstPlayerId();
+        [[nodiscard]] std::array<std::size_t, Team::NB_LEVEL> getTeamPlayers(
+            const std::string &team) const;
+        [[nodiscard]] std::size_t getNbTilePlayers(
+            std::size_t tile, std::size_t width) const;
+        [[nodiscard]] std::optional<std::size_t> getNextPlayer(
+            InfoBox::Action dir, std::size_t player) const;
+
         void draw3D() const override;
 
         void update(float dt) override;
@@ -47,7 +57,7 @@ namespace Zappy {
         void loadAnimations();
 
     private:
-        std::unordered_map<std::size_t, Player> _players;
+        std::map<std::size_t, Player> _players;
         std::map<Info::ResourceName, std::size_t> _totalResources =
             Info::INIT_RESOUCES;
 

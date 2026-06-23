@@ -22,14 +22,18 @@ namespace Zappy {
         {
             return _x;
         }
+
         [[nodiscard]] std::size_t getY() const
         {
             return _y;
         }
+
         [[nodiscard]] const std::vector<std::size_t> &getPlayers() const
         {
             return _players;
         }
+
+        [[nodiscard]] std::size_t getTile(std::size_t mapWidth) const;
 
     private:
         std::size_t _x;

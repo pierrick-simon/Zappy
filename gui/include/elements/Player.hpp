@@ -14,8 +14,10 @@
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"
-#include "Maths.hpp"
+    #include "Maths.hpp"
     #include "NewPlayerEvent.hpp"
+    #include "Player2D.hpp"
+    #include "PlayerStatus.hpp"
     #include "graphics/IDrawable3D.hpp"
 #include "graphics/IUpdatable.hpp"
     #include "graphics/Transformable3D.hpp"
@@ -47,9 +49,15 @@ namespace Zappy {
         {
             return _dead;
         }
+
         [[nodiscard]] std::string getTeam() const
         {
             return _team;
+        }
+
+        [[nodiscard]] std::size_t getLevel() const
+        {
+            return _level;
         }
 
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
@@ -57,6 +65,8 @@ namespace Zappy {
         {
             return _inventory;
         }
+
+        [[nodiscard]] Player2D::PlayerInfo getPlayerInfo() const;
 
         class PlayerException : public GUIException {
         public:
@@ -99,6 +109,8 @@ namespace Zappy {
         bool _fork = false;
         bool _eject = false;
         bool _dead = false;
+
+        PlayerStatus::Status _status;
 
         std::ofstream &_logFile;
 

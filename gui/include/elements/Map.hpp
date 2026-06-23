@@ -10,6 +10,7 @@
 
     #include <unordered_map>
     #include "Info.hpp"
+    #include "InfoBox.hpp"
     #include "Tile.hpp"
     #include "graphics/AShadered.hpp"
     #include "graphics/IDrawable3D.hpp"
@@ -17,7 +18,7 @@
 namespace Zappy {
     class Map : public Graphics::IDrawable3D, public Graphics::AShadered {
     public:
-        Map();
+        Map(std::size_t &width, std::size_t &height);
 
         bool updateSize(std::size_t x, std::size_t y);
         void updateTile(std::size_t x, std::size_t y,
@@ -44,6 +45,12 @@ namespace Zappy {
             return _totalResources;
         }
 
+        [[nodiscard]] std::map<Info::ResourceName, std::size_t>
+        getTileResources(std::size_t tile) const;
+
+        [[nodiscard]] std::size_t getNextTile(
+            InfoBox::Action dir, std::size_t tile) const;
+
         void drawRessources(const Zappy::Tile &tile) const;
         void draw3D() const override;
 
@@ -54,8 +61,8 @@ namespace Zappy {
             const std::map<Info::ResourceName, std::size_t> &before,
             std::map<Info::ResourceName, std::size_t> after);
 
-        std::size_t _width = 0;
-        std::size_t _height = 0;
+        std::size_t &_width;
+        std::size_t &_height;
         raylib::Vector2 _renderedMapSize;
         std::vector<Tile> _tiles;
         std::map<Info::ResourceName, std::size_t> _totalResources;

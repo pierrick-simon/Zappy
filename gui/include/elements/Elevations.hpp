@@ -29,13 +29,16 @@ namespace Zappy {
         void update(float dt) override;
         void draw2D() const override;
 
+        [[nodiscard]] std::size_t getNbTileElevations(
+            std::size_t tile, std::size_t mapWidth) const;
+
     private:
         struct Parts {
             Elevation info;
             Elevation2D overlay;
         };
 
-        Font _font;
+        raylib::Font _font;
         std::vector<Parts> _elevations;
     };
 } // namespace Zappy

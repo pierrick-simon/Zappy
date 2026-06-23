@@ -10,7 +10,7 @@
 
 namespace Zappy {
     Elevations::Elevations() :
-        _font(LoadFont(Init::FONT_PATH.data()))
+        _font(Init::FONT_PATH.data())
     {
     }
 
@@ -62,5 +62,16 @@ namespace Zappy {
             elevation.draw2D();
             i++;
         }
+    }
+
+    std::size_t Elevations::getNbTileElevations(
+        std::size_t tile, std::size_t mapWidth) const
+    {
+        std::size_t nb = 0;
+        for (const auto &[elevation, _] : _elevations) {
+            if (elevation.getTile(mapWidth) == tile)
+                nb++;
+        }
+        return nb;
     }
 } // namespace Zappy

@@ -184,6 +184,10 @@ namespace Zappy {
                 player.team});
             event.send({fd});
         }
+        for (const auto &[id, egg] : _eggs) {
+            Shared::EggEvent event(id, egg.x, egg.y, egg.team);
+            event.send({fd});
+        }
     }
 
     void Environement::removePlayer(

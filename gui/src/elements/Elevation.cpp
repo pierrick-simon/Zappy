@@ -22,4 +22,9 @@ namespace Zappy {
                            [id](std::size_t i) { return id == i; }),
             _players.end());
     }
+
+    std::size_t Elevation::getTile(std::size_t mapWidth) const
+    {
+        return _y * mapWidth + _x;
+    }
 } // namespace Zappy

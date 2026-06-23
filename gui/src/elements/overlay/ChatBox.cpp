@@ -10,12 +10,12 @@
 
 namespace Zappy {
     ChatBox::ChatBox(
-        Font &font, std::unordered_map<std::string, Color> &teams) :
+        raylib::Font &font, std::map<std::string, raylib::Color> &teams) :
         TextBox(font, teams, Init::BLUE_THROUGH)
     {
 
-        auto x = float(GetScreenWidth());
-        auto y = float(GetScreenHeight());
+        auto x = float(Init::WINDOW_SIZE_X);
+        auto y = float(Init::WINDOW_SIZE_Y);
         setMaxLine(MAX_LINE);
         setFontSize(FONT_SIZE);
         setWidth(WIDTH);

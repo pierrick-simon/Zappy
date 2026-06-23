@@ -9,6 +9,7 @@
     #define GUI_ENVIRONEMENT_HPP_
 
     #include <functional>
+    #include <optional>
     #include <queue>
     #include <string_view>
     #include <unordered_map>
@@ -84,14 +85,22 @@ namespace Zappy {
         void serverMsg(std::istringstream stream);
         void unknowCommand(std::istringstream stream);
         void badCommandParameter(std::istringstream stream);
+        void eggEvent(std::istringstream stream);
 
         void playersEndIncantate(
             std::vector<std::size_t> &players, bool success);
 
+        void updatePlayerInfo();
+        void updateTileInfo();
+        void updateTeamInfo();
+        void updateTimeUnit();
+
+        std::size_t _width = 0;
+        std::size_t _height = 0;
         Map _map;
         Players _players;
         std::unordered_map<std::size_t, Egg> _eggs;
-        std::unordered_map<std::string, Color> _teams;
+        std::map<std::string, raylib::Color> _teams;
         std::size_t _timeUnit;
         std::string _winingTeam;
 
@@ -100,6 +109,9 @@ namespace Zappy {
         std::string _buffer;
         bool _loading = false;
         std::queue<std::string> _events;
+
+        std::optional<std::size_t> _selectPlayer;
+        std::optional<std::size_t> _selectTile;
 
         Graphics::ColorGenerator _colorGenerator;
         Overlay _overlay;

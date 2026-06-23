@@ -12,12 +12,12 @@
 #include "UtilsVector.hpp"
 
 namespace Zappy {
-
-    Map::Map()
+    Map::Map(std::size_t &width, std::size_t &height) :
+        _width(width), _height(height)
     {
         for (const auto &[type, infos] : Info::resources)
-            _ressources_models[type] =
-                Assets::getResource("rocks/" + infos.str + ".glb");
+            _ressources_models.try_emplace(
+                type, Assets::getResource("rocks/" + infos.str + ".glb"));
     }
 
     bool Map::updateSize(std::size_t x, std::size_t y)
@@ -124,5 +124,27 @@ namespace Zappy {
             this->_model.Draw(tile.getPosition(), axis, angle, tile.getScale());
             drawRessources(tile);
         }
+    }
+
+    std::map<Info::ResourceName, std::size_t> Map::getTileResources(
+        std::size_t tile) const
+    {
+        return _tiles[tile].getResources();
+    }
+
+    std::size_t Map::getNextTile(InfoBox::Action dir, std::size_t tile) const
+    {
+        if (dir == InfoBox::Action::LEFT) {
+            if (tile == 0)
+                tile = _width * _height - 1;
+            else
+                tile--;
+        } else if (dir == InfoBox::Action::RIGHT) {
+            if (tile == _width * _height - 1)
+                tile = 0;
+            else
+                tile++;
+        }
+        return tile;
     }
 } // namespace Zappy
