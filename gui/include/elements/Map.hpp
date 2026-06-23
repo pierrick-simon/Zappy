@@ -24,6 +24,8 @@ namespace Zappy {
             const std::vector<std::size_t> &resources);
         void setTilesPosition();
 
+        [[nodiscard]] raylib::Vector2 getTilePosition(size_t x, size_t y) const;
+
         [[nodiscard]] std::size_t getWidth() const
         {
             return _width;
@@ -45,6 +47,9 @@ namespace Zappy {
         void drawRessources(const Zappy::Tile &tile) const;
         void draw3D() const override;
 
+        static constexpr raylib::Vector2 TILE_SIZE = {5, 5};
+        static constexpr auto TILE_Y_POS = 0;
+
     private:
         void updateTotalResources(
             const std::map<Info::ResourceName, std::size_t> &before,
@@ -52,6 +57,7 @@ namespace Zappy {
 
         std::size_t _width = 0;
         std::size_t _height = 0;
+        raylib::Vector2 _renderedMapSize;
         std::vector<Tile> _tiles;
         std::map<Info::ResourceName, std::size_t> _totalResources;
         std::unordered_map<Info::ResourceName, raylib::Model> _ressources_models;

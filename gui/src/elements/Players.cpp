@@ -7,6 +7,7 @@
 
 #include "Players.hpp"
 #include <iostream>
+#include <ranges>
 
 namespace Zappy {
     Players::Players(std::ofstream &logFile) :
@@ -18,7 +19,7 @@ namespace Zappy {
     {
         bool value = false;
         if (!_players.contains(player.id)) {
-            _players.try_emplace(player.id, player, _logFile);
+            _players.try_emplace(player.id, player, _logFile, this->_model);
             value = true;
         }
         return value;
@@ -46,6 +47,11 @@ namespace Zappy {
             else
                 _totalResources.emplace(resource, nb);
         }
+    }
+    void Players::draw3D() const
+    {
+        for (const auto &player : this->_players | std::ranges::views::values)
+            player.draw3D();
     }
 
     Player &Players::getPlayer(std::size_t id)
