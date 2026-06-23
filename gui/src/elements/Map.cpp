@@ -12,6 +12,13 @@
 #include "UtilsVector.hpp"
 
 namespace Zappy {
+
+    Map::Map()
+    {
+        for (auto [type, infos]: Info::resources)
+            _ressources_models[type] = Assets::getResource("rocks/" + infos.str + ".glb");
+    }
+
     bool Map::updateSize(std::size_t x, std::size_t y)
     {
         bool value = true;
@@ -87,11 +94,24 @@ namespace Zappy {
         this->_model.materials[1].shader = this->getShader().asShader();
     }
 
+    void Map::drawRessources(const Zappy::Tile &tile) const
+    {
+        auto infos = tile.getResources();
+        Vector3 vZero(0, 0, 0);
+        Vector3 scale(0.05, 0.05, 0.05);
+
+        for (const auto &[type, nb]: infos) {
+            if (nb > 0)
+                this->_ressources_models.at(type).Draw(tile.getPosition(), vZero, 0, scale);
+        }
+    }
+
     void Map::draw3D() const
     {
         for (const auto &tile : this->_tiles) {
             auto [axis, angle] = tile.getRotation().ToAxisAngle();
             this->_model.Draw(tile.getPosition(), axis, angle, tile.getScale());
+            drawRessources(tile);
         }
-    }
+    }    
 } // namespace Zappy
