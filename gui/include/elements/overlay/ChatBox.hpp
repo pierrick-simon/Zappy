@@ -19,8 +19,8 @@ namespace Zappy {
         ChatBox(Font &font, std::map<std::string, Color> &teams);
 
     private:
-        static constexpr std::size_t MAX_LINE = 15;
-        static constexpr float FONT_SIZE = 30;
+        static constexpr std::size_t MAX_LINE = 24;
+        static constexpr float FONT_SIZE = 20;
         static constexpr float WIDTH = 300;
     };
 } // namespace Zappy

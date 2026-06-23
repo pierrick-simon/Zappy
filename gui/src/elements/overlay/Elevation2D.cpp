@@ -21,7 +21,7 @@ namespace Zappy {
         Font &font, std::size_t x, std::size_t y, std::size_t level)
     {
         _titleText.setFont(font);
-        _titleText.setStr("Elevation Underway");
+        _titleText.setStr("Elevation");
         _titleText.setFontSize(TITLE_SIZE);
         _titleText.setColor(Init::GOLD_RICH);
         _levelText.setFont(font);

@@ -8,19 +8,24 @@
 #ifndef PLAYER_HPP
     #define PLAYER_HPP
 
-    #include <fstream>
+    #include <Model.hpp>
+    #include <array>
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"
+    #include "Maths.hpp"
     #include "NewPlayerEvent.hpp"
     #include "Player2D.hpp"
     #include "PlayerStatus.hpp"
+    #include "graphics/IDrawable3D.hpp"
+    #include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
-    class Player {
+    class Player : public Graphics::Transformable3D,
+                   public Graphics::IDrawable3D {
     public:
         Player(const Shared::NewPlayerEvent::NewPlayer &player,
-            std::ofstream &logFile);
+            std::ofstream &logFile, raylib::Model &model);
 
         void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
 
@@ -77,6 +82,8 @@ namespace Zappy {
                     "Event on dead Player[" + std::to_string(id) + "].") {};
         };
 
+        void draw3D() const override;
+
     private:
         std::size_t _id;
         std::size_t _x;
@@ -93,6 +100,13 @@ namespace Zappy {
         PlayerStatus::Status _status;
 
         std::ofstream &_logFile;
+        raylib::Model &_model;
+
+        static inline const std::array<Quaternion, 4> DIRECTION_TO_QUATERNION =
+            {raylib::Quaternion::FromEuler(0, Maths::DegToRad(0.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(90.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(180.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(270.0f), 0)};
     };
 } // namespace Zappy
 

@@ -74,6 +74,7 @@ namespace Zappy {
     void Environement::draw3D() const
     {
         this->_map.draw3D();
+        this->_players.draw3D();
     }
 
     void Environement::draw2D() const

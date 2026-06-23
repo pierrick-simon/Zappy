@@ -19,7 +19,7 @@ namespace Zappy {
         EventBox(Font &font, std::map<std::string, Color> &teams);
 
     private:
-        static constexpr float FONT_SIZE = 22;
+        static constexpr float FONT_SIZE = 18;
         static constexpr float WIDTH = 200;
     };
 } // namespace Zappy

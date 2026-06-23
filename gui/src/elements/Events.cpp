@@ -64,6 +64,9 @@ namespace Zappy {
         try {
             auto &player = _players.getPlayer(event.getId());
             auto dir = Info::getDirection(event.getDir());
+            auto mapPos =
+                this->_map.getTilePosition(event.getX(), event.getY());
+            player.setPosition({mapPos.x, 0, mapPos.y});
             player.move(event.getX(), event.getY(), dir);
             _overlay.eventBox.addMessage(player.getTeam(),
                 event.getId(),
