@@ -263,7 +263,7 @@ namespace Zappy {
                 find->second--;
                 _clients.newClient.erase(iter);
             } else {
-                Shared::Connect::send(iter->first, "ko\n");
+                Shared::Connect::send(iter->first, "0\n");
                 _connect.removeClient(iter->first);
                 _clients.newClient.erase(iter);
                 Shared::Utils::logMsg(_logFile,
