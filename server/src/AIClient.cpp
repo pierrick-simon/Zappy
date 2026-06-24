@@ -105,6 +105,7 @@ namespace Zappy {
         if (startCheckIncantation(command))
             return;
         eggLaying(command);
+        changePosition(command);
         auto iter = COMMANDS.find(command);
         if (iter != COMMANDS.end()) {
             _sleep = iter->second._timeLimit;
@@ -143,6 +144,16 @@ namespace Zappy {
         if (name != ClientCmd::FRK.getStr())
             return;
         _env.eggLaying(_id);
+    }
+
+    void AIClient::changePosition(const std::string &name)
+    {
+        if (name == ClientCmd::FWD.getStr())
+            _env.movePlayer(_id, true);
+        if (name == ClientCmd::RGT.getStr())
+            _env.rotatePlayer(_id, Rotate::RIGHT, true);
+        if (name == ClientCmd::LFT.getStr())
+            _env.rotatePlayer(_id, Rotate::LEFT, true);
     }
 
     void AIClient::forward(std::istringstream stream)
