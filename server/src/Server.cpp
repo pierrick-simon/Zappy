@@ -93,9 +93,11 @@ namespace Zappy {
     bool Server::update()
     {
         auto now = std::chrono::steady_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-                           now - _clock) *
-            _f;
+        auto realElapsed =
+            std::chrono::duration_cast<std::chrono::milliseconds>(now - _clock);
+        if (realElapsed.count() == 0)
+            realElapsed = std::chrono::milliseconds(1);
+        auto elapsed = realElapsed * _f;
         _clock = now;
         _timeout = -1;
         if (!_master || _master && _master->getPlaying()) {
