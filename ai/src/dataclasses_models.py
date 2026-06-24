@@ -12,8 +12,8 @@ from typing import Optional, Any
 @dataclass
 class Command:
     command: str
-    argument: str = None
-    response: Any = None
+    argument: Optional[str] = None
+    response: Optional[Any] = None
 
     def __str__(self) -> str:
         return " ".join(filter(None, [self.command, self.argument]))

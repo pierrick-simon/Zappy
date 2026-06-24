@@ -23,8 +23,6 @@ def send_and_recv(handler: ConnectionHandler, cmd: Command) -> str:
     handler.push_to_server(cmd)
     while cmd.response is None:
         handler.entrypoint()
-    handler.display_commands()
-    handler.display_events()
     handler.consume_command()
     return cmd.response
 
@@ -105,6 +103,7 @@ def broadcast(handler: ConnectionHandler, text: str) -> bool:
     @param text: Message string to broadcast
     @return True on success
     """
+    print(str(Command("Broadcast", text)))
     return send_and_recv(handler, Command("Broadcast", text)) == "ok"
 
 
