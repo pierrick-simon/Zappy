@@ -40,6 +40,7 @@ namespace Zappy {
         static const std::map<Info::ResourceName, std::deque<Resource>>
             INIT_RESOURCES;
         static constexpr float TILE_PADDING = 0.3;
+        static constexpr float SCALE_MODIF_RANGE = 0.2;
     };
 } // namespace Zappy
 

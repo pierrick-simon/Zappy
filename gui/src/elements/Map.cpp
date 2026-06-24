@@ -109,12 +109,15 @@ namespace Zappy {
     {
         auto infos = tile.getResources();
         Vector3 vZero(0, 0, 0);
-        Vector3 scale(0.025, 0.025, 0.025);
-
+        Vector3 baseScale(0.035, 0.035, 0.035);
+        
         for (const auto &[type, queue_item] : infos) {
             auto &model = this->_ressources_models.at(type);
-            for (const auto &item: queue_item)
+            for (const auto &item: queue_item) {
+                auto itemScale = item.getScale();
+                Vector3 scale(baseScale.x * itemScale, baseScale.y * itemScale, baseScale.z * itemScale);
                 model.Draw(tile.getPosition() + item.getPos(), vZero, 0, scale);
+            }
         }
     }
 
