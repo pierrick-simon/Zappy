@@ -5,6 +5,7 @@
 ## AI list
 ##
 
+from src.algorithms.Worker import WorkerAi
 from src.algorithms.Ejector import EjectorAi
 from src.algorithms.Randomizer import RandomizerAi
 from src.algorithms.Layer import LayerAi
@@ -16,5 +17,6 @@ AI_LIST = {
     "human": HumanAI,
     "layer": LayerAi,
     "randomizer": RandomizerAi,
+    "worker": WorkerAi,
     "ejector": EjectorAi
 }

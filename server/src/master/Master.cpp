@@ -91,5 +91,9 @@ namespace Zappy {
 
     const std::map<std::string, std::string> Master::_ais = {
         {"survivor", "Take food on his path"},
+        {"layer", "Lays eggs around the map"},
+        {"randomizer", "Take fully random decisions"},
+        {"worker", "Take every stones it find"},
+        {"ejector", "Seek players and push them"},
     };
 } // namespace Zappy
