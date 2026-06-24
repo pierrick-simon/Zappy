@@ -63,7 +63,7 @@ namespace Zappy {
         else
             updateTeamInfo();
         updateTimeUnit();
-        this->_players.update(dt);
+        this->_players.update(deltaTimeUnit);
     }
 
     void Environement::setShader(Graphics::Shader &shader)

@@ -6,9 +6,7 @@
 */
 
 #include "Player.hpp"
-
-#include <iostream>
-
+#include "Map.hpp"
 #include "Utils.hpp"
 
 namespace Zappy {
@@ -18,8 +16,11 @@ namespace Zappy {
         _id(player.id),
         _x(player.x),
         _y(player.y),
+        _targetX(player.x),
+        _targetY(player.y),
         _level(player.level),
         _dir(Info::getDirection(player.dir)),
+        _targetDir(Info::getDirection(player.dir)),
         _team(player.team),
         _logFile(logFile),
         _status(PlayerStatus::Status::NONE),
@@ -33,13 +34,46 @@ namespace Zappy {
         this->setAnimationIndex(0);
     }
 
-    void Player::move(std::size_t x, std::size_t y, Info::Direction dir)
+    void Player::move(std::size_t x, std::size_t y, raylib::Vector2 target,
+        Info::Direction dir)
     {
+        if (x != _x || y != _y) {
+            _startPos = raylib::Vector2 {_position.x, _position.z};
+            _targetPos = target;
+            _targetX = x;
+            _targetY = y;
+            _walking = true;
+            _timer = WALKING_TIME;
+        }
+        if (dir != _dir) {
+            _targetDir = dir;
+            _rotate = true;
+            _timer = ROTATE_TIME;
+        }
+        _eject = false;
+    }
+
+    void Player::teleport(
+        std::size_t x, std::size_t y, std::size_t width, std::size_t height)
+    {
+        raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
+                                      static_cast<float>(height)} *
+            Map::TILE_SIZE;
+        raylib::Vector2 oldCenter =
+            raylib::Vector2 {static_cast<float>(_x), static_cast<float>(_y)} *
+                Map::TILE_SIZE -
+            mapSize / 2.0f;
+        raylib::Vector2 newCenter =
+            raylib::Vector2 {static_cast<float>(x), static_cast<float>(y)} *
+                Map::TILE_SIZE -
+            mapSize / 2.0f;
+        raylib::Vector2 delta = newCenter - oldCenter;
+        _startPos += delta;
+        _targetPos += delta;
         _x = x;
         _y = y;
-        _dir = dir;
-        this->setRotation(
-            DIRECTION_TO_QUATERNION[static_cast<std::size_t>(dir)]);
+        _targetX = x;
+        _targetY = y;
         _eject = false;
     }
 
@@ -101,8 +135,35 @@ namespace Zappy {
             this->_position, axis, Maths::RadToDeg(angle), this->_scale);
     }
 
+    void Player::updateAction(float dt)
+    {
+        if (_timer <= 0) {
+            if (_walking) {
+                _x = _targetX;
+                _y = _targetY;
+            }
+            if (_rotate) {
+                _dir = _targetDir;
+                this->setRotation(
+                    DIRECTION_TO_QUATERNION[static_cast<std::size_t>(_dir)]);
+            }
+            _walking = false;
+            _rotate = false;
+        } else {
+            _timer -= dt;
+            auto PositionOffset = raylib::Vector2 {0, 0};
+            if (_walking)
+                PositionOffset =
+                    (_startPos - _targetPos) * (_timer / WALKING_TIME);
+            _position = raylib::Vector3 {_targetPos.x + PositionOffset.x,
+                0,
+                _targetPos.y + PositionOffset.y};
+        }
+    }
+
     void Player::update(float dt)
     {
+        updateAction(dt);
         this->_frameTime += dt;
         float normalized =
             std::fmod(this->_frameTime, this->_animationDuration);
@@ -132,7 +193,10 @@ namespace Zappy {
     {
         _incantate = false;
         _fork = false;
+        _eject = true;
         _dead = true;
+        _walking = false;
+        _rotate = false;
         Shared::Utils::logMsg(
             _logFile, "Player [" + std::to_string(_id) + "] died.");
         _status = PlayerStatus::Status::DYING;
