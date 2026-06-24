@@ -36,6 +36,8 @@ namespace Zappy {
             _tiles.resize(_width * _height);
             this->setTilesPosition();
             _totalResources = Info::INIT_RESOUCES;
+            for (auto &tile : _tiles)
+                tile.getScale() = TILE_SCALE;
         }
         return value;
     }
@@ -82,8 +84,8 @@ namespace Zappy {
     void Map::setTilesPosition()
     {
         for (size_t i = 0; i < this->_tiles.size(); ++i) {
-            size_t x = i / this->_width;
-            size_t y = i % this->_width;
+            size_t x = i % this->_width;
+            size_t y = i / this->_width;
             this->_tiles[i].setPosition({static_cast<float>(x) * TILE_SIZE.x -
                     this->_renderedMapSize.x / 2.0f,
                 TILE_Y_POS,

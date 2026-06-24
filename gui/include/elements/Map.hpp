@@ -18,9 +18,6 @@
 namespace Zappy {
     class Map : public Graphics::IDrawable3D, public Graphics::AShadered {
     public:
-        static constexpr auto TILE_WIDTH = 5;
-        static constexpr auto TILE_HEIGHT = 5;
-
         Map(std::size_t &width, std::size_t &height);
 
         bool updateSize(std::size_t x, std::size_t y);
@@ -57,7 +54,7 @@ namespace Zappy {
         void drawRessources(const Zappy::Tile &tile) const;
         void draw3D() const override;
 
-        static constexpr raylib::Vector2 TILE_SIZE = {5, 5};
+        static constexpr raylib::Vector2 TILE_SIZE = {25, 25};
 
     private:
         void updateTotalResources(
@@ -73,6 +70,9 @@ namespace Zappy {
             _ressources_models;
 
         static constexpr auto TILE_Y_POS = 0;
+        static constexpr raylib::Vector2 GROUND_SIZE = {5, 5};
+        static constexpr raylib::Vector3 TILE_SCALE = {
+            TILE_SIZE.x / GROUND_SIZE.x, 1, TILE_SIZE.y / GROUND_SIZE.y};
 
         inline static const std::string TILE_MODEL_PATH =
             Assets::getResource("map/cell.glb");
