@@ -64,7 +64,7 @@ namespace Zappy {
         else
             updateTeamInfo();
         updateTimeUnit();
-        this->_players.update(dt);
+        this->_players.update(deltaTimeUnit);
         _map.update(dt);
     }
 

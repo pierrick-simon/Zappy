@@ -37,7 +37,10 @@ namespace Zappy {
             std::ofstream &logFile, raylib::Model &model,
             std::vector<::ModelAnimation> &modelAnimation);
 
-        void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
+        void move(std::size_t _x, std::size_t _y, raylib::Vector2 target,
+            Info::Direction _dir);
+        void teleport(std::size_t x, std::size_t y, std::size_t width,
+            std::size_t height);
 
         void addLevel();
         void setLevel(std::size_t level);
@@ -64,6 +67,11 @@ namespace Zappy {
         [[nodiscard]] std::size_t getLevel() const
         {
             return _level;
+        }
+
+        [[nodiscard]] bool getEject() const
+        {
+            return _eject;
         }
 
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
@@ -100,6 +108,7 @@ namespace Zappy {
         void draw3D() const override;
 
         void update(float dt) override;
+        void updateAction(float dt);
 
         void setAnimationIndex(size_t index);
 
@@ -118,6 +127,17 @@ namespace Zappy {
         bool _fork = false;
         bool _eject = false;
         bool _dead = false;
+        bool _walking = false;
+        bool _rotate = false;
+
+        raylib::Vector2 _startPos;
+
+        raylib::Vector2 _targetPos;
+        std::size_t _targetX;
+        std::size_t _targetY;
+        Info::Direction _targetDir;
+
+        float _timer = 0;
 
         PlayerStatus::Status _status;
 
@@ -133,6 +153,8 @@ namespace Zappy {
         float _animationDuration {0};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
+        static constexpr float WALKING_TIME = 7.f;
+        static constexpr float ROTATE_TIME = 7.f;
     };
 } // namespace Zappy
 
