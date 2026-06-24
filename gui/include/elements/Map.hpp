@@ -18,6 +18,9 @@
 namespace Zappy {
     class Map : public Graphics::IDrawable3D, public Graphics::AShadered {
     public:
+        static constexpr auto TILE_WIDTH = 5;
+        static constexpr auto TILE_HEIGHT = 5;
+
         Map(std::size_t &width, std::size_t &height);
 
         bool updateSize(std::size_t x, std::size_t y);
@@ -69,8 +72,6 @@ namespace Zappy {
         std::unordered_map<Info::ResourceName, raylib::Model>
             _ressources_models;
 
-        static constexpr auto TILE_WIDTH = 5;
-        static constexpr auto TILE_HEIGHT = 5;
         static constexpr auto TILE_Y_POS = 0;
 
         inline static const std::string TILE_MODEL_PATH =

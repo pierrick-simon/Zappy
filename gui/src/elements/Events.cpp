@@ -152,8 +152,11 @@ namespace Zappy {
                 Shared::Utils::logMsg(_logFile, e.what());
             }
         }
-        _elevations.addElevation(
-            event.getX(), event.getY(), event.getLevel(), players);
+        _elevations.addElevation(event.getX(),
+            event.getY(),
+            event.getLevel(),
+            players,
+            _map.getTilePosition(event.getX(), event.getY()));
     }
 
     void Environement::playersEndIncantate(

@@ -22,7 +22,9 @@ set(SRCS
         src/graphics/Shader.cpp
         src/graphics/AShadered.cpp
         src/graphics/ColorGenerator.cpp
+        src/graphics/TornadoParticle.cpp
         src/graphics/primitives/Model.cpp
+        src/graphics/primitives/Sphere.cpp
         src/graphics/primitives/Text2D.cpp
         src/graphics/primitives/Rectangle2D.cpp
         src/graphics/primitives/Sprite2D.cpp

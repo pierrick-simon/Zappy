@@ -63,7 +63,6 @@ namespace Zappy {
         else
             updateTeamInfo();
         updateTimeUnit();
-        _elevations.update(deltaTimeUnit);
         this->_players.update(dt);
     }
 
@@ -78,6 +77,7 @@ namespace Zappy {
     {
         this->_map.draw3D();
         this->_players.draw3D();
+        _elevations.draw3D();
     }
 
     void Environement::draw2D() const
