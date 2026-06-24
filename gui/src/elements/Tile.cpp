@@ -29,13 +29,18 @@ namespace Zappy {
     {
         while (resource.size() != nb) {
             if (resource.size() < nb)
-                resource.emplace(type);
+                resource.emplace(type, Vector3(0, 0, 0));
             else
                 resource.pop();
         }
     }
 
-    std::map<Info::ResourceName, std::size_t> Tile::getResources() const
+    const std::map<Info::ResourceName, std::queue<Resource>> &Tile::getResources() const
+    {
+        return _resources;
+    }
+
+    std::map<Info::ResourceName, std::size_t> Tile::getNbResources() const
     {
         std::map<Info::ResourceName, std::size_t> map;
         for (const auto &[resource, queue] : _resources)

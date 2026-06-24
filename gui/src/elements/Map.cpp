@@ -75,9 +75,9 @@ namespace Zappy {
         y %= _height;
         auto tileIndex = y * _width + x;
         auto &tile = _tiles[tileIndex];
-        auto before = tile.getResources();
+        auto before = tile.getNbResources();
         tile.updateTile(resources);
-        auto after = tile.getResources();
+        auto after = tile.getNbResources();
         updateTotalResources(before, std::move(after));
     }
 
@@ -113,8 +113,8 @@ namespace Zappy {
         Vector3 vZero(0, 0, 0);
         Vector3 scale(0.05, 0.05, 0.05);
 
-        for (const auto &[type, nb] : infos) {
-            if (nb > 0)
+        for (const auto &[type, queue] : infos) {
+            if (!queue.empty())
                 this->_ressources_models.at(type).Draw(
                     tile.getPosition(), vZero, 0, scale);
         }
@@ -132,7 +132,7 @@ namespace Zappy {
     std::map<Info::ResourceName, std::size_t> Map::getTileResources(
         std::size_t tile) const
     {
-        return _tiles[tile].getResources();
+        return _tiles[tile].getNbResources();
     }
 
     std::size_t Map::getNextTile(InfoBox::Action dir, std::size_t tile) const
