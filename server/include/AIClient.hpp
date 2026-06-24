@@ -71,6 +71,7 @@ namespace Zappy {
         void executeCommand();
         bool startCheckIncantation(const std::string &name);
         void eggLaying(const std::string &name);
+        void changePosition(const std::string &name);
 
         void forward(std::istringstream);
         void right(std::istringstream);
