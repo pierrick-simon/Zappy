@@ -109,7 +109,7 @@ namespace Zappy {
     {
         auto infos = tile.getResources();
         Vector3 vZero(0, 0, 0);
-        Vector3 scale(0.05, 0.05, 0.05);
+        Vector3 scale(0.025, 0.025, 0.025);
 
         for (const auto &[type, queue_item] : infos) {
             auto &model = this->_ressources_models.at(type);

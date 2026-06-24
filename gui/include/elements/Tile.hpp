@@ -30,7 +30,7 @@ namespace Zappy {
         [[nodiscard]] const std::map<Info::ResourceName, std::deque<Resource>>
         &getResources() const;
 
-        static constexpr raylib::Vector2 TILE_SIZE = {25, 25};
+        static constexpr raylib::Vector2 TILE_SIZE = {20, 20};
 
     private:
         std::map<Info::ResourceName, std::deque<Resource>> _resources;
