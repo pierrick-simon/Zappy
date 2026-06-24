@@ -27,6 +27,12 @@ namespace Zappy {
                    public Graphics::IDrawable3D,
                    public Graphics::IUpdatable {
     public:
+        static inline const std::array<Quaternion, 4> DIRECTION_TO_QUATERNION =
+            {raylib::Quaternion::FromEuler(0, Maths::DegToRad(180.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(90.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(0.0f), 0),
+                raylib::Quaternion::FromEuler(0, Maths::DegToRad(270.0f), 0)};
+
         Player(const Shared::NewPlayerEvent::NewPlayer &player,
             std::ofstream &logFile, raylib::Model &model,
             std::vector<::ModelAnimation> &modelAnimation);
@@ -122,12 +128,6 @@ namespace Zappy {
         float _animationDuration {0};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
-
-        static inline const std::array<Quaternion, 4> DIRECTION_TO_QUATERNION =
-            {raylib::Quaternion::FromEuler(0, Maths::DegToRad(180.0f), 0),
-                raylib::Quaternion::FromEuler(0, Maths::DegToRad(90.0f), 0),
-                raylib::Quaternion::FromEuler(0, Maths::DegToRad(0.0f), 0),
-                raylib::Quaternion::FromEuler(0, Maths::DegToRad(270.0f), 0)};
     };
 } // namespace Zappy
 

@@ -30,7 +30,8 @@ namespace Zappy {
             _height = y;
             _renderedMapSize =
                 raylib::Vector2 {static_cast<float>(this->_width),
-                    static_cast<float>(this->_height)};
+                    static_cast<float>(this->_height)} *
+                TILE_SIZE;
             _tiles.clear();
             _tiles.resize(_width * _height);
             this->setTilesPosition();
