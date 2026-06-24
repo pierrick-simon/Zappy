@@ -34,6 +34,13 @@ namespace Zappy {
         this->setAnimationIndex(0);
     }
 
+    void Player::initPos(raylib::Vector2 pos)
+    {
+        _startPos = pos;
+        _targetPos = pos;
+        _position = raylib::Vector3 {pos.x, 0, pos.y};
+    }
+
     void Player::move(std::size_t x, std::size_t y, raylib::Vector2 target,
         Info::Direction dir)
     {

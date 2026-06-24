@@ -30,6 +30,8 @@ namespace Zappy {
         std::optional<std::reference_wrapper<Player>> addPlayer(
             const Shared::NewPlayerEvent::NewPlayer &player);
 
+        void initPos(std::size_t width, std::size_t height);
+
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
         getTotalResources() const
         {
@@ -57,6 +59,11 @@ namespace Zappy {
         void setShader(Graphics::Shader &shader) override;
 
         void loadAnimations();
+
+        [[nodiscard]] std::map<std::size_t, Player> &getPlayers()
+        {
+            return _players;
+        }
 
     private:
         std::map<std::size_t, Player> _players;
