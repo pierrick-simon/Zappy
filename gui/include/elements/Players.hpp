@@ -26,7 +26,8 @@ namespace Zappy {
     public:
         Players(std::ofstream &logFile);
 
-        bool addPlayer(const Shared::NewPlayerEvent::NewPlayer &player);
+        std::optional<std::reference_wrapper<Player>> addPlayer(
+            const Shared::NewPlayerEvent::NewPlayer &player);
 
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
         getTotalResources() const

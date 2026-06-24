@@ -109,7 +109,7 @@ namespace Zappy {
                     0.3f,
                     5,
                     {{
-                        {Map::TILE_WIDTH * 0.02f, Map::TILE_WIDTH * 0.10f},
+                        {Map::TILE_SIZE.x * 0.02f, Map::TILE_SIZE.y * 0.10f},
                         {0.10f, 0.25f},
                         {0.10f, 0.20f},
                         {5.0f, 10.0f},
@@ -121,7 +121,7 @@ namespace Zappy {
                     0.3f,
                     8,
                     {{
-                        {Map::TILE_WIDTH * 0.04f, Map::TILE_WIDTH * 0.14f},
+                        {Map::TILE_SIZE.x * 0.04f, Map::TILE_SIZE.y * 0.14f},
                         {0.15f, 0.30f},
                         {0.15f, 0.30f},
                         {8.0f, 15.0f},
@@ -133,7 +133,7 @@ namespace Zappy {
                     0.3f,
                     10,
                     {{
-                        {Map::TILE_WIDTH * 0.06f, Map::TILE_WIDTH * 0.18f},
+                        {Map::TILE_SIZE.x * 0.06f, Map::TILE_SIZE.y * 0.18f},
                         {0.20f, 0.40f},
                         {0.20f, 0.40f},
                         {10.0f, 20.0f},
@@ -145,7 +145,7 @@ namespace Zappy {
                     0.3f,
                     12,
                     {{
-                        {Map::TILE_WIDTH * 0.08f, Map::TILE_WIDTH * 0.22f},
+                        {Map::TILE_SIZE.x * 0.08f, Map::TILE_SIZE.y * 0.22f},
                         {0.25f, 0.50f},
                         {0.25f, 0.50f},
                         {12.0f, 22.0f},
@@ -157,7 +157,7 @@ namespace Zappy {
                     0.3f,
                     15,
                     {{
-                        {Map::TILE_WIDTH * 0.10f, Map::TILE_WIDTH * 0.30f},
+                        {Map::TILE_SIZE.x * 0.10f, Map::TILE_SIZE.y * 0.30f},
                         {0.30f, 0.60f},
                         {0.30f, 0.60f},
                         {15.0f, 25.0f},
@@ -169,7 +169,7 @@ namespace Zappy {
                     0.3f,
                     18,
                     {{
-                        {Map::TILE_WIDTH * 0.12f, Map::TILE_WIDTH * 0.36f},
+                        {Map::TILE_SIZE.x * 0.12f, Map::TILE_SIZE.y * 0.36f},
                         {0.40f, 0.70f},
                         {0.40f, 0.70f},
                         {18.0f, 30.0f},
@@ -181,7 +181,7 @@ namespace Zappy {
                     0.4f,
                     20,
                     {{
-                        {Map::TILE_WIDTH * 0.16f, Map::TILE_WIDTH * 0.40f},
+                        {Map::TILE_SIZE.x * 0.16f, Map::TILE_SIZE.y * 0.40f},
                         {0.50f, 0.80f},
                         {0.50f, 0.90f},
                         {20.0f, 35.0f},
@@ -193,7 +193,7 @@ namespace Zappy {
                     0.5f,
                     25,
                     {{
-                        {Map::TILE_WIDTH * 0.20f, Map::TILE_WIDTH * 0.48f},
+                        {Map::TILE_SIZE.x * 0.20f, Map::TILE_SIZE.y * 0.48f},
                         {0.60f, 1.00f},
                         {0.60f, 1.20f},
                         {25.0f, 40.0f},

@@ -56,7 +56,6 @@ class RandomizerAi:
         """
         self._exec_func(random.choice(list(COMMAND_FACTORY.keys())))
 
-
     def _exec_func(self, command: str):
         """! Calls a command function and ticks the backpack
 

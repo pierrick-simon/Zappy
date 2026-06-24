@@ -8,20 +8,11 @@
 import curses
 from curses import window
 from curses.textpad import Textbox, rectangle
-from threading import Thread
 from typing import Callable, Any
 
 from src.command import Command
 from src.constants.constants import COMMAND_FACTORY
-from src.connection_handler import ConnectionHandler
-
-
-def call_function_in_thread(callback: Callable, *args) -> Thread:
-    if args is not None:
-        thread = Thread(target=callback, args=args, daemon=True)
-    else:
-        thread = Thread(target=callback, daemon=True)
-    return thread
+from src.connection_handler import ConnectionHandler, call_function_in_thread
 
 
 def get_longuest_key(dictionary: dict) -> str:

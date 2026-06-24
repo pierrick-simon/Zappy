@@ -11,7 +11,7 @@ Documentation for the AutoGather module
 The AutoGather module generates a sequence of movement and take commands
 to collect aimed resources from a Look observation, with a time limit
 
-It does'nt call commands directly it builds a plan that the AI
+It doesn't call commands directly it builds a plan that the AI
 can execute step by step
 
 example:

@@ -18,16 +18,17 @@ namespace Zappy {
         this->loadAnimations();
     }
 
-    bool Players::addPlayer(const Shared::NewPlayerEvent::NewPlayer &player)
+    std::optional<std::reference_wrapper<Player>> Players::addPlayer(
+        const Shared::NewPlayerEvent::NewPlayer &player)
     {
-        bool value = false;
+        std::optional<std::reference_wrapper<Player>> value;
         if (!_players.contains(player.id)) {
-            _players.try_emplace(player.id,
+            auto iter = _players.try_emplace(player.id,
                 player,
                 _logFile,
                 this->_model,
                 this->_modelAnimation);
-            value = true;
+            value = iter.first->second;
         }
         return value;
     }
