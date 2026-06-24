@@ -22,7 +22,9 @@ set(SRCS
         src/graphics/Shader.cpp
         src/graphics/AShadered.cpp
         src/graphics/ColorGenerator.cpp
+        src/graphics/TornadoParticle.cpp
         src/graphics/primitives/Model.cpp
+        src/graphics/primitives/Sphere.cpp
         src/graphics/primitives/Text2D.cpp
         src/graphics/primitives/Rectangle2D.cpp
         src/graphics/primitives/Sprite2D.cpp
@@ -40,6 +42,7 @@ set(SRCS
         src/elements/Environement.cpp
         src/elements/Events.cpp
         src/elements/Players.cpp
+        src/elements/PlayerStatus.cpp
         src/elements/overlay/Resources.cpp
         src/elements/overlay/ResourceInfo.cpp
         src/elements/overlay/Overlay.cpp
@@ -47,6 +50,11 @@ set(SRCS
         src/elements/overlay/ChatBox.cpp
         src/elements/overlay/EventBox.cpp
         src/elements/overlay/Elevation2D.cpp
+        src/elements/overlay/Player2D.cpp
+        src/elements/overlay/Team.cpp
+        src/elements/overlay/Tile2D.cpp
+        src/elements/overlay/InfoBox.cpp
+        src/elements/overlay/TimeUnit.cpp
 )
 
 set(HEADERS

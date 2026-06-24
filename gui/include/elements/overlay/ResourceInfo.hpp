@@ -19,21 +19,21 @@ namespace Zappy {
     public:
         struct TextureSize {
             std::string path;
-            Vector2 size;
+            raylib::Vector2 size;
         };
 
-        ResourceInfo(
-            Font &font, const Vector2 &pos, const TextureSize &texture);
+        ResourceInfo(raylib::Font &font, const raylib::Vector2 &pos,
+            const TextureSize &texture);
 
         void draw2D() const override;
         void update(std::size_t map, std::size_t players);
 
     private:
         void initSprite(const TextureSize &texture);
-        void initText(Font &font);
+        void initText(raylib::Font &font);
         void initRect();
 
-        Vector2 _pos;
+        raylib::Vector2 _pos;
         Graphics::Text2D _text;
         Graphics::Box2D _rec;
 
@@ -46,7 +46,7 @@ namespace Zappy {
         Graphics::Sprite2D _golemIcon;
 
         static constexpr std::size_t MAX = 999999;
-        static constexpr float FONTSIZE = 30;
+        static constexpr float FONTSIZE = 25;
         static constexpr std::string_view HOUSE_ICON = "public/houseIcon.png";
         static constexpr raylib::Vector2 HOUSE_ICON_SIZE = {500, 400};
         static constexpr float HOUSE_RATIO =

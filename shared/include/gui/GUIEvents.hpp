@@ -9,6 +9,7 @@
     #define GUIEVENTS_HPP
 
     #include "BroadcastEvent.hpp"
+    #include "EggEvent.hpp"
     #include "EggLaidEvent.hpp"
     #include "EndIncantationEvent.hpp"
     #include "GUICommunication.hpp"

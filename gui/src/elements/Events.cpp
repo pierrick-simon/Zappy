@@ -64,6 +64,9 @@ namespace Zappy {
         try {
             auto &player = _players.getPlayer(event.getId());
             auto dir = Info::getDirection(event.getDir());
+            auto mapPos =
+                this->_map.getTilePosition(event.getX(), event.getY());
+            player.setPosition({mapPos.x, 0, mapPos.y});
             player.move(event.getX(), event.getY(), dir);
             _overlay.eventBox.addMessage(player.getTeam(),
                 event.getId(),
@@ -149,8 +152,11 @@ namespace Zappy {
                 Shared::Utils::logMsg(_logFile, e.what());
             }
         }
-        _elevations.addElevation(
-            event.getX(), event.getY(), event.getLevel(), players);
+        _elevations.addElevation(event.getX(),
+            event.getY(),
+            event.getLevel(),
+            players,
+            _map.getTilePosition(event.getX(), event.getY()));
     }
 
     void Environement::playersEndIncantate(
@@ -329,5 +335,13 @@ namespace Zappy {
     {
         Shared::Utils::logMsg(
             _logFile, "Send a command with bad parameters to the server.");
+    }
+
+    void Environement::eggEvent(std::istringstream stream)
+    {
+        Shared::EggEvent event;
+        event.retrieve(std::move(stream));
+        _eggs.emplace(
+            event.getId(), Egg {event.getX(), event.getY(), event.getTeam()});
     }
 } // namespace Zappy

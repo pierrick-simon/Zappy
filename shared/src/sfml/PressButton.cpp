@@ -10,7 +10,7 @@
 namespace SfmlUtils {
     PressButton::PressButton(sf::Font &font, unsigned int textSize,
         std::string str, sf::Color color) :
-        AButton(ButtonType::Presse),
+        AButton(ButtonType::PRESSED),
         _textSize(textSize),
         _str(std::move(str)),
         _color(color)

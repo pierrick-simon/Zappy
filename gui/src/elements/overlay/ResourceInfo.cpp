@@ -10,8 +10,8 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    ResourceInfo::ResourceInfo(
-        Font &font, const Vector2 &pos, const TextureSize &texture) :
+    ResourceInfo::ResourceInfo(raylib::Font &font, const raylib::Vector2 &pos,
+        const TextureSize &texture) :
         _pos(pos)
     {
         initRect();
@@ -21,11 +21,10 @@ namespace Zappy {
 
     void ResourceInfo::initSprite(const TextureSize &texture)
     {
-        auto ratio = Init::RESOURCE_ICON / texture.size.y;
-        Vector2 origin = {
+        auto ratio = Init::RESOURCE_STONE_ICON / texture.size.y;
+        raylib::Vector2 origin = {
             texture.size.x * ratio / 2.f, texture.size.y * ratio / 2.f};
         _resourceIcon.Load(texture.path);
-        _resourceIcon.setColor(Init::GOLD_RICH);
         _resourceIcon.setScale({ratio, ratio});
         _resourceIcon.setOrigin(origin);
         _resourceIcon.setPosition({_pos.x + Init::RESOURCE_ICON_POS.x,
@@ -44,27 +43,24 @@ namespace Zappy {
             _pos.y + Init::RESOURCE_SIZE.y * 2.f + Init::RESOURCE_ICON_POS.y});
     }
 
-    void ResourceInfo::initText(Font &font)
+    void ResourceInfo::initText(raylib::Font &font)
     {
-        _text.setSpacing(Init::LETTER_SPACING);
         _text.setFontSize(FONTSIZE);
-        _text.setPosition(
-            {_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP, _pos.y});
+        _text.setPosition({_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
+            _pos.y + Init::RESOURCE_SIZE.y / 2.f});
         _text.setFont(font);
         _text.setColor(Init::GOLD_RICH);
-        _map.setSpacing(Init::LETTER_SPACING);
         _map.setFontSize(FONTSIZE);
         _map.setPosition({_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
-            _pos.y + Init::RESOURCE_SIZE.y});
+            _pos.y + Init::RESOURCE_SIZE.y * 1.5f});
         _map.setFont(font);
-        _map.setColor(WHITE);
-        _player.setSpacing(Init::LETTER_SPACING);
+        _map.setColor(raylib::Color::White());
         _player.setFontSize(FONTSIZE);
         _player.setPosition(
             {_pos.x + Init::RESOURCE_SIZE.x - Init::RESOURCE_GAP,
-                _pos.y + Init::RESOURCE_SIZE.y * 2.f});
+                _pos.y + Init::RESOURCE_SIZE.y * 2.5f});
         _player.setFont(font);
-        _player.setColor(WHITE);
+        _player.setColor(raylib::Color::White());
     }
 
     void ResourceInfo::initRect()
@@ -83,18 +79,18 @@ namespace Zappy {
 
     void ResourceInfo::update(std::size_t map, std::size_t players)
     {
-        auto nb = std::clamp(map + players, std::size_t(0), MAX);
+        auto nb = std::min(map + players, MAX);
         _text.setStr(std::to_string(nb));
         auto tmp = _text.getSize();
-        _text.setOrigin({tmp.x, 0});
-        nb = std::clamp(map, std::size_t(0), MAX);
+        _text.setOrigin({tmp.x, tmp.y / 2.f});
+        nb = std::min(map, MAX);
         _map.setStr(std::to_string(nb));
         tmp = _map.getSize();
-        _map.setOrigin({tmp.x, 0});
-        nb = std::clamp(players, std::size_t(0), MAX);
+        _map.setOrigin({tmp.x, tmp.y / 2.f});
+        nb = std::min(players, MAX);
         _player.setStr(std::to_string(nb));
         tmp = _player.getSize();
-        _player.setOrigin({tmp.x, 0});
+        _player.setOrigin({tmp.x, tmp.y / 2.f});
     }
 
     void ResourceInfo::draw2D() const

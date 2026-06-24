@@ -10,11 +10,11 @@
 
 namespace Zappy {
     EventBox::EventBox(
-        Font &font, std::unordered_map<std::string, Color> &teams) :
+        raylib::Font &font, std::map<std::string, raylib::Color> &teams) :
         TextBox(font, teams, Init::BLUE_THROUGH)
     {
 
-        auto y = float(GetScreenHeight());
+        auto y = float(Init::WINDOW_SIZE_Y);
         auto maxLine =
             (y - Init::EVENT_START_POS.y - Init::GAP * 2.f) / FONT_SIZE;
         setMaxLine(std::size_t(maxLine));

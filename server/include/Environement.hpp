@@ -21,9 +21,9 @@
     #include "Vector.hpp"
 
 namespace Zappy {
-    enum class Movement { Forward, Backward };
+    enum class Movement { FORWARD, BACKWARD };
 
-    enum class Rotate { Left, Right };
+    enum class Rotate { LEFT, RIGHT };
 
     struct Team {
         std::size_t id;

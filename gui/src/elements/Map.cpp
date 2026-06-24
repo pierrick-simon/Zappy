@@ -12,6 +12,14 @@
 #include "UtilsVector.hpp"
 
 namespace Zappy {
+    Map::Map(std::size_t &width, std::size_t &height) :
+        _width(width), _height(height)
+    {
+        for (const auto &[type, infos] : Info::resources)
+            _ressources_models.try_emplace(
+                type, Assets::getResource("rocks/" + infos.str + ".glb"));
+    }
+
     bool Map::updateSize(std::size_t x, std::size_t y)
     {
         bool value = true;
@@ -20,6 +28,9 @@ namespace Zappy {
         else {
             _width = x;
             _height = y;
+            _renderedMapSize =
+                raylib::Vector2 {static_cast<float>(this->_width),
+                    static_cast<float>(this->_height)};
             _tiles.clear();
             _tiles.resize(_width * _height);
             this->setTilesPosition();
@@ -55,6 +66,8 @@ namespace Zappy {
     void Map::updateTile(
         std::size_t x, std::size_t y, const std::vector<std::size_t> &resources)
     {
+        if (this->_width == 0 || this->_height == 0)
+            return;
         x %= _width;
         y %= _height;
         auto tileIndex = y * _width + x;
@@ -67,24 +80,41 @@ namespace Zappy {
 
     void Map::setTilesPosition()
     {
-        float totalMapHeight =
-            static_cast<float>(this->_height * TILE_HEIGHT) / 2.0f;
-        float totalMapWidth =
-            static_cast<float>(this->_width * TILE_WIDTH) / 2.0f;
-
         for (size_t i = 0; i < this->_tiles.size(); ++i) {
             size_t x = i / this->_width;
             size_t y = i % this->_width;
-            this->_tiles[i].setPosition(
-                {static_cast<float>(x * TILE_WIDTH) - totalMapWidth,
-                    TILE_Y_POS,
-                    static_cast<float>(y * TILE_HEIGHT) - totalMapHeight});
+            this->_tiles[i].setPosition({static_cast<float>(x) * TILE_SIZE.x -
+                    this->_renderedMapSize.x / 2.0f,
+                TILE_Y_POS,
+                static_cast<float>(y) * TILE_SIZE.y -
+                    this->_renderedMapSize.y / 2.0f});
         }
     }
+
+    raylib::Vector2 Map::getTilePosition(size_t x, size_t y) const
+    {
+        return raylib::Vector2 {static_cast<float>(x), static_cast<float>(y)} *
+            TILE_SIZE -
+            this->_renderedMapSize / 2.0f;
+    }
+
     void Map::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
         this->_model.materials[1].shader = this->getShader().asShader();
+    }
+
+    void Map::drawRessources(const Zappy::Tile &tile) const
+    {
+        auto infos = tile.getResources();
+        Vector3 vZero(0, 0, 0);
+        Vector3 scale(0.05, 0.05, 0.05);
+
+        for (const auto &[type, nb] : infos) {
+            if (nb > 0)
+                this->_ressources_models.at(type).Draw(
+                    tile.getPosition(), vZero, 0, scale);
+        }
     }
 
     void Map::draw3D() const
@@ -92,6 +122,29 @@ namespace Zappy {
         for (const auto &tile : this->_tiles) {
             auto [axis, angle] = tile.getRotation().ToAxisAngle();
             this->_model.Draw(tile.getPosition(), axis, angle, tile.getScale());
+            drawRessources(tile);
         }
+    }
+
+    std::map<Info::ResourceName, std::size_t> Map::getTileResources(
+        std::size_t tile) const
+    {
+        return _tiles[tile].getResources();
+    }
+
+    std::size_t Map::getNextTile(InfoBox::Action dir, std::size_t tile) const
+    {
+        if (dir == InfoBox::Action::LEFT) {
+            if (tile == 0)
+                tile = _width * _height - 1;
+            else
+                tile--;
+        } else if (dir == InfoBox::Action::RIGHT) {
+            if (tile == _width * _height - 1)
+                tile = 0;
+            else
+                tile++;
+        }
+        return tile;
     }
 } // namespace Zappy

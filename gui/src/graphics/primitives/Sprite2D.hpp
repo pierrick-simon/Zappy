@@ -17,12 +17,12 @@ namespace Graphics {
     public:
         using Texture::Texture;
         void draw2D() const override;
-        Color &getColor();
-        [[nodiscard]] const Color &getColor() const;
-        void setColor(Color color);
+        raylib::Color &getColor();
+        [[nodiscard]] const raylib::Color &getColor() const;
+        void setColor(raylib::Color color);
 
     private:
-        Color _color = WHITE;
+        raylib::Color _color = raylib::Color::White();
     };
 } // namespace Graphics
 

@@ -16,16 +16,16 @@
 namespace Zappy {
     class Info {
     public:
-        enum class Direction { North, East, South, West };
+        enum class Direction { NORTH, EAST, SOUTH, WEST };
 
         enum class ResourceName {
-            Food,
-            Linemate,
-            Deraumere,
-            Sibur,
-            Mendiane,
-            Phiras,
-            Thystame
+            FOOD,
+            LINEMATE,
+            DERAUMERE,
+            SIBUR,
+            MENDIANE,
+            PHIRAS,
+            THYSTAME
         };
 
         struct Resource {

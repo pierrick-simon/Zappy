@@ -8,7 +8,7 @@
 #ifndef CHATBOX_HPP_
     #define CHATBOX_HPP_
 
-    #include <unordered_map>
+    #include <map>
     #include <vector>
     #include "Init.hpp"
     #include "TextBox.hpp"
@@ -16,11 +16,12 @@
 namespace Zappy {
     class ChatBox : public TextBox {
     public:
-        ChatBox(Font &font, std::unordered_map<std::string, Color> &teams);
+        ChatBox(
+            raylib::Font &font, std::map<std::string, raylib::Color> &teams);
 
     private:
-        static constexpr std::size_t MAX_LINE = 15;
-        static constexpr float FONT_SIZE = 30;
+        static constexpr std::size_t MAX_LINE = 24;
+        static constexpr float FONT_SIZE = 20;
         static constexpr float WIDTH = 300;
     };
 } // namespace Zappy

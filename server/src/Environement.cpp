@@ -34,7 +34,6 @@ namespace Zappy {
         _clients(clients),
         _teams(teams)
     {
-        std::srand(std::time(nullptr));
         for (auto &tile : _tiles)
             tile = Info::INIT_RESOUCES;
         refillRessources(false);
@@ -100,17 +99,19 @@ namespace Zappy {
     {
         auto info = getTileInfo(width, height);
         std::string formatedTile;
+        bool is_ressources = false;
 
         for (auto p : info.players)
             formatedTile += "player ";
         for (auto e : info.eggs)
             formatedTile += "egg ";
         for (auto r : info.resources) {
-            for (std::size_t i = 0; i < r.second; ++i)
+            for (std::size_t i = 0; i < r.second; ++i) {
                 formatedTile += Info::resources.at(r.first).str + " ";
+                is_ressources = true;
+            }
         }
-        if (!info.players.empty() || !info.eggs.empty() ||
-            !info.resources.empty())
+        if (!info.players.empty() || !info.eggs.empty() || is_ressources)
             formatedTile += "\b";
         return formatedTile;
     }
@@ -181,6 +182,10 @@ namespace Zappy {
                 Info::directions.at(player.dir).nb,
                 player.level,
                 player.team});
+            event.send({fd});
+        }
+        for (const auto &[id, egg] : _eggs) {
+            Shared::EggEvent event(id, egg.x, egg.y, egg.team);
             event.send({fd});
         }
     }
@@ -274,7 +279,7 @@ namespace Zappy {
             throw PlayerNotFoundException(id);
         auto &player = find->second;
         auto dir = Info::directions.find(player.dir);
-        if (rotate == Rotate::Left) {
+        if (rotate == Rotate::LEFT) {
             if (dir == Info::directions.begin())
                 player.dir = Info::directions.rbegin()->first;
             else

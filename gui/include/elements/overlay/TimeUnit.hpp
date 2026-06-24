@@ -1,0 +1,46 @@
+/*
+** EPITECH PROJECT, 2026
+** Zappy
+** File description:
+** TimeUnit
+*/
+
+#ifndef TIMEUNIT_HPP_
+    #define TIMEUNIT_HPP_
+
+    #include <array>
+    #include "graphics/IDrawable2D.hpp"
+    #include "graphics/primitives/Box2D.hpp"
+    #include "graphics/primitives/Sprite2D.hpp"
+    #include "graphics/primitives/Text2D.hpp"
+
+namespace Zappy {
+    class TimeUnit : public Graphics::IDrawable2D {
+    public:
+        TimeUnit(raylib::Font &font);
+
+        void draw2D() const override;
+        std::size_t update(std::size_t timeUnit);
+
+    private:
+        enum Button { FASTLEFT, LEFT, FASTRIGHT, RIGHT, NBBUTTON, NONE };
+
+        void initSprite(raylib::Vector2 pos);
+        std::size_t changeTimeUnit(Button button, std::size_t frequency);
+
+        Graphics::Box2D _box;
+        Graphics::Text2D _text;
+        std::array<Graphics::Sprite2D, NBBUTTON> _sprites;
+        Button _button = Button::NONE;
+
+        static const std::array<std::string, NBBUTTON> PATH;
+
+        static constexpr raylib::Vector2 SIZE = {200, 40};
+        static constexpr float TEXT_SIZE = 30;
+        static constexpr std::size_t MAX_FREQUENCY = 100;
+        static constexpr std::size_t MIN_FREQUENCY = 1;
+        static constexpr std::size_t MOVE_GAP = 10;
+    };
+} // namespace Zappy
+
+#endif /* !TIMEUNIT_HPP_ */

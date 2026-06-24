@@ -22,6 +22,7 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace Zappy {
     Environement::Environement(int port, const std::string &ip,
         std::ofstream &logFile, bool &isConnect) :
+        _map(_width, _height),
         _players(logFile),
         _timeUnit(0),
         _connect(port, ip),
@@ -51,21 +52,32 @@ namespace Zappy {
 
     void Environement::update(float dt)
     {
-        auto updateTimeUnit = dt * float(_timeUnit);
+        auto deltaTimeUnit = dt * float(_timeUnit);
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
-        _elevations.update(updateTimeUnit);
+        _elevations.update(deltaTimeUnit);
+        if (_selectPlayer)
+            updatePlayerInfo();
+        else if (_selectTile)
+            updateTileInfo();
+        else
+            updateTeamInfo();
+        updateTimeUnit();
+        this->_players.update(dt);
     }
 
     void Environement::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
         this->_map.setShader(shader);
+        this->_players.setShader(shader);
     }
 
     void Environement::draw3D() const
     {
         this->_map.draw3D();
+        this->_players.draw3D();
+        _elevations.draw3D();
     }
 
     void Environement::draw2D() const
@@ -74,6 +86,13 @@ namespace Zappy {
         _overlay.chatBox.draw2D();
         _overlay.eventBox.draw2D();
         _elevations.draw2D();
+        _overlay.timeUnit.draw2D();
+        if (_selectPlayer)
+            _overlay.player.draw2D();
+        else if (_selectTile)
+            _overlay.tile.draw2D();
+        else
+            _overlay.team.draw2D();
     }
 
     bool Environement::connect()
@@ -144,12 +163,83 @@ namespace Zappy {
         }
     }
 
+    void Environement::updatePlayerInfo()
+    {
+        try {
+            auto player = _players.getPlayer(*_selectPlayer);
+            auto value = _overlay.player.update(player.getPlayerInfo());
+            if (value == InfoBox::Action::CLOSE) {
+                _selectPlayer = std::nullopt;
+                updateTeamInfo();
+            } else
+                _selectPlayer = _players.getNextPlayer(value, *_selectPlayer);
+        } catch (Player::PlayerException &_) {
+            _selectPlayer = std::nullopt;
+            updateTeamInfo();
+        }
+    }
+
+    void Environement::updateTileInfo()
+    {
+        if (*_selectTile >= _width * _height) {
+            _selectTile = std::nullopt;
+            return updateTeamInfo();
+        }
+        auto nbPlayer = _players.getNbTilePlayers(*_selectTile, _width);
+        std::size_t nbEgg = 0;
+        for (const auto &[_, egg] : _eggs) {
+            if (egg.getTile(_width) == *_selectTile)
+                nbEgg++;
+        }
+        auto nbElevation =
+            _elevations.getNbTileElevations(*_selectTile, _width);
+        auto resources = _map.getTileResources(*_selectTile);
+        auto value = _overlay.tile.update({*_selectTile % _width,
+            *_selectTile / _width,
+            nbPlayer,
+            nbEgg,
+            nbElevation,
+            resources});
+        if (value == InfoBox::Action::CLOSE) {
+            _selectTile = std::nullopt;
+            updateTeamInfo();
+        } else
+            _selectTile = _map.getNextTile(value, *_selectTile);
+    }
+
+    void Environement::updateTeamInfo()
+    {
+        auto team = _overlay.team.getSelectTeam();
+        if (!team) {
+            if (_teams.empty())
+                return;
+            team = _teams.begin()->first;
+            _overlay.team.setSelectTeam(*team);
+        }
+        std::size_t nbEgg = 0;
+        for (const auto &[_, egg] : _eggs) {
+            if (egg.getTeam() == *team)
+                nbEgg++;
+        }
+        _overlay.team.update({nbEgg, _players.getTeamPlayers(*team)});
+    }
+
     void Environement::loading()
     {
         handleEvents();
         _loading = !_map.getHeight() || !_map.getWidth() || _teams.empty() ||
             !_timeUnit;
         _isConnect = !_loading;
+    }
+
+    void Environement::updateTimeUnit()
+    {
+        if (_timeUnit == 0)
+            return;
+        auto tmp = _overlay.timeUnit.update(_timeUnit);
+        if (tmp != _timeUnit)
+            Shared::Connect::send(_connect.getFd(),
+                ClientCmd::SST.getStr() + " " + std::to_string(tmp) + "\n");
     }
 
     const std::unordered_map<std::string, Environement::Event>
@@ -178,5 +268,6 @@ namespace Zappy {
             {ServerCmd::SMG.getStr(), &Environement::serverMsg},
             {ServerCmd::SUC.getStr(), &Environement::unknowCommand},
             {ServerCmd::SBP.getStr(), &Environement::badCommandParameter},
+            {ServerCmd::EGG.getStr(), &Environement::eggEvent},
     };
 } // namespace Zappy
