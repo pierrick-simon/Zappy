@@ -37,6 +37,7 @@ namespace Zappy {
             std::ofstream &logFile, raylib::Model &model,
             std::vector<::ModelAnimation> &modelAnimation);
 
+        void initPos(raylib::Vector2 pos);
         void move(std::size_t _x, std::size_t _y, raylib::Vector2 target,
             Info::Direction _dir);
         void teleport(std::size_t x, std::size_t y, std::size_t width,
@@ -67,6 +68,16 @@ namespace Zappy {
         [[nodiscard]] std::size_t getLevel() const
         {
             return _level;
+        }
+
+        [[nodiscard]] std::size_t getX() const
+        {
+            return _x;
+        }
+
+        [[nodiscard]] std::size_t getY() const
+        {
+            return _y;
         }
 
         [[nodiscard]] bool getEject() const

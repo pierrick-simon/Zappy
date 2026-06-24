@@ -9,6 +9,7 @@
 #include <iostream>
 #include <ranges>
 
+#include "Map.hpp"
 #include "graphics/AShadered.hpp"
 
 namespace Zappy {
@@ -31,6 +32,21 @@ namespace Zappy {
             value = iter.first->second;
         }
         return value;
+    }
+
+    void Players::initPos(std::size_t width, std::size_t height)
+    {
+        raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
+                                      static_cast<float>(height)} *
+            Map::TILE_SIZE;
+        for (auto &[_, player] : _players) {
+            raylib::Vector2 center =
+                raylib::Vector2 {static_cast<float>(player.getX()),
+                    static_cast<float>(player.getY())} *
+                    Map::TILE_SIZE -
+                mapSize / 2.0f;
+            player.initPos(center);
+        }
     }
 
     void Players::updateTotalResources(

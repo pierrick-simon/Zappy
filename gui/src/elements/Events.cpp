@@ -21,9 +21,11 @@ namespace Zappy {
     {
         Shared::MapSizeEvent event;
         event.retrieve(std::move(stream));
-        if (_map.updateSize(event.getX(), event.getY()))
+        if (_map.updateSize(event.getX(), event.getY())) {
             Shared::Connect::send(
                 _connect.getFd(), ClientCmd::MCT.getStr() + "\n");
+            _players.initPos(event.getX(), event.getY());
+        }
     }
 
     void Environement::updateTile(std::istringstream stream)
