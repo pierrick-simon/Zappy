@@ -55,7 +55,7 @@ namespace Zappy {
         auto deltaTimeUnit = dt * float(_timeUnit);
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
-        _elevations.update(dt);
+        _elevations.update(deltaTimeUnit);
         if (_selectPlayer)
             updatePlayerInfo();
         else if (_selectTile)

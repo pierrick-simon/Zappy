@@ -22,6 +22,8 @@ namespace Graphics {
         static constexpr float GOLDEN_RATIO = 1.618033988749895f;
         static constexpr float SATURATION = 0.72f;
         static constexpr float VALUE = 0.92f;
+
+        static constexpr float CIRCLE = 360.f;
     };
 } // namespace Graphics
 

@@ -35,7 +35,7 @@ namespace Graphics {
         void draw3D() const override;
         void emit(std::size_t nbNewParticle);
 
-        [[nodiscard]]bool isEmpty() const
+        [[nodiscard]] bool isEmpty() const
         {
             return _particles.empty();
         }

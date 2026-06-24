@@ -41,13 +41,22 @@ namespace Zappy {
             Elevation info;
             Elevation2D overlay;
             Graphics::TornadoParticle particle;
+            std::size_t emit = 0;
         };
 
         raylib::Font _font;
         std::vector<Parts> _elevations;
         std::vector<Graphics::TornadoParticle> _finish;
 
-        static constexpr std::size_t EMIT_PARTICLES = 10;
+        struct ParticuleParam {
+            raylib::Color color;
+            float fade = 0.f;
+            std::size_t emit = 0;
+            std::array<raylib::Vector2, Graphics::TornadoParticle::NBPARAMETER>
+                parameters;
+        };
+
+        static const std::map<std::size_t, ParticuleParam> LEVELPARAM;
     };
 } // namespace Zappy
 

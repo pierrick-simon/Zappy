@@ -27,9 +27,9 @@ namespace Graphics {
         particle.velocity.x += -particle.velocity.z * 1.5f * dt;
         particle.velocity.z += particle.velocity.x * 1.5f * dt;
         auto &pos = particle.sphere.getPosition();
-        pos.x += particle.velocity.x * dt * 0.1f;
+        pos.x += particle.velocity.x * dt * 0.01f;
         pos.y += particle.velocity.y * dt;
-        pos.z += particle.velocity.z * dt * 0.1f;
+        pos.z += particle.velocity.z * dt * 0.01f;
         float ratio = particle.current / particle.start;
         particle.sphere.getColor().a =
             (unsigned char) (255.f * std::min(ratio / _fade, 1.f));
