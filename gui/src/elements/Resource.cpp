@@ -12,4 +12,10 @@ namespace Zappy {
         _pos(pos)
     {
     }
+
+    Vector3 Resource::getPos() const
+    {
+        return _pos;
+    }
+
 } // namespace Zappy

@@ -6,6 +6,7 @@
 */
 
 #include "Tile.hpp"
+#include "Utils.hpp"
 
 namespace Zappy {
     Tile::Tile()
@@ -25,17 +26,20 @@ namespace Zappy {
     }
 
     void Tile::updateResource(
-        std::queue<Resource> &resource, std::size_t nb, Info::ResourceName type)
+        std::deque<Resource> &resource, std::size_t nb, Info::ResourceName type)
     {
         while (resource.size() != nb) {
+            Vector2 range((TILE_SIZE.x / 2.0) - TILE_PADDING * TILE_SIZE.x, (TILE_SIZE.y / 2.0) - TILE_PADDING * TILE_SIZE.y);
             if (resource.size() < nb)
-                resource.emplace(type, Vector3(0, 0, 0));
+                resource.emplace_back(type, Vector3(
+                    Shared::Utils::fRandRange(range.x, -range.x), 0,
+                    Shared::Utils::fRandRange(range.y, -range.y)));
             else
-                resource.pop();
+                resource.pop_front();
         }
     }
 
-    const std::map<Info::ResourceName, std::queue<Resource>> &Tile::getResources() const
+    const std::map<Info::ResourceName, std::deque<Resource>> &Tile::getResources() const
     {
         return _resources;
     }
@@ -43,12 +47,12 @@ namespace Zappy {
     std::map<Info::ResourceName, std::size_t> Tile::getNbResources() const
     {
         std::map<Info::ResourceName, std::size_t> map;
-        for (const auto &[resource, queue] : _resources)
-            map.emplace(resource, queue.size());
+        for (const auto &[resource, deque] : _resources)
+            map.emplace(resource, deque.size());
         return map;
     }
 
-    const std::map<Info::ResourceName, std::queue<Resource>>
+    const std::map<Info::ResourceName, std::deque<Resource>>
         Tile::INIT_RESOURCES = {
             {Info::ResourceName::FOOD, {}},
             {Info::ResourceName::LINEMATE, {}},

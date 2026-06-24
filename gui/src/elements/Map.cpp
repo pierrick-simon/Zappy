@@ -6,9 +6,7 @@
 */
 
 #include "Map.hpp"
-
 #include <iostream>
-
 #include "UtilsVector.hpp"
 
 namespace Zappy {
@@ -31,7 +29,7 @@ namespace Zappy {
             _renderedMapSize =
                 raylib::Vector2 {static_cast<float>(this->_width),
                     static_cast<float>(this->_height)} *
-                TILE_SIZE;
+                Tile::TILE_SIZE;
             _tiles.clear();
             _tiles.resize(_width * _height);
             this->setTilesPosition();
@@ -86,10 +84,10 @@ namespace Zappy {
         for (size_t i = 0; i < this->_tiles.size(); ++i) {
             size_t x = i % this->_width;
             size_t y = i / this->_width;
-            this->_tiles[i].setPosition({static_cast<float>(x) * TILE_SIZE.x -
+            this->_tiles[i].setPosition({static_cast<float>(x) * Tile::TILE_SIZE.x -
                     this->_renderedMapSize.x / 2.0f,
                 TILE_Y_POS,
-                static_cast<float>(y) * TILE_SIZE.y -
+                static_cast<float>(y) * Tile::TILE_SIZE.y -
                     this->_renderedMapSize.y / 2.0f});
         }
     }
@@ -97,7 +95,7 @@ namespace Zappy {
     raylib::Vector2 Map::getTilePosition(size_t x, size_t y) const
     {
         return raylib::Vector2 {static_cast<float>(x), static_cast<float>(y)} *
-            TILE_SIZE -
+            Tile::TILE_SIZE -
             this->_renderedMapSize / 2.0f;
     }
 
@@ -113,10 +111,10 @@ namespace Zappy {
         Vector3 vZero(0, 0, 0);
         Vector3 scale(0.05, 0.05, 0.05);
 
-        for (const auto &[type, queue] : infos) {
-            if (!queue.empty())
-                this->_ressources_models.at(type).Draw(
-                    tile.getPosition(), vZero, 0, scale);
+        for (const auto &[type, queue_item] : infos) {
+            auto &model = this->_ressources_models.at(type);
+            for (const auto &item: queue_item)
+                model.Draw(tile.getPosition() + item.getPos(), vZero, 0, scale);
         }
     }
 

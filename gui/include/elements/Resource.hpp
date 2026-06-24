@@ -15,6 +15,8 @@ namespace Zappy {
     class Resource {
     public:
         Resource(Info::ResourceName resource, Vector3 pos);
+        
+        [[nodiscard]] Vector3 getPos() const;
 
     private:
         Info::ResourceName _resource;

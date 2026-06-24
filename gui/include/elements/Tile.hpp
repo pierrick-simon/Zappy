@@ -9,7 +9,7 @@
     #define TILE_HPP_
 
     #include <map>
-    #include <queue>
+    #include <deque>
 
     #include "Assets.hpp"
     #include "Info.hpp"
@@ -27,16 +27,19 @@ namespace Zappy {
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
         getNbResources() const;
         
-        [[nodiscard]] const std::map<Info::ResourceName, std::queue<Resource>>
+        [[nodiscard]] const std::map<Info::ResourceName, std::deque<Resource>>
         &getResources() const;
 
-    private:
-        std::map<Info::ResourceName, std::queue<Resource>> _resources;
+        static constexpr raylib::Vector2 TILE_SIZE = {25, 25};
 
-        static void updateResource(std::queue<Resource> &resource,
+    private:
+        std::map<Info::ResourceName, std::deque<Resource>> _resources;
+
+        static void updateResource(std::deque<Resource> &resource,
             std::size_t nb, Info::ResourceName type);
-        static const std::map<Info::ResourceName, std::queue<Resource>>
+        static const std::map<Info::ResourceName, std::deque<Resource>>
             INIT_RESOURCES;
+        static constexpr float TILE_PADDING = 0.3;
     };
 } // namespace Zappy
 
