@@ -81,6 +81,7 @@ namespace Graphics {
             if (it != KEY_METHODS.end())
                 it->second(*this);
         }
+        _scene.event();
     }
 
     const std::unordered_map<::KeyboardKey, std::function<void(Window &)>>

@@ -25,6 +25,7 @@
     #include "graphics/ColorGenerator.hpp"
     #include "graphics/IDrawable2D.hpp"
     #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IEvent.hpp"
     #include "graphics/IObject.hpp"
     #include "graphics/IUpdatable.hpp"
 
@@ -33,7 +34,8 @@ namespace Zappy {
                          public Graphics::IUpdatable,
                          public Graphics::IDrawable2D,
                          public Graphics::IObject,
-                         public Graphics::AShadered {
+                         public Graphics::AShadered,
+                         public Graphics::IEvent {
     public:
         Environement(int port, const std::string &ip, std::ofstream &logFile,
             bool &isConnect);
@@ -47,6 +49,9 @@ namespace Zappy {
         void draw3D() const override;
 
         void draw2D() const override;
+
+        void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+            const Ray &ray, bool &leftClick) override;
 
     private:
         using Event = std::function<void(Environement &, std::istringstream)>;
