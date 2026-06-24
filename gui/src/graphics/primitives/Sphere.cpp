@@ -8,7 +8,8 @@
 #include "Sphere.hpp"
 
 namespace Graphics {
-    Sphere::Sphere(float radius) : _radius(radius)
+    Sphere::Sphere(float radius) :
+        _radius(radius)
     {
     }
 
@@ -36,4 +37,4 @@ namespace Graphics {
     {
         return this->_color;
     }
-}
+} // namespace Graphics

@@ -38,6 +38,6 @@ namespace Shared {
 
     float Utils::fRandRange(float min, float max)
     {
-        return min + (float)std::rand() / (float)RAND_MAX * (max - min);
+        return min + (float) std::rand() / (float) RAND_MAX * (max - min);
     }
 } // namespace Shared
