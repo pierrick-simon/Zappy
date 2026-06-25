@@ -158,7 +158,7 @@ namespace Zappy {
         Shared::Vector2<int> getBroadCastVector(
             const Player &sender, const Player &receiver) const;
         static std::size_t getTileNb(
-            const Player &receiver, const Shared::Vector2<int> &v);
+            const Player &receiver, Shared::Vector2<int> v);
 
         template<std::derived_from<Shared::GUIEvent> EventType,
             typename... Args>
