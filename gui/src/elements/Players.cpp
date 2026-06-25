@@ -89,8 +89,7 @@ namespace Zappy {
     {
         AShadered::setShader(shader);
         this->_model.materials[STONE_MAT].shader = this->getShader().asShader();
-        this->_model.materials[GLOWING_MAT].shader =
-            this->getShader().asShader();
+        this->_model.materials[GEM_MAT].shader = this->getShader().asShader();
     }
 
     void Players::loadAnimations()

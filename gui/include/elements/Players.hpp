@@ -64,6 +64,9 @@ namespace Zappy {
             return _players;
         }
 
+        static constexpr auto STONE_MAT = 1;
+        static constexpr auto GEM_MAT = 2;
+
     private:
         std::map<std::size_t, Player> _players;
         std::map<Info::ResourceName, std::size_t> _totalResources =
@@ -76,8 +79,6 @@ namespace Zappy {
 
         std::vector<::ModelAnimation> _modelAnimation;
 
-        static constexpr auto STONE_MAT = 1;
-        static constexpr auto GLOWING_MAT = 2;
     };
 } // namespace Zappy
 
