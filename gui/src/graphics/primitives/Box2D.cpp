@@ -61,4 +61,9 @@ namespace Graphics {
             _border.DrawRounded(_round, _segment, _borderColor);
         _box.DrawRounded(_round, _segment, _color);
     }
+
+    bool Box2D::checkCollision(raylib::Vector2 pos)
+    {
+        return _border.CheckCollision(pos);
+    }
 } // namespace Graphics

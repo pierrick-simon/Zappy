@@ -11,13 +11,15 @@
     #include <map>
     #include "Init.hpp"
     #include "graphics/IDrawable2D.hpp"
+    #include "graphics/IEvent.hpp"
     #include "graphics/IUpdatable.hpp"
     #include "graphics/primitives/Box2D.hpp"
     #include "graphics/primitives/Text2D.hpp"
 
 namespace Zappy {
     class Elevation2D : public Graphics::IDrawable2D,
-                        public Graphics::IUpdatable {
+                        public Graphics::IUpdatable,
+                        public Graphics::IEvent {
     public:
         Elevation2D(raylib::Font &font, std::size_t x, std::size_t y,
             std::size_t level);
@@ -26,6 +28,11 @@ namespace Zappy {
         void draw2D() const override;
 
         void setPos(raylib::Vector2 pos);
+
+        void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+            const Ray &ray, bool &leftClick) override;
+
+        [[nodiscard]] bool getClick();
 
     private:
         void initText(raylib::Font &font, std::size_t x, std::size_t y,
@@ -39,6 +46,7 @@ namespace Zappy {
         Graphics::Box2D _status;
 
         float _timer = 0.f;
+        bool _click = false;
 
         static constexpr float TITLE_SIZE = 30;
         static constexpr float TEXT_SIZE = 25;

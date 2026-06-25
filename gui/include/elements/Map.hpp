@@ -8,6 +8,7 @@
 #ifndef MAP_HPP_
     #define MAP_HPP_
 
+    #include <optional>
     #include <unordered_map>
     #include "Info.hpp"
     #include "InfoBox.hpp"
@@ -16,9 +17,12 @@
     #include "graphics/IDrawable3D.hpp"
 
 namespace Zappy {
-    class Map : public Graphics::IDrawable3D, public Graphics::AShadered {
+    class Map : public Graphics::IDrawable3D,
+                public Graphics::AShadered,
+                public Graphics::IUpdatable {
     public:
-        Map(std::size_t &width, std::size_t &height);
+        Map(std::size_t &width, std::size_t &height,
+            std::optional<std::size_t> &select);
 
         bool updateSize(std::size_t x, std::size_t y);
         void updateTile(std::size_t x, std::size_t y,
@@ -53,6 +57,7 @@ namespace Zappy {
 
         void drawRessources(const Zappy::Tile &tile) const;
         void draw3D() const override;
+        void update(float dt) override;
 
     private:
         void updateTotalResources(
@@ -66,6 +71,10 @@ namespace Zappy {
         std::map<Info::ResourceName, std::size_t> _totalResources;
         std::unordered_map<Info::ResourceName, raylib::Model>
             _ressources_models;
+
+        bool _changeColor = false;
+        float _blink = 0.f;
+        std::optional<std::size_t> &_select;
 
         static constexpr auto TILE_Y_POS = 0;
         static constexpr raylib::Vector2 GROUND_SIZE = {5, 5};

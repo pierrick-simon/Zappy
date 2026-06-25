@@ -8,21 +8,25 @@
 #ifndef ELEVATIONS_HPP_
     #define ELEVATIONS_HPP_
 
+    #include <list>
     #include <string_view>
-    #include <vector>
     #include "Elevation.hpp"
     #include "Elevation2D.hpp"
     #include "graphics/IDrawable2D.hpp"
     #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IEvent.hpp"
     #include "graphics/IUpdatable.hpp"
     #include "graphics/TornadoParticle.hpp"
 
 namespace Zappy {
     class Elevations : public Graphics::IDrawable2D,
                        public Graphics::IDrawable3D,
-                       public Graphics::IUpdatable {
+                       public Graphics::IUpdatable,
+                       public Graphics::IEvent {
     public:
-        Elevations();
+        Elevations(std::optional<std::size_t> &selectPlayer,
+            std::optional<std::size_t> &selectTile, std::size_t &width,
+            std::size_t &timeUnit);
 
         void addElevation(std::size_t x, std::size_t y, std::size_t level,
             std::vector<std::size_t> players, raylib::Vector2 pos);
@@ -32,6 +36,8 @@ namespace Zappy {
         void update(float dt) override;
         void draw2D() const override;
         void draw3D() const override;
+        void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+            const Ray &ray, bool &leftClick) override;
 
         [[nodiscard]] std::size_t getNbTileElevations(
             std::size_t tile, std::size_t mapWidth) const;
@@ -45,8 +51,8 @@ namespace Zappy {
         };
 
         raylib::Font _font;
-        std::vector<Parts> _elevations;
-        std::vector<Graphics::TornadoParticle> _finish;
+        std::list<Parts> _elevations;
+        std::list<Graphics::TornadoParticle> _finish;
 
         struct ParticuleParam {
             raylib::Color color;
@@ -56,7 +62,14 @@ namespace Zappy {
                 parameters;
         };
 
+        std::optional<std::size_t> &_selectPlayer;
+        std::optional<std::size_t> &_selectTile;
+        std::size_t &_width;
+        std::size_t &_timeUnit;
+
         static const std::map<std::size_t, ParticuleParam> LEVELPARAM;
+        static constexpr std::size_t NBLEVEL = 8;
+        static constexpr float RATIOPARTICLE = 300.f / NBLEVEL;
     };
 } // namespace Zappy
 

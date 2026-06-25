@@ -14,10 +14,10 @@
     #include "GameObject.hpp"
     #include "UtilsVector.hpp"
     #include "graphics/Camera.hpp"
-#include "graphics/IShadered.hpp"
+    #include "graphics/IShadered.hpp"
     #include "graphics/Shader.hpp"
     #include "graphics/UiObject.hpp"
-#include "graphics/primitives/Model.hpp"
+    #include "graphics/primitives/Model.hpp"
 
 namespace Zappy {
     class Environement;
@@ -32,6 +32,8 @@ namespace Graphics {
         [[nodiscard]] const raylib::Camera &getCamera() const;
         void update(float dt);
         void drawUiObjects() const;
+
+        void event();
 
         template<std::derived_from<IObject> GameObjectType>
         void addObject(GameObjectType &gameObject)

@@ -77,4 +77,20 @@ namespace Zappy {
         _levelText.draw2D();
         _posText.draw2D();
     }
+
+    void Elevation2D::event(raylib::Camera3D &camera,
+        const raylib::Vector2 &mouse, const Ray &ray, bool &leftClick)
+    {
+        if (leftClick && _box.checkCollision(mouse)) {
+            leftClick = false;
+            _click = true;
+        }
+    }
+
+    bool Elevation2D::getClick()
+    {
+        bool value = _click;
+        _click = false;
+        return value;
+    }
 } // namespace Zappy

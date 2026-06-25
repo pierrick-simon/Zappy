@@ -13,7 +13,7 @@ namespace Zappy {
         raylib::Font &font, std::map<std::string, raylib::Color> &teams) :
         InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
-            true),
+            false),
         _teams(teams)
     {
         auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X;
@@ -132,7 +132,7 @@ namespace Zappy {
             info.text.draw2D();
         }
         for (const auto &[_, button] : _buttons)
-            button.draw2D();
+            button.sprite.draw2D();
     }
 
     void Player2D::changeSelected(Action dir)

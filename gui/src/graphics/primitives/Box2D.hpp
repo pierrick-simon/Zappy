@@ -24,6 +24,7 @@ namespace Graphics {
         void setPos(raylib::Vector2 pos);
         void setRound(float round);
         void setSegement(int segment);
+        bool checkCollision(raylib::Vector2 pos);
 
         void draw2D() const override;
 

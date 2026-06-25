@@ -22,13 +22,14 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace Zappy {
     Environement::Environement(int port, const std::string &ip,
         std::ofstream &logFile, bool &isConnect) :
-        _map(_width, _height),
-        _players(logFile),
+        _map(_width, _height, _selectTile),
+        _players(logFile, _selectPlayer, _timeUnit),
         _timeUnit(0),
         _connect(port, ip),
         _isConnect(isConnect),
         _logFile(logFile),
-        _overlay(_teams)
+        _overlay(_teams),
+        _elevations(_selectPlayer, _selectTile, _width, _timeUnit)
     {
         _isConnect = false;
     }
@@ -55,7 +56,7 @@ namespace Zappy {
         auto deltaTimeUnit = dt * float(_timeUnit);
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
-        _elevations.update(deltaTimeUnit);
+        _elevations.update(dt);
         if (_selectPlayer)
             updatePlayerInfo();
         else if (_selectTile)
@@ -64,6 +65,7 @@ namespace Zappy {
             updateTeamInfo();
         updateTimeUnit();
         this->_players.update(dt);
+        _map.update(dt);
     }
 
     void Environement::setShader(Graphics::Shader &shader)
@@ -93,6 +95,29 @@ namespace Zappy {
             _overlay.tile.draw2D();
         else
             _overlay.team.draw2D();
+    }
+
+    void Environement::event(raylib::Camera3D &camera,
+        const raylib::Vector2 &mouse, const Ray &ray, bool &leftClick)
+    {
+        _overlay.team.event(camera, mouse, ray, leftClick);
+        _overlay.player.event(camera, mouse, ray, leftClick);
+        _overlay.tile.event(camera, mouse, ray, leftClick);
+        _elevations.event(camera, mouse, ray, leftClick);
+        _overlay.timeUnit.event(camera, mouse, ray, leftClick);
+        if (raylib::Keyboard::IsKeyPressed(KEY_ONE)) {
+            _selectTile = std::nullopt;
+            _selectPlayer = std::nullopt;
+        }
+        if (raylib::Keyboard::IsKeyPressed(KEY_TWO) &&
+            _players.getNbPlayer() > 0) {
+            _selectTile = std::nullopt;
+            _selectPlayer = _players.getFirstPlayerId();
+        }
+        if (raylib::Keyboard::IsKeyPressed(KEY_THREE) && _width * _height > 0) {
+            _selectTile = 0;
+            _selectPlayer = std::nullopt;
+        }
     }
 
     bool Environement::connect()

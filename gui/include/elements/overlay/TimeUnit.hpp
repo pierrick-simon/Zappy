@@ -10,17 +10,20 @@
 
     #include <array>
     #include "graphics/IDrawable2D.hpp"
+    #include "graphics/IEvent.hpp"
     #include "graphics/primitives/Box2D.hpp"
     #include "graphics/primitives/Sprite2D.hpp"
     #include "graphics/primitives/Text2D.hpp"
 
 namespace Zappy {
-    class TimeUnit : public Graphics::IDrawable2D {
+    class TimeUnit : public Graphics::IDrawable2D, public Graphics::IEvent {
     public:
         TimeUnit(raylib::Font &font);
 
         void draw2D() const override;
         std::size_t update(std::size_t timeUnit);
+        void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+            const Ray &ray, bool &leftClick) override;
 
     private:
         enum Button { FASTLEFT, LEFT, FASTRIGHT, RIGHT, NBBUTTON, NONE };

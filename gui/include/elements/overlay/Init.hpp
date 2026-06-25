@@ -25,6 +25,9 @@ namespace Zappy {
         static constexpr raylib::Color DARK_PINEWOOD = {28, 52, 32, 255};
         static constexpr raylib::Color BLUE_THROUGH = {0, 0, 139, 128};
 
+        static constexpr float BLINK_TIME = 0.25f;
+        static constexpr unsigned char BLINK_OFFSET = 100;
+
         static constexpr float BORDER_SIZE = 3.f;
         static constexpr float BORDER_ROUND = 0.1f;
         static constexpr float LETTER_SPACING = 2;

@@ -10,8 +10,9 @@
 #include "UtilsVector.hpp"
 
 namespace Zappy {
-    Map::Map(std::size_t &width, std::size_t &height) :
-        _width(width), _height(height)
+    Map::Map(std::size_t &width, std::size_t &height,
+        std::optional<std::size_t> &select) :
+        _width(width), _height(height), _select(select)
     {
         for (const auto &[type, infos] : Info::resources)
             _ressources_models.try_emplace(
@@ -128,12 +129,29 @@ namespace Zappy {
 
     void Map::draw3D() const
     {
+        std::size_t i = 0;
         for (const auto &tile : this->_tiles) {
+            auto color = raylib::Color::White();
+            if (_select && i == *_select && _changeColor) {
+                color.r -= Init::BLINK_OFFSET;
+                color.g -= Init::BLINK_OFFSET;
+                color.b -= Init::BLINK_OFFSET;
+            }
             auto [axis, angle] = tile.getRotation().ToAxisAngle();
             this->_tileModel.Draw(
-                tile.getPosition(), axis, angle, tile.getScale());
+                tile.getPosition(), axis, angle, tile.getScale(), color);
             drawRessources(tile);
+            i++;
         }
+    }
+
+    void Map::update(float dt)
+    {
+        if (_blink <= 0) {
+            _blink = Init::BLINK_TIME;
+            _changeColor = !_changeColor;
+        } else
+            _blink -= dt;
     }
 
     std::map<Info::ResourceName, std::size_t> Map::getTileResources(
