@@ -7,6 +7,7 @@
 
 #include "Map.hpp"
 #include <iostream>
+#include "Maths.hpp"
 #include "UtilsVector.hpp"
 
 namespace Zappy {
@@ -119,9 +120,12 @@ namespace Zappy {
                 raylib::Vector3 scale(resourceScale * itemScale,
                     resourceScale * itemScale,
                     resourceScale * itemScale);
+                auto [axis, angle] =
+                    raylib::Quaternion::FromEuler(0, item.getRotation(), 0)
+                        .ToAxisAngle();
                 model.Draw(tile.getPosition() + item.getPos(),
-                    Graphics::Vector3::ZERO,
-                    0,
+                    axis,
+                    Maths::RadToDeg(angle),
                     scale);
             }
         }
