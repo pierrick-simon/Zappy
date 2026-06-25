@@ -31,6 +31,7 @@ namespace Zappy {
         getResources() const;
 
         static constexpr raylib::Vector2 TILE_SIZE = {20, 20};
+        static constexpr float TILE_PADDING = 0.3;
 
     private:
         std::map<Info::ResourceName, std::deque<Resource>> _resources;
@@ -39,7 +40,6 @@ namespace Zappy {
             std::size_t nb, Info::ResourceName type);
         static const std::map<Info::ResourceName, std::deque<Resource>>
             INIT_RESOURCES;
-        static constexpr float TILE_PADDING = 0.3;
         static constexpr float SCALE_MODIF_RANGE = 0.2;
     };
 } // namespace Zappy

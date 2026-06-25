@@ -7,6 +7,7 @@
 
 #include "Egg.hpp"
 #include "Tile.hpp"
+#include "Utils.hpp"
 #include "UtilsVector.hpp"
 
 namespace Zappy {
@@ -14,8 +15,10 @@ namespace Zappy {
         raylib::Vector2 pos, raylib::Model &eggModel) :
         _x(x), _y(y), _team(std::move(team)), _eggModel(eggModel)
     {
-        setPosition(raylib::Vector3 {pos.x, 0, pos.y});
-        setScale(raylib::Vector3 {EGG_SCALE, EGG_SCALE, EGG_SCALE});
+        auto scale = EGG_SCALE *
+            Shared::Utils::fRandRange(
+                1 - EGG_SCALE_MODIFIER, 1 + EGG_SCALE_MODIFIER);
+        setScale(raylib::Vector3 {scale, scale, scale});
     }
 
     std::size_t Egg::getTile(std::size_t mapWidth) const
@@ -25,18 +28,27 @@ namespace Zappy {
 
     void Egg::draw3D() const
     {
-        _eggModel.Draw(this->getPosition(), Graphics::Vector3::ZERO, 0, this->getScale());
+        _eggModel.Draw(
+            this->getPosition(), Graphics::Vector3::ZERO, 0, this->getScale());
     }
 
     void Egg::initPos(std::size_t width, std::size_t height)
     {
         raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
-            static_cast<float>(height)} * Tile::TILE_SIZE;
-        raylib::Vector2 center = raylib::Vector2 {static_cast<float>(_x),
-                static_cast<float>(_y)} *
+                                      static_cast<float>(height)} *
+            Tile::TILE_SIZE;
+        raylib::Vector2 center =
+            raylib::Vector2 {static_cast<float>(_x), static_cast<float>(_y)} *
                 Tile::TILE_SIZE -
             mapSize / 2.0f;
-        setPosition(Vector3 {center.x, 0, center.y});
+        raylib::Vector2 range(
+            (Tile::TILE_SIZE.x / 2.0) - Tile::TILE_PADDING * Tile::TILE_SIZE.x,
+            (Tile::TILE_SIZE.y / 2.0) - Tile::TILE_PADDING * Tile::TILE_SIZE.y);
+        raylib::Vector3 pos(
+            center.x + Shared::Utils::fRandRange(-range.x, range.x),
+            0,
+            center.y + Shared::Utils::fRandRange(-range.y, range.y));
+        setPosition(pos);
     }
 
 } // namespace Zappy

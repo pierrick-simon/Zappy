@@ -8,18 +8,17 @@
 #ifndef EGG_HPP
     #define EGG_HPP
 
-    #include "graphics/IDrawable3D.hpp"
-    #include "graphics/Transformable3D.hpp"
-    #include "Model.hpp"
     #include <Vector2.hpp>
     #include <fstream>
+    #include "Model.hpp"
+    #include "graphics/IDrawable3D.hpp"
+    #include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
-    class Egg : public Graphics::IDrawable3D,
-                public Graphics::Transformable3D {
+    class Egg : public Graphics::IDrawable3D, public Graphics::Transformable3D {
     public:
-        Egg(std::size_t x, std::size_t y, std::string team,
-            raylib::Vector2 pos, raylib::Model &eggModel);
+        Egg(std::size_t x, std::size_t y, std::string team, raylib::Vector2 pos,
+            raylib::Model &eggModel);
 
         [[nodiscard]] std::string getTeam() const
         {
@@ -28,7 +27,7 @@ namespace Zappy {
 
         [[nodiscard]] std::size_t getTile(std::size_t mapWidth) const;
 
-        void draw3D() const;
+        void draw3D() const override;
 
         void initPos(std::size_t width, std::size_t height);
 
@@ -39,6 +38,7 @@ namespace Zappy {
         raylib::Model &_eggModel;
 
         static constexpr float EGG_SCALE = 0.01;
+        static constexpr float EGG_SCALE_MODIFIER = 0.2;
     };
 } // namespace Zappy
 
