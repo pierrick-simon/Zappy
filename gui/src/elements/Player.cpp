@@ -72,14 +72,14 @@ namespace Zappy {
     {
         raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
                                       static_cast<float>(height)} *
-            Map::TILE_SIZE;
+            Tile::TILE_SIZE;
         raylib::Vector2 oldCenter =
             raylib::Vector2 {static_cast<float>(_x), static_cast<float>(_y)} *
-                Map::TILE_SIZE -
+                Tile::TILE_SIZE -
             mapSize / 2.0f;
         raylib::Vector2 newCenter =
             raylib::Vector2 {static_cast<float>(x), static_cast<float>(y)} *
-                Map::TILE_SIZE -
+                Tile::TILE_SIZE -
             mapSize / 2.0f;
         raylib::Vector2 delta = newCenter - oldCenter;
         _startPos += raylib::Vector3 {delta.x, 0, delta.y};

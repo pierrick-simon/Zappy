@@ -39,12 +39,12 @@ namespace Zappy {
     {
         raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
                                       static_cast<float>(height)} *
-            Map::TILE_SIZE;
+            Tile::TILE_SIZE;
         for (auto &[_, player] : _players) {
             raylib::Vector2 center =
                 raylib::Vector2 {static_cast<float>(player.getX()),
                     static_cast<float>(player.getY())} *
-                    Map::TILE_SIZE -
+                    Tile::TILE_SIZE -
                 mapSize / 2.0f;
             player.initPos(center);
         }
