@@ -40,6 +40,11 @@ namespace Zappy {
             if (i <= Action::LEFT)
                 _sprites[i].sprite.setRotation(Init::INFO_BUTTON_ROTATION);
         }
+        initSpriteInfo(pos);
+    }
+
+    void TimeUnit::initSpriteInfo(raylib::Vector2 pos)
+    {
         auto left = pos;
         left.x += Init::INFO_SMALL_GAP + Init::INFO_BUTTON_SIZE / 2.f;
         _sprites[FASTLEFT].sprite.setPosition(left);

@@ -29,6 +29,7 @@ namespace Zappy {
         enum Action { FASTLEFT, LEFT, FASTRIGHT, RIGHT, NBBUTTON, NONE };
 
         void initSprite(raylib::Vector2 pos);
+        void initSpriteInfo(raylib::Vector2 pos);
         std::size_t changeTimeUnit(Action button, std::size_t frequency);
 
         struct Button {
