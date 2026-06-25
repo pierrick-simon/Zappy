@@ -30,6 +30,8 @@ namespace Zappy {
 
         void draw3D() const;
 
+        void initPos(std::size_t width, std::size_t height);
+
     private:
         std::size_t _x;
         std::size_t _y;

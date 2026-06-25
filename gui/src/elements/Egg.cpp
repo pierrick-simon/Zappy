@@ -6,6 +6,7 @@
 */
 
 #include "Egg.hpp"
+#include "Tile.hpp"
 #include "UtilsVector.hpp"
 
 namespace Zappy {
@@ -26,4 +27,16 @@ namespace Zappy {
     {
         _eggModel.Draw(this->getPosition(), Graphics::Vector3::ZERO, 0, this->getScale());
     }
+
+    void Egg::initPos(std::size_t width, std::size_t height)
+    {
+        raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
+            static_cast<float>(height)} * Tile::TILE_SIZE;
+        raylib::Vector2 center = raylib::Vector2 {static_cast<float>(_x),
+                static_cast<float>(_y)} *
+                Tile::TILE_SIZE -
+            mapSize / 2.0f;
+        setPosition(Vector3 {center.x, 0, center.y});
+    }
+
 } // namespace Zappy

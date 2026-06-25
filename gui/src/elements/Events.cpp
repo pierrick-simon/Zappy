@@ -26,6 +26,8 @@ namespace Zappy {
             Shared::Connect::send(
                 _connect.getFd(), ClientCmd::MCT.getStr() + "\n");
             _players.initPos(event.getX(), event.getY());
+            for (auto &[_, egg]: _eggs)
+                egg.initPos(event.getX(), event.getY());
         }
     }
 
