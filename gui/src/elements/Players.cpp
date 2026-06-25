@@ -13,9 +13,13 @@
 #include "graphics/AShadered.hpp"
 
 namespace Zappy {
-    Players::Players(std::ofstream &logFile, std::optional<std::size_t> &select,
-        std::size_t &frequency) :
-        _logFile(logFile), _select(select), _frequency(frequency)
+    Players::Players(std::ofstream &logFile, std::size_t &frequency,
+        std::optional<std::size_t> &selectPlayer,
+        std::optional<std::size_t> &selectTile) :
+        _logFile(logFile),
+        _selectPlayer(selectPlayer),
+        _selectTile(selectTile),
+        _frequency(frequency)
     {
         this->loadAnimations();
     }
@@ -77,7 +81,7 @@ namespace Zappy {
     void Players::draw3D() const
     {
         for (auto &[id, player] : this->_players) {
-            if (_select && id == *_select && _changeColor) {
+            if (_selectPlayer && id == *_selectPlayer && _changeColor) {
                 auto color = raylib::Color::White();
                 color.r -= Init::BLINK_OFFSET;
                 color.g -= Init::BLINK_OFFSET;
@@ -184,5 +188,27 @@ namespace Zappy {
                 value = (++find)->first;
         }
         return value;
+    }
+
+    void Players::event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+        const Ray &ray, bool &leftClick)
+    {
+        if (!leftClick)
+            return;
+        for (auto &[id, player] : this->_players) {
+            if (player.isDead())
+                continue;
+            raylib::BoundingBox box = _model.GetBoundingBox();
+            raylib::Vector3 max(box.GetMax());
+            box.SetMax(max + player.getPosition());
+            raylib::Vector3 min(box.GetMin());
+            box.SetMin(min + player.getPosition());
+            if (box.CheckCollision(camera.GetMouseRay(mouse))) {
+                leftClick = false;
+                _selectPlayer = id;
+                _selectTile = std::nullopt;
+                break;
+            }
+        }
     }
 } // namespace Zappy

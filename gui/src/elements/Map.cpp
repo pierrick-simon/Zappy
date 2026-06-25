@@ -11,8 +11,12 @@
 
 namespace Zappy {
     Map::Map(std::size_t &width, std::size_t &height,
-        std::optional<std::size_t> &select) :
-        _width(width), _height(height), _select(select)
+        std::optional<std::size_t> &selectPlayer,
+        std::optional<std::size_t> &selectTile) :
+        _width(width),
+        _height(height),
+        _selectPlayer(selectPlayer),
+        _selectTile(selectTile)
     {
         for (const auto &[type, infos] : Info::resources)
             _ressources_models.try_emplace(
@@ -132,7 +136,7 @@ namespace Zappy {
         std::size_t i = 0;
         for (const auto &tile : this->_tiles) {
             auto color = raylib::Color::White();
-            if (_select && i == *_select && _changeColor) {
+            if (_selectTile && i == *_selectTile && _changeColor) {
                 color.r -= Init::BLINK_OFFSET;
                 color.g -= Init::BLINK_OFFSET;
                 color.b -= Init::BLINK_OFFSET;
@@ -174,6 +178,28 @@ namespace Zappy {
                 tile++;
         }
         return tile;
+    }
+
+    void Map::event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+        const Ray &ray, bool &leftClick)
+    {
+        if (!leftClick)
+            return;
+        std::size_t i = 0;
+        for (auto &tile : this->_tiles) {
+            raylib::BoundingBox box = _tileModel.GetBoundingBox();
+            raylib::Vector3 max(box.GetMax());
+            box.SetMax(max * tile.getScale() + tile.getPosition());
+            raylib::Vector3 min(box.GetMin());
+            box.SetMin(min * tile.getScale() + tile.getPosition());
+            if (box.CheckCollision(camera.GetMouseRay(mouse))) {
+                leftClick = false;
+                _selectTile = i;
+                _selectPlayer = std::nullopt;
+                break;
+            }
+            i++;
+        }
     }
 
     const std::unordered_map<Info::ResourceName, float> Map::_modelScales = {

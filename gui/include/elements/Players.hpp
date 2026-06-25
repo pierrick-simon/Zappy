@@ -18,14 +18,17 @@
     #include "Team.hpp"
     #include "graphics/AShadered.hpp"
     #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IEvent.hpp"
 
 namespace Zappy {
     class Players : public Graphics::IDrawable3D,
                     public Graphics::IUpdatable,
-                    public Graphics::AShadered {
+                    public Graphics::AShadered,
+                    public Graphics::IEvent {
     public:
-        Players(std::ofstream &logFile, std::optional<std::size_t> &select,
-            std::size_t &frequency);
+        Players(std::ofstream &logFile, std::size_t &frequency,
+            std::optional<std::size_t> &selectPlayer,
+            std::optional<std::size_t> &selectTile);
 
         std::optional<std::reference_wrapper<Player>> addPlayer(
             const Shared::NewPlayerEvent::NewPlayer &player);
@@ -56,6 +59,9 @@ namespace Zappy {
 
         void update(float dt) override;
 
+        void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+            const Ray &ray, bool &leftClick) override;
+
         void setShader(Graphics::Shader &shader) override;
 
         void loadAnimations();
@@ -82,7 +88,8 @@ namespace Zappy {
 
         bool _changeColor = false;
         float _blink = 0.f;
-        std::optional<std::size_t> &_select;
+        std::optional<std::size_t> &_selectPlayer;
+        std::optional<std::size_t> &_selectTile;
         std::size_t &_frequency;
     };
 } // namespace Zappy

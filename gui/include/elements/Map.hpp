@@ -15,14 +15,17 @@
     #include "Tile.hpp"
     #include "graphics/AShadered.hpp"
     #include "graphics/IDrawable3D.hpp"
+    #include "graphics/IEvent.hpp"
 
 namespace Zappy {
     class Map : public Graphics::IDrawable3D,
                 public Graphics::AShadered,
-                public Graphics::IUpdatable {
+                public Graphics::IUpdatable,
+                public Graphics::IEvent {
     public:
         Map(std::size_t &width, std::size_t &height,
-            std::optional<std::size_t> &select);
+            std::optional<std::size_t> &selectPlayer,
+            std::optional<std::size_t> &selectTile);
 
         bool updateSize(std::size_t x, std::size_t y);
         void updateTile(std::size_t x, std::size_t y,
@@ -58,6 +61,8 @@ namespace Zappy {
         void drawRessources(const Zappy::Tile &tile) const;
         void draw3D() const override;
         void update(float dt) override;
+        void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+            const Ray &ray, bool &leftClick) override;
 
     private:
         void updateTotalResources(
@@ -74,7 +79,8 @@ namespace Zappy {
 
         bool _changeColor = false;
         float _blink = 0.f;
-        std::optional<std::size_t> &_select;
+        std::optional<std::size_t> &_selectPlayer;
+        std::optional<std::size_t> &_selectTile;
 
         static constexpr auto TILE_Y_POS = 0;
         static constexpr raylib::Vector2 GROUND_SIZE = {5, 5};
