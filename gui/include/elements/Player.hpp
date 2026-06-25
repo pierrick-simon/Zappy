@@ -38,6 +38,7 @@ namespace Zappy {
             std::vector<::ModelAnimation> &modelAnimation);
 
         void initPos(raylib::Vector2 pos);
+        bool isMovementAcrossMap() const;
         void move(std::size_t _x, std::size_t _y, raylib::Vector2 target,
             Info::Direction _dir);
         void teleport(std::size_t x, std::size_t y, std::size_t width,
@@ -147,6 +148,7 @@ namespace Zappy {
         bool _dead = false;
         bool _walking = false;
         bool _rotate = false;
+        bool _acrossMap = false;
 
         raylib::Vector3 _startPos;
         raylib::Quaternion _startRotation;
@@ -173,8 +175,8 @@ namespace Zappy {
         size_t _currentAnimationIndex {0};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
-        static constexpr float WALKING_TIME = 7.f;
-        static constexpr float ROTATE_TIME = 7.f;
+        static constexpr float WALKING_TIME = 6.9f;
+        static constexpr float ROTATE_TIME = 6.9f;
     };
 } // namespace Zappy
 

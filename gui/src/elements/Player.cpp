@@ -45,6 +45,13 @@ namespace Zappy {
         this->_targetPos = this->_position;
     }
 
+    bool Player::isMovementAcrossMap() const
+    {
+        auto &dir = Info::directions.at(this->_dir);
+        return this->_x + dir.x != this->_targetX ||
+            this->_y + dir.y != this->_targetY;
+    }
+
     void Player::move(std::size_t x, std::size_t y, raylib::Vector2 target,
         Info::Direction dir)
     {
@@ -54,6 +61,7 @@ namespace Zappy {
             _targetX = x;
             _targetY = y;
             _walking = true;
+            _acrossMap = this->isMovementAcrossMap();
             _timer = WALKING_TIME;
         }
         if (dir != _dir) {
