@@ -28,7 +28,8 @@ namespace Zappy {
         _connect(port, ip),
         _isConnect(isConnect),
         _logFile(logFile),
-        _overlay(_teams)
+        _overlay(_teams),
+        _elevations(_selectPlayer, _selectTile, _width)
     {
         _isConnect = false;
     }
@@ -102,6 +103,7 @@ namespace Zappy {
         _overlay.team.event(camera, mouse, ray, leftClick);
         _overlay.player.event(camera, mouse, ray, leftClick);
         _overlay.tile.event(camera, mouse, ray, leftClick);
+        _elevations.event(camera, mouse, ray, leftClick);
         if (raylib::Keyboard::IsKeyPressed(KEY_ONE)) {
             _selectTile = std::nullopt;
             _selectPlayer = std::nullopt;

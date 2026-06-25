@@ -10,8 +10,12 @@
 #include "Map.hpp"
 
 namespace Zappy {
-    Elevations::Elevations() :
-        _font(Init::FONT_PATH.data())
+    Elevations::Elevations(std::optional<std::size_t> &selectPlayer,
+        std::optional<std::size_t> &selectTile, std::size_t &width) :
+        _font(Init::FONT_PATH.data()),
+        _selectPlayer(selectPlayer),
+        _selectTile(selectTile),
+        _width(width)
     {
     }
 
@@ -89,6 +93,23 @@ namespace Zappy {
             elevation.particle.draw3D();
         for (const auto &particle : _finish)
             particle.draw3D();
+    }
+
+    void Elevations::event(raylib::Camera3D &camera,
+        const raylib::Vector2 &mouse, const Ray &ray, bool &leftClick)
+    {
+        std::size_t i = 0;
+        for (auto &elevation : _elevations) {
+            if (i >= Init::INCANTATION_MAX_DISPLAY)
+                break;
+            elevation.overlay.event(camera, mouse, ray, leftClick);
+            if (elevation.overlay.getClick()) {
+                _selectPlayer = std::nullopt;
+                _selectTile =
+                    elevation.info.getX() + elevation.info.getY() * _width;
+                break;
+            }
+        }
     }
 
     std::size_t Elevations::getNbTileElevations(
