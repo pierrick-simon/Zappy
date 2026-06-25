@@ -70,6 +70,8 @@ namespace Zappy {
                     Info::getDirection(player.dir))]);
             if (this->_teams.contains(player.team))
                 value->get().setGemColor(this->_teams.at(player.team));
+            if (this->_teams.contains(player.team))
+                value->get().setGemColor(this->_teams.at(player.team));
         }
     }
 
