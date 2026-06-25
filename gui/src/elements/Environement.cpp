@@ -22,8 +22,8 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace Zappy {
     Environement::Environement(int port, const std::string &ip,
         std::ofstream &logFile, bool &isConnect) :
-        _map(_width, _height, _selectTile),
-        _players(logFile, _selectPlayer, _timeUnit),
+        _map(_width, _height, _selectPlayer, _selectTile),
+        _players(logFile, _timeUnit, _selectPlayer, _selectTile),
         _timeUnit(0),
         _connect(port, ip),
         _isConnect(isConnect),
@@ -102,11 +102,16 @@ namespace Zappy {
     void Environement::event(raylib::Camera3D &camera,
         const raylib::Vector2 &mouse, const Ray &ray, bool &leftClick)
     {
-        _overlay.team.event(camera, mouse, ray, leftClick);
-        _overlay.player.event(camera, mouse, ray, leftClick);
-        _overlay.tile.event(camera, mouse, ray, leftClick);
+        if (_selectPlayer)
+            _overlay.player.event(camera, mouse, ray, leftClick);
+        else if (_selectTile)
+            _overlay.tile.event(camera, mouse, ray, leftClick);
+        else
+            _overlay.team.event(camera, mouse, ray, leftClick);
         _elevations.event(camera, mouse, ray, leftClick);
         _overlay.timeUnit.event(camera, mouse, ray, leftClick);
+        _players.event(camera, mouse, ray, leftClick);
+        _map.event(camera, mouse, ray, leftClick);
         if (raylib::Keyboard::IsKeyPressed(KEY_ONE)) {
             _selectTile = std::nullopt;
             _selectPlayer = std::nullopt;
