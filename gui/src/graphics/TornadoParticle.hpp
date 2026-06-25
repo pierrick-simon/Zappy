@@ -26,14 +26,13 @@ namespace Graphics {
             NBPARAMETER
         };
 
-        TornadoParticle(raylib::Color color = raylib::Color::White(),
-            float fade = 0.3f,
-            std::array<raylib::Vector2, NBPARAMETER> parameters =
-                DEFAULT_VALUE);
+        TornadoParticle(std::size_t &timeUnit,
+            raylib::Color color = raylib::Color::White(), float fade = 0.3f,
+            std::array<raylib::Vector2, NBPARAMETER> parameters = DEFAULT_VALUE,
+            float emitRate = 250);
 
         void update(float dt) override;
         void draw3D() const override;
-        void emit(std::size_t nbNewParticle);
 
         [[nodiscard]] bool isEmpty() const
         {
@@ -51,13 +50,20 @@ namespace Graphics {
         void spawnParticle();
         void updateParticle(float dt, Particle &particle);
         float getValue(Parameter range);
+        void emit(float dt);
+
+        float _emitAccumulator = 0.f;
+        float _emitRate;
 
         raylib::Color _color;
         float _fade;
         std::vector<Particle> _particles;
         std::array<raylib::Vector2, NBPARAMETER> _parameters;
 
+        std::size_t &_timeUnit;
+
         static const std::array<raylib::Vector2, NBPARAMETER> DEFAULT_VALUE;
+        static constexpr float MAX_VELOCITY = 20.0f;
     };
 } // namespace Graphics
 

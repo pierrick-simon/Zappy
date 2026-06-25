@@ -8,8 +8,8 @@
 #ifndef ELEVATIONS_HPP_
     #define ELEVATIONS_HPP_
 
+    #include <list>
     #include <string_view>
-    #include <vector>
     #include "Elevation.hpp"
     #include "Elevation2D.hpp"
     #include "graphics/IDrawable2D.hpp"
@@ -25,7 +25,8 @@ namespace Zappy {
                        public Graphics::IEvent {
     public:
         Elevations(std::optional<std::size_t> &selectPlayer,
-            std::optional<std::size_t> &selectTile, std::size_t &width);
+            std::optional<std::size_t> &selectTile, std::size_t &width,
+            std::size_t &timeUnit);
 
         void addElevation(std::size_t x, std::size_t y, std::size_t level,
             std::vector<std::size_t> players, Vector2 pos);
@@ -50,8 +51,8 @@ namespace Zappy {
         };
 
         raylib::Font _font;
-        std::vector<Parts> _elevations;
-        std::vector<Graphics::TornadoParticle> _finish;
+        std::list<Parts> _elevations;
+        std::list<Graphics::TornadoParticle> _finish;
 
         struct ParticuleParam {
             raylib::Color color;
@@ -64,8 +65,11 @@ namespace Zappy {
         std::optional<std::size_t> &_selectPlayer;
         std::optional<std::size_t> &_selectTile;
         std::size_t &_width;
+        std::size_t &_timeUnit;
 
         static const std::map<std::size_t, ParticuleParam> LEVELPARAM;
+        static constexpr std::size_t NBLEVEL = 8;
+        static constexpr float RATIOPARTICLE = 300.f / NBLEVEL;
     };
 } // namespace Zappy
 

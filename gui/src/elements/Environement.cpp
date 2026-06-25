@@ -29,7 +29,7 @@ namespace Zappy {
         _isConnect(isConnect),
         _logFile(logFile),
         _overlay(_teams),
-        _elevations(_selectPlayer, _selectTile, _width)
+        _elevations(_selectPlayer, _selectTile, _width, _timeUnit)
     {
         _isConnect = false;
     }
@@ -56,7 +56,7 @@ namespace Zappy {
         auto deltaTimeUnit = dt * float(_timeUnit);
         _overlay.resources.update(
             _map.getTotalResources(), _players.getTotalResources());
-        _elevations.update(deltaTimeUnit);
+        _elevations.update(dt);
         if (_selectPlayer)
             updatePlayerInfo();
         else if (_selectTile)

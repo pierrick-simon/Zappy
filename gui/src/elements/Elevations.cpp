@@ -11,11 +11,13 @@
 
 namespace Zappy {
     Elevations::Elevations(std::optional<std::size_t> &selectPlayer,
-        std::optional<std::size_t> &selectTile, std::size_t &width) :
+        std::optional<std::size_t> &selectTile, std::size_t &width,
+        std::size_t &timeUnit) :
         _font(Init::FONT_PATH.data()),
         _selectPlayer(selectPlayer),
         _selectTile(selectTile),
-        _width(width)
+        _width(width),
+        _timeUnit(timeUnit)
     {
     }
 
@@ -23,13 +25,16 @@ namespace Zappy {
         std::size_t level, std::vector<std::size_t> players, Vector2 pos)
     {
         auto param = LEVELPARAM.begin()->second;
-        if (LEVELPARAM.contains(level))
-            param = LEVELPARAM.find(level)->second;
+        if (LEVELPARAM.contains(8))
+            param = LEVELPARAM.at(8);
         auto &part = _elevations.emplace_back(
             Elevation {x, y, level, std::move(players)},
             Elevation2D {_font, x, y, level},
-            Graphics::TornadoParticle {
-                param.color, param.fade, param.parameters},
+            Graphics::TornadoParticle {_timeUnit,
+                param.color,
+                param.fade,
+                param.parameters,
+                RATIOPARTICLE * float(LEVELPARAM.find(8)->first)},
             param.emit);
         part.particle.setPosition({pos.x, 0, pos.y});
     }
@@ -61,11 +66,10 @@ namespace Zappy {
     {
         auto pos = Init::INCANTATION_START_POS;
         for (auto &elevation : _elevations) {
-            elevation.overlay.update(dt);
+            elevation.overlay.update(dt * float(_timeUnit));
             elevation.overlay.setPos(pos);
             pos.y += Init::INCANTATION_SIZE.y + Init::INCANTATION_GAP;
             elevation.particle.update(dt);
-            elevation.particle.emit(elevation.emit);
         }
         for (auto iter = _finish.begin(); iter != _finish.end();) {
             iter->update(dt);
@@ -109,6 +113,7 @@ namespace Zappy {
                     elevation.info.getX() + elevation.info.getY() * _width;
                 break;
             }
+            i++;
         }
     }
 

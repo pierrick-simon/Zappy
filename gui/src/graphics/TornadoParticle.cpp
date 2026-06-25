@@ -10,9 +10,14 @@
 #include "Utils.hpp"
 
 namespace Graphics {
-    TornadoParticle::TornadoParticle(raylib::Color color, float fade,
-        std::array<raylib::Vector2, NBPARAMETER> parameters) :
-        _color(color), _fade(fade), _parameters(parameters)
+    TornadoParticle::TornadoParticle(std::size_t &timeUnit, raylib::Color color,
+        float fade, std::array<raylib::Vector2, NBPARAMETER> parameters,
+        float emitRate) :
+        _color(color),
+        _fade(fade),
+        _parameters(parameters),
+        _timeUnit(timeUnit),
+        _emitRate(emitRate)
     {
         if (_fade == 0.f)
             _fade = 0.01f;
@@ -24,12 +29,19 @@ namespace Graphics {
         float dz = _position.z - particle.sphere.getPosition().z;
         particle.velocity.x += dx * 2.0f * dt;
         particle.velocity.z += dz * 2.0f * dt;
-        particle.velocity.x += -particle.velocity.z * 1.5f * dt;
-        particle.velocity.z += particle.velocity.x * 1.5f * dt;
+        float oldVx = particle.velocity.x;
+        float oldVz = particle.velocity.z;
+        particle.velocity.x += -oldVz * 1.5f * dt;
+        particle.velocity.z += oldVx * 1.5f * dt;
+        particle.velocity.x =
+            std::clamp(particle.velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
+        particle.velocity.z =
+            std::clamp(particle.velocity.z, -MAX_VELOCITY, MAX_VELOCITY);
         auto &pos = particle.sphere.getPosition();
         pos.x += particle.velocity.x * dt * 0.01f;
         pos.y += particle.velocity.y * dt;
         pos.z += particle.velocity.z * dt * 0.01f;
+
         float ratio = particle.current / particle.start;
         particle.sphere.getColor().a =
             (unsigned char) (255.f * std::min(ratio / _fade, 1.f));
@@ -37,15 +49,18 @@ namespace Graphics {
 
     void TornadoParticle::update(float dt)
     {
+        if (_timeUnit == 0)
+            _timeUnit = 1;
         for (auto iter = _particles.begin(); iter != _particles.end();) {
             iter->current -= dt;
             if (iter->current <= 0.f)
                 iter = _particles.erase(iter);
             else {
-                updateParticle(dt, *iter);
+                updateParticle(float(_timeUnit) * dt, *iter);
                 iter++;
             }
         }
+        emit(dt);
     }
 
     void TornadoParticle::spawnParticle()
@@ -85,18 +100,22 @@ namespace Graphics {
             particle.sphere.draw3D();
     }
 
-    void TornadoParticle::emit(std::size_t nbNewParticle)
+    void TornadoParticle::emit(float dt)
     {
-        for (std::size_t i = 0; i < nbNewParticle; i++)
+        _emitAccumulator += dt * _emitRate;
+        while (_emitAccumulator >= 1.f) {
             spawnParticle();
+            _emitAccumulator -= 1.f;
+        }
     }
+
     const std::array<raylib::Vector2, TornadoParticle::NBPARAMETER>
         TornadoParticle::DEFAULT_VALUE = {
-            raylib::Vector2 {2.f, 2.5f},
-            raylib::Vector2 {3.f, 6.f},
-            raylib::Vector2 {3.f, 10.0f},
-            raylib::Vector2 {1.f, 2.f},
-            raylib::Vector2 {0.01f, 0.2f},
-            raylib::Vector2 {-30, 30},
+            raylib::Vector2 {15, 20},
+            {0.60f, 1.00f},
+            {0.60f, 1.20f},
+            {25.0f, 40.0f},
+            {0.10f, 0.18f},
+            {-30.f, 30.f},
     };
 } // namespace Graphics
