@@ -58,6 +58,9 @@ namespace Zappy {
         }
         if (dir != _dir) {
             _targetDir = dir;
+            this->_startRotation = this->getRotation();
+            this->_targetRotation =
+                DIRECTION_TO_QUATERNION[static_cast<std::size_t>(_targetDir)];
             _rotate = true;
             _timer = ROTATE_TIME;
         }
@@ -157,8 +160,6 @@ namespace Zappy {
             }
             if (_rotate) {
                 _dir = _targetDir;
-                this->setRotation(
-                    DIRECTION_TO_QUATERNION[static_cast<std::size_t>(_dir)]);
             }
             _walking = false;
             _rotate = false;
@@ -169,6 +170,12 @@ namespace Zappy {
                     Maths::easeInOutSine(this->_timer / WALKING_TIME);
                 this->_position =
                     this->_targetPos.Lerp(this->_startPos, progress);
+            }
+            if (this->_rotate) {
+                auto progress =
+                    Maths::easeInOutSine(this->_timer / ROTATE_TIME);
+                this->_rotation =
+                    this->_targetRotation.Slerp(this->_startRotation, progress);
             }
         }
     }
