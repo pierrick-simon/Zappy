@@ -6,6 +6,9 @@
 */
 
 #include "Player.hpp"
+
+#include <iostream>
+
 #include "Map.hpp"
 #include "Players.hpp"
 #include "Utils.hpp"
@@ -32,7 +35,7 @@ namespace Zappy {
             "Player [" + std::to_string(_id) + "] joined the " + _team +
                 " team.");
         _inventory = Info::INIT_RESOUCES;
-        this->setAnimationIndex(0);
+        this->setAnimation(PlayerAnimations::IDLE);
     }
 
     void Player::initPos(raylib::Vector2 pos)
@@ -138,8 +141,7 @@ namespace Zappy {
     {
         this->_model.GetMaterials()[Players::GEM_MAT].maps[0].color =
             this->_gemColor;
-        this->_model.UpdateAnimation(this->getCurrentAnimation(),
-            static_cast<float>(this->_animationFrame));
+        this->_model.UpdateAnimation(this->getCurrentAnimation(), this->_frameTime * ANIMATIONS_FPS);
         auto [axis, angle] = this->getRotation().ToAxisAngle();
         this->_model.Draw(
             this->_position, axis, Maths::RadToDeg(angle), this->_scale);
@@ -170,23 +172,27 @@ namespace Zappy {
                 _targetPos.y + PositionOffset.y};
         }
     }
+    void Player::setAnimation(PlayerAnimations::Animation animation)
+    {
+        this->_currentAnimation = animation;
+        auto anim = std::ranges::find(this->_modelAnimation,
+            std::string(this->_currentAnimation.name),
+            [](auto &anim) { return anim.name; });
+        if (anim == this->_modelAnimation.end())
+            throw std::runtime_error(
+                std::string {"Animation "} + animation.name + " doesn't exist");
+        this->_currentAnimationIndex = anim - this->_modelAnimation.begin();
+        this->_frameTime = 0;
+    }
 
     void Player::update(float dt)
     {
         updateAction(dt);
-        this->_frameTime += dt;
-        float normalized =
-            std::fmod(this->_frameTime, this->_animationDuration);
-        this->_animationFrame =
-            static_cast<std::size_t>(normalized * ANIMATIONS_FPS);
-    }
-
-    void Player::setAnimationIndex(size_t index)
-    {
-        this->_currentAnimationIndex = index;
-        this->_animationDuration =
-            static_cast<float>(this->getCurrentAnimation().keyframeCount) /
-            ANIMATIONS_FPS;
+        this->_frameTime = getNextFrame(this->_currentAnimation.wrapMode,
+            this->_frameTime + dt,
+            this->getCurrentAnimation().keyframeCount,
+            ANIMATIONS_FPS);
+        ;
     }
 
     const ModelAnimation &Player::getCurrentAnimation() const

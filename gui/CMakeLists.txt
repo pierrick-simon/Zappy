@@ -33,6 +33,7 @@ set(SRCS
         src/GUI.cpp
         src/Assets.cpp
         src/elements/Player.cpp
+        src/elements/PlayerAnimations.cpp
         src/elements/Egg.cpp
         src/elements/Resource.cpp
         src/elements/Tile.cpp

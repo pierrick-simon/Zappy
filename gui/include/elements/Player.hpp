@@ -9,7 +9,6 @@
     #define PLAYER_HPP
 
     #include <Model.hpp>
-#include <ModelAnimation.hpp>
     #include <array>
     #include <string>
     #include "GUIException.hpp"
@@ -17,9 +16,10 @@
     #include "Maths.hpp"
     #include "NewPlayerEvent.hpp"
     #include "Player2D.hpp"
+    #include "PlayerAnimations.hpp"
     #include "PlayerStatus.hpp"
     #include "graphics/IDrawable3D.hpp"
-#include "graphics/IUpdatable.hpp"
+    #include "graphics/IUpdatable.hpp"
     #include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
@@ -118,7 +118,7 @@ namespace Zappy {
         void update(float dt) override;
         void updateAction(float dt);
 
-        void setAnimationIndex(size_t index);
+        void setAnimation(PlayerAnimations::Animation animation);
 
         [[nodiscard]] const ModelAnimation &getCurrentAnimation() const;
         ModelAnimation &getCurrentAnimation();
@@ -158,11 +158,10 @@ namespace Zappy {
 
         raylib::Model &_model;
         std::vector<::ModelAnimation> &_modelAnimation;
-        size_t _currentAnimationIndex {0};
-        std::size_t _animationFrame {0};
         float _frameTime {0.0f};
-        float _animationDuration {0};
-        Color _gemColor;
+        raylib::Color _gemColor {251, 110, 0};
+        PlayerAnimations::Animation _currentAnimation {PlayerAnimations::IDLE};
+        size_t _currentAnimationIndex {0};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
         static constexpr float WALKING_TIME = 7.f;
