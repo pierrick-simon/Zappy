@@ -20,8 +20,8 @@ namespace Graphics {
         void setBorderSize(float size);
         void setBorderColor(raylib::Color color);
         void setColor(raylib::Color color);
-        void setSize(Vector2 size);
-        void setPos(Vector2 pos);
+        void setSize(raylib::Vector2 size);
+        void setPos(raylib::Vector2 pos);
         void setRound(float round);
         void setSegement(int segment);
 

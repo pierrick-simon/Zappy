@@ -6,9 +6,7 @@
 */
 
 #include "Map.hpp"
-
 #include <iostream>
-
 #include "UtilsVector.hpp"
 
 namespace Zappy {
@@ -31,7 +29,7 @@ namespace Zappy {
             _renderedMapSize =
                 raylib::Vector2 {static_cast<float>(this->_width),
                     static_cast<float>(this->_height)} *
-                TILE_SIZE;
+                Tile::TILE_SIZE;
             _tiles.clear();
             _tiles.resize(_width * _height);
             this->setTilesPosition();
@@ -75,9 +73,9 @@ namespace Zappy {
         y %= _height;
         auto tileIndex = y * _width + x;
         auto &tile = _tiles[tileIndex];
-        auto before = tile.getResources();
+        auto before = tile.getNbResources();
         tile.updateTile(resources);
-        auto after = tile.getResources();
+        auto after = tile.getNbResources();
         updateTotalResources(before, std::move(after));
     }
 
@@ -86,37 +84,45 @@ namespace Zappy {
         for (size_t i = 0; i < this->_tiles.size(); ++i) {
             size_t x = i % this->_width;
             size_t y = i / this->_width;
-            this->_tiles[i].setPosition({static_cast<float>(x) * TILE_SIZE.x -
-                    this->_renderedMapSize.x / 2.0f,
-                TILE_Y_POS,
-                static_cast<float>(y) * TILE_SIZE.y -
-                    this->_renderedMapSize.y / 2.0f});
+            this->_tiles[i].setPosition(
+                {static_cast<float>(x) * Tile::TILE_SIZE.x -
+                        this->_renderedMapSize.x / 2.0f,
+                    TILE_Y_POS,
+                    static_cast<float>(y) * Tile::TILE_SIZE.y -
+                        this->_renderedMapSize.y / 2.0f});
         }
     }
 
     raylib::Vector2 Map::getTilePosition(size_t x, size_t y) const
     {
         return raylib::Vector2 {static_cast<float>(x), static_cast<float>(y)} *
-            TILE_SIZE -
+            Tile::TILE_SIZE -
             this->_renderedMapSize / 2.0f;
     }
 
     void Map::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
-        this->_model.materials[1].shader = this->getShader().asShader();
+        this->_tileModel.materials[1].shader = this->getShader().asShader();
     }
 
     void Map::drawRessources(const Zappy::Tile &tile) const
     {
         auto infos = tile.getResources();
-        Vector3 vZero(0, 0, 0);
-        Vector3 scale(0.05, 0.05, 0.05);
 
-        for (const auto &[type, nb] : infos) {
-            if (nb > 0)
-                this->_ressources_models.at(type).Draw(
-                    tile.getPosition(), vZero, 0, scale);
+        for (const auto &[type, queue_item] : infos) {
+            auto &model = this->_ressources_models.at(type);
+            const auto &resourceScale = _modelScales.at(type);
+            for (const auto &item : queue_item) {
+                auto itemScale = item.getScale();
+                raylib::Vector3 scale(resourceScale * itemScale,
+                    resourceScale * itemScale,
+                    resourceScale * itemScale);
+                model.Draw(tile.getPosition() + item.getPos(),
+                    Graphics::Vector3::ZERO,
+                    0,
+                    scale);
+            }
         }
     }
 
@@ -124,7 +130,8 @@ namespace Zappy {
     {
         for (const auto &tile : this->_tiles) {
             auto [axis, angle] = tile.getRotation().ToAxisAngle();
-            this->_model.Draw(tile.getPosition(), axis, angle, tile.getScale());
+            this->_tileModel.Draw(
+                tile.getPosition(), axis, angle, tile.getScale());
             drawRessources(tile);
         }
     }
@@ -132,7 +139,7 @@ namespace Zappy {
     std::map<Info::ResourceName, std::size_t> Map::getTileResources(
         std::size_t tile) const
     {
-        return _tiles[tile].getResources();
+        return _tiles[tile].getNbResources();
     }
 
     std::size_t Map::getNextTile(InfoBox::Action dir, std::size_t tile) const
@@ -150,4 +157,15 @@ namespace Zappy {
         }
         return tile;
     }
+
+    const std::unordered_map<Info::ResourceName, float> Map::_modelScales = {
+        {Info::ResourceName::FOOD, 0.07},
+        {Info::ResourceName::LINEMATE, 0.035},
+        {Info::ResourceName::DERAUMERE, 0.035},
+        {Info::ResourceName::SIBUR, 0.035},
+        {Info::ResourceName::MENDIANE, 0.035},
+        {Info::ResourceName::PHIRAS, 0.035},
+        {Info::ResourceName::THYSTAME, 0.035},
+    };
+
 } // namespace Zappy

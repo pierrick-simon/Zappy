@@ -29,7 +29,7 @@ namespace Zappy {
         _box.setSize(_size);
     }
 
-    void TextBox::setPos(Vector2 pos)
+    void TextBox::setPos(raylib::Vector2 pos)
     {
         _pos = pos;
         _box.setPos(_pos);

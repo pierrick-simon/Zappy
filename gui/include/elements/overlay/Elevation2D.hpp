@@ -25,7 +25,7 @@ namespace Zappy {
         void update(float dt) override;
         void draw2D() const override;
 
-        void setPos(Vector2 pos);
+        void setPos(raylib::Vector2 pos);
 
     private:
         void initText(raylib::Font &font, std::size_t x, std::size_t y,
