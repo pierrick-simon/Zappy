@@ -26,7 +26,7 @@ namespace Shared {
         static std::optional<std::string> parseLine(std::string &str);
         static void logMsg(std::ofstream &file, const std::string &msg);
         static float fRandRange(float min, float max);
-        static float radToPos(float rad);
+        static double radToPos(double rad);
     };
 } // namespace Shared
 

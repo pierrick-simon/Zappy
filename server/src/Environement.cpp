@@ -573,8 +573,8 @@ namespace Zappy {
         auto angle = dirV.angle(v);
         angle = Shared::Utils::radToPos(angle);
         for (auto [tile, range] : _broadcastChunks) {
-            auto lowerAngle = dirV.angle(
-                range.first[static_cast<std::size_t>(receiver.dir)]);
+            auto lowerAngle =
+                dirV.angle(range.first[static_cast<std::size_t>(receiver.dir)]);
             auto hightAngle = dirV.angle(
                 range.second[static_cast<std::size_t>(receiver.dir)]);
             lowerAngle = Shared::Utils::radToPos(lowerAngle);
@@ -593,8 +593,6 @@ namespace Zappy {
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
         for (auto &p : _players) {
-            if (p.first == find->first)//trm
-                continue;
             auto v = getBroadCastVector(find->second, p.second);
             auto i = getTileNb(p.second, v);
             Shared::Connect::send(getPlayerFd(p.first),
@@ -684,15 +682,14 @@ namespace Zappy {
 
     const std::array<Environement::rangeTile, 9>
         Environement::_broadcastChunks = {
-            Environement::rangeTile{1, {{0.0, 1.5}, {-0.5, 1.5}}},
-            Environement::rangeTile{2, {{-0.5, 1.5}, {-1.5, 0.5}}},
-            Environement::rangeTile{3, {{-1.5, 0.5}, {-1.5, -0.5}}},
-            Environement::rangeTile{4, {{-1.5, -0.5}, {-0.5, -1.5}}},
-            Environement::rangeTile{5, {{-0.5, -1.5}, {0.5, -1.5}}},
-            Environement::rangeTile{6, {{0.5, -1.5}, {1.5, -0.5}}},
-            Environement::rangeTile{7, {{1.5, -0.5}, {1.5, 0.5}}},
-            Environement::rangeTile{8, {{1.5, 0.5}, {0.5, 1.5}}},
-            Environement::rangeTile{1, {{0.5, 1.5}, {0.0, 1.5}}}
-        };
+            Environement::rangeTile {1, {{0.0, 1.5}, {-0.5, 1.5}}},
+            Environement::rangeTile {2, {{-0.5, 1.5}, {-1.5, 0.5}}},
+            Environement::rangeTile {3, {{-1.5, 0.5}, {-1.5, -0.5}}},
+            Environement::rangeTile {4, {{-1.5, -0.5}, {-0.5, -1.5}}},
+            Environement::rangeTile {5, {{-0.5, -1.5}, {0.5, -1.5}}},
+            Environement::rangeTile {6, {{0.5, -1.5}, {1.5, -0.5}}},
+            Environement::rangeTile {7, {{1.5, -0.5}, {1.5, 0.5}}},
+            Environement::rangeTile {8, {{1.5, 0.5}, {0.5, 1.5}}},
+            Environement::rangeTile {1, {{0.5, 1.5}, {0.0, 1.5}}}};
 
 }; // namespace Zappy
