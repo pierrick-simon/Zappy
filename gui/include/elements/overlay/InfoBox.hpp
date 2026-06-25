@@ -11,11 +11,12 @@
     #include <map>
     #include <string_view>
     #include "Init.hpp"
+    #include "graphics/IEvent.hpp"
     #include "graphics/primitives/Box2D.hpp"
     #include "graphics/primitives/Sprite2D.hpp"
 
 namespace Zappy {
-    class InfoBox {
+    class InfoBox : public Graphics::IEvent {
     public:
         enum class Action { LEFT, RIGHT, CLOSE, NONE };
 
@@ -23,13 +24,20 @@ namespace Zappy {
 
         void setSize(raylib::Vector2 size);
         virtual void changeSelected(Action dir) = 0;
+        void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+            const Ray &ray, bool &leftClick) override;
 
     protected:
         void initSprite(raylib::Vector2 pos);
         void initSpriteInfo(raylib::Vector2 pos);
 
+        struct Button {
+            Graphics::Sprite2D sprite;
+            KeyboardKey key = KEY_NULL;
+        };
+
         Graphics::Box2D _box;
-        std::map<Action, Graphics::Sprite2D> _buttons;
+        std::map<Action, Button> _buttons;
         bool _close;
 
         static constexpr std::string_view IMG_CLOSE = "public/close.png";

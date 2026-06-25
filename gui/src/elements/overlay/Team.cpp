@@ -99,7 +99,7 @@ namespace Zappy {
             Graphics::Text2D::drawMultiColorStrs(
                 level.text, {{level.prefix}, {level.value, Init::GOLD_RICH}});
         for (const auto &[_, button] : _buttons)
-            button.draw2D();
+            button.sprite.draw2D();
     }
 
     void Team::setSelectTeam(const std::string &team)

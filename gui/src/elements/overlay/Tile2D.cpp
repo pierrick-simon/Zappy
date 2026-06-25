@@ -109,7 +109,7 @@ namespace Zappy {
             info.text.draw2D();
         }
         for (const auto &[_, button] : _buttons)
-            button.draw2D();
+            button.sprite.draw2D();
     }
 
     void Tile2D::changeSelected(Action dir)

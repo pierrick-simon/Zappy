@@ -98,8 +98,9 @@ namespace Zappy {
     void Environement::event(raylib::Camera3D &camera,
         const raylib::Vector2 &mouse, const Ray &ray, bool &leftClick)
     {
-        if (leftClick)
-            std::cout << "click : " << mouse.x << " " << mouse.y << std::endl;
+        _overlay.team.event(camera, mouse, ray, leftClick);
+        _overlay.player.event(camera, mouse, ray, leftClick);
+        _overlay.tile.event(camera, mouse, ray, leftClick);
     }
 
     bool Environement::connect()
