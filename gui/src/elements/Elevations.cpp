@@ -25,8 +25,8 @@ namespace Zappy {
         std::size_t level, std::vector<std::size_t> players, Vector2 pos)
     {
         auto param = LEVELPARAM.begin()->second;
-        if (LEVELPARAM.contains(8))
-            param = LEVELPARAM.at(8);
+        if (LEVELPARAM.contains(level))
+            param = LEVELPARAM.at(level);
         auto &part = _elevations.emplace_back(
             Elevation {x, y, level, std::move(players)},
             Elevation2D {_font, x, y, level},
@@ -34,7 +34,7 @@ namespace Zappy {
                 param.color,
                 param.fade,
                 param.parameters,
-                RATIOPARTICLE * float(LEVELPARAM.find(8)->first)},
+                RATIOPARTICLE * float(LEVELPARAM.find(level)->first)},
             param.emit);
         part.particle.setPosition({pos.x, 0, pos.y});
     }
