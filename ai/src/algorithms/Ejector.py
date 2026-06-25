@@ -87,9 +87,7 @@ class EjectorAi:
         obs = list(self._exec_func("Look"))
         obs[0].remove("player")
         auto_gather = ag.AutoGatherModule()
-        plan = auto_gather.auto_gather(
-            obs=obs, aimed_materials={"player": 30}, max_time=300
-        )
+        plan = auto_gather.auto_gather(obs=obs, aimed_materials={"player": 30, "eggs": 10, "Elevation": 10}, max_time=300)
         for action in plan:
             if str(action).startswith("Take"):
                 self._exec_func("Eject")

@@ -51,6 +51,8 @@ def main():
         ai = AI_LIST[args.algo.lower()]
         ai(handler).run()
         handler.client.disconnect()
+    except KeyboardInterrupt:
+        return 84
     except BaseException as e:
         print(e, file=sys.stderr)
         traceback.print_exc()
