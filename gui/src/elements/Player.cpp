@@ -195,7 +195,7 @@ namespace Zappy {
             _color);
     }
 
-    void Player::finishAction()
+    void Player::finishActions()
     {
         if (_walking) {
             _x = _targetX;
@@ -208,7 +208,7 @@ namespace Zappy {
         _rotate = false;
     }
 
-    void Player::moveAction(float dt)
+    void Player::updateActions(float dt)
     {
         _timer -= dt;
         if (_walking) {
@@ -224,19 +224,19 @@ namespace Zappy {
 
     void Player::update(float dt)
     {
-        updateAction(dt);
+        handleActions(dt);
         this->_frameTime = getNextFrame(this->_currentAnimation.wrapMode,
             this->_frameTime + dt,
             this->getCurrentAnimation().keyframeCount,
             ANIMATIONS_FPS);
     }
 
-    void Player::updateAction(float dt)
+    void Player::handleActions(float dt)
     {
         if (_timer <= 0) {
-            finishAction();
+            finishActions();
         } else {
-            moveAction(dt);
+            updateActions(dt);
         }
     }
 

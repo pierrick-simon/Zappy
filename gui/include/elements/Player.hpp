@@ -117,11 +117,11 @@ namespace Zappy {
         };
 
         void draw3D() const override;
-        void finishAction();
-        void moveAction(float dt);
+        void finishActions();
+        void updateActions(float dt);
 
         void update(float dt) override;
-        void updateAction(float dt);
+        void handleActions(float dt);
 
         void setAnimation(PlayerAnimations::Animation animation);
 
