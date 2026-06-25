@@ -58,7 +58,8 @@ namespace Zappy {
             auto mapPos = this->_map.getTilePosition(player.x, player.y);
             (*value).get().setPosition({mapPos.x, 0, mapPos.y});
             (*value).get().setRotation(
-                Player::DIRECTION_TO_QUATERNION[static_cast<std::size_t>(Info::getDirection(player.dir))]);
+                Player::DIRECTION_TO_QUATERNION[static_cast<std::size_t>(
+                    Info::getDirection(player.dir))]);
         }
     }
 
