@@ -12,7 +12,7 @@ namespace Zappy {
     Tile2D::Tile2D(raylib::Font &font) :
         InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
-            true)
+            false)
     {
         auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X;
         raylib::Vector2 pos(x, Init::INFO_POS_Y);

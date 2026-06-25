@@ -13,7 +13,7 @@ namespace Zappy {
         raylib::Font &font, std::map<std::string, raylib::Color> &teams) :
         InfoBox({float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X,
                     Init::INFO_POS_Y},
-            true),
+            false),
         _teams(teams)
     {
         auto x = float(Init::WINDOW_SIZE_X) - Init::GAP - Init::INFO_SIZE_X;

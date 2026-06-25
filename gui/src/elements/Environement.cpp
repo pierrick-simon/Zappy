@@ -101,6 +101,19 @@ namespace Zappy {
         _overlay.team.event(camera, mouse, ray, leftClick);
         _overlay.player.event(camera, mouse, ray, leftClick);
         _overlay.tile.event(camera, mouse, ray, leftClick);
+        if (raylib::Keyboard::IsKeyPressed(KEY_ONE)) {
+            _selectTile = std::nullopt;
+            _selectPlayer = std::nullopt;
+        }
+        if (raylib::Keyboard::IsKeyPressed(KEY_TWO) &&
+            _players.getNbPlayer() > 0) {
+            _selectTile = std::nullopt;
+            _selectPlayer = _players.getFirstPlayerId();
+        }
+        if (raylib::Keyboard::IsKeyPressed(KEY_THREE) && _width * _height > 0) {
+            _selectTile = 0;
+            _selectPlayer = std::nullopt;
+        }
     }
 
     bool Environement::connect()
