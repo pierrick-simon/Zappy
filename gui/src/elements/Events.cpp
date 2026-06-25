@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "include/elements/Environement.hpp"
+#include "Environement.hpp"
 #include "GUICommunication.hpp"
 #include "GUIEvents.hpp"
 #include "Info.hpp"
