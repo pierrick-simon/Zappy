@@ -123,6 +123,11 @@ namespace Zappy {
         [[nodiscard]] const ModelAnimation &getCurrentAnimation() const;
         ModelAnimation &getCurrentAnimation();
 
+        void setGemColor(raylib::Color gemColor)
+        {
+            this->_gemColor = gemColor;
+        }
+
     private:
         std::size_t _id;
         std::size_t _x;
@@ -157,6 +162,7 @@ namespace Zappy {
         std::size_t _animationFrame {0};
         float _frameTime {0.0f};
         float _animationDuration {0};
+        Color _gemColor;
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
         static constexpr float WALKING_TIME = 7.f;
