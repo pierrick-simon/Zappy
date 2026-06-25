@@ -147,6 +147,8 @@ namespace Zappy {
         bool _rotate = false;
 
         raylib::Vector3 _startPos;
+        raylib::Quaternion _startRotation;
+        raylib::Quaternion _targetRotation;
 
         raylib::Vector3 _targetPos;
         std::size_t _targetX;
