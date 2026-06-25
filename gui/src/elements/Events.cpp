@@ -273,7 +273,7 @@ namespace Zappy {
             auto &player = _players.getPlayer(event.getPlayerId());
             player.setFork(false);
             _eggs.emplace(event.getEggId(),
-                Egg {event.getX(), event.getY(), player.getTeam()});
+                Egg {event.getX(), event.getY(), player.getTeam(), this->_map.getTilePosition(event.getX(), event.getY()), _eggModel});
             _overlay.eventBox.addMessage(
                 player.getTeam(), event.getPlayerId(), "Laid an egg.");
         } catch (Player::PlayerException &e) {
@@ -348,6 +348,6 @@ namespace Zappy {
         Shared::EggEvent event;
         event.retrieve(std::move(stream));
         _eggs.emplace(
-            event.getId(), Egg {event.getX(), event.getY(), event.getTeam()});
+            event.getId(), Egg { event.getX(), event.getY(), event.getTeam(), this->_map.getTilePosition(event.getX(), event.getY()), _eggModel});
     }
 } // namespace Zappy

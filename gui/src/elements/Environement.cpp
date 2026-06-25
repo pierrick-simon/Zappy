@@ -79,7 +79,9 @@ namespace Zappy {
     {
         this->_map.draw3D();
         this->_players.draw3D();
-        _elevations.draw3D();
+        this->_elevations.draw3D();
+        for (const auto &[_, egg]: this->_eggs)
+            egg.draw3D();
     }
 
     void Environement::draw2D() const
