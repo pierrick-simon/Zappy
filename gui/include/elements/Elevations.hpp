@@ -29,7 +29,7 @@ namespace Zappy {
             std::size_t &timeUnit);
 
         void addElevation(std::size_t x, std::size_t y, std::size_t level,
-            std::vector<std::size_t> players, Vector2 pos);
+            std::vector<std::size_t> players, raylib::Vector2 pos);
         std::vector<std::size_t> endElevation(std::size_t x, std::size_t y);
         void removePlayer(std::size_t id);
 

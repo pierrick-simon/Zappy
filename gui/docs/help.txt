@@ -1,1 +1,1 @@
-USAGE: ./zappy_gui -p port -h machine
+USAGE: ./zappy_gui [-p port] [-h host]

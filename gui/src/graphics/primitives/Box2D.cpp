@@ -24,13 +24,13 @@ namespace Graphics {
         _color = color;
     }
 
-    void Box2D::setSize(Vector2 size)
+    void Box2D::setSize(raylib::Vector2 size)
     {
         _size = size;
         update();
     }
 
-    void Box2D::setPos(Vector2 pos)
+    void Box2D::setPos(raylib::Vector2 pos)
     {
         _pos = pos;
         update();

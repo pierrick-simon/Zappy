@@ -59,8 +59,6 @@ namespace Zappy {
         void draw3D() const override;
         void update(float dt) override;
 
-        static constexpr raylib::Vector2 TILE_SIZE = {25, 25};
-
     private:
         void updateTotalResources(
             const std::map<Info::ResourceName, std::size_t> &before,
@@ -81,11 +79,19 @@ namespace Zappy {
         static constexpr auto TILE_Y_POS = 0;
         static constexpr raylib::Vector2 GROUND_SIZE = {5, 5};
         static constexpr raylib::Vector3 TILE_SCALE = {
-            TILE_SIZE.x / GROUND_SIZE.x, 1, TILE_SIZE.y / GROUND_SIZE.y};
+            Tile::TILE_SIZE.x / GROUND_SIZE.x,
+            1,
+            Tile::TILE_SIZE.y / GROUND_SIZE.y};
 
         inline static const std::string TILE_MODEL_PATH =
             Assets::getResource("map/cell.glb");
-        raylib::Model _model {TILE_MODEL_PATH};
+        raylib::Model _tileModel {TILE_MODEL_PATH};
+
+        inline static const std::string EGG_MODEL_PATH =
+            Assets::getResource("egg.glb");
+        raylib::Model _eggModel {EGG_MODEL_PATH};
+
+        static const std::unordered_map<Info::ResourceName, float> _modelScales;
     };
 } // namespace Zappy
 

@@ -14,6 +14,8 @@ from src.algorithms.Survivor import SurvivalAI
 from src.algorithms.Human import HumanAI
 from src.algorithms.Villager import Villager
 from src.algorithms.common import CommonAI
+from src.algorithms.Worker import WorkerAi
+
 
 AI_LIST: dict[str, Any] = {
     "common": CommonAI,
@@ -22,5 +24,6 @@ AI_LIST: dict[str, Any] = {
     "human": HumanAI,
     "layer": LayerAi,
     "randomizer": RandomizerAi,
+    "worker": WorkerAi,
     "ejector": EjectorAi
 }

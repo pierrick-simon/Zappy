@@ -26,7 +26,8 @@ namespace Zappy {
 
         void update(float dt) override;
         void draw2D() const override;
-        void setPos(Vector2 pos);
+
+        void setPos(raylib::Vector2 pos);
 
         void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
             const Ray &ray, bool &leftClick) override;

@@ -64,6 +64,7 @@ Randomly choose an event and execute it.
 ### Objective
 
 This algorithm survive first and then find and push players he finds
+
 ### Type
 
 This AI is an algorithm
@@ -74,5 +75,24 @@ Check if its food is low. If it is under 20, seek food till 35 and then step ahe
 and seek and push players. And restart.
 
 ![Image to show the choices made](resources/Ejector_algo.png)
+
+---
+
+## Worker
+
+### Objective
+
+This algorithm survive first collect every stones on the map.
+
+### Type
+
+This AI is an algorithm
+
+### Rules
+
+Check if its food is low. If it is under 15, seek food only.
+Else look and take stones around the map.
+
+![Image to show the choices made](resources/Worker_algo.png)
 
 ---
