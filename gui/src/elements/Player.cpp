@@ -7,6 +7,7 @@
 
 #include "Player.hpp"
 #include "Map.hpp"
+#include "Players.hpp"
 #include "Utils.hpp"
 
 namespace Zappy {
@@ -135,7 +136,8 @@ namespace Zappy {
 
     void Player::draw3D() const
     {
-        this->_model.GetMaterials()[2].maps[0].color = this->_gemColor;
+        this->_model.GetMaterials()[Players::GEM_MAT].maps[0].color =
+            this->_gemColor;
         this->_model.UpdateAnimation(this->getCurrentAnimation(),
             static_cast<float>(this->_animationFrame));
         auto [axis, angle] = this->getRotation().ToAxisAngle();
