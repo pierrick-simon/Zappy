@@ -146,9 +146,9 @@ namespace Zappy {
         bool _walking = false;
         bool _rotate = false;
 
-        raylib::Vector2 _startPos;
+        raylib::Vector3 _startPos;
 
-        raylib::Vector2 _targetPos;
+        raylib::Vector3 _targetPos;
         std::size_t _targetX;
         std::size_t _targetY;
         Info::Direction _targetDir;
