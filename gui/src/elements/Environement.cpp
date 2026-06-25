@@ -184,10 +184,11 @@ namespace Zappy {
             if (stream.fail())
                 return;
             auto iter = EVENTS.find(event);
-            if (iter != EVENTS.end()) {
+            if (iter != EVENTS.end() &&
+                (!_loading || iter->second.loadingInfo)) {
                 Shared::Utils::logMsg(_logFile,
                     "Recieved event " + iter->first + " from server.");
-                iter->second(*this, std::move(stream));
+                iter->second.func(*this, std::move(stream));
             } else {
                 Shared::Utils::logMsg(
                     _logFile, "Event " + event + " not handle yet.");
@@ -276,30 +277,32 @@ namespace Zappy {
 
     const std::unordered_map<std::string, Environement::Event>
         Environement::EVENTS = {
-            {ServerCmd::MSZ.getStr(), &Environement::mapSize},
-            {ServerCmd::BCT.getStr(), &Environement::updateTile},
-            {ServerCmd::TNA.getStr(), &Environement::teamName},
-            {ServerCmd::PNW.getStr(), &Environement::newPlayer},
-            {ServerCmd::PPO.getStr(), &Environement::playerPosition},
-            {ServerCmd::PLV.getStr(), &Environement::playerLevel},
-            {ServerCmd::PIN.getStr(), &Environement::playerInventory},
-            {ServerCmd::PEX.getStr(), &Environement::playerExpulsion},
-            {ServerCmd::PBC.getStr(), &Environement::playerBroadcast},
-            {ServerCmd::PIC.getStr(), &Environement::startIncantate},
-            {ServerCmd::PIE.getStr(), &Environement::endIncantate},
-            {ServerCmd::PFK.getStr(), &Environement::eggLaying},
-            {ServerCmd::PDR.getStr(), &Environement::setResource},
-            {ServerCmd::PGT.getStr(), &Environement::takeResource},
-            {ServerCmd::PDI.getStr(), &Environement::deadPlayer},
-            {ServerCmd::ENW.getStr(), &Environement::eggLaid},
-            {ServerCmd::EBO.getStr(), &Environement::eggHatched},
-            {ServerCmd::EDI.getStr(), &Environement::deadEgg},
-            {ServerCmd::SGT.getStr(), &Environement::timeUnitRequest},
-            {ServerCmd::SST.getStr(), &Environement::timeUnitModification},
-            {ServerCmd::SEG.getStr(), &Environement::endOfGame},
-            {ServerCmd::SMG.getStr(), &Environement::serverMsg},
-            {ServerCmd::SUC.getStr(), &Environement::unknowCommand},
-            {ServerCmd::SBP.getStr(), &Environement::badCommandParameter},
-            {ServerCmd::EGG.getStr(), &Environement::eggEvent},
+            {ServerCmd::MSZ.getStr(), {&Environement::mapSize, true}},
+            {ServerCmd::BCT.getStr(), {&Environement::updateTile, true}},
+            {ServerCmd::TNA.getStr(), {&Environement::teamName, true}},
+            {ServerCmd::PNW.getStr(), {&Environement::newPlayer, true}},
+            {ServerCmd::PPO.getStr(), {&Environement::playerPosition, false}},
+            {ServerCmd::PLV.getStr(), {&Environement::playerLevel, false}},
+            {ServerCmd::PIN.getStr(), {&Environement::playerInventory, false}},
+            {ServerCmd::PEX.getStr(), {&Environement::playerExpulsion, false}},
+            {ServerCmd::PBC.getStr(), {&Environement::playerBroadcast, false}},
+            {ServerCmd::PIC.getStr(), {&Environement::startIncantate, false}},
+            {ServerCmd::PIE.getStr(), {&Environement::endIncantate, false}},
+            {ServerCmd::PFK.getStr(), {&Environement::eggLaying, false}},
+            {ServerCmd::PDR.getStr(), {&Environement::setResource, false}},
+            {ServerCmd::PGT.getStr(), {&Environement::takeResource, false}},
+            {ServerCmd::PDI.getStr(), {&Environement::deadPlayer, false}},
+            {ServerCmd::ENW.getStr(), {&Environement::eggLaid, false}},
+            {ServerCmd::EBO.getStr(), {&Environement::eggHatched, false}},
+            {ServerCmd::EDI.getStr(), {&Environement::deadEgg, false}},
+            {ServerCmd::SGT.getStr(), {&Environement::timeUnitRequest, true}},
+            {ServerCmd::SST.getStr(),
+                {&Environement::timeUnitModification, true}},
+            {ServerCmd::SEG.getStr(), {&Environement::endOfGame, false}},
+            {ServerCmd::SMG.getStr(), {&Environement::serverMsg, false}},
+            {ServerCmd::SUC.getStr(), {&Environement::unknowCommand, false}},
+            {ServerCmd::SBP.getStr(),
+                {&Environement::badCommandParameter, false}},
+            {ServerCmd::EGG.getStr(), {&Environement::eggEvent, true}},
     };
 } // namespace Zappy
