@@ -10,7 +10,7 @@
 
     #include <Model.hpp>
     #include <array>
-#include <functional>
+    #include <functional>
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"

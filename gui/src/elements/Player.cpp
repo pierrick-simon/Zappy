@@ -290,7 +290,8 @@ namespace Zappy {
 
     float Player::getAnimationDuration()
     {
-        return this->getCurrentAnimation().keyframeCount / ANIMATIONS_FPS;
+        return static_cast<float>(this->getCurrentAnimation().keyframeCount) /
+            ANIMATIONS_FPS;
     }
 
     const std::unordered_map<float, std::function<void(Player &)>>
@@ -305,8 +306,9 @@ namespace Zappy {
                 }},
             {ACROSS_MAP_DIG_TIME_PERCENT,
                 [](Player &player) { player.setPosition(player._targetPos); }},
-            {1.0f - ACROSS_MAP_DIG_TIME_PERCENT, [](Player &player) {
-                 player.setAnimation(PlayerAnimations::DIGGING_UP);
+            {1.0f - ACROSS_MAP_DIG_TIME_PERCENT,
+                [](Player &player) {
+                    player.setAnimation(PlayerAnimations::DIGGING_UP);
                 }},
             {1.0f, [](Player &player) {
                  player.setAnimation(PlayerAnimations::IDLE);
