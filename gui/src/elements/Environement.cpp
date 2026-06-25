@@ -100,9 +100,12 @@ namespace Zappy {
     void Environement::event(raylib::Camera3D &camera,
         const raylib::Vector2 &mouse, const Ray &ray, bool &leftClick)
     {
-        _overlay.team.event(camera, mouse, ray, leftClick);
-        _overlay.player.event(camera, mouse, ray, leftClick);
-        _overlay.tile.event(camera, mouse, ray, leftClick);
+        if (_selectPlayer)
+            _overlay.player.event(camera, mouse, ray, leftClick);
+        else if (_selectTile)
+            _overlay.tile.event(camera, mouse, ray, leftClick);
+        else
+            _overlay.team.event(camera, mouse, ray, leftClick);
         _elevations.event(camera, mouse, ray, leftClick);
         _overlay.timeUnit.event(camera, mouse, ray, leftClick);
         if (raylib::Keyboard::IsKeyPressed(KEY_ONE)) {
