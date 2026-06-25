@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <ranges>
 
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
@@ -41,7 +42,12 @@ namespace Zappy {
         event.retrieve(std::move(stream));
         if (_teams.contains(event.getTeam()))
             return;
-        _teams.emplace(event.getTeam(), _colorGenerator.next());
+        auto newTeam = _teams.emplace(event.getTeam(), _colorGenerator.next());
+        for (auto &player :
+            this->_players.getPlayers() | std::ranges::views::values) {
+            if (player.getTeam() == event.getTeam())
+                player.setGemColor(newTeam.first->second);
+        }
     }
 
     void Environement::newPlayer(std::istringstream stream)
@@ -62,6 +68,8 @@ namespace Zappy {
             (*value).get().setRotation(
                 Player::DIRECTION_TO_QUATERNION[static_cast<std::size_t>(
                     Info::getDirection(player.dir))]);
+            if (this->_teams.contains(player.team))
+                value->get().setGemColor(this->_teams.at(player.team));
         }
     }
 
