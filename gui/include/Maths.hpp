@@ -22,7 +22,7 @@ namespace Maths {
 
     constexpr float easeInOutSine(float value)
     {
-        return -(std::cosf(std::numbers::pi_v<float> * value) - 1) / 2;
+        return -(std::cos(std::numbers::pi_v<float> * value) - 1) / 2;
     }
 
 } // namespace Maths
