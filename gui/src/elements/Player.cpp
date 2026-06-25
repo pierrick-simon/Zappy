@@ -208,12 +208,13 @@ namespace Zappy {
         if (_walking) {
             _x = _targetX;
             _y = _targetY;
+            this->_acrossMap = false;
+            _walking = false;
         }
         if (_rotate) {
             _dir = _targetDir;
+            _rotate = false;
         }
-        _walking = false;
-        _rotate = false;
     }
 
     void Player::updateAcrossMapAction(float dt)
@@ -250,7 +251,7 @@ namespace Zappy {
     {
         handleActions(dt);
         this->_frameTime = getNextFrame(this->_currentAnimation.wrapMode,
-            this->_frameTime + dt,
+            this->_frameTime + dt * this->_animationSpeedScale,
             this->getCurrentAnimation().keyframeCount,
             ANIMATIONS_FPS);
     }
@@ -287,15 +288,28 @@ namespace Zappy {
         return this->_modelAnimation[this->_currentAnimationIndex];
     }
 
+    float Player::getAnimationDuration()
+    {
+        return this->getCurrentAnimation().keyframeCount / ANIMATIONS_FPS;
+    }
+
     const std::unordered_map<float, std::function<void(Player &)>>
         Player::ACROSS_MAP_ANIMATION_KEYFRAMES {
             {0.0f,
                 [](Player &player) {
                     player.setAnimation(PlayerAnimations::DIGGING_DOWN);
+                    float targetDuration =
+                        WALKING_TIME * ACROSS_MAP_DIG_TIME_PERCENT;
+                    player._animationSpeedScale =
+                        player.getAnimationDuration() / targetDuration;
                 }},
             {ACROSS_MAP_DIG_TIME_PERCENT,
                 [](Player &player) { player.setPosition(player._targetPos); }},
             {1.0f - ACROSS_MAP_DIG_TIME_PERCENT, [](Player &player) {
                  player.setAnimation(PlayerAnimations::DIGGING_UP);
+                }},
+            {1.0f, [](Player &player) {
+                 player.setAnimation(PlayerAnimations::IDLE);
+                 player._animationSpeedScale = 1.0f;
              }}};
 } // namespace Zappy

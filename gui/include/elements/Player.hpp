@@ -130,6 +130,7 @@ namespace Zappy {
 
         [[nodiscard]] const ModelAnimation &getCurrentAnimation() const;
         ModelAnimation &getCurrentAnimation();
+        float getAnimationDuration();
 
         void setGemColor(raylib::Color gemColor)
         {
@@ -175,7 +176,7 @@ namespace Zappy {
         raylib::Color _gemColor {251, 110, 0};
         PlayerAnimations::Animation _currentAnimation {PlayerAnimations::IDLE};
         size_t _currentAnimationIndex {0};
-        float animationSpeedScale {1};
+        float _animationSpeedScale {1.0f};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
         static constexpr float WALKING_TIME = 6.9f;
