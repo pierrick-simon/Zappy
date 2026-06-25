@@ -53,7 +53,10 @@ def format_receivers(receivers: list[str]) -> str:
 
 
 def parse_receivers(receiver: str) -> list[str]:
-    return receiver.strip('"')
+    try:
+        return json.loads(receiver.replace("'", '"'))
+    except (json.JSONDecodeError, ValueError):
+        return [receiver.strip("'\"[] ")]
 
 
 class Villager:
@@ -73,6 +76,7 @@ class Villager:
         self.id = uuid4()
         self.backpack = BackpackModule(self.handler)
         self.plan = deque()
+        self.followers = set()
         self.EVENTS: dict[str, Callable[["Villager", Event], None]] = {
             "dead": self.handle_dead,
             "message": self.handle_message,
@@ -109,7 +113,8 @@ class Villager:
         self.mode = MODE.FOLLOWER
         self.master = master_id
         self.plan.clear()
-        self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
+        if event.direction and event.direction != 0:
+            self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
 
     def handle_message_as_follower(self, event: Event) -> None:
         sender, _, _, _ = event.argument
@@ -120,10 +125,7 @@ class Villager:
             return
 
         print(f"Before: {self.plan=}")
-        if event.direction == 0:
-            self.plan.clear()
-            return
-        if not self.plan:
+        if not self.plan and event.direction != 0:
             self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
         print(f"After: {self.plan=}")
 
@@ -144,15 +146,19 @@ class Villager:
 
     def call_followers(self):
         receivers: str = format_receivers(list(self.followers))
-        self.append_to_plan(
-            [f"Broadcast {self.id};incantation;{self.level};{receivers}"], MODE.MASTER
-        )
+        broadcast(self.handler, f"{self.id};incantation;{self.level};{receivers}")
+        self.backpack.tick("Broadcast")
+
+    def recruit_followers(self):
+        """Broadcast to recruit followers at the current level."""
+        broadcast(self.handler, f"{self.id};recruit;{self.level};{format_receivers(['*'])}")
+        self.backpack.tick("Broadcast")
 
     def deposit_stones(self):
         self.plan.clear()
         for ressource, quantity in INCANTATION_PREREQUISITES[self.level - 1].items():
             for _ in range(quantity):
-                send_and_recv(self.handler, Command("Set", ressource))
+                self.append_to_plan([f"Set {ressource}"], MODE.MASTER)
 
     def check_incantations(self, tile: list[str], level: int) -> bool:
         players: int = tile.count("player")
@@ -161,32 +167,27 @@ class Villager:
         if players < INCANTATION_PLAYERS_NEEDED[level]:
             return False
         for ressource, quantity in INCANTATION_PREREQUISITES[level].items():
-            if self.backpack.inventory.get(ressource, 0) < quantity:
+            if tile.count(ressource) < quantity:
                 return False
         return True
 
-    def take_food_to_wait(self, tile: list[str]):
-        if "food" in tile:
-            self.append_to_plan(["Take food"], self.mode)
+    def manage_incantations(self):
+        players_needed = INCANTATION_PLAYERS_NEEDED[self.level - 1]
+
+        if not self.stones_deposited:
+            self.deposit_stones()
+            self.stones_deposited = True
             return
 
-    def manage_incantations(self):
-        tile: list[str] = look(self.handler)[0]
-        players_present: int = tile[0].count("players")
-        players_needed: int = INCANTATION_PLAYERS_NEEDED[self.level - 1]
-
-        if self.check_incantations(tile, (self.level - 1)) is True:
-            self.deposit_stones()
+        if self.check_incantations(look(self.handler)[0], (self.level - 1)) is True:
             print("Incantation")
             send_and_recv(self.handler, Command("Incantation"))
-            self.mode = MODE.RESEARCH
-        if connect_nbr(self.handler) < players_needed:
-            self.append_to_plan(["Fork"], MODE.MASTER)
+            self.stones_deposited = False
             return
-        if players_present < players_needed:
+        if len(self.followers) + 1 < players_needed:
+            self.recruit_followers()
+        else:
             self.call_followers()
-            self.take_food_to_wait(tile)
-            return
 
     def handle_message(self, event: Event) -> None:
         print(f"message={event}")
@@ -198,10 +199,10 @@ class Villager:
     def handle_level(self, event: Event) -> None:
         self.level = int(event.direction)
         self.stones_deposited = False
-        self.master = str()
-        self.mode = MODE.RESEARCH
         self.plan.clear()
+        self.followers.clear()
         self.backpack.refresh_inventory()
+        self.mode = MODE.RESEARCH
 
     def append_to_plan(self, commands: list[str], mode: MODE):
         tokens: list[str] = []
@@ -244,10 +245,13 @@ class Villager:
 
         if self.backpack.inventory["food"] < 5:
             self.mode = MODE.SURVIVE
-        elif self.mode == MODE.SURVIVE and self.backpack.inventory["food"] >= 15:
+            return
+        if self.mode == MODE.SURVIVE and self.backpack.inventory["food"] >= 15:
             self.mode = MODE.RESEARCH
-        elif self.mode == MODE.RESEARCH:
-            missing = get_missing_resources(self.backpack.inventory, self.level - 1)
+        if self.mode == MODE.RESEARCH:
+            missing: dict[str, int] = get_missing_resources(
+                self.backpack.inventory, (self.level - 1)
+            )
             if not missing:
                 self.mode = MODE.MASTER
         if previous_mode != self.mode:
@@ -261,7 +265,6 @@ class Villager:
                 self.backpack.inventory, (self.level - 1)
             )
             if missing and not self.plan:
-                missing["food"] = 5
                 self.search_ressources(missing, 300)
         elif self.mode == MODE.MASTER:
             self.manage_incantations()
