@@ -10,6 +10,7 @@
 
     #include <Model.hpp>
     #include <array>
+#include <functional>
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"
@@ -119,6 +120,7 @@ namespace Zappy {
 
         void draw3D() const override;
         void finishActions();
+        void updateAcrossMapAction(float dt);
         void updateActions(float dt);
 
         void update(float dt) override;
@@ -173,10 +175,15 @@ namespace Zappy {
         raylib::Color _gemColor {251, 110, 0};
         PlayerAnimations::Animation _currentAnimation {PlayerAnimations::IDLE};
         size_t _currentAnimationIndex {0};
+        float animationSpeedScale {1};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
         static constexpr float WALKING_TIME = 6.9f;
         static constexpr float ROTATE_TIME = 6.9f;
+
+        static constexpr float ACROSS_MAP_DIG_TIME_PERCENT = 0.25f;
+        static const std::unordered_map<float, std::function<void(Player &)>>
+            ACROSS_MAP_ANIMATION_KEYFRAMES;
     };
 } // namespace Zappy
 

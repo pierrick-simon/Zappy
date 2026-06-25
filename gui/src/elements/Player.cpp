@@ -216,12 +216,28 @@ namespace Zappy {
         _rotate = false;
     }
 
+    void Player::updateAcrossMapAction(float dt)
+    {
+        float prevAnimPercentage = 1 - (_timer + dt) / WALKING_TIME;
+        float animPercentage = 1 - _timer / WALKING_TIME;
+
+        for (auto &[percent, keyframeMethod] : ACROSS_MAP_ANIMATION_KEYFRAMES) {
+            if (percent >= prevAnimPercentage && percent <= animPercentage)
+                keyframeMethod(*this);
+        }
+    }
+
     void Player::updateActions(float dt)
     {
         _timer -= dt;
         if (_walking) {
-            auto progress = Maths::easeInOutSine(this->_timer / WALKING_TIME);
-            this->_position = this->_targetPos.Lerp(this->_startPos, progress);
+            if (!this->_acrossMap) {
+                auto progress =
+                    Maths::easeInOutSine(this->_timer / WALKING_TIME);
+                this->_position =
+                    this->_targetPos.Lerp(this->_startPos, progress);
+            } else
+                updateAcrossMapAction(dt);
         }
         if (this->_rotate) {
             auto progress = Maths::easeInOutSine(this->_timer / ROTATE_TIME);
@@ -270,4 +286,16 @@ namespace Zappy {
     {
         return this->_modelAnimation[this->_currentAnimationIndex];
     }
+
+    const std::unordered_map<float, std::function<void(Player &)>>
+        Player::ACROSS_MAP_ANIMATION_KEYFRAMES {
+            {0.0f,
+                [](Player &player) {
+                    player.setAnimation(PlayerAnimations::DIGGING_DOWN);
+                }},
+            {ACROSS_MAP_DIG_TIME_PERCENT,
+                [](Player &player) { player.setPosition(player._targetPos); }},
+            {1.0f - ACROSS_MAP_DIG_TIME_PERCENT, [](Player &player) {
+                 player.setAnimation(PlayerAnimations::DIGGING_UP);
+             }}};
 } // namespace Zappy
