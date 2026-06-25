@@ -103,7 +103,7 @@ namespace Zappy {
     void Map::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
-        this->_model.materials[1].shader = this->getShader().asShader();
+        this->_tileModel.materials[1].shader = this->getShader().asShader();
     }
 
     void Map::drawRessources(const Zappy::Tile &tile) const
@@ -130,7 +130,7 @@ namespace Zappy {
     {
         for (const auto &tile : this->_tiles) {
             auto [axis, angle] = tile.getRotation().ToAxisAngle();
-            this->_model.Draw(tile.getPosition(), axis, angle, tile.getScale());
+            this->_tileModel.Draw(tile.getPosition(), axis, angle, tile.getScale());
             drawRessources(tile);
         }
     }

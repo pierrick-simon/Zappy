@@ -76,7 +76,11 @@ namespace Zappy {
 
         inline static const std::string TILE_MODEL_PATH =
             Assets::getResource("map/cell.glb");
-        raylib::Model _model {TILE_MODEL_PATH};
+        raylib::Model _tileModel {TILE_MODEL_PATH};
+
+        inline static const std::string EGG_MODEL_PATH =
+            Assets::getResource("egg.glb");
+        raylib::Model _eggModel {EGG_MODEL_PATH};
 
         static const std::unordered_map<Info::ResourceName, float> _modelScales;
     };
