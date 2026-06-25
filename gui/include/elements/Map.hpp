@@ -56,6 +56,7 @@ namespace Zappy {
             InfoBox::Action dir, std::size_t tile) const;
 
         void drawRessources(const Zappy::Tile &tile) const;
+        void drawGrass() const;
         void draw3D() const override;
         void update(float dt) override;
 
@@ -71,6 +72,14 @@ namespace Zappy {
         std::map<Info::ResourceName, std::size_t> _totalResources;
         std::unordered_map<Info::ResourceName, raylib::Model>
             _ressources_models;
+
+        static constexpr std::size_t NB_GRASS_MODELS = 4;
+        std::array<raylib::Model, NB_GRASS_MODELS> _grassModels;
+        static constexpr float GRASS_PER_TILE = 0.5;
+        static constexpr float GRASS_SCALE = 0.1;
+        static constexpr auto NB_GRASS = static_cast<std::size_t>(
+            GRASS_PER_TILE * Tile::TILE_SIZE.x * Tile::TILE_SIZE.y);
+        std::array<std::pair<std::size_t, raylib::Vector3>, NB_GRASS> _grasses;
 
         bool _changeColor = false;
         float _blink = 0.f;

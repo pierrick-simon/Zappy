@@ -7,6 +7,7 @@
 
 #include "Map.hpp"
 #include <iostream>
+#include "Utils.hpp"
 #include "UtilsVector.hpp"
 
 namespace Zappy {
@@ -17,6 +18,9 @@ namespace Zappy {
         for (const auto &[type, infos] : Info::resources)
             _ressources_models.try_emplace(
                 type, Assets::getResource("rocks/" + infos.str + ".glb"));
+        for (std::size_t i = 0; i < NB_GRASS_MODELS; ++i)
+            _grassModels[i] = raylib::Model(Assets::getResource(
+                "grass/grass" + std::to_string(i) + ".glb"));
     }
 
     bool Map::updateSize(std::size_t x, std::size_t y)
@@ -37,6 +41,15 @@ namespace Zappy {
             _totalResources = Info::INIT_RESOUCES;
             for (auto &tile : _tiles)
                 tile.getScale() = TILE_SCALE;
+            for (std::size_t i = 0; i < NB_GRASS; ++i) {
+                _grasses[i].first = rand() % NB_GRASS_MODELS;
+                _grasses[i].second = raylib::Vector3(
+                    Shared::Utils::fRandRange(
+                        0, static_cast<float>(_width) * Tile::TILE_SIZE.x),
+                    0,
+                    Shared::Utils::fRandRange(
+                        0, static_cast<float>(_height) * Tile::TILE_SIZE.y));
+            }
         }
         return value;
     }
@@ -107,6 +120,13 @@ namespace Zappy {
         this->_tileModel.materials[1].shader = this->getShader().asShader();
     }
 
+    void Map::drawGrass() const
+    {
+        for (std::size_t i = 0; i < NB_GRASS; ++i)
+            _grassModels.at(_grasses[i].first)
+                .Draw(_grasses[i].second, GRASS_SCALE);
+    }
+
     void Map::drawRessources(const Zappy::Tile &tile) const
     {
         auto infos = tile.getResources();
@@ -143,6 +163,7 @@ namespace Zappy {
             drawRessources(tile);
             i++;
         }
+        drawGrass();
     }
 
     void Map::update(float dt)
