@@ -104,6 +104,7 @@ namespace Zappy {
         _overlay.player.event(camera, mouse, ray, leftClick);
         _overlay.tile.event(camera, mouse, ray, leftClick);
         _elevations.event(camera, mouse, ray, leftClick);
+        _overlay.timeUnit.event(camera, mouse, ray, leftClick);
         if (raylib::Keyboard::IsKeyPressed(KEY_ONE)) {
             _selectTile = std::nullopt;
             _selectPlayer = std::nullopt;

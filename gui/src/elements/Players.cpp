@@ -61,8 +61,8 @@ namespace Zappy {
     void Players::draw3D() const
     {
         for (auto &[id, player] : this->_players) {
-            auto color = raylib::Color::White();
             if (_select && id == *_select && _changeColor) {
+                auto color = raylib::Color::White();
                 color.r -= Init::BLINK_OFFSET;
                 color.g -= Init::BLINK_OFFSET;
                 color.b -= Init::BLINK_OFFSET;

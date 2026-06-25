@@ -90,6 +90,23 @@ namespace Zappy {
         return std::clamp(frequency, MIN_FREQUENCY, MAX_FREQUENCY);
     }
 
+    void TimeUnit::event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
+        const Ray &ray, bool &leftClick)
+    {
+        std::size_t i = 0;
+        for (auto &button : _sprites) {
+            auto pos = button.getPosition() - Init::INFO_BUTTON_SIZE / 2.f;
+            raylib::Rectangle dest = {
+                pos.x, pos.y, Init::INFO_BUTTON_SIZE, Init::INFO_BUTTON_SIZE};
+            if (leftClick && dest.CheckCollision(mouse)) {
+                _button = static_cast<Button>(i);
+                leftClick = false;
+                break;
+            }
+            i++;
+        }
+    }
+
     const std::array<std::string, TimeUnit::Button::NBBUTTON> TimeUnit::PATH = {
         "public/fastnext.png",
         "public/next.png",
