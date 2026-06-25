@@ -130,7 +130,8 @@ namespace Zappy {
     {
         for (const auto &tile : this->_tiles) {
             auto [axis, angle] = tile.getRotation().ToAxisAngle();
-            this->_tileModel.Draw(tile.getPosition(), axis, angle, tile.getScale());
+            this->_tileModel.Draw(
+                tile.getPosition(), axis, angle, tile.getScale());
             drawRessources(tile);
         }
     }
