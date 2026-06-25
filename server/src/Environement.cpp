@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <array>
 #include <ctime>
+#include <iostream>
 #include <optional>
 #include <random>
 #include <ranges>
@@ -580,8 +581,10 @@ namespace Zappy {
             auto hightAngle = n.angle(range.second);
             lowerAngle = Shared::Utils::radToPos(lowerAngle);
             hightAngle = Shared::Utils::radToPos(hightAngle);
-            if (angle <= std::max(lowerAngle, hightAngle) &&
-                angle >= std::min(lowerAngle, hightAngle))
+            if (angle <= std::max(lowerAngle, hightAngle) ||
+                (hightAngle == 0.f &&
+                    angle <= std::max(lowerAngle, 2 * M_PI)) &&
+                    angle >= std::min(lowerAngle, hightAngle))
                 return tile;
         }
         throw ServerException("Error getTileNb");
@@ -682,7 +685,7 @@ namespace Zappy {
             id, find->second.x, find->second.y, resources);
     }
 
-    const std::array<Environement::rangeTile, 9>
+    const std::array<Environement::rangeTile, Environement::NBRANGE>
         Environement::_broadcastChunks = {
             Environement::rangeTile {1, {{0.0, 1.5}, {-0.5, 1.5}}},
             Environement::rangeTile {2, {{-0.5, 1.5}, {-1.5, 0.5}}},
