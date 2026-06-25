@@ -31,25 +31,29 @@ namespace Zappy {
     {
         pos.y += SIZE.y / 2.f;
         for (std::size_t i = 0; i < NBBUTTON; i++) {
-            _sprites[i].Load(PATH[i]);
-            _sprites[i].setColor(Init::GOLD_RICH);
-            _sprites[i].setScale(
+            _sprites[i].sprite.Load(PATH[i]);
+            _sprites[i].sprite.setColor(Init::GOLD_RICH);
+            _sprites[i].sprite.setScale(
                 {Init::INFO_BUTTON_SCALE, Init::INFO_BUTTON_SCALE});
-            _sprites[i].setOrigin(
+            _sprites[i].sprite.setOrigin(
                 {Init::INFO_BUTTON_SIZE / 2.f, Init::INFO_BUTTON_SIZE / 2.f});
-            if (i <= Button::LEFT)
-                _sprites[i].setRotation(Init::INFO_BUTTON_ROTATION);
+            if (i <= Action::LEFT)
+                _sprites[i].sprite.setRotation(Init::INFO_BUTTON_ROTATION);
         }
         auto left = pos;
         left.x += Init::INFO_SMALL_GAP + Init::INFO_BUTTON_SIZE / 2.f;
-        _sprites[FASTLEFT].setPosition(left);
+        _sprites[FASTLEFT].sprite.setPosition(left);
         left.x += Init::INFO_SMALL_GAP + Init::INFO_BUTTON_SIZE;
-        _sprites[LEFT].setPosition(left);
+        _sprites[LEFT].sprite.setPosition(left);
         auto right = pos;
         right.x += SIZE.x - Init::INFO_SMALL_GAP - Init::INFO_BUTTON_SIZE / 2.f;
-        _sprites[FASTRIGHT].setPosition(right);
+        _sprites[FASTRIGHT].sprite.setPosition(right);
         right.x -= Init::INFO_SMALL_GAP + Init::INFO_BUTTON_SIZE;
-        _sprites[RIGHT].setPosition(right);
+        _sprites[RIGHT].sprite.setPosition(right);
+        _sprites[FASTLEFT].key = KEY_H;
+        _sprites[LEFT].key = KEY_J;
+        _sprites[RIGHT].key = KEY_L;
+        _sprites[FASTRIGHT].key = KEY_SEMICOLON;
     }
 
     std::size_t TimeUnit::update(std::size_t timeUnit)
@@ -64,11 +68,11 @@ namespace Zappy {
     {
         _box.draw2D();
         _text.draw2D();
-        for (const auto &sprite : _sprites)
+        for (const auto &[sprite, _] : _sprites)
             sprite.draw2D();
     }
 
-    std::size_t TimeUnit::changeTimeUnit(Button button, std::size_t frequency)
+    std::size_t TimeUnit::changeTimeUnit(Action button, std::size_t frequency)
     {
         if (button == FASTLEFT) {
             if (frequency < MOVE_GAP + MIN_FREQUENCY)
@@ -86,7 +90,7 @@ namespace Zappy {
         }
         if (button == RIGHT && frequency < MAX_FREQUENCY)
             frequency++;
-        _button = Button::NONE;
+        _button = Action::NONE;
         return std::clamp(frequency, MIN_FREQUENCY, MAX_FREQUENCY);
     }
 
@@ -94,20 +98,24 @@ namespace Zappy {
         const Ray &ray, bool &leftClick)
     {
         std::size_t i = 0;
-        for (auto &button : _sprites) {
-            auto pos = button.getPosition() - Init::INFO_BUTTON_SIZE / 2.f;
+        for (auto &[sprite, key] : _sprites) {
+            auto pos = sprite.getPosition() - Init::INFO_BUTTON_SIZE / 2.f;
             raylib::Rectangle dest = {
                 pos.x, pos.y, Init::INFO_BUTTON_SIZE, Init::INFO_BUTTON_SIZE};
             if (leftClick && dest.CheckCollision(mouse)) {
-                _button = static_cast<Button>(i);
+                _button = static_cast<Action>(i);
                 leftClick = false;
+                break;
+            }
+            if (raylib::Keyboard::IsKeyPressed(key)) {
+                _button = static_cast<Action>(i);
                 break;
             }
             i++;
         }
     }
 
-    const std::array<std::string, TimeUnit::Button::NBBUTTON> TimeUnit::PATH = {
+    const std::array<std::string, TimeUnit::Action::NBBUTTON> TimeUnit::PATH = {
         "public/fastnext.png",
         "public/next.png",
         "public/fastnext.png",

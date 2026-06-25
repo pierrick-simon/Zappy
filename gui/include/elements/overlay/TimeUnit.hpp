@@ -26,15 +26,20 @@ namespace Zappy {
             const Ray &ray, bool &leftClick) override;
 
     private:
-        enum Button { FASTLEFT, LEFT, FASTRIGHT, RIGHT, NBBUTTON, NONE };
+        enum Action { FASTLEFT, LEFT, FASTRIGHT, RIGHT, NBBUTTON, NONE };
 
         void initSprite(raylib::Vector2 pos);
-        std::size_t changeTimeUnit(Button button, std::size_t frequency);
+        std::size_t changeTimeUnit(Action button, std::size_t frequency);
+
+        struct Button {
+            Graphics::Sprite2D sprite;
+            KeyboardKey key = KEY_NULL;
+        };
 
         Graphics::Box2D _box;
         Graphics::Text2D _text;
-        std::array<Graphics::Sprite2D, NBBUTTON> _sprites;
-        Button _button = Button::NONE;
+        std::array<Button, NBBUTTON> _sprites;
+        Action _button = Action::NONE;
 
         static const std::array<std::string, NBBUTTON> PATH;
 
