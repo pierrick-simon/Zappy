@@ -195,47 +195,6 @@ namespace Zappy {
         this->_frameTime = 0;
     }
 
-    void Player::updateAction(float dt)
-    {
-        if (_timer <= 0) {
-            if (_walking) {
-                _x = _targetX;
-                _y = _targetY;
-            }
-            if (_rotate) {
-                _dir = _targetDir;
-            }
-            _walking = false;
-            _rotate = false;
-        } else {
-            _timer -= dt;
-            if (_walking) {
-                auto progress =
-                    Maths::easeInOutSine(this->_timer / WALKING_TIME);
-                this->_position =
-                    this->_targetPos.Lerp(this->_startPos, progress);
-            }
-            if (this->_rotate) {
-                auto progress =
-                    Maths::easeInOutSine(this->_timer / ROTATE_TIME);
-                this->_rotation =
-                    this->_targetRotation.Slerp(this->_startRotation, progress);
-            }
-        }
-    }
-    void Player::setAnimation(PlayerAnimations::Animation animation)
-    {
-        this->_currentAnimation = animation;
-        auto anim = std::ranges::find(this->_modelAnimation,
-            std::string(this->_currentAnimation.name),
-            [](auto &anim) { return anim.name; });
-        if (anim == this->_modelAnimation.end())
-            throw std::runtime_error(
-                std::string {"Animation "} + animation.name + " doesn't exist");
-        this->_currentAnimationIndex = anim - this->_modelAnimation.begin();
-        this->_frameTime = 0;
-    }
-
     void Player::update(float dt)
     {
         updateAction(dt);
