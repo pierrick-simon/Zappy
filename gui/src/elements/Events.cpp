@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <ranges>
 
 #include "Environement.hpp"
 #include "GUICommunication.hpp"
@@ -21,9 +22,11 @@ namespace Zappy {
     {
         Shared::MapSizeEvent event;
         event.retrieve(std::move(stream));
-        if (_map.updateSize(event.getX(), event.getY()))
+        if (_map.updateSize(event.getX(), event.getY())) {
             Shared::Connect::send(
                 _connect.getFd(), ClientCmd::MCT.getStr() + "\n");
+            _players.initPos(event.getX(), event.getY());
+        }
     }
 
     void Environement::updateTile(std::istringstream stream)
@@ -39,7 +42,12 @@ namespace Zappy {
         event.retrieve(std::move(stream));
         if (_teams.contains(event.getTeam()))
             return;
-        _teams.emplace(event.getTeam(), _colorGenerator.next());
+        auto newTeam = _teams.emplace(event.getTeam(), _colorGenerator.next());
+        for (auto &player :
+            this->_players.getPlayers() | std::ranges::views::values) {
+            if (player.getTeam() == event.getTeam())
+                player.setGemColor(newTeam.first->second);
+        }
     }
 
     void Environement::newPlayer(std::istringstream stream)
@@ -60,6 +68,10 @@ namespace Zappy {
             (*value).get().setRotation(
                 Player::DIRECTION_TO_QUATERNION[static_cast<std::size_t>(
                     Info::getDirection(player.dir))]);
+            if (this->_teams.contains(player.team))
+                value->get().setGemColor(this->_teams.at(player.team));
+            if (this->_teams.contains(player.team))
+                value->get().setGemColor(this->_teams.at(player.team));
         }
     }
 
@@ -69,15 +81,23 @@ namespace Zappy {
         event.retrieve(std::move(stream));
         try {
             auto &player = _players.getPlayer(event.getId());
-            auto dir = Info::getDirection(event.getDir());
-            auto mapPos =
-                this->_map.getTilePosition(event.getX(), event.getY());
-            player.setPosition({mapPos.x, 0, mapPos.y});
-            player.move(event.getX(), event.getY(), dir);
-            _overlay.eventBox.addMessage(player.getTeam(),
-                event.getId(),
-                "Moved to (" + std::to_string(event.getX()) + "," +
-                    std::to_string(event.getY()) + ").");
+            std::size_t x = event.getX() % _width;
+            std::size_t y = event.getY() % _height;
+            if (player.getEject()) {
+                player.teleport(x, y, _width, _height);
+                _overlay.eventBox.addMessage(player.getTeam(),
+                    event.getId(),
+                    "Ejected to (" + std::to_string(x) + "," +
+                        std::to_string(y) + ").");
+            } else {
+                auto dir = Info::getDirection(event.getDir());
+                auto mapPos = this->_map.getTilePosition(x, y);
+                player.move(x, y, mapPos, dir);
+                _overlay.eventBox.addMessage(player.getTeam(),
+                    event.getId(),
+                    "Moving to (" + std::to_string(x) + "," +
+                        std::to_string(y) + ").");
+            }
         } catch (Info::DirectionNotFoundException &e) {
             Shared::Utils::logMsg(_logFile, e.what());
         } catch (Player::PlayerException &e) {

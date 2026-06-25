@@ -65,8 +65,8 @@ namespace Zappy {
         void addPlayer(std::size_t id, const std::string &team,
             std::size_t _remainingPlace);
         void removePlayer(std::unordered_map<int, AIClient>::iterator);
-        void movePlayer(std::size_t id);
-        void rotatePlayer(std::size_t id, Rotate);
+        void movePlayer(std::size_t id, bool send = false);
+        void rotatePlayer(std::size_t id, Rotate, bool send = false);
         void spawnEgg(std::size_t id);
         void spawnEgg(const std::string &team);
         void eggLaying(std::size_t id);

@@ -30,6 +30,8 @@ namespace Zappy {
         std::optional<std::reference_wrapper<Player>> addPlayer(
             const Shared::NewPlayerEvent::NewPlayer &player);
 
+        void initPos(std::size_t width, std::size_t height);
+
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
         getTotalResources() const
         {
@@ -58,6 +60,14 @@ namespace Zappy {
 
         void loadAnimations();
 
+        [[nodiscard]] std::map<std::size_t, Player> &getPlayers()
+        {
+            return _players;
+        }
+
+        static constexpr auto STONE_MAT = 1;
+        static constexpr auto GEM_MAT = 2;
+
     private:
         std::map<std::size_t, Player> _players;
         std::map<Info::ResourceName, std::size_t> _totalResources =
@@ -74,9 +84,6 @@ namespace Zappy {
         float _blink = 0.f;
         std::optional<std::size_t> &_select;
         std::size_t &_frequency;
-
-        static constexpr auto STONE_MAT = 1;
-        static constexpr auto GLOWING_MAT = 2;
     };
 } // namespace Zappy
 
