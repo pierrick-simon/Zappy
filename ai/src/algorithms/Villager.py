@@ -38,7 +38,6 @@ def get_missing_resources(inventory: dict[str, int], level: int) -> dict[str, in
         if inventory.get(ressource, 0) < quantity
     }
 
-
 def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
     common: set = dict_one.keys() & dict_two.keys()
 
@@ -120,6 +119,9 @@ class Villager:
             return
 
         print(f"Before: {self.plan=}")
+        if event.direction == 0:
+            self.plan.clear()
+            return
         if not self.plan:
             self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
         print(f"After: {self.plan=}")
@@ -141,14 +143,13 @@ class Villager:
 
     def call_followers(self):
         receivers: str = format_receivers(list(self.followers))
-        broadcast(self.handler, f"{self.id};incantation;{self.level};{receivers}")
-        self.backpack.tick("Broadcast")
+        self.append_to_plan([f"Broadcast {self.id};incantation;{self.level};{receivers}"], MODE.MASTER)
 
     def deposit_stones(self):
         self.plan.clear()
         for ressource, quantity in INCANTATION_PREREQUISITES[self.level - 1].items():
             for _ in range(quantity):
-                self.append_to_plan([f"Set {ressource}"], MODE.MASTER)
+                send_and_recv(self.handler, Command("Set", ressource))
 
     def check_incantations(self, tile: list[str], level: int) -> bool:
         players: int = tile.count("player")
@@ -157,22 +158,32 @@ class Villager:
         if players < INCANTATION_PLAYERS_NEEDED[level]:
             return False
         for ressource, quantity in INCANTATION_PREREQUISITES[level].items():
-            if tile.count(ressource) < quantity:
+            if self.backpack.inventory.get(ressource, 0) < quantity:
                 return False
         return True
+    
+    def take_food_to_wait(self, tile: list[str]):
+        if "food" in tile:
+            self.append_to_plan(["Take food"], self.mode)
+            return
 
     def manage_incantations(self):
-        if not self.stones_deposited:
+        tile: list[str] = look(self.handler)[0]
+        players_present: int = tile[0].count("players")
+        players_needed: int = INCANTATION_PLAYERS_NEEDED[self.level - 1]
+
+        if self.check_incantations(tile, (self.level - 1)) is True:
             self.deposit_stones()
-            self.stones_deposited = True
-            return
-        if self.check_incantations(look(self.handler)[0], (self.level - 1)) is True:
             print("Incantation")
             send_and_recv(self.handler, Command("Incantation"))
-            self.stones_deposited = False
             self.mode = MODE.RESEARCH
-        elif connect_nbr(self.handler) >= INCANTATION_PLAYERS_NEEDED[self.level - 1]:
+        if connect_nbr(self.handler) < players_needed:
+            self.append_to_plan(["Fork"], MODE.MASTER)
+            return
+        if players_present < players_needed:
             self.call_followers()
+            self.take_food_to_wait(tile)
+            return
 
     def handle_message(self, event: Event) -> None:
         print(f"message={event}")
@@ -184,6 +195,8 @@ class Villager:
     def handle_level(self, event: Event) -> None:
         self.level = int(event.direction)
         self.stones_deposited = False
+        self.master = str()
+        self.mode = MODE.RESEARCH
         self.plan.clear()
         self.backpack.refresh_inventory()
 
@@ -222,19 +235,17 @@ class Villager:
             if event is None:
                 break
             self.EVENTS[event.name](event)
+    
 
     def update_mode(self):
         previous_mode = self.mode
 
         if self.backpack.inventory["food"] < 5:
             self.mode = MODE.SURVIVE
-            return
-        if self.mode == MODE.SURVIVE and self.backpack.inventory["food"] >= 15:
+        elif self.mode == MODE.SURVIVE and self.backpack.inventory["food"] >= 15:
             self.mode = MODE.RESEARCH
-        if self.mode == MODE.RESEARCH:
-            missing: dict[str, int] = get_missing_resources(
-                self.backpack.inventory, (self.level - 1)
-            )
+        elif self.mode == MODE.RESEARCH:
+            missing = get_missing_resources(self.backpack.inventory, self.level - 1)
             if not missing:
                 self.mode = MODE.MASTER
         if previous_mode != self.mode:
@@ -248,6 +259,7 @@ class Villager:
                 self.backpack.inventory, (self.level - 1)
             )
             if missing and not self.plan:
+                missing["food"] = 5
                 self.search_ressources(missing, 300)
         elif self.mode == MODE.MASTER:
             self.manage_incantations()
