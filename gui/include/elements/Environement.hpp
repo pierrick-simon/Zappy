@@ -126,6 +126,10 @@ namespace Zappy {
         std::ofstream &_logFile;
         static const std::unordered_map<std::string, Event> EVENTS;
 
+        inline static const std::string EGG_MODEL_PATH =
+            Assets::getResource("egg.glb");
+        raylib::Model _eggModel {EGG_MODEL_PATH};
+
         static constexpr std::string_view WELCOME = "WELCOME";
         static constexpr std::string_view TEAM = "GRAPHIC";
         static constexpr std::size_t SMALL_SLEEP = 100;
