@@ -47,13 +47,18 @@ namespace Zappy {
         Shared::NewPlayerEvent event;
         event.retrieve(std::move(stream));
         auto player = event.getPlayer();
-        if (_players.addPlayer(player)) {
+        auto value = _players.addPlayer(player);
+        if (value) {
             _overlay.eventBox.addMessage(
                 player.team, player.id, "Joined the game.");
             Shared::Connect::send(_connect.getFd(),
                 ClientCmd::PIN.getStr() + " #" + std::to_string(player.id) +
                     "\n" + ClientCmd::PLV.getStr() + " #" +
                     std::to_string(player.id) + "\n");
+            auto mapPos = this->_map.getTilePosition(player.x, player.y);
+            (*value).get().setPosition({mapPos.x, 0, mapPos.y});
+            (*value).get().setRotation(
+                Player::DIRECTION_TO_QUATERNION[player.dir - 1]);
         }
     }
 
@@ -152,8 +157,11 @@ namespace Zappy {
                 Shared::Utils::logMsg(_logFile, e.what());
             }
         }
-        _elevations.addElevation(
-            event.getX(), event.getY(), event.getLevel(), players);
+        _elevations.addElevation(event.getX(),
+            event.getY(),
+            event.getLevel(),
+            players,
+            _map.getTilePosition(event.getX(), event.getY()));
     }
 
     void Environement::playersEndIncantate(

@@ -10,7 +10,7 @@
 namespace Graphics {
     raylib::Color ColorGenerator::next()
     {
-        auto c = raylib::Color::FromHSV(_current, SATURATION, VALUE);
+        auto c = raylib::Color::FromHSV(_current * CIRCLE, SATURATION, VALUE);
         _current = std::fmod(_current + GOLDEN_RATIO, 1.0f);
         return c;
     }
