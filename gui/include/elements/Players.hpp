@@ -24,7 +24,8 @@ namespace Zappy {
                     public Graphics::IUpdatable,
                     public Graphics::AShadered {
     public:
-        Players(std::ofstream &logFile);
+        Players(std::ofstream &logFile, std::optional<std::size_t> &select,
+            std::size_t &frequency);
 
         std::optional<std::reference_wrapper<Player>> addPlayer(
             const Shared::NewPlayerEvent::NewPlayer &player);
@@ -68,6 +69,11 @@ namespace Zappy {
         raylib::Model _model {LoadModel(PLAYER_MODEL_PATH.c_str())};
 
         std::vector<::ModelAnimation> _modelAnimation;
+
+        bool _changeColor = false;
+        float _blink = 0.f;
+        std::optional<std::size_t> &_select;
+        std::size_t &_frequency;
 
         static constexpr auto STONE_MAT = 1;
         static constexpr auto GLOWING_MAT = 2;

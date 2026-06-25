@@ -97,8 +97,11 @@ namespace Zappy {
         this->_model.UpdateAnimation(this->getCurrentAnimation(),
             static_cast<float>(this->_animationFrame));
         auto [axis, angle] = this->getRotation().ToAxisAngle();
-        this->_model.Draw(
-            this->_position, axis, Maths::RadToDeg(angle), this->_scale);
+        this->_model.Draw(this->_position,
+            axis,
+            Maths::RadToDeg(angle),
+            this->_scale,
+            _color);
     }
 
     void Player::update(float dt)
@@ -154,5 +157,15 @@ namespace Zappy {
     {
         return Player2D::PlayerInfo {
             _id, _team, _level, _x, _y, _status, _inventory};
+    }
+
+    const raylib::Color &Player::getColor() const
+    {
+        return this->_color;
+    }
+
+    void Player::setColor(raylib::Color color) const
+    {
+        _color = color;
     }
 } // namespace Zappy

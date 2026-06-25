@@ -22,8 +22,8 @@ namespace ServerCmd = Shared::GUICommunication::Server;
 namespace Zappy {
     Environement::Environement(int port, const std::string &ip,
         std::ofstream &logFile, bool &isConnect) :
-        _map(_width, _height),
-        _players(logFile),
+        _map(_width, _height, _selectTile),
+        _players(logFile, _selectPlayer, _timeUnit),
         _timeUnit(0),
         _connect(port, ip),
         _isConnect(isConnect),
@@ -64,6 +64,7 @@ namespace Zappy {
             updateTeamInfo();
         updateTimeUnit();
         this->_players.update(dt);
+        _map.update(dt);
     }
 
     void Environement::setShader(Graphics::Shader &shader)

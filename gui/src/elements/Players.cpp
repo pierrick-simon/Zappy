@@ -12,8 +12,9 @@
 #include "graphics/AShadered.hpp"
 
 namespace Zappy {
-    Players::Players(std::ofstream &logFile) :
-        _logFile(logFile)
+    Players::Players(std::ofstream &logFile, std::optional<std::size_t> &select,
+        std::size_t &frequency) :
+        _logFile(logFile), _select(select), _frequency(frequency)
     {
         this->loadAnimations();
     }
@@ -59,14 +60,28 @@ namespace Zappy {
 
     void Players::draw3D() const
     {
-        for (const auto &player : this->_players | std::ranges::views::values)
+        for (auto &[id, player] : this->_players) {
+            auto color = raylib::Color::White();
+            if (_select && id == *_select && _changeColor) {
+                color.r -= Init::BLINK_OFFSET;
+                color.g -= Init::BLINK_OFFSET;
+                color.b -= Init::BLINK_OFFSET;
+                player.setColor(color);
+            }
             player.draw3D();
+            player.setColor(raylib::Color::White());
+        }
     }
 
     void Players::update(float dt)
     {
         for (auto &player : this->_players | std::ranges::views::values)
-            player.update(dt);
+            player.update(dt * float(_frequency));
+        if (_blink <= 0) {
+            _blink = Init::BLINK_TIME;
+            _changeColor = !_changeColor;
+        } else
+            _blink -= dt;
     }
 
     void Players::setShader(Graphics::Shader &shader)

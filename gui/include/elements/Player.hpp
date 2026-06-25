@@ -74,6 +74,9 @@ namespace Zappy {
 
         [[nodiscard]] Player2D::PlayerInfo getPlayerInfo() const;
 
+        [[nodiscard]] const raylib::Color &getColor() const;
+        void setColor(raylib::Color color) const;
+
         class PlayerException : public GUIException {
         public:
             PlayerException(const std::string &str) :
@@ -117,6 +120,8 @@ namespace Zappy {
         bool _dead = false;
 
         PlayerStatus::Status _status;
+
+        mutable raylib::Color _color;
 
         std::ofstream &_logFile;
 
