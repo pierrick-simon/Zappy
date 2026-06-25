@@ -8,8 +8,8 @@
 #ifndef TILE_HPP_
     #define TILE_HPP_
 
-    #include <map>
     #include <deque>
+    #include <map>
 
     #include "Assets.hpp"
     #include "Info.hpp"
@@ -26,9 +26,9 @@ namespace Zappy {
 
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
         getNbResources() const;
-        
-        [[nodiscard]] const std::map<Info::ResourceName, std::deque<Resource>>
-        &getResources() const;
+
+        [[nodiscard]] const std::map<Info::ResourceName, std::deque<Resource>> &
+        getResources() const;
 
         static constexpr raylib::Vector2 TILE_SIZE = {20, 20};
 

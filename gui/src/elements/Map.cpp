@@ -84,11 +84,12 @@ namespace Zappy {
         for (size_t i = 0; i < this->_tiles.size(); ++i) {
             size_t x = i % this->_width;
             size_t y = i / this->_width;
-            this->_tiles[i].setPosition({static_cast<float>(x) * Tile::TILE_SIZE.x -
-                    this->_renderedMapSize.x / 2.0f,
-                TILE_Y_POS,
-                static_cast<float>(y) * Tile::TILE_SIZE.y -
-                    this->_renderedMapSize.y / 2.0f});
+            this->_tiles[i].setPosition(
+                {static_cast<float>(x) * Tile::TILE_SIZE.x -
+                        this->_renderedMapSize.x / 2.0f,
+                    TILE_Y_POS,
+                    static_cast<float>(y) * Tile::TILE_SIZE.y -
+                        this->_renderedMapSize.y / 2.0f});
         }
     }
 
@@ -108,14 +109,19 @@ namespace Zappy {
     void Map::drawRessources(const Zappy::Tile &tile) const
     {
         auto infos = tile.getResources();
-        Vector3 baseScale(0.035, 0.035, 0.035);
-        
+
         for (const auto &[type, queue_item] : infos) {
             auto &model = this->_ressources_models.at(type);
-            for (const auto &item: queue_item) {
+            const auto &resourceScale = _modelScales.at(type);
+            for (const auto &item : queue_item) {
                 auto itemScale = item.getScale();
-                Vector3 scale(baseScale.x * itemScale, baseScale.y * itemScale, baseScale.z * itemScale);
-                model.Draw(tile.getPosition() + item.getPos(), Graphics::Vector3::ZERO, 0, scale);
+                Vector3 scale(resourceScale * itemScale,
+                    resourceScale * itemScale,
+                    resourceScale * itemScale);
+                model.Draw(tile.getPosition() + item.getPos(),
+                    Graphics::Vector3::ZERO,
+                    0,
+                    scale);
             }
         }
     }
@@ -150,4 +156,15 @@ namespace Zappy {
         }
         return tile;
     }
+
+    const std::unordered_map<Info::ResourceName, float> Map::_modelScales = {
+        {Info::ResourceName::FOOD, 0.07},
+        {Info::ResourceName::LINEMATE, 0.035},
+        {Info::ResourceName::DERAUMERE, 0.035},
+        {Info::ResourceName::SIBUR, 0.035},
+        {Info::ResourceName::MENDIANE, 0.035},
+        {Info::ResourceName::PHIRAS, 0.035},
+        {Info::ResourceName::THYSTAME, 0.035},
+    };
+
 } // namespace Zappy

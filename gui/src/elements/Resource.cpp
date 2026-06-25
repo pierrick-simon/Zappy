@@ -8,9 +8,7 @@
 #include "Resource.hpp"
 namespace Zappy {
     Resource::Resource(Info::ResourceName resource, Vector3 pos, float scale) :
-        _resource(resource),
-        _pos(pos),
-        _scale(scale)
+        _resource(resource), _pos(pos), _scale(scale)
     {
     }
 

@@ -8,14 +8,14 @@
 #ifndef RESOURCE_HPP_
     #define RESOURCE_HPP_
 
-    #include "Info.hpp"
     #include <Vector3.hpp>
+    #include "Info.hpp"
 
 namespace Zappy {
     class Resource {
     public:
         Resource(Info::ResourceName resource, Vector3 pos, float scale);
-        
+
         [[nodiscard]] Vector3 getPos() const;
         [[nodiscard]] float getScale() const;
 

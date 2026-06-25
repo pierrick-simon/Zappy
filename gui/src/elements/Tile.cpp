@@ -29,18 +29,22 @@ namespace Zappy {
         std::deque<Resource> &resource, std::size_t nb, Info::ResourceName type)
     {
         while (resource.size() != nb) {
-            Vector2 range((TILE_SIZE.x / 2.0) - TILE_PADDING * TILE_SIZE.x, (TILE_SIZE.y / 2.0) - TILE_PADDING * TILE_SIZE.y);
+            Vector2 range((TILE_SIZE.x / 2.0) - TILE_PADDING * TILE_SIZE.x,
+                (TILE_SIZE.y / 2.0) - TILE_PADDING * TILE_SIZE.y);
             if (resource.size() < nb)
-                resource.emplace_back(type, Vector3(
-                    Shared::Utils::fRandRange(-range.x, range.x), 0,
-                    Shared::Utils::fRandRange(-range.y, range.y)),
-                    Shared::Utils::fRandRange(1.0 - SCALE_MODIF_RANGE, 1.0 + SCALE_MODIF_RANGE));
+                resource.emplace_back(type,
+                    Vector3(Shared::Utils::fRandRange(-range.x, range.x),
+                        0,
+                        Shared::Utils::fRandRange(-range.y, range.y)),
+                    Shared::Utils::fRandRange(
+                        1.0 - SCALE_MODIF_RANGE, 1.0 + SCALE_MODIF_RANGE));
             else
                 resource.pop_front();
         }
     }
 
-    const std::map<Info::ResourceName, std::deque<Resource>> &Tile::getResources() const
+    const std::map<Info::ResourceName, std::deque<Resource>> &
+    Tile::getResources() const
     {
         return _resources;
     }
