@@ -9,6 +9,7 @@
 #include <iostream>
 #include <ranges>
 
+#include "Map.hpp"
 #include "graphics/AShadered.hpp"
 
 namespace Zappy {
@@ -32,6 +33,21 @@ namespace Zappy {
             value = iter.first->second;
         }
         return value;
+    }
+
+    void Players::initPos(std::size_t width, std::size_t height)
+    {
+        raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
+                                      static_cast<float>(height)} *
+            Tile::TILE_SIZE;
+        for (auto &[_, player] : _players) {
+            raylib::Vector2 center =
+                raylib::Vector2 {static_cast<float>(player.getX()),
+                    static_cast<float>(player.getY())} *
+                    Tile::TILE_SIZE -
+                mapSize / 2.0f;
+            player.initPos(center);
+        }
     }
 
     void Players::updateTotalResources(
@@ -88,8 +104,7 @@ namespace Zappy {
     {
         AShadered::setShader(shader);
         this->_model.materials[STONE_MAT].shader = this->getShader().asShader();
-        this->_model.materials[GLOWING_MAT].shader =
-            this->getShader().asShader();
+        this->_model.materials[GEM_MAT].shader = this->getShader().asShader();
     }
 
     void Players::loadAnimations()

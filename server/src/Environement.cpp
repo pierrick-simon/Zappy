@@ -259,40 +259,48 @@ namespace Zappy {
             static_cast<int>(size));
     }
 
-    void Environement::movePlayer(std::size_t id)
+    void Environement::movePlayer(std::size_t id, bool send)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto &player = find->second;
         const auto &dir = Info::directions.at(find->second.dir);
-        player.x = circularMove(player.x, dir.x, _width);
-        player.y = circularMove(player.y, dir.y, _height);
-        sendToGUI<Shared::PlayerPositionEvent>(
-            id, player.x, player.y, Info::directions.at(player.dir).nb);
+        auto x = circularMove(player.x, dir.x, _width);
+        auto y = circularMove(player.y, dir.y, _height);
+        if (send) {
+            sendToGUI<Shared::PlayerPositionEvent>(
+                id, x, y, Info::directions.at(player.dir).nb);
+        } else {
+            player.x = x;
+            player.y = y;
+        }
     }
 
-    void Environement::rotatePlayer(std::size_t id, Rotate rotate)
+    void Environement::rotatePlayer(std::size_t id, Rotate rotate, bool send)
     {
         auto find = _players.find(id);
         if (find == _players.end())
             throw PlayerNotFoundException(id);
         auto &player = find->second;
         auto dir = Info::directions.find(player.dir);
+        auto direction = Info::Direction::NORTH;
         if (rotate == Rotate::RIGHT) {
             if (dir == Info::directions.begin())
-                player.dir = Info::directions.rbegin()->first;
+                direction = Info::directions.rbegin()->first;
             else
-                player.dir = (--dir)->first;
+                direction = (--dir)->first;
         } else {
             if (dir == --Info::directions.end())
-                player.dir = Info::directions.begin()->first;
+                direction = Info::directions.begin()->first;
             else
-                player.dir = (++dir)->first;
+                direction = (++dir)->first;
         }
-        sendToGUI<Shared::PlayerPositionEvent>(
-            id, player.x, player.y, Info::directions.at(player.dir).nb);
-        dir = Info::directions.find(player.dir);
+        if (send)
+            sendToGUI<Shared::PlayerPositionEvent>(
+                id, player.x, player.y, Info::directions.at(direction).nb);
+        else
+            player.dir = direction;
     }
 
     bool Environement::takeResource(std::size_t id, Info::ResourceName name)

@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include "Map.hpp"
+#include "Players.hpp"
 #include "Utils.hpp"
 
 namespace Zappy {
@@ -18,8 +20,11 @@ namespace Zappy {
         _id(player.id),
         _x(player.x),
         _y(player.y),
+        _targetX(player.x),
+        _targetY(player.y),
         _level(player.level),
         _dir(Info::getDirection(player.dir)),
+        _targetDir(Info::getDirection(player.dir)),
         _team(player.team),
         _logFile(logFile),
         _status(PlayerStatus::Status::NONE),
@@ -30,16 +35,59 @@ namespace Zappy {
             "Player [" + std::to_string(_id) + "] joined the " + _team +
                 " team.");
         _inventory = Info::INIT_RESOUCES;
-        this->setAnimationIndex(0);
+        this->setAnimation(PlayerAnimations::IDLE);
     }
 
-    void Player::move(std::size_t x, std::size_t y, Info::Direction dir)
+    void Player::initPos(raylib::Vector2 pos)
     {
+        _position = raylib::Vector3 {pos.x, 0, pos.y};
+        this->_startPos = this->_position;
+        this->_targetPos = this->_position;
+    }
+
+    void Player::move(std::size_t x, std::size_t y, raylib::Vector2 target,
+        Info::Direction dir)
+    {
+        if (x != _x || y != _y) {
+            _startPos = this->_position;
+            _targetPos = raylib::Vector3 {target.x, 0, target.y};
+            _targetX = x;
+            _targetY = y;
+            _walking = true;
+            _timer = WALKING_TIME;
+        }
+        if (dir != _dir) {
+            _targetDir = dir;
+            this->_startRotation = this->getRotation();
+            this->_targetRotation =
+                DIRECTION_TO_QUATERNION[static_cast<std::size_t>(_targetDir)];
+            _rotate = true;
+            _timer = ROTATE_TIME;
+        }
+        _eject = false;
+    }
+
+    void Player::teleport(
+        std::size_t x, std::size_t y, std::size_t width, std::size_t height)
+    {
+        raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
+                                      static_cast<float>(height)} *
+            Tile::TILE_SIZE;
+        raylib::Vector2 oldCenter =
+            raylib::Vector2 {static_cast<float>(_x), static_cast<float>(_y)} *
+                Tile::TILE_SIZE -
+            mapSize / 2.0f;
+        raylib::Vector2 newCenter =
+            raylib::Vector2 {static_cast<float>(x), static_cast<float>(y)} *
+                Tile::TILE_SIZE -
+            mapSize / 2.0f;
+        raylib::Vector2 delta = newCenter - oldCenter;
+        _startPos += raylib::Vector3 {delta.x, 0, delta.y};
+        _targetPos += raylib::Vector3 {delta.x, 0, delta.y};
         _x = x;
         _y = y;
-        _dir = dir;
-        this->setRotation(
-            DIRECTION_TO_QUATERNION[static_cast<std::size_t>(dir)]);
+        _targetX = x;
+        _targetY = y;
         _eject = false;
     }
 
@@ -94,8 +142,10 @@ namespace Zappy {
 
     void Player::draw3D() const
     {
-        this->_model.UpdateAnimation(this->getCurrentAnimation(),
-            static_cast<float>(this->_animationFrame));
+        this->_model.GetMaterials()[Players::GEM_MAT].maps[0].color =
+            this->_gemColor;
+        this->_model.UpdateAnimation(
+            this->getCurrentAnimation(), this->_frameTime * ANIMATIONS_FPS);
         auto [axis, angle] = this->getRotation().ToAxisAngle();
         this->_model.Draw(this->_position,
             axis,
@@ -104,21 +154,55 @@ namespace Zappy {
             _color);
     }
 
-    void Player::update(float dt)
+    void Player::updateAction(float dt)
     {
-        this->_frameTime += dt;
-        float normalized =
-            std::fmod(this->_frameTime, this->_animationDuration);
-        this->_animationFrame =
-            static_cast<std::size_t>(normalized * ANIMATIONS_FPS);
+        if (_timer <= 0) {
+            if (_walking) {
+                _x = _targetX;
+                _y = _targetY;
+            }
+            if (_rotate) {
+                _dir = _targetDir;
+            }
+            _walking = false;
+            _rotate = false;
+        } else {
+            _timer -= dt;
+            if (_walking) {
+                auto progress =
+                    Maths::easeInOutSine(this->_timer / WALKING_TIME);
+                this->_position =
+                    this->_targetPos.Lerp(this->_startPos, progress);
+            }
+            if (this->_rotate) {
+                auto progress =
+                    Maths::easeInOutSine(this->_timer / ROTATE_TIME);
+                this->_rotation =
+                    this->_targetRotation.Slerp(this->_startRotation, progress);
+            }
+        }
+    }
+    void Player::setAnimation(PlayerAnimations::Animation animation)
+    {
+        this->_currentAnimation = animation;
+        auto anim = std::ranges::find(this->_modelAnimation,
+            std::string(this->_currentAnimation.name),
+            [](auto &anim) { return anim.name; });
+        if (anim == this->_modelAnimation.end())
+            throw std::runtime_error(
+                std::string {"Animation "} + animation.name + " doesn't exist");
+        this->_currentAnimationIndex = anim - this->_modelAnimation.begin();
+        this->_frameTime = 0;
     }
 
-    void Player::setAnimationIndex(size_t index)
+    void Player::update(float dt)
     {
-        this->_currentAnimationIndex = index;
-        this->_animationDuration =
-            static_cast<float>(this->getCurrentAnimation().keyframeCount) /
-            ANIMATIONS_FPS;
+        updateAction(dt);
+        this->_frameTime = getNextFrame(this->_currentAnimation.wrapMode,
+            this->_frameTime + dt,
+            this->getCurrentAnimation().keyframeCount,
+            ANIMATIONS_FPS);
+        ;
     }
 
     const ModelAnimation &Player::getCurrentAnimation() const
@@ -135,7 +219,10 @@ namespace Zappy {
     {
         _incantate = false;
         _fork = false;
+        _eject = true;
         _dead = true;
+        _walking = false;
+        _rotate = false;
         Shared::Utils::logMsg(
             _logFile, "Player [" + std::to_string(_id) + "] died.");
         _status = PlayerStatus::Status::DYING;

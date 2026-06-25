@@ -9,7 +9,6 @@
     #define PLAYER_HPP
 
     #include <Model.hpp>
-#include <ModelAnimation.hpp>
     #include <array>
     #include <string>
     #include "GUIException.hpp"
@@ -17,9 +16,10 @@
     #include "Maths.hpp"
     #include "NewPlayerEvent.hpp"
     #include "Player2D.hpp"
+    #include "PlayerAnimations.hpp"
     #include "PlayerStatus.hpp"
     #include "graphics/IDrawable3D.hpp"
-#include "graphics/IUpdatable.hpp"
+    #include "graphics/IUpdatable.hpp"
     #include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
@@ -37,7 +37,11 @@ namespace Zappy {
             std::ofstream &logFile, raylib::Model &model,
             std::vector<::ModelAnimation> &modelAnimation);
 
-        void move(std::size_t _x, std::size_t _y, Info::Direction _dir);
+        void initPos(raylib::Vector2 pos);
+        void move(std::size_t _x, std::size_t _y, raylib::Vector2 target,
+            Info::Direction _dir);
+        void teleport(std::size_t x, std::size_t y, std::size_t width,
+            std::size_t height);
 
         void addLevel();
         void setLevel(std::size_t level);
@@ -64,6 +68,21 @@ namespace Zappy {
         [[nodiscard]] std::size_t getLevel() const
         {
             return _level;
+        }
+
+        [[nodiscard]] std::size_t getX() const
+        {
+            return _x;
+        }
+
+        [[nodiscard]] std::size_t getY() const
+        {
+            return _y;
+        }
+
+        [[nodiscard]] bool getEject() const
+        {
+            return _eject;
         }
 
         [[nodiscard]] std::map<Info::ResourceName, std::size_t>
@@ -100,11 +119,17 @@ namespace Zappy {
         void draw3D() const override;
 
         void update(float dt) override;
+        void updateAction(float dt);
 
-        void setAnimationIndex(size_t index);
+        void setAnimation(PlayerAnimations::Animation animation);
 
         [[nodiscard]] const ModelAnimation &getCurrentAnimation() const;
         ModelAnimation &getCurrentAnimation();
+
+        void setGemColor(raylib::Color gemColor)
+        {
+            this->_gemColor = gemColor;
+        }
 
     private:
         std::size_t _id;
@@ -118,6 +143,19 @@ namespace Zappy {
         bool _fork = false;
         bool _eject = false;
         bool _dead = false;
+        bool _walking = false;
+        bool _rotate = false;
+
+        raylib::Vector3 _startPos;
+        raylib::Quaternion _startRotation;
+        raylib::Quaternion _targetRotation;
+
+        raylib::Vector3 _targetPos;
+        std::size_t _targetX;
+        std::size_t _targetY;
+        Info::Direction _targetDir;
+
+        float _timer = 0;
 
         PlayerStatus::Status _status;
 
@@ -127,12 +165,14 @@ namespace Zappy {
 
         raylib::Model &_model;
         std::vector<::ModelAnimation> &_modelAnimation;
-        size_t _currentAnimationIndex {0};
-        std::size_t _animationFrame {0};
         float _frameTime {0.0f};
-        float _animationDuration {0};
+        raylib::Color _gemColor {251, 110, 0};
+        PlayerAnimations::Animation _currentAnimation {PlayerAnimations::IDLE};
+        size_t _currentAnimationIndex {0};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
+        static constexpr float WALKING_TIME = 7.f;
+        static constexpr float ROTATE_TIME = 7.f;
     };
 } // namespace Zappy
 
