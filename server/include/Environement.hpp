@@ -80,9 +80,13 @@ namespace Zappy {
         void playerEat(std::size_t id,
             const std::map<Info::ResourceName, std::size_t> &inventory);
 
-        static const std::unordered_map<std::size_t,
-            std::pair<Shared::Vector2<double>, Shared::Vector2<double>>>
-            _broadcastChunks;
+        using rangeTile = struct {
+            std::size_t tile;
+            std::pair<Shared::Vector2<double>, Shared::Vector2<double>> range;
+        };
+
+        static constexpr std::size_t nbRange = 9;
+        static const std::array<rangeTile, nbRange> _broadcastChunks;
 
         [[nodiscard]] std::size_t getHeight() const
         {
@@ -154,7 +158,7 @@ namespace Zappy {
         Shared::Vector2<int> getBroadCastVector(
             const Player &sender, const Player &receiver) const;
         static std::size_t getTileNb(
-            const Player &receiver, const Shared::Vector2<int> &v);
+            const Player &receiver, Shared::Vector2<int> v);
 
         template<std::derived_from<Shared::GUIEvent> EventType,
             typename... Args>

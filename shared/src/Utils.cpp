@@ -40,4 +40,12 @@ namespace Shared {
     {
         return min + (float) std::rand() / (float) RAND_MAX * (max - min);
     }
+
+    double Utils::radToPos(double rad)
+    {
+        if (rad < 0)
+            return -rad + (2 * (M_PI + rad));
+        return rad;
+    }
+
 } // namespace Shared

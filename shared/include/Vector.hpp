@@ -65,7 +65,7 @@ namespace Shared {
             Shared::Vector2<T> r(x, y);
 
             for (std::size_t i = 0; i < nbQuarters; ++i)
-                r = Shared::Vector2<T>(-r.y, r.x);
+                r = Shared::Vector2<T>(r.y, -r.x);
             return r;
         };
     };
