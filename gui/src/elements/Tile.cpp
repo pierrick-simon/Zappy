@@ -39,7 +39,8 @@ namespace Zappy {
                         0,
                         Shared::Utils::fRandRange(-range.y, range.y)),
                     Shared::Utils::fRandRange(
-                        1.0 - SCALE_MODIF_RANGE, 1.0 + SCALE_MODIF_RANGE));
+                        1.0 - SCALE_MODIF_RANGE, 1.0 + SCALE_MODIF_RANGE),
+                    Shared::Utils::fRandRange(0, 2.0 * M_PI));
             else
                 resource.pop_front();
         }
