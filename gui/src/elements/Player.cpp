@@ -40,17 +40,17 @@ namespace Zappy {
 
     void Player::initPos(raylib::Vector2 pos)
     {
-        _startPos = pos;
-        _targetPos = pos;
         _position = raylib::Vector3 {pos.x, 0, pos.y};
+        this->_startPos = this->_position;
+        this->_targetPos = this->_position;
     }
 
     void Player::move(std::size_t x, std::size_t y, raylib::Vector2 target,
         Info::Direction dir)
     {
         if (x != _x || y != _y) {
-            _startPos = raylib::Vector2 {_position.x, _position.z};
-            _targetPos = target;
+            _startPos = this->_position;
+            _targetPos = raylib::Vector3 {target.x, 0, target.y};
             _targetX = x;
             _targetY = y;
             _walking = true;
@@ -79,8 +79,8 @@ namespace Zappy {
                 Map::TILE_SIZE -
             mapSize / 2.0f;
         raylib::Vector2 delta = newCenter - oldCenter;
-        _startPos += delta;
-        _targetPos += delta;
+        _startPos += raylib::Vector3 {delta.x, 0, delta.y};
+        _targetPos += raylib::Vector3 {delta.x, 0, delta.y};
         _x = x;
         _y = y;
         _targetX = x;
@@ -141,7 +141,8 @@ namespace Zappy {
     {
         this->_model.GetMaterials()[Players::GEM_MAT].maps[0].color =
             this->_gemColor;
-        this->_model.UpdateAnimation(this->getCurrentAnimation(), this->_frameTime * ANIMATIONS_FPS);
+        this->_model.UpdateAnimation(
+            this->getCurrentAnimation(), this->_frameTime * ANIMATIONS_FPS);
         auto [axis, angle] = this->getRotation().ToAxisAngle();
         this->_model.Draw(
             this->_position, axis, Maths::RadToDeg(angle), this->_scale);
@@ -163,13 +164,12 @@ namespace Zappy {
             _rotate = false;
         } else {
             _timer -= dt;
-            auto PositionOffset = raylib::Vector2 {0, 0};
-            if (_walking)
-                PositionOffset =
-                    (_startPos - _targetPos) * (_timer / WALKING_TIME);
-            _position = raylib::Vector3 {_targetPos.x + PositionOffset.x,
-                0,
-                _targetPos.y + PositionOffset.y};
+            if (_walking) {
+                auto progress =
+                    Maths::easeInOutSine(this->_timer / WALKING_TIME);
+                this->_position =
+                    this->_targetPos.Lerp(this->_startPos, progress);
+            }
         }
     }
     void Player::setAnimation(PlayerAnimations::Animation animation)

@@ -7,6 +7,7 @@
 
 #ifndef MATHS_HPP
     #define MATHS_HPP
+    #include <cmath>
     #include <numbers>
 namespace Maths {
     constexpr float DegToRad(float deg)
@@ -18,5 +19,11 @@ namespace Maths {
     {
         return rad * (180.0f / std::numbers::pi_v<float>);
     }
+
+    constexpr float easeInOutSine(float value)
+    {
+        return -(std::cosf(std::numbers::pi_v<float> * value) - 1) / 2;
+    }
+
 } // namespace Maths
 #endif
