@@ -71,6 +71,7 @@ namespace Zappy {
             elevation.overlay.setPos(pos);
             pos.y += Init::INCANTATION_SIZE.y + Init::INCANTATION_GAP;
             elevation.particle.update(dt);
+            elevation.particle.emit(dt);
         }
         for (auto iter = _finish.begin(); iter != _finish.end();) {
             iter->update(dt);

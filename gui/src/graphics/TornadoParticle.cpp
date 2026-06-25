@@ -60,7 +60,6 @@ namespace Graphics {
                 iter++;
             }
         }
-        emit(dt);
     }
 
     void TornadoParticle::spawnParticle()

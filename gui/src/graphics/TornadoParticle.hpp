@@ -33,6 +33,7 @@ namespace Graphics {
 
         void update(float dt) override;
         void draw3D() const override;
+        void emit(float dt);
 
         [[nodiscard]] bool isEmpty() const
         {
@@ -50,7 +51,6 @@ namespace Graphics {
         void spawnParticle();
         void updateParticle(float dt, Particle &particle);
         float getValue(Parameter range);
-        void emit(float dt);
 
         float _emitAccumulator = 0.f;
         float _emitRate;
