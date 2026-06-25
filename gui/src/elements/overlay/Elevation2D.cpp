@@ -46,7 +46,7 @@ namespace Zappy {
         _status.setColor(Init::GOLD_RICH);
     }
 
-    void Elevation2D::setPos(Vector2 pos)
+    void Elevation2D::setPos(raylib::Vector2 pos)
     {
         _box.setPos(pos);
         pos.x += Init::INCANTATION_GAP;

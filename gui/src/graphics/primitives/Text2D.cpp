@@ -31,11 +31,6 @@ namespace Graphics {
         _str = std::move(str);
     }
 
-    void Text2D::setOrigin(Vector2 origin)
-    {
-        _origin = origin;
-    }
-
     void Text2D::setFontSize(float fontSize)
     {
         _fontSize = fontSize;

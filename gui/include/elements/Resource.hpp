@@ -14,14 +14,14 @@
 namespace Zappy {
     class Resource {
     public:
-        Resource(Info::ResourceName resource, Vector3 pos, float scale);
+        Resource(Info::ResourceName resource, raylib::Vector3 pos, float scale);
 
-        [[nodiscard]] Vector3 getPos() const;
+        [[nodiscard]] raylib::Vector3 getPos() const;
         [[nodiscard]] float getScale() const;
 
     private:
         Info::ResourceName _resource;
-        Vector3 _pos;
+        raylib::Vector3 _pos;
         float _scale;
     };
 } // namespace Zappy

@@ -115,7 +115,7 @@ namespace Zappy {
             const auto &resourceScale = _modelScales.at(type);
             for (const auto &item : queue_item) {
                 auto itemScale = item.getScale();
-                Vector3 scale(resourceScale * itemScale,
+                raylib::Vector3 scale(resourceScale * itemScale,
                     resourceScale * itemScale,
                     resourceScale * itemScale);
                 model.Draw(tile.getPosition() + item.getPos(),

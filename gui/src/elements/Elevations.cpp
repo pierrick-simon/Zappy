@@ -16,7 +16,8 @@ namespace Zappy {
     }
 
     void Elevations::addElevation(std::size_t x, std::size_t y,
-        std::size_t level, std::vector<std::size_t> players, Vector2 pos)
+        std::size_t level, std::vector<std::size_t> players,
+        raylib::Vector2 pos)
     {
         auto param = LEVELPARAM.begin()->second;
         if (LEVELPARAM.contains(level))

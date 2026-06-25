@@ -22,7 +22,7 @@ namespace Zappy {
             raylib::Color boxColor);
 
         void setWidth(float width);
-        void setPos(Vector2 pos);
+        void setPos(raylib::Vector2 pos);
         void setMaxLine(std::size_t maxLine);
         void setFontSize(float fontSize);
         void setTextColor(raylib::Color color);

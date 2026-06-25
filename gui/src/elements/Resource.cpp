@@ -7,12 +7,13 @@
 
 #include "Resource.hpp"
 namespace Zappy {
-    Resource::Resource(Info::ResourceName resource, Vector3 pos, float scale) :
+    Resource::Resource(
+        Info::ResourceName resource, raylib::Vector3 pos, float scale) :
         _resource(resource), _pos(pos), _scale(scale)
     {
     }
 
-    Vector3 Resource::getPos() const
+    raylib::Vector3 Resource::getPos() const
     {
         return _pos;
     }

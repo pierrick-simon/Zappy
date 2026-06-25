@@ -29,11 +29,13 @@ namespace Zappy {
         std::deque<Resource> &resource, std::size_t nb, Info::ResourceName type)
     {
         while (resource.size() != nb) {
-            Vector2 range((TILE_SIZE.x / 2.0) - TILE_PADDING * TILE_SIZE.x,
+            raylib::Vector2 range(
+                (TILE_SIZE.x / 2.0) - TILE_PADDING * TILE_SIZE.x,
                 (TILE_SIZE.y / 2.0) - TILE_PADDING * TILE_SIZE.y);
             if (resource.size() < nb)
                 resource.emplace_back(type,
-                    Vector3(Shared::Utils::fRandRange(-range.x, range.x),
+                    raylib::Vector3(
+                        Shared::Utils::fRandRange(-range.x, range.x),
                         0,
                         Shared::Utils::fRandRange(-range.y, range.y)),
                     Shared::Utils::fRandRange(

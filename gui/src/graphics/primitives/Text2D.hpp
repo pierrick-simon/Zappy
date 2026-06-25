@@ -24,7 +24,6 @@ namespace Graphics {
 
         void setFont(raylib::Font &font);
         void setStr(std::string str);
-        void setOrigin(Vector2 origin);
         void setFontSize(float fontSize);
         void setSpacing(float spacing);
         void setColor(raylib::Color color);
@@ -42,7 +41,6 @@ namespace Graphics {
     private:
         std::optional<std::reference_wrapper<raylib::Font>> _font;
         std::string _str;
-        raylib::Vector2 _origin = {0, 0};
         float _fontSize = 0;
         float _spacing = 0;
         raylib::Color _color = raylib::Color::Black();
