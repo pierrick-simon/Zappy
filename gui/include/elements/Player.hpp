@@ -117,6 +117,8 @@ namespace Zappy {
         };
 
         void draw3D() const override;
+        void finishAction();
+        void moveAction(float dt);
 
         void update(float dt) override;
         void updateAction(float dt);
