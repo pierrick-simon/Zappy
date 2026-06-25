@@ -85,7 +85,8 @@ namespace Zappy {
             std::pair<Shared::Vector2<double>, Shared::Vector2<double>> range;
         };
 
-        static const std::array<rangeTile, 9> _broadcastChunks;
+        static constexpr std::size_t nbRange = 9;
+        static const std::array<rangeTile, nbRange> _broadcastChunks;
 
         [[nodiscard]] std::size_t getHeight() const
         {
