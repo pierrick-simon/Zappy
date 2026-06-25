@@ -80,9 +80,12 @@ namespace Zappy {
         void playerEat(std::size_t id,
             const std::map<Info::ResourceName, std::size_t> &inventory);
 
-        static const std::unordered_map<std::size_t,
-            std::pair<Shared::Vector2<double>, Shared::Vector2<double>>>
-            _broadcastChunks;
+        using rangeTile = struct {
+            std::size_t tile;
+            std::pair<Shared::Vector2<double>, Shared::Vector2<double>> range;
+        };
+
+        static const std::array<rangeTile, 9> _broadcastChunks;
 
         [[nodiscard]] std::size_t getHeight() const
         {

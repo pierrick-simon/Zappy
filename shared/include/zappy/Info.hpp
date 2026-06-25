@@ -16,7 +16,7 @@
 namespace Zappy {
     class Info {
     public:
-        enum class Direction { NORTH, EAST, SOUTH, WEST };
+        enum class Direction { NORTH, WEST, SOUTH, EAST };
 
         enum class ResourceName {
             FOOD,
