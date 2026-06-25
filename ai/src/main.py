@@ -6,7 +6,6 @@
 ##
 
 import sys
-import time
 import argparse
 import traceback
 

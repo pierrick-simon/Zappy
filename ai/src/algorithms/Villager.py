@@ -38,6 +38,7 @@ def get_missing_resources(inventory: dict[str, int], level: int) -> dict[str, in
         if inventory.get(ressource, 0) < quantity
     }
 
+
 def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
     common: set = dict_one.keys() & dict_two.keys()
 
@@ -143,7 +144,9 @@ class Villager:
 
     def call_followers(self):
         receivers: str = format_receivers(list(self.followers))
-        self.append_to_plan([f"Broadcast {self.id};incantation;{self.level};{receivers}"], MODE.MASTER)
+        self.append_to_plan(
+            [f"Broadcast {self.id};incantation;{self.level};{receivers}"], MODE.MASTER
+        )
 
     def deposit_stones(self):
         self.plan.clear()
@@ -161,7 +164,7 @@ class Villager:
             if self.backpack.inventory.get(ressource, 0) < quantity:
                 return False
         return True
-    
+
     def take_food_to_wait(self, tile: list[str]):
         if "food" in tile:
             self.append_to_plan(["Take food"], self.mode)
@@ -235,7 +238,6 @@ class Villager:
             if event is None:
                 break
             self.EVENTS[event.name](event)
-    
 
     def update_mode(self):
         previous_mode = self.mode
