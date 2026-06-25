@@ -7,9 +7,9 @@
 
 #include "Resource.hpp"
 namespace Zappy {
-    Resource::Resource(
-        Info::ResourceName resource, raylib::Vector3 pos, float scale) :
-        _resource(resource), _pos(pos), _scale(scale)
+    Resource::Resource(Info::ResourceName resource, raylib::Vector3 pos,
+        float scale, float rotation) :
+        _resource(resource), _pos(pos), _scale(scale), _rotation(rotation)
     {
     }
 
@@ -21,6 +21,11 @@ namespace Zappy {
     float Resource::getScale() const
     {
         return _scale;
+    }
+
+    float Resource::getRotation() const
+    {
+        return _rotation;
     }
 
 } // namespace Zappy
