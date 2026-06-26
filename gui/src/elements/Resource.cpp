@@ -17,6 +17,4 @@ namespace Zappy {
         this->Transformable3D::setRotation(
             raylib::Quaternion::FromEuler(0, rotation, 0));
     }
-
-
 } // namespace Zappy
