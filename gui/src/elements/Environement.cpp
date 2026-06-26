@@ -33,6 +33,7 @@ namespace Zappy {
     {
         _isConnect = false;
         std::srand(std::time(nullptr));
+        _music.Load(MUSIC.data());
     }
 
     bool Environement::updateFromServer()
@@ -71,6 +72,8 @@ namespace Zappy {
         updateTimeUnit();
         this->_players.update(dt);
         _map.update(dt);
+        if (!_music.IsPlaying())
+            _music.Play();
     }
 
     void Environement::setShader(Graphics::Shader &shader)
