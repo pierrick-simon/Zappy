@@ -118,6 +118,8 @@ namespace Zappy {
         };
 
         void draw3D() const override;
+        void destroy();
+        [[nodiscard]] bool canDestroy() const;
         void finishActions();
         void updateAcrossMapAction(float dt);
         void updateActions(float dt);
@@ -176,6 +178,7 @@ namespace Zappy {
         PlayerAnimations::Animation _currentAnimation {PlayerAnimations::IDLE};
         size_t _currentAnimationIndex {0};
         float _animationSpeedScale {1.0f};
+        bool _destroy {false};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
         static constexpr float WALKING_TIME = 6.9f;

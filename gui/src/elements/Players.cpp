@@ -6,6 +6,8 @@
 */
 
 #include "Players.hpp"
+
+#include <algorithm>
 #include <iostream>
 #include <ranges>
 
@@ -95,6 +97,8 @@ namespace Zappy {
 
     void Players::update(float dt)
     {
+        std::erase_if(this->_players,
+            [](const auto &player) { return player.second.canDestroy(); });
         for (auto &player : this->_players | std::ranges::views::values)
             player.update(dt * float(_frequency));
         if (_blink <= 0) {

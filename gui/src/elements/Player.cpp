@@ -144,6 +144,8 @@ namespace Zappy {
         Shared::Utils::logMsg(
             _logFile, "Player [" + std::to_string(_id) + "] died.");
         _status = PlayerStatus::Status::DYING;
+        this->setAnimation(PlayerAnimations::DEATH);
+        this->_timer = this->getAnimationDuration();
     }
 
     void Player::takeResource(Info::ResourceName resource)
@@ -193,6 +195,16 @@ namespace Zappy {
             _color);
     }
 
+    void Player::destroy()
+    {
+        this->_destroy = true;
+    }
+
+    bool Player::canDestroy() const
+    {
+        return this->_destroy;
+    }
+
     void Player::finishActions()
     {
         if (_walking) {
@@ -205,6 +217,8 @@ namespace Zappy {
             _dir = _targetDir;
             _rotate = false;
         }
+        if (_dead)
+            this->destroy();
     }
 
     void Player::updateAcrossMapAction(float dt)
