@@ -9,7 +9,7 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    Overlay::Overlay(std::map<std::string, raylib::Color> &teams) :
+    Overlay::Overlay(std::map<std::string, raylib::Color> &teams, bool &quit) :
         _font(Init::FONT_PATH.data()),
         resources(_font),
         chatBox(_font, teams),
@@ -17,7 +17,8 @@ namespace Zappy {
         player(_font, teams),
         team(_font, teams),
         tile(_font),
-        timeUnit(_font)
+        timeUnit(_font),
+        end(_font, teams, quit)
     {
     }
 

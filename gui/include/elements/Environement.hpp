@@ -111,9 +111,8 @@ namespace Zappy {
         std::unordered_map<std::size_t, Egg> _eggs;
         std::map<std::string, raylib::Color> _teams;
         std::size_t _timeUnit;
-        std::string _winingTeam;
 
-        bool _end = false;
+        bool _quit = false;
         Shared::Connect _connect;
         std::string _buffer;
         bool _loading = false;
@@ -125,6 +124,8 @@ namespace Zappy {
         Graphics::ColorGenerator _colorGenerator;
         Overlay _overlay;
         Elevations _elevations;
+
+        std::optional<std::string> _winingTeam;
 
         bool &_isConnect;
         std::ofstream &_logFile;

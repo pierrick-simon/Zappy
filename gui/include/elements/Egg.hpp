@@ -41,7 +41,7 @@ namespace Zappy {
         static constexpr float EGG_SCALE_MODIFIER = 0.2;
         static constexpr raylib::Vector2 RANGE = raylib::Vector2 {
             (Tile::TILE_SIZE.x / 2.0) - Tile::TILE_PADDING * Tile::TILE_SIZE.x,
-            (Tile::TILE_SIZE.y / 2.0) - Tile::TILE_PADDING * Tile::TILE_SIZE.y};
+            (Tile::TILE_SIZE.y / 2.0) - Tile::TILE_PADDING *Tile::TILE_SIZE.y};
     };
 } // namespace Zappy
 

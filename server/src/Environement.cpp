@@ -374,7 +374,7 @@ namespace Zappy {
         std::map<std::string, std::size_t> map;
         for (const auto &[_, player] : _players) {
             auto find = map.find(player.team);
-            if (find != map.end())
+            if (find != map.end() && player.level >= MAX_LEVEL)
                 find->second++;
             else
                 map.emplace(player.team, 1);
@@ -416,7 +416,7 @@ namespace Zappy {
             }
         }
         sendToGUI<Shared::TileInfoEvent>(x, y, getTileValue(tile));
-        if (level + 1 == MAX_LEVEL)
+        if (level + 1 >= MAX_LEVEL)
             checkEnd();
     }
 

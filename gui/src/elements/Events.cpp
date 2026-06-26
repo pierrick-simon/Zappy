@@ -344,9 +344,9 @@ namespace Zappy {
         Shared::EndOfGameEvent event;
         event.retrieve(std::move(stream));
         _winingTeam = event.getStr();
-        _end = true;
+        _overlay.end.win(event.getStr());
         Shared::Utils::logMsg(_logFile,
-            "End of game: the " + _winingTeam + " team won the game.");
+            "End of game: the " + *_winingTeam + " team won the game.");
     }
 
     void Environement::serverMsg(std::istringstream stream)
