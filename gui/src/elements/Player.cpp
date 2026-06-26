@@ -45,6 +45,13 @@ namespace Zappy {
         this->_targetPos = this->_position;
     }
 
+    bool Player::isMovementAcrossMap() const
+    {
+        auto &dir = Info::directions.at(this->_dir);
+        return this->_x + dir.x != this->_targetX ||
+            this->_y + dir.y != this->_targetY;
+    }
+
     void Player::move(std::size_t x, std::size_t y, raylib::Vector2 target,
         Info::Direction dir)
     {
@@ -54,6 +61,7 @@ namespace Zappy {
             _targetX = x;
             _targetY = y;
             _walking = true;
+            _acrossMap = this->isMovementAcrossMap();
             _timer = WALKING_TIME;
         }
         if (dir != _dir) {
@@ -135,86 +143,6 @@ namespace Zappy {
         _eject = eject;
     }
 
-    std::size_t Player::getTile(std::size_t width) const
-    {
-        return _y * width + _x;
-    }
-
-    void Player::draw3D() const
-    {
-        this->_model.GetMaterials()[Players::GEM_MAT].maps[0].color =
-            this->_gemColor;
-        this->_model.UpdateAnimation(
-            this->getCurrentAnimation(), this->_frameTime * ANIMATIONS_FPS);
-        auto [axis, angle] = this->getRotation().ToAxisAngle();
-        this->_model.Draw(this->_position,
-            axis,
-            Maths::RadToDeg(angle),
-            this->_scale,
-            _color);
-    }
-
-    void Player::updateAction(float dt)
-    {
-        if (_timer <= 0) {
-            if (_walking) {
-                _x = _targetX;
-                _y = _targetY;
-            }
-            if (_rotate) {
-                _dir = _targetDir;
-            }
-            _walking = false;
-            _rotate = false;
-        } else {
-            _timer -= dt;
-            if (_walking) {
-                auto progress =
-                    Maths::easeInOutSine(this->_timer / WALKING_TIME);
-                this->_position =
-                    this->_targetPos.Lerp(this->_startPos, progress);
-            }
-            if (this->_rotate) {
-                auto progress =
-                    Maths::easeInOutSine(this->_timer / ROTATE_TIME);
-                this->_rotation =
-                    this->_targetRotation.Slerp(this->_startRotation, progress);
-            }
-        }
-    }
-    void Player::setAnimation(PlayerAnimations::Animation animation)
-    {
-        this->_currentAnimation = animation;
-        auto anim = std::ranges::find(this->_modelAnimation,
-            std::string(this->_currentAnimation.name),
-            [](auto &anim) { return anim.name; });
-        if (anim == this->_modelAnimation.end())
-            throw std::runtime_error(
-                std::string {"Animation "} + animation.name + " doesn't exist");
-        this->_currentAnimationIndex = anim - this->_modelAnimation.begin();
-        this->_frameTime = 0;
-    }
-
-    void Player::update(float dt)
-    {
-        updateAction(dt);
-        this->_frameTime = getNextFrame(this->_currentAnimation.wrapMode,
-            this->_frameTime + dt,
-            this->getCurrentAnimation().keyframeCount,
-            ANIMATIONS_FPS);
-        ;
-    }
-
-    const ModelAnimation &Player::getCurrentAnimation() const
-    {
-        return this->_modelAnimation[this->_currentAnimationIndex];
-    }
-
-    ModelAnimation &Player::getCurrentAnimation()
-    {
-        return this->_modelAnimation[this->_currentAnimationIndex];
-    }
-
     void Player::died()
     {
         _incantate = false;
@@ -240,6 +168,11 @@ namespace Zappy {
             find->second--;
     }
 
+    std::size_t Player::getTile(std::size_t width) const
+    {
+        return _y * width + _x;
+    }
+
     Player2D::PlayerInfo Player::getPlayerInfo() const
     {
         return Player2D::PlayerInfo {
@@ -255,4 +188,130 @@ namespace Zappy {
     {
         _color = color;
     }
+
+    void Player::draw3D() const
+    {
+        this->_model.GetMaterials()[Players::GEM_MAT].maps[0].color =
+            this->_gemColor;
+        this->_model.UpdateAnimation(
+            this->getCurrentAnimation(), this->_frameTime * ANIMATIONS_FPS);
+        auto [axis, angle] = this->getRotation().ToAxisAngle();
+        this->_model.Draw(this->_position,
+            axis,
+            Maths::RadToDeg(angle),
+            this->_scale,
+            _color);
+    }
+
+    void Player::finishActions()
+    {
+        if (_walking) {
+            _x = _targetX;
+            _y = _targetY;
+            this->_acrossMap = false;
+            _walking = false;
+        }
+        if (_rotate) {
+            _dir = _targetDir;
+            _rotate = false;
+        }
+    }
+
+    void Player::updateAcrossMapAction(float dt)
+    {
+        float prevAnimPercentage = 1 - (_timer + dt) / WALKING_TIME;
+        float animPercentage = 1 - _timer / WALKING_TIME;
+
+        for (auto &[percent, keyframeMethod] : ACROSS_MAP_ANIMATION_KEYFRAMES) {
+            if (percent >= prevAnimPercentage && percent <= animPercentage)
+                keyframeMethod(*this);
+        }
+    }
+
+    void Player::updateActions(float dt)
+    {
+        _timer -= dt;
+        if (_walking) {
+            if (!this->_acrossMap) {
+                auto progress =
+                    Maths::easeInOutSine(this->_timer / WALKING_TIME);
+                this->_position =
+                    this->_targetPos.Lerp(this->_startPos, progress);
+            } else
+                updateAcrossMapAction(dt);
+        }
+        if (this->_rotate) {
+            auto progress = Maths::easeInOutSine(this->_timer / ROTATE_TIME);
+            this->_rotation =
+                this->_targetRotation.Slerp(this->_startRotation, progress);
+        }
+    }
+
+    void Player::update(float dt)
+    {
+        handleActions(dt);
+        this->_frameTime = getNextFrame(this->_currentAnimation.wrapMode,
+            this->_frameTime + dt * this->_animationSpeedScale,
+            this->getCurrentAnimation().keyframeCount,
+            ANIMATIONS_FPS);
+    }
+
+    void Player::handleActions(float dt)
+    {
+        if (_timer <= 0) {
+            finishActions();
+        } else {
+            updateActions(dt);
+        }
+    }
+
+    void Player::setAnimation(PlayerAnimations::Animation animation)
+    {
+        this->_currentAnimation = animation;
+        auto anim = std::ranges::find(this->_modelAnimation,
+            std::string(this->_currentAnimation.name),
+            [](auto &anim) { return anim.name; });
+        if (anim == this->_modelAnimation.end())
+            throw std::runtime_error(
+                std::string {"Animation "} + animation.name + " doesn't exist");
+        this->_currentAnimationIndex = anim - this->_modelAnimation.begin();
+        this->_frameTime = 0;
+    }
+
+    const ModelAnimation &Player::getCurrentAnimation() const
+    {
+        return this->_modelAnimation[this->_currentAnimationIndex];
+    }
+
+    ModelAnimation &Player::getCurrentAnimation()
+    {
+        return this->_modelAnimation[this->_currentAnimationIndex];
+    }
+
+    float Player::getAnimationDuration()
+    {
+        return static_cast<float>(this->getCurrentAnimation().keyframeCount) /
+            ANIMATIONS_FPS;
+    }
+
+    const std::unordered_map<float, std::function<void(Player &)>>
+        Player::ACROSS_MAP_ANIMATION_KEYFRAMES {
+            {0.0f,
+                [](Player &player) {
+                    player.setAnimation(PlayerAnimations::DIGGING_DOWN);
+                    float targetDuration =
+                        WALKING_TIME * ACROSS_MAP_DIG_TIME_PERCENT;
+                    player._animationSpeedScale =
+                        player.getAnimationDuration() / targetDuration;
+                }},
+            {ACROSS_MAP_DIG_TIME_PERCENT,
+                [](Player &player) { player.setPosition(player._targetPos); }},
+            {1.0f - ACROSS_MAP_DIG_TIME_PERCENT,
+                [](Player &player) {
+                    player.setAnimation(PlayerAnimations::DIGGING_UP);
+                }},
+            {1.0f, [](Player &player) {
+                 player.setAnimation(PlayerAnimations::IDLE);
+                 player._animationSpeedScale = 1.0f;
+             }}};
 } // namespace Zappy

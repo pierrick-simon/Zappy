@@ -14,7 +14,9 @@
 namespace Graphics {
 
     class Pressed {};
+
     class PressedRepeat {};
+
     class Released {};
 
     using Event = std::variant<Pressed, PressedRepeat, Released>;

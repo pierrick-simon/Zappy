@@ -76,7 +76,7 @@ namespace Zappy {
         if (count >= nbResource)
             return false;
         for (std::size_t i = 0; i < nbResource - count; ++i)
-            setResource(rand() % (_width * _height), type, 1);
+            setResource(std::rand() % (_width * _height), type, 1);
         return true;
     }
 
@@ -112,7 +112,7 @@ namespace Zappy {
             }
         }
         if (!info.players.empty() || !info.eggs.empty() || is_ressources)
-            formatedTile += "\b";
+            formatedTile.pop_back();
         return formatedTile;
     }
 
@@ -138,7 +138,7 @@ namespace Zappy {
                 pos.y = circularMove(pos.y, static_cast<int>(right.y), _height);
             }
         }
-        list += "\b]";
+        list.pop_back();
         return list;
     }
 
@@ -588,11 +588,13 @@ namespace Zappy {
             auto hightAngle = n.angle(range.second);
             lowerAngle = Shared::Utils::radToPos(lowerAngle);
             hightAngle = Shared::Utils::radToPos(hightAngle);
-            if (angle <= std::max(lowerAngle, hightAngle) &&
-                angle >= std::min(lowerAngle, hightAngle))
+            if (angle <= std::max(lowerAngle, hightAngle) ||
+                (hightAngle == 0.f &&
+                    angle <= std::max(lowerAngle, 2 * M_PI)) &&
+                    angle >= std::min(lowerAngle, hightAngle))
                 return tile;
         }
-        throw ServerException("Error getTileNb");
+        return 1;
     }
 
     void Environement::broadcast(std::size_t id, const std::string &text)
@@ -602,6 +604,8 @@ namespace Zappy {
             throw PlayerNotFoundException(id);
         sendToGUI<Shared::BroadcastEvent>(id, text);
         for (auto &p : _players) {
+            if (p.first == find->first)
+                continue;
             auto v = getBroadCastVector(find->second, p.second);
             v.y = -v.y;
             auto i = getTileNb(p.second, v);
@@ -690,7 +694,7 @@ namespace Zappy {
             id, find->second.x, find->second.y, resources);
     }
 
-    const std::array<Environement::rangeTile, 9>
+    const std::array<Environement::rangeTile, Environement::NBRANGE>
         Environement::_broadcastChunks = {
             Environement::rangeTile {1, {{0.0, 1.5}, {-0.5, 1.5}}},
             Environement::rangeTile {2, {{-0.5, 1.5}, {-1.5, 0.5}}},

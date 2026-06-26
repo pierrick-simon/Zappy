@@ -40,6 +40,7 @@ CompactNamespaces: false
 ContinuationIndentWidth: 4
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: LogicalBlock
+SeparateDefinitionBlocks: Always
 IncludeBlocks: Preserve
 IncludeCategories:
   - Regex: '^<.*'

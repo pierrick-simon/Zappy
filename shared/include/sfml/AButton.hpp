@@ -27,10 +27,12 @@ namespace SfmlUtils {
         {
             return _hover;
         }
+
         void setBound(sf::FloatRect bound)
         {
             _bound = bound;
         }
+
         ButtonType getType()
         {
             return _type;

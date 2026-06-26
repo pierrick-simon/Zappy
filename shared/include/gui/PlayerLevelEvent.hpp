@@ -22,6 +22,7 @@ namespace Shared {
         {
             return _id;
         }
+
         [[nodiscard]] std::size_t getLevel() const
         {
             return _level;

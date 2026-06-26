@@ -6,6 +6,7 @@
 */
 
 #include "Resource.hpp"
+
 namespace Zappy {
     Resource::Resource(Info::ResourceName resource, raylib::Vector3 pos,
         float scale, float rotation) :

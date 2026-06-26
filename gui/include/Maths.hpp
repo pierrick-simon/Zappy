@@ -9,6 +9,7 @@
     #define MATHS_HPP
     #include <cmath>
     #include <numbers>
+
 namespace Maths {
     constexpr float DegToRad(float deg)
     {
