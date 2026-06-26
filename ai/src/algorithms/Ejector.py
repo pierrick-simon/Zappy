@@ -71,7 +71,9 @@ class EjectorAi:
         """
         obs = self._exec_func("Look")
         auto_gather = ag.AutoGatherModule()
-        plan = auto_gather.auto_gather(obs=obs, aimed_materials={"food": 30}, max_time=300)
+        plan = auto_gather.auto_gather(
+            obs=obs, aimed_materials={"food": 30}, max_time=300
+        )
         for action in plan:
             self._exec_func(action)
         self._step_ahead()
@@ -85,7 +87,11 @@ class EjectorAi:
         obs = list(self._exec_func("Look"))
         obs[0].remove("player")
         auto_gather = ag.AutoGatherModule()
-        plan = auto_gather.auto_gather(obs=obs, aimed_materials={"player": 30, "eggs": 10, "Elevation": 10}, max_time=300)
+        plan = auto_gather.auto_gather(
+            obs=obs,
+            aimed_materials={"player": 30, "eggs": 10, "Elevation": 10},
+            max_time=300,
+        )
         for action in plan:
             if str(action).startswith("Take"):
                 self._exec_func("Eject")
@@ -112,16 +118,16 @@ class EjectorAi:
         """
         self._backpack.tick(command)
         if command.startswith("Take"):
-            result = take(self._handler, command.split(' ')[1])
+            result = take(self._handler, command.split(" ")[1])
             if result:
-                self._backpack.add_to_inventory([command.split(' ')[1]])
+                self._backpack.add_to_inventory([command.split(" ")[1]])
             return result
         elif command.startswith("Set"):
-            result = set_down(self._handler, command.split(' ')[1])
+            result = set_down(self._handler, command.split(" ")[1])
             if result:
-                self._backpack.del_from_inventory([command.split(' ')[1]])
+                self._backpack.del_from_inventory([command.split(" ")[1]])
             return result
         elif command.startswith("Broadcast"):
-            return broadcast(self._handler, command.split(' ')[1])
+            return broadcast(self._handler, command.split(" ")[1])
         else:
             return COMMAND_FACTORY[command](self._handler)

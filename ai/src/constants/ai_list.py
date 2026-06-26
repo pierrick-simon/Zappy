@@ -25,5 +25,5 @@ AI_LIST: dict[str, Any] = {
     "layer": LayerAi,
     "randomizer": RandomizerAi,
     "worker": WorkerAi,
-    "ejector": EjectorAi
+    "ejector": EjectorAi,
 }

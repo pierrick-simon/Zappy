@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <array>
 #include <ctime>
+#include <iostream>
 #include <optional>
 #include <random>
 #include <ranges>

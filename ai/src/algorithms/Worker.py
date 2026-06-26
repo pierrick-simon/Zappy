@@ -55,8 +55,17 @@ class WorkerAi:
         if self._backpack.inventory["food"] < 15:
             self._seek_objects({"food": 100})
         else:
-            self._seek_objects({"food": 99, "linemate": 99, "deraumere": 99, "sibur": 99,
-                                "mendiane": 99, "phiras": 99, "thystame": 99})
+            self._seek_objects(
+                {
+                    "food": 99,
+                    "linemate": 99,
+                    "deraumere": 99,
+                    "sibur": 99,
+                    "mendiane": 99,
+                    "phiras": 99,
+                    "thystame": 99,
+                }
+            )
 
     def _seek_objects(self, objects: dict) -> None:
         obs = self._exec_func("Look")
@@ -65,7 +74,6 @@ class WorkerAi:
         for action in plan:
             self._exec_func(action)
         self._explore()
-
 
     def _explore(self) -> None:
         """! Moves forward and randomly turns to avoid looping

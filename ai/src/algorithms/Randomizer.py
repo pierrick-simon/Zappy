@@ -73,7 +73,9 @@ class RandomizerAi:
         elif command.startswith("Broadcast"):
             message = ""
             for i in range(random.randint(1, 500)):
-                message += random.choice(string.ascii_letters + string.digits + string.punctuation)
+                message += random.choice(
+                    string.ascii_letters + string.digits + string.punctuation
+                )
             return broadcast(self._handler, message.strip(" \n"))
         else:
             return COMMAND_FACTORY[command](self._handler)
