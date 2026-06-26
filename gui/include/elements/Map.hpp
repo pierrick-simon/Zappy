@@ -69,7 +69,7 @@ namespace Zappy {
         void updateTotalResources(
             const std::map<Info::ResourceName, std::size_t> &before,
             std::map<Info::ResourceName, std::size_t> after);
-        void spwanGrass();
+        void spawnGrass();
 
         std::size_t &_width;
         std::size_t &_height;

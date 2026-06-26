@@ -51,7 +51,7 @@ namespace Zappy {
         return value;
     }
 
-    void Map::spwanGrass()
+    void Map::spawnGrass()
     {
         _grasses.clear();
         std::size_t nbGrass = GRASS_PER_TILE * _tiles.size();
