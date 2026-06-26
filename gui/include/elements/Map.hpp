@@ -85,7 +85,8 @@ namespace Zappy {
         static constexpr float GRASS_DENSITY = 0.05f;
         static constexpr auto GRASS_PER_TILE = static_cast<std::size_t>(
             GRASS_DENSITY * Tile::TILE_SIZE.x * Tile::TILE_SIZE.y);
-        static constexpr float GRASS_SCALE = 0.2f;
+        static constexpr float MAX_GRASS_SCALE = 0.25f;
+        static constexpr float MIN_GRASS_SCALE = 0.15f;
         static constexpr float BORDER_GRASS = 1.f;
         std::vector<std::pair<std::size_t, Graphics::Transformable3D>> _grasses;
 

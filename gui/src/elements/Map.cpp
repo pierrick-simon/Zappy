@@ -59,16 +59,20 @@ namespace Zappy {
         std::size_t nbGrass = GRASS_PER_TILE * _tiles.size();
         for (std::size_t i = 0; i < nbGrass; ++i) {
             auto id = rand() % NB_GRASS_MODELS;
-            auto &newGrass = _grasses.emplace_back(id, Graphics::Transformable3D{});
-            newGrass.second.setPosition(
+            auto &newGrass =
+                _grasses.emplace_back(id, Graphics::Transformable3D {}).second;
+            newGrass.setPosition(
                 raylib::Vector3(Shared::Utils::fRandRange(BORDER_GRASS,
                                     _renderedMapSize.x - BORDER_GRASS / 2.f) -
                         (_renderedMapSize.x + Tile::TILE_SIZE.x) / 2.f,
                     0,
                     Shared::Utils::fRandRange(
                         BORDER_GRASS, _renderedMapSize.y - BORDER_GRASS / 2.f) -
-                        (_renderedMapSize.y + Tile::TILE_SIZE.y) / 2.f)
-                );
+                        (_renderedMapSize.y + Tile::TILE_SIZE.y) / 2.f));
+            newGrass.setRotation(raylib::Quaternion::FromEuler(
+                0, Shared::Utils::fRandRange(0, 2.0 * M_PI), 0));
+            newGrass.setScale(raylib::Vector3::One() *
+                Shared::Utils::fRandRange(MIN_GRASS_SCALE, MAX_GRASS_SCALE));
         }
     }
 
@@ -149,8 +153,13 @@ namespace Zappy {
 
     void Map::drawGrass() const
     {
-        for (const auto &[id, pos] : _grasses)
-            _grassModels.at(id).Draw(pos, GRASS_SCALE);
+        for (const auto &[id, grass] : _grasses) {
+            auto [axis, angle] = grass.getRotation().ToAxisAngle();
+            _grassModels.at(id).Draw(grass.getPosition(),
+                axis,
+                Maths::RadToDeg(angle),
+                grass.getScale());
+        }
     }
 
     void Map::drawRessources(const Tile &tile) const
