@@ -7,6 +7,8 @@
 
 #include "Map.hpp"
 #include <iostream>
+#include <ranges>
+
 #include "Maths.hpp"
 #include "Utils.hpp"
 #include "UtilsVector.hpp"
@@ -132,11 +134,16 @@ namespace Zappy {
     void Map::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
-        this->_tileModel.materials[1].shader = this->getShader().asShader();
-        for (auto &[type, model] : _ressources_models)
-            model.materials[1].shader = this->getShader().asShader();
+        this->_tileModel.materials[GRASS_MATERIAL].shader =
+            this->getShader().asShader();
+        this->_tileModel.materials[DIRT_MATERIAL].shader =
+            this->getShader().asShader();
+        for (auto &model : _ressources_models | std::views::values)
+            model.materials[DEFAULT_MATERIAL].shader =
+                this->getShader().asShader();
         for (auto &model : _grassModels)
-            model.materials[1].shader = this->getShader().asShader();
+            model.materials[DEFAULT_MATERIAL].shader =
+                this->getShader().asShader();
     }
 
     void Map::drawGrass() const
