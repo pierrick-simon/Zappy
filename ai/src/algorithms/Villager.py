@@ -9,7 +9,7 @@ from random import randint
 from uuid import UUID, uuid4
 from enum import Enum
 from collections import deque
-from typing import Callable, Optional, Any
+from typing import Callable
 
 from src.connection_handler import ConnectionHandler
 from src.dataclasses_models import Command, Event
@@ -36,15 +36,6 @@ def get_missing_resources(inventory: dict[str, int], level: int) -> dict[str, in
         for ressource, quantity in INCANTATION_PREREQUISITES[level].items()
         if inventory.get(ressource, 0) < quantity
     }
-
-
-def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
-    common: set = dict_one.keys() & dict_two.keys()
-
-    if common:
-        return common.pop()
-    else:
-        return None
 
 
 class Villager:
@@ -167,7 +158,6 @@ class Villager:
             return
 
     def handle_message(self, event: Event) -> None:
-        print(f"message={event}")
         self.BROADCAST_COMPORTEMENT[self.mode](event)
 
     def handle_eject(self, event: Event) -> None:
@@ -205,7 +195,6 @@ class Villager:
 
     def handle_response(self, command: tuple[MODE, Command]):
         send_and_recv(self.handler, command[1])
-        print(f"{command=}")
         self.backpack.tick(command[1].command)
         if command[1].command == "Take" and command[1].response == "ok":
             self.backpack.add_to_inventory([command[1].argument])
