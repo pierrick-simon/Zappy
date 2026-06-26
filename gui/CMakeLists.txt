@@ -23,6 +23,7 @@ set(SRCS
         src/graphics/AShadered.cpp
         src/graphics/ColorGenerator.cpp
         src/graphics/TornadoParticle.cpp
+        src/graphics/SkyBox.cpp
         src/graphics/primitives/Model.cpp
         src/graphics/primitives/Sphere.cpp
         src/graphics/primitives/Text2D.cpp

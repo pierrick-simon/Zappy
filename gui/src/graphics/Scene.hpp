@@ -16,6 +16,7 @@
     #include "graphics/Camera.hpp"
     #include "graphics/IShadered.hpp"
     #include "graphics/Shader.hpp"
+    #include "graphics/SkyBox.hpp"
     #include "graphics/UiObject.hpp"
     #include "graphics/primitives/Model.hpp"
 
@@ -32,7 +33,6 @@ namespace Graphics {
         [[nodiscard]] const raylib::Camera &getCamera() const;
         void update(float dt);
         void drawUiObjects() const;
-
         void event();
 
         template<std::derived_from<IObject> GameObjectType>
@@ -51,7 +51,9 @@ namespace Graphics {
             this->_objects.emplace_back(gameObject);
         }
 
+        void drawSkyBox() const;
         void drawGameObjects() const;
+
         void setShaderForModels() const;
         void setShaderForModel(const Model &model) const;
         Shader &getShader();
@@ -68,6 +70,7 @@ namespace Graphics {
         Camera _camera {CAMERA_POS};
 
         Shader _shader;
+        SkyBox _skyBox;
     };
 } // namespace Graphics
 
