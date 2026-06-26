@@ -7,6 +7,8 @@
 
 #include "Map.hpp"
 #include <iostream>
+#include <ranges>
+
 #include "Maths.hpp"
 #include "Utils.hpp"
 #include "UtilsVector.hpp"
@@ -57,15 +59,20 @@ namespace Zappy {
         std::size_t nbGrass = GRASS_PER_TILE * _tiles.size();
         for (std::size_t i = 0; i < nbGrass; ++i) {
             auto id = rand() % NB_GRASS_MODELS;
-            auto pos =
+            auto &newGrass =
+                _grasses.emplace_back(id, Graphics::Transformable3D {}).second;
+            newGrass.setPosition(
                 raylib::Vector3(Shared::Utils::fRandRange(BORDER_GRASS,
                                     _renderedMapSize.x - BORDER_GRASS / 2.f) -
                         (_renderedMapSize.x + Tile::TILE_SIZE.x) / 2.f,
                     0,
                     Shared::Utils::fRandRange(
                         BORDER_GRASS, _renderedMapSize.y - BORDER_GRASS / 2.f) -
-                        (_renderedMapSize.y + Tile::TILE_SIZE.y) / 2.f);
-            _grasses.emplace_back(id, pos);
+                        (_renderedMapSize.y + Tile::TILE_SIZE.y) / 2.f));
+            newGrass.setRotation(raylib::Quaternion::FromEuler(
+                0, Shared::Utils::fRandRange(0, 2.0 * M_PI), 0));
+            newGrass.setScale(raylib::Vector3::One() *
+                Shared::Utils::fRandRange(MIN_GRASS_SCALE, MAX_GRASS_SCALE));
         }
     }
 
@@ -132,20 +139,30 @@ namespace Zappy {
     void Map::setShader(Graphics::Shader &shader)
     {
         AShadered::setShader(shader);
-        this->_tileModel.materials[1].shader = this->getShader().asShader();
-        for (auto &[type, model] : _ressources_models)
-            model.materials[1].shader = this->getShader().asShader();
+        this->_tileModel.materials[GRASS_MATERIAL].shader =
+            this->getShader().asShader();
+        this->_tileModel.materials[DIRT_MATERIAL].shader =
+            this->getShader().asShader();
+        for (auto &model : _ressources_models | std::views::values)
+            model.materials[DEFAULT_MATERIAL].shader =
+                this->getShader().asShader();
         for (auto &model : _grassModels)
-            model.materials[1].shader = this->getShader().asShader();
+            model.materials[DEFAULT_MATERIAL].shader =
+                this->getShader().asShader();
     }
 
     void Map::drawGrass() const
     {
-        for (const auto &[id, pos] : _grasses)
-            _grassModels.at(id).Draw(pos, GRASS_SCALE);
+        for (const auto &[id, grass] : _grasses) {
+            auto [axis, angle] = grass.getRotation().ToAxisAngle();
+            _grassModels.at(id).Draw(grass.getPosition(),
+                axis,
+                Maths::RadToDeg(angle),
+                grass.getScale());
+        }
     }
 
-    void Map::drawRessources(const Zappy::Tile &tile) const
+    void Map::drawRessources(const Tile &tile) const
     {
         auto infos = tile.getResources();
 
@@ -153,17 +170,11 @@ namespace Zappy {
             auto &model = this->_ressources_models.at(type);
             const auto &resourceScale = _modelScales.at(type);
             for (const auto &item : queue_item) {
-                auto itemScale = item.getScale();
-                raylib::Vector3 scale(resourceScale * itemScale,
-                    resourceScale * itemScale,
-                    resourceScale * itemScale);
-                auto [axis, angle] =
-                    raylib::Quaternion::FromEuler(0, item.getRotation(), 0)
-                        .ToAxisAngle();
-                model.Draw(tile.getPosition() + item.getPos(),
+                auto [axis, angle] = item.getRotation().ToAxisAngle();
+                model.Draw(tile.getPosition() + item.getPosition(),
                     axis,
                     Maths::RadToDeg(angle),
-                    scale);
+                    item.getScale() * resourceScale);
             }
         }
     }
@@ -241,13 +252,13 @@ namespace Zappy {
     }
 
     const std::unordered_map<Info::ResourceName, float> Map::_modelScales = {
-        {Info::ResourceName::FOOD, 0.07},
-        {Info::ResourceName::LINEMATE, 0.035},
-        {Info::ResourceName::DERAUMERE, 0.035},
-        {Info::ResourceName::SIBUR, 0.035},
-        {Info::ResourceName::MENDIANE, 0.035},
-        {Info::ResourceName::PHIRAS, 0.035},
-        {Info::ResourceName::THYSTAME, 0.035},
+        {Info::ResourceName::FOOD, 0.12},
+        {Info::ResourceName::LINEMATE, 0.08},
+        {Info::ResourceName::DERAUMERE, 0.08},
+        {Info::ResourceName::SIBUR, 0.08},
+        {Info::ResourceName::MENDIANE, 0.08},
+        {Info::ResourceName::PHIRAS, 0.08},
+        {Info::ResourceName::THYSTAME, 0.08},
     };
 
 } // namespace Zappy

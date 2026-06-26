@@ -38,9 +38,18 @@ namespace Zappy {
         this->setAnimation(PlayerAnimations::IDLE);
     }
 
+    raylib::Vector3 Player::getRandomOffset()
+    {
+        raylib::Vector2 range =
+            Tile::TILE_SIZE / 2.0f - Tile::TILE_SIZE * PLAYER_POSITION_PADDING;
+        return {Shared::Utils::fRandRange(-range.x, range.x),
+            0,
+            Shared::Utils::fRandRange(-range.y, range.y)};
+    }
+
     void Player::initPos(raylib::Vector2 pos)
     {
-        _position = raylib::Vector3 {pos.x, 0, pos.y};
+        this->_position = raylib::Vector3 {pos.x, 0, pos.y} + getRandomOffset();
         this->_startPos = this->_position;
         this->_targetPos = this->_position;
     }
@@ -57,7 +66,8 @@ namespace Zappy {
     {
         if (x != _x || y != _y) {
             _startPos = this->_position;
-            _targetPos = raylib::Vector3 {target.x, 0, target.y};
+            _targetPos =
+                raylib::Vector3 {target.x, 0, target.y} + getRandomOffset();
             _targetX = x;
             _targetY = y;
             _walking = true;

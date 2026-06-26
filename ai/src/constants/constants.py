@@ -36,7 +36,7 @@ COMMAND_FACTORY: dict = {
 }
 
 MOVE: dict[int, list[str]] = {
-    0: ["Incantation"],
+    0: [""],
     1: ["Forward"],
     2: ["Forward", "Right", "Forward"],
     3: ["Left", "Forward"],
