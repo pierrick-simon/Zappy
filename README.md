@@ -96,7 +96,8 @@ make
 ## Documentation
 
 [Specifications](doc/G-YEP-400_zappy.pdf) \
-[GUI protocol specification](doc/G-YEP-400_zappy_GUI_protocol.pdf)
+[GUI protocol specification](doc/G-YEP-400_zappy_GUI_protocol.pdf) \
+[Protocol](doc/protocole.md)
 
 ## License
 
