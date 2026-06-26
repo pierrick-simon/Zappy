@@ -80,19 +80,19 @@ class CommonAI:
         needed = sub_dict(
             INCANTATION_PREREQUISITES[self._level + 1], self._backpack.inventory
         )
-        print(needed)
-        if self._backpack.inventory["food"] < 20:
-            print("FIND FOOD")
+        if self._backpack.inventory["food"] < 30:
             self._seek_objects({"food": 20})
             return
-        elif not bool(needed) and self._backpack.inventory["food"] >= 40:
+        elif not bool(needed) and self._backpack.inventory["food"] >= 75:
             self._incantate()
             return
-        elif self._backpack.inventory["food"] >= 60 and len(self._handler.events) != 0:
+        elif self._backpack.inventory["food"] >= 75 and len(self._handler.events) != 0:
             self._follow_call()
             return
-        print("FIND MATS")
-        self._seek_objects(fuse_dicts({"food": 20}, needed))
+        if self._backpack.inventory["food"] < 150:
+            self._seek_objects(fuse_dicts({"food": 20}, needed))
+            return
+        self._seek_objects(needed)
         self._handler.events.clear()
 
     def _seek_objects(self, objects: dict) -> None:
@@ -110,14 +110,9 @@ class CommonAI:
                 self._exec_func(f"Set {o}")
         while self._backpack.inventory["food"] > 10:
             vision = self._exec_func("Look")
-            print("NB: ", vision[0].count("player"))
-            print(vision)
-            print("EXPECTED: ", INCANTATION_PLAYERS_NEEDED[self._level])
-            print("LEVEL: ", self._level)
             if vision[0].count("player") >= INCANTATION_PLAYERS_NEEDED[self._level]:
                 result = self._exec_func("Incantation")
                 if result:
-                    print("aaaaa aaaaa")
                     self._level += 1
                 break
             self._exec_func(f"Broadcast Incantation;{self._level + 1};{self._id}")
@@ -125,17 +120,14 @@ class CommonAI:
         self._handler.events.clear()
 
     def _follow_call(self):
-        print("FOLLOWING")
         found = False
         self._handler.entrypoint()
         self._handler.events.clear()
         for i in range(2):
             self._exec_func("Look")
         self._handler.entrypoint()
-        calls = [
-            i
-            for i in self._handler.events
-            if str(i.argument) == f"Incantation;{self._level + 1};{self._followed_id}"
+        calls = [i for i in self._handler.events if str(i.argument) ==
+                 f"Incantation;{self._level + 1};{self._followed_id}"
         ]
         if not calls:
             while self._handler.events:
@@ -156,11 +148,8 @@ class CommonAI:
         for i in range(2):
             self._exec_func("Look")
         self._handler.entrypoint()
-        calls = [
-            i
-            for i in self._handler.events
-            if str(i.argument) == f"Incantation;{self._level + 1};{self._followed_id}"
-        ]
+        calls = [i for i in self._handler.events if str(i.argument) ==
+                 f"Incantation;{self._level + 1};{self._followed_id}"]
         while calls:
             if not calls:
                 return
@@ -172,20 +161,26 @@ class CommonAI:
             for i in range(2):
                 self._exec_func("Look")
             self._handler.entrypoint()
-            calls = [
-                i
-                for i in self._handler.events
-                if str(i.argument)
-                == f"Incantation;{self._level + 1};{self._followed_id}"
-            ]
+            calls = [i for i in self._handler.events if str(i.argument) ==
+                     f"Incantation;{self._level + 1};{self._followed_id}"]
 
     def _step_ahead(self):
+        """! Go Forward and randomly turn in a random direction
+
+        @return None
+        """
         self._exec_func("Forward")
         if self._turn > 0 and self._turn % random.randint(3, 10) == 0:
             self._exec_func(random.choice(["Right", "Left"]))
         self._turn += 1
 
     def _exec_func(self, command: str):
+        """! Calls a command function and ticks the backpack
+
+        @param command: Full command as str
+
+        @return the returns of the command function
+        """
         self._backpack.tick(command)
         if command.startswith("Take"):
             result = take(self._handler, command.split(" ")[1])

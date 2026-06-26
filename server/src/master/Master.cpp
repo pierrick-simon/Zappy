@@ -95,5 +95,6 @@ namespace Zappy {
         {"randomizer", "Take fully random decisions"},
         {"worker", "Take every stones it find"},
         {"ejector", "Seek players and push them"},
+        {"common", "Common AI that incantate"},
     };
 } // namespace Zappy
