@@ -97,7 +97,7 @@ namespace Zappy {
 
         static constexpr auto TILE_Y_POS = 0;
         static constexpr raylib::Vector2 GROUND_SIZE = {5, 5};
-        static constexpr auto TILE_SCALE_MARGIN = 0.02f;
+        static constexpr auto TILE_SCALE_MARGIN = 0.001f;
         static constexpr raylib::Vector3 TILE_SCALE = {
             Tile::TILE_SIZE.x / GROUND_SIZE.x + TILE_SCALE_MARGIN,
             std::midpoint(Tile::TILE_SIZE.x / GROUND_SIZE.x,

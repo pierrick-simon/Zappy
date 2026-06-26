@@ -58,6 +58,20 @@ namespace Graphics {
         }
     }
 
+    void Scene::event()
+    {
+        raylib::Vector2 mouse = raylib::Mouse::GetPosition();
+        raylib::Ray ray = _camera.GetMouseRay(mouse);
+        bool click = raylib::Mouse::IsButtonPressed(MOUSE_LEFT_BUTTON);
+        for (auto &object : this->_objects) {
+            try {
+                auto &gameObject = dynamic_cast<IEvent &>(object.get());
+                gameObject.event(_camera, mouse, ray, click);
+            } catch (std::bad_cast &) {
+            }
+        }
+    }
+
     void Scene::drawSkyBox() const
     {
         _skyBox.draw3D();
@@ -93,20 +107,6 @@ namespace Graphics {
     Shader &Scene::getShader()
     {
         return this->_shader;
-    }
-
-    void Scene::event()
-    {
-        raylib::Vector2 mouse = raylib::Mouse::GetPosition();
-        raylib::Ray ray = _camera.GetMouseRay(mouse);
-        bool click = raylib::Mouse::IsButtonPressed(MOUSE_LEFT_BUTTON);
-        for (auto &object : this->_objects) {
-            try {
-                auto &gameObject = dynamic_cast<IEvent &>(object.get());
-                gameObject.event(_camera, mouse, ray, click);
-            } catch (std::bad_cast &) {
-            }
-        }
     }
 
     const std::string Scene::FRAGMENT_SHADER_PATH =

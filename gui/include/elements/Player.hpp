@@ -38,6 +38,7 @@ namespace Zappy {
         Player(const Shared::NewPlayerEvent::NewPlayer &player,
             std::ofstream &logFile, raylib::Model &model,
             std::vector<::ModelAnimation> &modelAnimation);
+        static raylib::Vector3 getRandomOffset();
 
         void initPos(raylib::Vector2 pos);
         bool isMovementAcrossMap() const;
@@ -188,6 +189,8 @@ namespace Zappy {
         static constexpr float ACROSS_MAP_DIG_TIME_PERCENT = 0.25f;
         static const std::map<float, std::function<void(Player &)>>
             ACROSS_MAP_ANIMATION_KEYFRAMES;
+
+        static constexpr auto PLAYER_POSITION_PADDING = .75f;
     };
 } // namespace Zappy
 

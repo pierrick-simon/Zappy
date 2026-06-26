@@ -15,7 +15,6 @@ namespace Graphics {
 
     class Camera : public raylib::Camera {
     public:
-        // using raylib::Camera::Camera;
         void update(float dt);
         void updateMouse();
         [[nodiscard]] raylib::Vector3 alignToWorldPlane(
@@ -30,12 +29,13 @@ namespace Graphics {
         void yaw(float angle);
         void roll(float angle);
 
-        static constexpr auto CAMERA_MOVE_SPEED = 4.0f;
+        static constexpr auto CAMERA_MOVE_SPEED = 20.0f;
         static constexpr KeyboardKey SPRINT_KEY = KEY_LEFT_SHIFT;
         static constexpr MouseButton ROTATE_BUTTON = MOUSE_BUTTON_RIGHT;
-        static constexpr auto SPRINT_SCALE = 4;
+        static constexpr auto SPRINT_SCALE = 2;
         static constexpr auto WORLD_AXIS_THRESHOLD = 0.7071f;
         static constexpr auto MOUSE_MOVE_SENSITIVITY = 0.003f;
+        static constexpr auto SCROLL_SCALE = 2.f;
 
         using MovementMethod = std::function<void(Camera &, float)>;
 
