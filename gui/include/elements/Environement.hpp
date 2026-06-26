@@ -127,6 +127,8 @@ namespace Zappy {
 
         std::optional<std::string> _winingTeam;
 
+        raylib::Sound _music;
+
         bool &_isConnect;
         std::ofstream &_logFile;
         static const std::unordered_map<std::string, Event> EVENTS;
@@ -137,6 +139,7 @@ namespace Zappy {
 
         static constexpr std::string_view WELCOME = "WELCOME";
         static constexpr std::string_view TEAM = "GRAPHIC";
+        static constexpr std::string_view MUSIC = "gui/resources/music.wav";
         static constexpr std::size_t SMALL_SLEEP = 100;
     };
 } // namespace Zappy

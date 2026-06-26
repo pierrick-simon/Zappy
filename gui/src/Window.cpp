@@ -24,6 +24,7 @@ namespace Graphics {
         this->_scene.getCamera().SetPosition(DEFAULT_CAMERA_POS);
         _renderTarget = LoadRenderTexture(WINDOW_SIZE_X, WINDOW_SIZE_Y);
         SetTextureFilter(_renderTarget.texture, TEXTURE_FILTER_BILINEAR);
+        raylib::AudioDevice::Init();
     }
 
     void Window::update()
