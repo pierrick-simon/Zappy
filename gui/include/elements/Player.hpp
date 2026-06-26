@@ -10,6 +10,7 @@
 
     #include <Model.hpp>
     #include <array>
+    #include <functional>
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"
@@ -38,6 +39,7 @@ namespace Zappy {
             std::vector<::ModelAnimation> &modelAnimation);
 
         void initPos(raylib::Vector2 pos);
+        bool isMovementAcrossMap() const;
         void move(std::size_t _x, std::size_t _y, raylib::Vector2 target,
             Info::Direction _dir);
         void teleport(std::size_t x, std::size_t y, std::size_t width,
@@ -117,14 +119,18 @@ namespace Zappy {
         };
 
         void draw3D() const override;
+        void finishActions();
+        void updateAcrossMapAction(float dt);
+        void updateActions(float dt);
 
         void update(float dt) override;
-        void updateAction(float dt);
+        void handleActions(float dt);
 
         void setAnimation(PlayerAnimations::Animation animation);
 
         [[nodiscard]] const ModelAnimation &getCurrentAnimation() const;
         ModelAnimation &getCurrentAnimation();
+        float getAnimationDuration();
 
         void setGemColor(raylib::Color gemColor)
         {
@@ -145,6 +151,7 @@ namespace Zappy {
         bool _dead = false;
         bool _walking = false;
         bool _rotate = false;
+        bool _acrossMap = false;
 
         raylib::Vector3 _startPos;
         raylib::Quaternion _startRotation;
@@ -169,10 +176,15 @@ namespace Zappy {
         raylib::Color _gemColor {251, 110, 0};
         PlayerAnimations::Animation _currentAnimation {PlayerAnimations::IDLE};
         size_t _currentAnimationIndex {0};
+        float _animationSpeedScale {1.0f};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
-        static constexpr float WALKING_TIME = 7.f;
-        static constexpr float ROTATE_TIME = 7.f;
+        static constexpr float WALKING_TIME = 6.9f;
+        static constexpr float ROTATE_TIME = 6.9f;
+
+        static constexpr float ACROSS_MAP_DIG_TIME_PERCENT = 0.25f;
+        static const std::unordered_map<float, std::function<void(Player &)>>
+            ACROSS_MAP_ANIMATION_KEYFRAMES;
     };
 } // namespace Zappy
 
