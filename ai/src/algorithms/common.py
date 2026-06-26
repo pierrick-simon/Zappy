@@ -24,7 +24,11 @@ example:
 """
 
 import random
+import base64
 
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from src.constants.resources import (
     INCANTATION_PREREQUISITES,
     INCANTATION_PLAYERS_NEEDED,
@@ -95,6 +99,29 @@ class CommonAI:
         self._seek_objects(needed)
         self._handler.events.clear()
 
+    def _get_cipher(self):
+        salt = self._handler.client.name.encode()
+
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=480000,
+        )
+
+        key = base64.urlsafe_b64encode(
+            kdf.derive(self._handler.client.name.encode()))
+        return Fernet(key)
+
+    def _encrypt(self, message: str) -> str:
+        return self._get_cipher().encrypt(message.encode()).decode()
+
+    def _decrypt(self, message: str) -> str:
+        try:
+            return self._get_cipher().decrypt(message.encode()).decode()
+        except Exception:
+            return ""
+
     def _seek_objects(self, objects: dict) -> None:
         obs = self._exec_func("Look")
         auto_gather = ag.AutoGatherModule()
@@ -126,14 +153,14 @@ class CommonAI:
         for i in range(2):
             self._exec_func("Look")
         self._handler.entrypoint()
-        calls = [i for i in self._handler.events if str(i.argument) ==
+        calls = [i for i in self._handler.events if self._decrypt(str(i.argument)) ==
                  f"Incantation;{self._level + 1};{self._followed_id}"
         ]
         if not calls:
             while self._handler.events:
                 event = self._handler.consume_event()
-                if str(event.argument).startswith(f"Incantation;{self._level + 1}"):
-                    self._followed_id = str(event.argument).strip(";")[2]
+                if self._decrypt(str(event.argument)).startswith(f"Incantation;{self._level + 1}"):
+                    self._followed_id = self._decrypt(str(event.argument)).strip(";")[2]
                     if self._followed_id == self._id:
                         self._followed_id = 0
                         continue
@@ -148,7 +175,7 @@ class CommonAI:
         for i in range(2):
             self._exec_func("Look")
         self._handler.entrypoint()
-        calls = [i for i in self._handler.events if str(i.argument) ==
+        calls = [i for i in self._handler.events if self._decrypt(str(i.argument)) ==
                  f"Incantation;{self._level + 1};{self._followed_id}"]
         while calls:
             if not calls:
@@ -161,7 +188,7 @@ class CommonAI:
             for i in range(2):
                 self._exec_func("Look")
             self._handler.entrypoint()
-            calls = [i for i in self._handler.events if str(i.argument) ==
+            calls = [i for i in self._handler.events if self._decrypt(str(i.argument)) ==
                      f"Incantation;{self._level + 1};{self._followed_id}"]
 
     def _step_ahead(self):
@@ -193,6 +220,8 @@ class CommonAI:
                 self._backpack.del_from_inventory([command.split(" ")[1]])
             return result
         elif command.startswith("Broadcast"):
-            return broadcast(self._handler, command.split(" ")[1])
+            msg = command.split(" ", 1)[1]
+            encrypted = self._encrypt(msg)
+            return broadcast(self._handler, encrypted)
         else:
             return COMMAND_FACTORY[command](self._handler)
