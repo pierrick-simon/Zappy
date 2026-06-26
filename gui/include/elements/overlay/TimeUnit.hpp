@@ -46,7 +46,7 @@ namespace Zappy {
 
         static constexpr raylib::Vector2 SIZE = {200, 40};
         static constexpr float TEXT_SIZE = 30;
-        static constexpr std::size_t MAX_FREQUENCY = 100;
+        static constexpr std::size_t MAX_FREQUENCY = 300;
         static constexpr std::size_t MIN_FREQUENCY = 1;
         static constexpr std::size_t MOVE_GAP = 10;
     };
