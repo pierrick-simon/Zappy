@@ -200,10 +200,10 @@ namespace Zappy {
         if (_walking) {
             _x = _targetX;
             _y = _targetY;
-            this->_acrossMap = false;
             _walking = false;
             _status = PlayerStatus::Status::NONE;
         }
+        this->_acrossMap = false;
         if (_rotate) {
             _dir = _targetDir;
             _rotate = false;
@@ -288,7 +288,7 @@ namespace Zappy {
             ANIMATIONS_FPS;
     }
 
-    const std::unordered_map<float, std::function<void(Player &)>>
+    const std::map<float, std::function<void(Player &)>>
         Player::ACROSS_MAP_ANIMATION_KEYFRAMES {
             {0.0f,
                 [](Player &player) {
