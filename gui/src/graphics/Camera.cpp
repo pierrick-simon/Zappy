@@ -101,6 +101,7 @@ namespace Graphics {
 
         return forward.CrossProduct(up).Normalize();
     }
+
     void Camera::yaw(float angle)
     {
         raylib::Vector3 up(this->GetUp());

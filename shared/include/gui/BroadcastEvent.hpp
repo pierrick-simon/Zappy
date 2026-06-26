@@ -22,6 +22,7 @@ namespace Shared {
         {
             return _id;
         }
+
         [[nodiscard]] std::string getText() const
         {
             return _msg;

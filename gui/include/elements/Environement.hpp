@@ -54,7 +54,10 @@ namespace Zappy {
             const Ray &ray, bool &leftClick) override;
 
     private:
-        using Event = std::function<void(Environement &, std::istringstream)>;
+        struct Event {
+            std::function<void(Environement &, std::istringstream)> func;
+            bool loadingInfo = false;
+        };
 
         struct Message {
             std::size_t id;

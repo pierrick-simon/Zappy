@@ -39,6 +39,7 @@ namespace Parser {
     class Help : public std::exception {
     public:
         Help() = default;
+
         [[nodiscard]] const char *what() const noexcept override
         {
             return "";

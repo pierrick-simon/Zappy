@@ -33,6 +33,7 @@ namespace Zappy {
         }
 
         [[nodiscard]] std::vector<std::string> getSelected() const;
+
         [[nodiscard]] float getHeight() const
         {
             return _height;

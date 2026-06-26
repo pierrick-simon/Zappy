@@ -22,10 +22,12 @@ namespace Shared {
         {
             return _x;
         }
+
         [[nodiscard]] std::size_t getY() const
         {
             return _y;
         }
+
         [[nodiscard]] bool getResult() const
         {
             return _result;

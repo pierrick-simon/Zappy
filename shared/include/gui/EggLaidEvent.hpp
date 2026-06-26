@@ -23,14 +23,17 @@ namespace Shared {
         {
             return _eggId;
         }
+
         [[nodiscard]] std::size_t getPlayerId() const
         {
             return _playerId;
         }
+
         [[nodiscard]] std::size_t getX() const
         {
             return _x;
         }
+
         [[nodiscard]] std::size_t getY() const
         {
             return _y;
