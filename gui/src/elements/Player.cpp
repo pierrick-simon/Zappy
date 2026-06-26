@@ -77,23 +77,13 @@ namespace Zappy {
         _eject = false;
     }
 
-    void Player::teleport(
-        std::size_t x, std::size_t y, std::size_t width, std::size_t height)
+    void Player::teleport(std::size_t x, std::size_t y, raylib::Vector2 newPos)
     {
-        raylib::Vector2 mapSize = raylib::Vector2 {static_cast<float>(width),
-                                      static_cast<float>(height)} *
-            Tile::TILE_SIZE;
-        raylib::Vector2 oldCenter =
-            raylib::Vector2 {static_cast<float>(_x), static_cast<float>(_y)} *
-                Tile::TILE_SIZE -
-            mapSize / 2.0f;
-        raylib::Vector2 newCenter =
-            raylib::Vector2 {static_cast<float>(x), static_cast<float>(y)} *
-                Tile::TILE_SIZE -
-            mapSize / 2.0f;
-        raylib::Vector2 delta = newCenter - oldCenter;
-        _startPos += raylib::Vector3 {delta.x, 0, delta.y};
-        _targetPos += raylib::Vector3 {delta.x, 0, delta.y};
+        auto delta =
+            raylib::Vector3 {newPos.x, 0, newPos.y} - this->getPosition();
+        this->_startPos += delta;
+        this->_targetPos += delta;
+        this->_position += delta;
         _x = x;
         _y = y;
         _targetX = x;

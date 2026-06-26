@@ -32,6 +32,7 @@ namespace Zappy {
         _elevations(_selectPlayer, _selectTile, _width, _timeUnit)
     {
         _isConnect = false;
+        std::srand(std::time(nullptr));
     }
 
     bool Environement::updateFromServer()

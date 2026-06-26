@@ -86,7 +86,7 @@ namespace Zappy {
             std::size_t x = event.getX() % _width;
             std::size_t y = event.getY() % _height;
             if (player.getEject()) {
-                player.teleport(x, y, _width, _height);
+                player.teleport(x, y, this->_map.getTilePosition(x, y));
                 _overlay.eventBox.addMessage(player.getTeam(),
                     event.getId(),
                     "Ejected to (" + std::to_string(x) + "," +

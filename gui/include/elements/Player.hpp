@@ -42,8 +42,7 @@ namespace Zappy {
         bool isMovementAcrossMap() const;
         void move(std::size_t _x, std::size_t _y, raylib::Vector2 target,
             Info::Direction _dir);
-        void teleport(std::size_t x, std::size_t y, std::size_t width,
-            std::size_t height);
+        void teleport(std::size_t x, std::size_t y, raylib::Vector2 newPos);
 
         void addLevel();
         void setLevel(std::size_t level);

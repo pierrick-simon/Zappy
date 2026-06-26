@@ -59,6 +59,7 @@ namespace Zappy {
             InfoBox::Action dir, std::size_t tile) const;
 
         void drawRessources(const Zappy::Tile &tile) const;
+        void drawGrass() const;
         void draw3D() const override;
         void update(float dt) override;
         void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
@@ -68,6 +69,7 @@ namespace Zappy {
         void updateTotalResources(
             const std::map<Info::ResourceName, std::size_t> &before,
             std::map<Info::ResourceName, std::size_t> after);
+        void spawnGrass();
 
         std::size_t &_width;
         std::size_t &_height;
@@ -76,6 +78,15 @@ namespace Zappy {
         std::map<Info::ResourceName, std::size_t> _totalResources;
         std::unordered_map<Info::ResourceName, raylib::Model>
             _ressources_models;
+
+        static constexpr std::size_t NB_GRASS_MODELS = 4;
+        std::array<raylib::Model, NB_GRASS_MODELS> _grassModels;
+        static constexpr float GRASS_DENSITY = 0.1f;
+        static constexpr auto GRASS_PER_TILE = static_cast<std::size_t>(
+            GRASS_DENSITY * Tile::TILE_SIZE.x * Tile::TILE_SIZE.y);
+        static constexpr float GRASS_SCALE = 0.1;
+        static constexpr float BORDER_GRASS = 1.f;
+        std::vector<std::pair<std::size_t, raylib::Vector3>> _grasses;
 
         bool _changeColor = false;
         float _blink = 0.f;
