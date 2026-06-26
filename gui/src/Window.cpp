@@ -85,6 +85,6 @@ namespace Graphics {
     }
 
     const std::unordered_map<::KeyboardKey, std::function<void(Window &)>>
-        Window::KEY_METHODS = {{KEY_P, [](Window &) { Close(); }}};
+        Window::KEY_METHODS = {};
 
 } // namespace Graphics

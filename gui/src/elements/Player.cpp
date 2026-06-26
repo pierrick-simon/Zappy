@@ -63,6 +63,7 @@ namespace Zappy {
             _walking = true;
             _acrossMap = this->isMovementAcrossMap();
             _timer = WALKING_TIME;
+            _status = PlayerStatus::Status::WALKING;
         }
         if (dir != _dir) {
             _targetDir = dir;
@@ -71,6 +72,7 @@ namespace Zappy {
                 DIRECTION_TO_QUATERNION[static_cast<std::size_t>(_targetDir)];
             _rotate = true;
             _timer = ROTATE_TIME;
+            _status = PlayerStatus::Status::ROTATING;
         }
         _eject = false;
     }
@@ -198,12 +200,14 @@ namespace Zappy {
         if (_walking) {
             _x = _targetX;
             _y = _targetY;
-            this->_acrossMap = false;
             _walking = false;
+            _status = PlayerStatus::Status::NONE;
         }
+        this->_acrossMap = false;
         if (_rotate) {
             _dir = _targetDir;
             _rotate = false;
+            _status = PlayerStatus::Status::NONE;
         }
     }
 
@@ -284,7 +288,7 @@ namespace Zappy {
             ANIMATIONS_FPS;
     }
 
-    const std::unordered_map<float, std::function<void(Player &)>>
+    const std::map<float, std::function<void(Player &)>>
         Player::ACROSS_MAP_ANIMATION_KEYFRAMES {
             {0.0f,
                 [](Player &player) {

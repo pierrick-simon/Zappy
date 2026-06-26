@@ -57,12 +57,14 @@ namespace Zappy {
         std::size_t nbGrass = GRASS_PER_TILE * _tiles.size();
         for (std::size_t i = 0; i < nbGrass; ++i) {
             auto id = rand() % NB_GRASS_MODELS;
-            auto pos = raylib::Vector3(
-                Shared::Utils::fRandRange(0, _renderedMapSize.x) -
-                    (_renderedMapSize.x + Tile::TILE_SIZE.x) / 2.f,
-                0,
-                Shared::Utils::fRandRange(0, _renderedMapSize.y) -
-                    (_renderedMapSize.y + Tile::TILE_SIZE.y) / 2.f);
+            auto pos =
+                raylib::Vector3(Shared::Utils::fRandRange(BORDER_GRASS,
+                                    _renderedMapSize.x - BORDER_GRASS / 2.f) -
+                        (_renderedMapSize.x + Tile::TILE_SIZE.x) / 2.f,
+                    0,
+                    Shared::Utils::fRandRange(
+                        BORDER_GRASS, _renderedMapSize.y - BORDER_GRASS / 2.f) -
+                        (_renderedMapSize.y + Tile::TILE_SIZE.y) / 2.f);
             _grasses.emplace_back(id, pos);
         }
     }
@@ -131,6 +133,8 @@ namespace Zappy {
     {
         AShadered::setShader(shader);
         this->_tileModel.materials[1].shader = this->getShader().asShader();
+        for (auto &[type, model] : _ressources_models)
+            model.materials[1].shader = this->getShader().asShader();
         for (auto &model : _grassModels)
             model.materials[1].shader = this->getShader().asShader();
     }

@@ -11,6 +11,7 @@
     #include <Model.hpp>
     #include <array>
     #include <functional>
+    #include <map>
     #include <string>
     #include "GUIException.hpp"
     #include "Info.hpp"
@@ -178,11 +179,11 @@ namespace Zappy {
         float _animationSpeedScale {1.0f};
 
         static constexpr auto ANIMATIONS_FPS = 30.0f;
-        static constexpr float WALKING_TIME = 6.9f;
-        static constexpr float ROTATE_TIME = 6.9f;
+        static constexpr float WALKING_TIME = 6.f;
+        static constexpr float ROTATE_TIME = 6.f;
 
         static constexpr float ACROSS_MAP_DIG_TIME_PERCENT = 0.25f;
-        static const std::unordered_map<float, std::function<void(Player &)>>
+        static const std::map<float, std::function<void(Player &)>>
             ACROSS_MAP_ANIMATION_KEYFRAMES;
     };
 } // namespace Zappy

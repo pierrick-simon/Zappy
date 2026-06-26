@@ -52,6 +52,7 @@ namespace Zappy {
 
         void event(raylib::Camera3D &camera, const raylib::Vector2 &mouse,
             const Ray &ray, bool &leftClick) override;
+        void envEvent(bool &leftClick);
 
     private:
         struct Event {
