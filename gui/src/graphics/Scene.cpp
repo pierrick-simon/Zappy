@@ -16,7 +16,7 @@
 namespace Graphics {
 
     Scene::Scene() :
-        _shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
+        _shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH), _skyBox()
     {
         this->_shader.setValue("sunDirection",
             static_cast<const ::Vector3>(
@@ -58,12 +58,17 @@ namespace Graphics {
         }
     }
 
+    void Scene::drawSkyBox() const
+    {
+        _skyBox.draw3D();
+    }
+
     void Scene::drawGameObjects() const
     {
         for (auto &object : this->_objects) {
             try {
-                auto &gameObjecte = dynamic_cast<IDrawable3D &>(object.get());
-                gameObjecte.draw3D();
+                auto &gameObject = dynamic_cast<IDrawable3D &>(object.get());
+                gameObject.draw3D();
             } catch (std::bad_cast &) {
             }
         }

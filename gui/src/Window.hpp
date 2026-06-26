@@ -30,6 +30,8 @@ namespace Graphics {
 
     private:
         void handleEvents();
+        void updateTexture();
+        void draw();
 
         Scene _scene;
 

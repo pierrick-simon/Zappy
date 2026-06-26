@@ -6,9 +6,7 @@
 */
 
 #include "Window.hpp"
-
 #include <raylib-cpp.hpp>
-
 #include "Assets.hpp"
 
 namespace Graphics {
@@ -32,15 +30,29 @@ namespace Graphics {
     {
         this->handleEvents();
         this->_scene.update(GetFrameTime());
+        updateTexture();
+        draw();
+    }
+
+    void Window::updateTexture()
+    {
         BeginTextureMode(_renderTarget);
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
         this->getScene().getCamera().BeginMode();
+
+        this->_scene.drawSkyBox();
+
         this->getScene().getShader().BeginMode();
         this->_scene.drawGameObjects();
         this->getScene().getShader().EndMode();
+
         this->getScene().getCamera().EndMode();
         this->_scene.drawUiObjects();
         EndTextureMode();
+    }
+
+    void Window::draw()
+    {
         this->BeginDrawing();
         ClearBackground(raylib::Color::Black());
         auto scaleX = float(GetScreenWidth()) / WINDOW_SIZE_X;
