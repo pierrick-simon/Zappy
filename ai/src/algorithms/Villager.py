@@ -5,7 +5,6 @@
 ## Villager AI
 ##
 
-import json
 from random import randint
 from uuid import UUID, uuid4
 from enum import Enum
@@ -46,6 +45,7 @@ def get_common_key(dict_one: dict, dict_two: dict) -> Optional[Any]:
         return common.pop()
     else:
         return None
+
 
 class Villager:
     backpack: BackpackModule
@@ -90,9 +90,7 @@ class Villager:
         if int(level) != self.level:
             return
         master_id: str = sender
-        broadcast(
-            self.handler, f"{self.id};yes;{self.level}"
-        )
+        broadcast(self.handler, f"{self.id};yes;{self.level}")
         self.backpack.tick("Broadcast")
         self.mode = MODE.FOLLOWER
         self.master = master_id
@@ -111,7 +109,7 @@ class Villager:
             self.append_to_plan(MOVE[event.direction], MODE.FOLLOWER)
 
     def handle_message_as_master(self, event: Event) -> None:
-        sender, type, _  = event.argument
+        sender, type, _ = event.argument
 
         if type == "incantation":
             if sender < str(self.id):
