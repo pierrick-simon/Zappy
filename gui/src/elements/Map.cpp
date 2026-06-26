@@ -131,6 +131,8 @@ namespace Zappy {
     {
         AShadered::setShader(shader);
         this->_tileModel.materials[1].shader = this->getShader().asShader();
+        for (auto &model : _grassModels)
+            model.materials[1].shader = this->getShader().asShader();
     }
 
     void Map::drawGrass() const
