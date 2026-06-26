@@ -8,6 +8,7 @@
 #include "Server.hpp"
 #include <csignal>
 #include <iostream>
+#include <random>
 #include "ArgsParser.hpp"
 #include "Utils.hpp"
 
@@ -22,6 +23,7 @@ namespace Zappy {
             args, "-n", DEFAULT_TEAMS)),
         _connect(_port),
         _f(Parser::ArgsParser::getArgSize(args, "-f", DEFAULT_FREQ)),
+        _seed(initSeed(args)),
         _env(Parser::ArgsParser::getArgSize(args, "-x", DEFAULT_X),
             Parser::ArgsParser::getArgSize(args, "-y", DEFAULT_Y), _logFile,
             _clients, _teams)
@@ -41,14 +43,6 @@ namespace Zappy {
                 _env.spawnEgg(team);
         }
         _teamsNames.clear();
-
-        try {
-            _seed = Parser::ArgsParser::getArgSize(args, "-s");
-        } catch (Parser::Help &) {
-            _seed = std::time(nullptr);
-        }
-        std::srand(_seed);
-
         if (Parser::ArgsParser::isArg(args, "-m"))
             _master.emplace(_port, _clients, _teams);
 
@@ -64,6 +58,17 @@ namespace Zappy {
     Server::~Server()
     {
         Shared::Utils::logMsg(_logFile, "Server Close.");
+    }
+
+    unsigned int Server::initSeed(std::vector<std::string> args)
+    {
+        try {
+            _seed = Parser::ArgsParser::getArgSize(args, "-s");
+        } catch (Parser::Help &) {
+            _seed = std::random_device {}();
+        }
+        std::srand(_seed);
+        return _seed;
     }
 
     void Server::run()
