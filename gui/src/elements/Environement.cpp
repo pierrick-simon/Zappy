@@ -28,7 +28,7 @@ namespace Zappy {
         _connect(port, ip),
         _isConnect(isConnect),
         _logFile(logFile),
-        _overlay(_teams),
+        _overlay(_teams, _quit),
         _elevations(_selectPlayer, _selectTile, _width, _timeUnit)
     {
         _isConnect = false;
@@ -38,7 +38,9 @@ namespace Zappy {
     bool Environement::updateFromServer()
     {
         bool connected = true;
-        auto info = _connect.infoToRead(0);
+        std::vector<int> info;
+        if (!_winingTeam)
+            info = _connect.infoToRead(0);
         if (!info.empty() && !infoToRead())
             connected = false;
         else {
@@ -49,6 +51,8 @@ namespace Zappy {
             else
                 handleEvents();
         }
+        if (_quit)
+            connected = false;
         return connected;
     }
 
@@ -99,22 +103,28 @@ namespace Zappy {
             _overlay.tile.draw2D();
         else
             _overlay.team.draw2D();
+        if (_winingTeam)
+            _overlay.end.draw2D();
     }
 
     void Environement::event(raylib::Camera3D &camera,
         const raylib::Vector2 &mouse, const Ray &ray, bool &leftClick)
     {
-        if (_selectPlayer)
-            _overlay.player.event(camera, mouse, ray, leftClick);
-        else if (_selectTile)
-            _overlay.tile.event(camera, mouse, ray, leftClick);
-        else
-            _overlay.team.event(camera, mouse, ray, leftClick);
-        _elevations.event(camera, mouse, ray, leftClick);
-        _overlay.timeUnit.event(camera, mouse, ray, leftClick);
-        _players.event(camera, mouse, ray, leftClick);
-        _map.event(camera, mouse, ray, leftClick);
-        envEvent(leftClick);
+        if (_winingTeam)
+            _overlay.end.event(camera, mouse, ray, leftClick);
+        else {
+            if (_selectPlayer)
+                _overlay.player.event(camera, mouse, ray, leftClick);
+            else if (_selectTile)
+                _overlay.tile.event(camera, mouse, ray, leftClick);
+            else
+                _overlay.team.event(camera, mouse, ray, leftClick);
+            _elevations.event(camera, mouse, ray, leftClick);
+            _overlay.timeUnit.event(camera, mouse, ray, leftClick);
+            _players.event(camera, mouse, ray, leftClick);
+            _map.event(camera, mouse, ray, leftClick);
+            envEvent(leftClick);
+        }
     }
 
     void Environement::envEvent(bool &leftClick)

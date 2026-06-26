@@ -9,15 +9,16 @@
 #include "Init.hpp"
 
 namespace Zappy {
-    Overlay::Overlay(std::map<std::string, raylib::Color> &teams) :
-        _font(Init::FONT_PATH.data()),
-        resources(_font),
-        chatBox(_font, teams),
-        eventBox(_font, teams),
-        player(_font, teams),
-        team(_font, teams),
-        tile(_font),
-        timeUnit(_font)
+    Overlay::Overlay(std::map<std::string, raylib::Color> &teams, bool &quit) :
+        font(Init::FONT_PATH.data()),
+        resources(font),
+        chatBox(font, teams),
+        eventBox(font, teams),
+        player(font, teams),
+        team(font, teams),
+        tile(font),
+        timeUnit(font),
+        end(font, teams, quit)
     {
     }
 

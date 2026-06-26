@@ -10,6 +10,7 @@
 
     #include <string_view>
     #include "ChatBox.hpp"
+    #include "End.hpp"
     #include "EventBox.hpp"
     #include "Player2D.hpp"
     #include "Resources.hpp"
@@ -18,10 +19,10 @@
     #include "TimeUnit.hpp"
 
 namespace Zappy {
-    class Overlay {
-    public:
-        Overlay(std::map<std::string, raylib::Color> &teams);
+    struct Overlay {
+        Overlay(std::map<std::string, raylib::Color> &teams, bool &quit);
 
+        raylib::Font font;
         Resources resources;
         ChatBox chatBox;
         EventBox eventBox;
@@ -29,12 +30,10 @@ namespace Zappy {
         Team team;
         Tile2D tile;
         TimeUnit timeUnit;
+        End end;
 
         static const std::map<Info::ResourceName, ResourceInfo::TextureSize>
             RESOURCES;
-
-    private:
-        raylib::Font _font;
     };
 } // namespace Zappy
 

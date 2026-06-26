@@ -57,6 +57,7 @@ set(SRCS
         src/elements/overlay/Tile2D.cpp
         src/elements/overlay/InfoBox.cpp
         src/elements/overlay/TimeUnit.cpp
+        src/elements/overlay/End.cpp
 )
 
 set(HEADERS
