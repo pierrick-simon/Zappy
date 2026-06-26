@@ -73,6 +73,7 @@ namespace Zappy {
         AShadered::setShader(shader);
         this->_map.setShader(shader);
         this->_players.setShader(shader);
+        this->_eggModel.materials[1].shader = this->getShader().asShader();
     }
 
     void Environement::draw3D() const
