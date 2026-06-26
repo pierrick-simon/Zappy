@@ -69,6 +69,7 @@ namespace Zappy {
         void updateTotalResources(
             const std::map<Info::ResourceName, std::size_t> &before,
             std::map<Info::ResourceName, std::size_t> after);
+        void spwanGrass();
 
         std::size_t &_width;
         std::size_t &_height;
@@ -80,11 +81,11 @@ namespace Zappy {
 
         static constexpr std::size_t NB_GRASS_MODELS = 4;
         std::array<raylib::Model, NB_GRASS_MODELS> _grassModels;
-        static constexpr float GRASS_PER_TILE = 0.5;
+        static constexpr float GRASS_DENSITY = 0.05f;
+        static constexpr auto GRASS_PER_TILE = static_cast<std::size_t>(
+            GRASS_DENSITY * Tile::TILE_SIZE.x * Tile::TILE_SIZE.y);
         static constexpr float GRASS_SCALE = 0.1;
-        static constexpr auto NB_GRASS = static_cast<std::size_t>(
-            GRASS_PER_TILE * Tile::TILE_SIZE.x * Tile::TILE_SIZE.y);
-        std::array<std::pair<std::size_t, raylib::Vector3>, NB_GRASS> _grasses;
+        std::vector<std::pair<std::size_t, raylib::Vector3>> _grasses;
 
         bool _changeColor = false;
         float _blink = 0.f;

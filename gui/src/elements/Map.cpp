@@ -46,17 +46,25 @@ namespace Zappy {
             _totalResources = Info::INIT_RESOUCES;
             for (auto &tile : _tiles)
                 tile.getScale() = TILE_SCALE;
-            for (std::size_t i = 0; i < NB_GRASS; ++i) {
-                _grasses[i].first = rand() % NB_GRASS_MODELS;
-                _grasses[i].second = raylib::Vector3(
-                    Shared::Utils::fRandRange(
-                        0, static_cast<float>(_width) * Tile::TILE_SIZE.x),
-                    0,
-                    Shared::Utils::fRandRange(
-                        0, static_cast<float>(_height) * Tile::TILE_SIZE.y));
-            }
+            spwanGrass();
         }
         return value;
+    }
+
+    void Map::spwanGrass()
+    {
+        _grasses.clear();
+        std::size_t nbGrass = GRASS_PER_TILE * _tiles.size();
+        for (std::size_t i = 0; i < nbGrass; ++i) {
+            auto id = rand() % NB_GRASS_MODELS;
+            auto pos = raylib::Vector3(
+                Shared::Utils::fRandRange(0, _renderedMapSize.x) -
+                    (_renderedMapSize.x + Tile::TILE_SIZE.x) / 2.f,
+                0,
+                Shared::Utils::fRandRange(0, _renderedMapSize.y) -
+                    (_renderedMapSize.y + Tile::TILE_SIZE.y) / 2.f);
+            _grasses.emplace_back(id, pos);
+        }
     }
 
     void Map::updateTotalResources(
@@ -127,9 +135,8 @@ namespace Zappy {
 
     void Map::drawGrass() const
     {
-        for (std::size_t i = 0; i < NB_GRASS; ++i)
-            _grassModels.at(_grasses[i].first)
-                .Draw(_grasses[i].second, GRASS_SCALE);
+        for (const auto &[id, pos] : _grasses)
+            _grassModels.at(id).Draw(pos, GRASS_SCALE);
     }
 
     void Map::drawRessources(const Zappy::Tile &tile) const
