@@ -30,6 +30,12 @@ namespace Graphics {
     {
         this->handleEvents();
         this->_scene.update(GetFrameTime());
+        updateTexture();
+        draw();
+    }
+
+    void Window::updateTexture()
+    {
         BeginTextureMode(_renderTarget);
         ClearBackground(BLACK);
         this->getScene().getCamera().BeginMode();
@@ -43,7 +49,10 @@ namespace Graphics {
         this->getScene().getCamera().EndMode();
         this->_scene.drawUiObjects();
         EndTextureMode();
+    }
 
+    void Window::draw()
+    {
         this->BeginDrawing();
         ClearBackground(raylib::Color::Black());
         auto scaleX = float(GetScreenWidth()) / WINDOW_SIZE_X;
