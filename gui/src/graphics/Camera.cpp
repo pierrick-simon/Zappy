@@ -25,7 +25,7 @@ namespace Graphics {
 
         if (raylib::Mouse::IsButtonDown(ROTATE_BUTTON))
             this->updateMouse();
-        this->moveToTarget(-raylib::Mouse::GetWheelMove());
+        this->moveToTarget(-raylib::Mouse::GetWheelMove() * SCROLL_SCALE);
     }
 
     void Camera::updateMouse()
