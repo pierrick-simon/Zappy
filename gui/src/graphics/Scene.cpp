@@ -23,6 +23,7 @@ namespace Graphics {
                 raylib::Vector3 {-0.7f, -1.0f, -0.4f}.Normalize()));
         this->_shader.setValue("sunColor", ::Vector3 {1, 0.95f, 0.85f});
     }
+
     raylib::Camera &Scene::getCamera()
     {
         return this->_camera;

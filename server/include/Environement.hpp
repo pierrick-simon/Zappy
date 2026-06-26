@@ -92,14 +92,17 @@ namespace Zappy {
         {
             return _height;
         }
+
         [[nodiscard]] std::size_t getWidth() const
         {
             return _width;
         }
+
         [[nodiscard]] bool getEnd() const
         {
             return _end;
         }
+
         [[nodiscard]] std::size_t getConnectNbr(std::size_t) const;
         [[nodiscard]] std::vector<std::string> getTeamsName() const;
         [[nodiscard]] PlayerInfo getPlayerInfo(std::size_t id) const;

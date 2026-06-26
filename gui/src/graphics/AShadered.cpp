@@ -18,6 +18,7 @@ namespace Graphics {
     {
         return this->_shader.value();
     }
+
     void AShadered::setShader(Shader &shader)
     {
         this->_shader = shader;

@@ -32,6 +32,7 @@ namespace Zappy {
         void changeSelected(Action dir) override;
 
         void setSelectTeam(const std::string &team);
+
         [[nodiscard]] std::optional<std::string> getSelectTeam()
         {
             return _selectTeam;

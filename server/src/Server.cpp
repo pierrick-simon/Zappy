@@ -277,5 +277,6 @@ namespace Zappy {
             }
         }
     }
+
     const std::vector<std::string> Server::DEFAULT_TEAMS = {"team1", "team2"};
 }; // namespace Zappy
