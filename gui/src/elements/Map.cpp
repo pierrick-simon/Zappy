@@ -46,7 +46,7 @@ namespace Zappy {
             _totalResources = Info::INIT_RESOUCES;
             for (auto &tile : _tiles)
                 tile.getScale() = TILE_SCALE;
-            spwanGrass();
+            spawnGrass();
         }
         return value;
     }
