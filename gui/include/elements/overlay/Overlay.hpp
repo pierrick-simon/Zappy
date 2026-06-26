@@ -19,13 +19,10 @@
     #include "TimeUnit.hpp"
 
 namespace Zappy {
-    class Overlay {
-    private:
-        raylib::Font _font;
-
-    public:
+    struct Overlay {
         Overlay(std::map<std::string, raylib::Color> &teams, bool &quit);
 
+        raylib::Font font;
         Resources resources;
         ChatBox chatBox;
         EventBox eventBox;
