@@ -14,7 +14,7 @@
 namespace Zappy {
     class PlayerStatus {
     public:
-        enum class Status { NONE, LAYING, ELEVATING, DYING };
+        enum class Status { NONE, LAYING, ELEVATING, DYING, ROTATING, WALKING };
 
         static std::string getMsg(Status status);
 

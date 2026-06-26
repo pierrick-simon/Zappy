@@ -18,5 +18,7 @@ namespace Zappy {
         {Status::LAYING, "Laying"},
         {Status::ELEVATING, "Elevating"},
         {Status::DYING, "Dying"},
+        {Status::ROTATING, "Rotating"},
+        {Status::WALKING, "Walking"},
     };
 } // namespace Zappy

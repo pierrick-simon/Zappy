@@ -63,6 +63,7 @@ namespace Zappy {
             _walking = true;
             _acrossMap = this->isMovementAcrossMap();
             _timer = WALKING_TIME;
+            _status = PlayerStatus::Status::WALKING;
         }
         if (dir != _dir) {
             _targetDir = dir;
@@ -71,6 +72,7 @@ namespace Zappy {
                 DIRECTION_TO_QUATERNION[static_cast<std::size_t>(_targetDir)];
             _rotate = true;
             _timer = ROTATE_TIME;
+            _status = PlayerStatus::Status::ROTATING;
         }
         _eject = false;
     }
@@ -210,10 +212,12 @@ namespace Zappy {
             _y = _targetY;
             this->_acrossMap = false;
             _walking = false;
+            _status = PlayerStatus::Status::NONE;
         }
         if (_rotate) {
             _dir = _targetDir;
             _rotate = false;
+            _status = PlayerStatus::Status::NONE;
         }
     }
 
