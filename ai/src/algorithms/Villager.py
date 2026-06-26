@@ -9,7 +9,7 @@ from random import randint
 from uuid import UUID, uuid4
 from enum import Enum
 from collections import deque
-from typing import Callable, Optional, Any
+from typing import Callable
 
 from src.connection_handler import ConnectionHandler
 from src.dataclasses_models import Command, Event
@@ -36,6 +36,7 @@ def get_missing_resources(inventory: dict[str, int], level: int) -> dict[str, in
         for ressource, quantity in INCANTATION_PREREQUISITES[level].items()
         if inventory.get(ressource, 0) < quantity
     }
+
 
 class Villager:
     backpack: BackpackModule
