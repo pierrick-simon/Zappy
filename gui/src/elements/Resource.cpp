@@ -10,23 +10,13 @@
 namespace Zappy {
     Resource::Resource(Info::ResourceName resource, raylib::Vector3 pos,
         float scale, float rotation) :
-        _resource(resource), _pos(pos), _scale(scale), _rotation(rotation)
+        _resource(resource)
     {
+        this->Transformable3D::setPosition(pos);
+        this->Transformable3D::setScale({scale, scale, scale});
+        this->Transformable3D::setRotation(
+            raylib::Quaternion::FromEuler(0, rotation, 0));
     }
 
-    raylib::Vector3 Resource::getPos() const
-    {
-        return _pos;
-    }
-
-    float Resource::getScale() const
-    {
-        return _scale;
-    }
-
-    float Resource::getRotation() const
-    {
-        return _rotation;
-    }
 
 } // namespace Zappy
