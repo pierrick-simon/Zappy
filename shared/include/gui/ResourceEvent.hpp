@@ -22,6 +22,7 @@ namespace Shared {
         {
             return _id;
         }
+
         [[nodiscard]] std::size_t getNb() const
         {
             return _nb;
