@@ -16,8 +16,10 @@ namespace Graphics {
     class SkyBox : public IDrawable3D {
     public:
         SkyBox(const std::string &imgSkyboxPath = IMG,
-            const std::string &skyboxVSPath = SKYBOX_VS, const std::string &skyboxFSPath = SKYBOX_FS,
-            const std::string &cubemapVSPath = CUBEMAP_VS, const std::string &cubemapFSPath = CUBEMAP_FS);
+            const std::string &skyboxVSPath = SKYBOX_VS,
+            const std::string &skyboxFSPath = SKYBOX_FS,
+            const std::string &cubemapVSPath = CUBEMAP_VS,
+            const std::string &cubemapFSPath = CUBEMAP_FS);
 
         void draw3D() const override;
 
@@ -26,7 +28,7 @@ namespace Graphics {
         raylib::Shader _cubemapShader;
         raylib::Model _modelbox;
         raylib::TextureCubemap _texture;
-        
+
         static constexpr auto IMG = "gui/resources/sky.png";
         static constexpr auto SKYBOX_VS = "gui/resources/shaders/skybox.vs";
         static constexpr auto SKYBOX_FS = "gui/resources/shaders/skybox.fs";

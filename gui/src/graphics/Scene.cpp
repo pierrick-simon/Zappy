@@ -16,8 +16,7 @@
 namespace Graphics {
 
     Scene::Scene() :
-        _shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH),
-        _skyBox()
+        _shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH), _skyBox()
     {
         this->_shader.setValue("sunDirection",
             static_cast<const ::Vector3>(
