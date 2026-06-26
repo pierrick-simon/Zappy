@@ -17,7 +17,7 @@ namespace Zappy {
         auto scale = EGG_SCALE *
             Shared::Utils::fRandRange(
                 1 - EGG_SCALE_MODIFIER, 1 + EGG_SCALE_MODIFIER);
-        setScale(raylib::Vector3 {scale, scale, scale});
+        Transformable3D::setScale(raylib::Vector3 {scale, scale, scale});
         _position = raylib::Vector3 {
             pos.x + Shared::Utils::fRandRange(-RANGE.x, RANGE.x),
             0,

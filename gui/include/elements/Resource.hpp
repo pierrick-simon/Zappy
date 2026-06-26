@@ -10,22 +10,16 @@
 
     #include <Vector3.hpp>
     #include "Info.hpp"
+#include "graphics/Transformable3D.hpp"
 
 namespace Zappy {
-    class Resource {
+    class Resource : public Graphics::Transformable3D {
     public:
         Resource(Info::ResourceName resource, raylib::Vector3 pos, float scale,
             float rotation);
 
-        [[nodiscard]] raylib::Vector3 getPos() const;
-        [[nodiscard]] float getScale() const;
-        [[nodiscard]] float getRotation() const;
-
     private:
         Info::ResourceName _resource;
-        raylib::Vector3 _pos;
-        float _scale;
-        float _rotation;
     };
 } // namespace Zappy
 

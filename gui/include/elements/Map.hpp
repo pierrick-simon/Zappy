@@ -8,7 +8,8 @@
 #ifndef MAP_HPP_
     #define MAP_HPP_
 
-    #include <optional>
+    #include <numeric>
+#include <optional>
     #include <unordered_map>
     #include "Info.hpp"
     #include "InfoBox.hpp"
@@ -84,9 +85,10 @@ namespace Zappy {
         static constexpr float GRASS_DENSITY = 0.05f;
         static constexpr auto GRASS_PER_TILE = static_cast<std::size_t>(
             GRASS_DENSITY * Tile::TILE_SIZE.x * Tile::TILE_SIZE.y);
-        static constexpr float GRASS_SCALE = 0.1;
+        static constexpr float MAX_GRASS_SCALE = 0.25f;
+        static constexpr float MIN_GRASS_SCALE = 0.15f;
         static constexpr float BORDER_GRASS = 1.f;
-        std::vector<std::pair<std::size_t, raylib::Vector3>> _grasses;
+        std::vector<std::pair<std::size_t, Graphics::Transformable3D>> _grasses;
 
         bool _changeColor = false;
         float _blink = 0.f;
@@ -95,14 +97,20 @@ namespace Zappy {
 
         static constexpr auto TILE_Y_POS = 0;
         static constexpr raylib::Vector2 GROUND_SIZE = {5, 5};
+        static constexpr auto TILE_SCALE_MARGIN = 0.02f;
         static constexpr raylib::Vector3 TILE_SCALE = {
-            Tile::TILE_SIZE.x / GROUND_SIZE.x,
-            1,
-            Tile::TILE_SIZE.y / GROUND_SIZE.y};
+            Tile::TILE_SIZE.x / GROUND_SIZE.x + TILE_SCALE_MARGIN,
+            std::midpoint(Tile::TILE_SIZE.x / GROUND_SIZE.x,
+                Tile::TILE_SIZE.y / GROUND_SIZE.y),
+            Tile::TILE_SIZE.y / GROUND_SIZE.y + TILE_SCALE_MARGIN};
 
         inline static const std::string TILE_MODEL_PATH =
             Assets::getResource("map/cell.glb");
         raylib::Model _tileModel {TILE_MODEL_PATH};
+
+        static constexpr auto DEFAULT_MATERIAL = 1;
+        static constexpr auto GRASS_MATERIAL = 1;
+        static constexpr auto DIRT_MATERIAL = 2;
 
         static const std::unordered_map<Info::ResourceName, float> _modelScales;
     };
